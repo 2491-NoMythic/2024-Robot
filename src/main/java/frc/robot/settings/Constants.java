@@ -286,7 +286,7 @@ public static final class CTREConfigs {
   public final class PS4Driver{
     private PS4Driver() {
     }
-    public static final int CONTROLLER_ID = 1;
+    public static final int DRIVE_CONTROLLER_ID = 1;
     /**Left stick Y-axis. <p> Left = -1 || Right = 1*/
     public static final int X_AXIS = 0; 
     /**Left stick X-axis. <p> Forwards = -1 || Backwards = 1*/
@@ -300,6 +300,10 @@ public static final class CTREConfigs {
     public static final double DEADBAND_NORMAL = 0.08;
     public static final double DEADBAND_LARGE = 0.1;
 }
+
+  public final class PS4Operator{
+    public static final int OPERATOR_CONTROLLER_ID = 2;
+  }
 
 public final class Vision{
   public static final String APRILTAG_LIMELIGHT_NAME = "AprilLimelight";

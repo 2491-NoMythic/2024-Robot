@@ -4,8 +4,10 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
+import static frc.robot.settings.Constants.PS4Driver.*;
+import static frc.robot.settings.Constants.PS4Operator.*;
 import frc.robot.commands.Autos;
+import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -16,6 +18,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
+import frc.robot.commands.Drive;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.PS4Controller;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,17 +40,21 @@ public class RobotContainer {
   private DrivetrainSubsystem driveTrain;
   private Intake intake;
   private Shooter shooter;
+  private Drive defaultDriveCommand;
+  private PS4Controller driverController;
+  private PS4Controller operatorController;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
+  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 //preferences are initialized IF they don't already exist on the Rio
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
+
+    driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
+    operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
 
     driveTrainInst();
     autoInit();
@@ -56,7 +65,16 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private void driveTrainInst() {}
+  private void driveTrainInst() {
+    driveTrain = new DrivetrainSubsystem();
+    defaultDriveCommand = new Drive(
+      driveTrain, 
+      () -> driverController.getL1Button(),
+      () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
+    driveTrain.setDefaultCommand(defaultDriveCommand);
+  }
   private void shooterInst() {}
   private void intakeInst() {}
   private void climberInst() {}
@@ -79,7 +97,6 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**
@@ -90,5 +107,13 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return Autos.exampleAuto(m_exampleSubsystem);
+  }
+
+  private double modifyAxis(double value, double deadband) {
+    // Deadband
+    value = MathUtil.applyDeadband(value, deadband);
+    // Square the axis
+    value = Math.copySign(value * value, value);
+    return value;
   }
 }
