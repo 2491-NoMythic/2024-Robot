@@ -7,10 +7,15 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.Preferences;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,15 +27,41 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
+// preferences are information saved on the Rio. They are initialized once, then gotten every time we run the code.
+  private final boolean intakeExists = Preferences.getBoolean("Intake", true);
+  private final boolean shooterExists = Preferences.getBoolean("Shooter", true);
+  private final boolean climberExists = Preferences.getBoolean("Climber", true);
+
+  private DrivetrainSubsystem driveTrain;
+  private Intake intake;
+  private Shooter shooter;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+//preferences are initialized IF they don't already exist on the Rio
+    Preferences.initBoolean("Intake", false);
+    Preferences.initBoolean("Climber", false);
+    Preferences.initBoolean("Shooter", false);
+
+    driveTrainInst();
+    autoInit();
+    if(intakeExists) {intakeInst();}
+    if(shooterExists) {shooterInst();}
+    if(climberExists) {climberInst();}
     // Configure the trigger bindings
     configureBindings();
   }
+
+  private void driveTrainInst() {}
+  private void shooterInst() {}
+  private void intakeInst() {}
+  private void climberInst() {}
+  private void autoInit() {}
+  
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
