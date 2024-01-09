@@ -12,7 +12,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -39,7 +39,7 @@ public class RobotContainer {
 
   private DrivetrainSubsystem driveTrain;
   private Intake intake;
-  private Shooter shooter;
+  private ShooterSubsystem shooter;
   private Drive defaultDriveCommand;
   private PS4Controller driverController;
   private PS4Controller operatorController;
