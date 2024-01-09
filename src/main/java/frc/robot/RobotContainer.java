@@ -6,9 +6,22 @@ package frc.robot;
 
 import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.PS4Operator.*;
+
+import java.util.function.BooleanSupplier;
+
+import static frc.robot.settings.Constants.DriveConstants.*;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import frc.robot.commands.Autos;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -16,11 +29,15 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.commands.Drive;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.commands.ManualShoot;
 
@@ -43,6 +60,7 @@ public class RobotContainer {
   private Intake intake;
   private ShooterSubsystem shooter;
   private Drive defaultDriveCommand;
+  private Climber climber;
   private PS4Controller driverController;
   private PS4Controller operatorController;
 
@@ -77,10 +95,20 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     driveTrain.setDefaultCommand(defaultDriveCommand);
   }
-  private void shooterInst() {}
-  private void intakeInst() {}
-  private void climberInst() {}
-  private void autoInit() {}
+  private void shooterInst() {
+    shooter = new ShooterSubsystem(1);
+  }
+  private void intakeInst() {
+    intake = new Intake();
+  }
+  private void climberInst() {
+    climber = new Climber();
+  }
+  private void autoInit() {
+    SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
+    configureDriveTrain();
+    registerNamedCommands();
+  }
   
 
   /**
@@ -123,5 +151,35 @@ public class RobotContainer {
     // Square the axis
     value = Math.copySign(value * value, value);
     return value;
+  }
+
+  private void configureDriveTrain() {
+    AutoBuilder.configureHolonomic(
+                driveTrain::getPose, // Pose2d supplier
+                driveTrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
+                driveTrain::getChassisSpeeds,
+                driveTrain::drive,
+                new HolonomicPathFollowerConfig(
+                    new PIDConstants(
+                        k_XY_P,
+                        k_XY_I,
+                        k_XY_D), // PID constants to correct for translation error (used to create the X
+                                 // and Y PID controllers)
+                    new PIDConstants(
+                        k_THETA_P,
+                        k_THETA_I,
+                        k_THETA_D), // PID constants to correct for rotation error (used to create the
+                                    // rotation controller)
+                    4, //max module speed //TODO find actual values
+                    new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0).getNorm(), //drive base radius
+                    new ReplanningConfig()
+                ),
+                ()->DriverStation.getAlliance().equals(Alliance.Red),
+                driveTrain
+    );
+  }
+
+  private void registerNamedCommands() {
+    NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
   }
 }
