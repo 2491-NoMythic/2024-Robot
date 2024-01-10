@@ -10,22 +10,22 @@ import  frc.robot.settings.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
-  CANSparkMax Shooter1;
-  CANSparkMax Shooter2;
+  CANSparkMax shooter1;
+  CANSparkMax shooter2;
   double runSpeed;
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
-    CANSparkMax Shooter1 = new CANSparkMax(ShooterConstants.SHOOTER_1_MOTORID, MotorType.kBrushless);
-    CANSparkMax Shooter2 = new CANSparkMax(ShooterConstants.SHOOTER_2_MOTORID, MotorType.kBrushless);
+    shooter1 = new CANSparkMax(ShooterConstants.SHOOTER_1_MOTORID, MotorType.kBrushless);
+    shooter2 = new CANSparkMax(ShooterConstants.SHOOTER_2_MOTORID, MotorType.kBrushless);
   }
   
 
   public void shootThing(double runSpeed) {
-    Shooter1.set(runSpeed);
-    Shooter2.set(runSpeed);
+    shooter1.set(runSpeed);
+    shooter2.set(-runSpeed);
   }
   public void turnOff(){
-    Shooter1.set(0);
-    Shooter2.set(0);
+    shooter1.set(0);
+    shooter2.set(0);
   }
 }
