@@ -234,6 +234,11 @@ public final class Constants {
 
     public static final PathConstraints DEFAUL_PATH_CONSTRAINTS = new PathConstraints(2, 1.5, Math.toRadians(360), Math.toRadians(360));
 }
+public static final class ShooterConstants{
+  public static final int SHOOTER_1_MOTORID = 2491;
+  public static final int SHOOTER_2_MOTORID = 2491;
+  public static final double SHOOTER_MOTOR_POWER = 1;
+}
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
   public TalonFXConfiguration steerMotorConfig;

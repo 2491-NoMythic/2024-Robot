@@ -9,10 +9,11 @@ import static frc.robot.settings.Constants.PS4Operator.*;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ManualShoot;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.commands.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.PS4Controller;
+import frc.robot.commands.ManualShoot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,7 +41,7 @@ public class RobotContainer {
 
   private DrivetrainSubsystem driveTrain;
   private Intake intake;
-  private Shooter shooter;
+  private ShooterSubsystem shooter;
   private Drive defaultDriveCommand;
   private PS4Controller driverController;
   private PS4Controller operatorController;
@@ -94,9 +96,15 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+    new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+  }
+
+  private Command ManualShoot(ShooterSubsystem shooter) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
   }
 
   /**
