@@ -9,6 +9,7 @@ import static frc.robot.settings.Constants.PS4Operator.*;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ManualShoot;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.commands.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.PS4Controller;
+import frc.robot.commands.ManualShoot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -94,9 +96,15 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+    new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+  }
+
+  private Command ManualShoot(ShooterSubsystem shooter) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
   }
 
   /**
