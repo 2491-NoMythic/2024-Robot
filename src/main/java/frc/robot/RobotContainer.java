@@ -26,6 +26,7 @@ import frc.robot.commands.ManualShoot;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -63,6 +64,7 @@ public class RobotContainer {
   private Climber climber;
   private PS4Controller driverController;
   private PS4Controller operatorController;
+  private Limelight limelight;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -78,6 +80,7 @@ public class RobotContainer {
 
     driveTrainInst();
     autoInit();
+    limelightInit();
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(climberExists) {climberInst();}
@@ -108,6 +111,9 @@ public class RobotContainer {
     configureDriveTrain();
     SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
+  }
+  private void limelightInit() {
+    limelight = Limelight.getInstance();
   }
   
 
