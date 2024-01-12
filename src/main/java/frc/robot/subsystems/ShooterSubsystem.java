@@ -15,6 +15,7 @@ import  frc.robot.settings.Constants.ShooterConstants;
 import edu.wpi.first.hal.can.CANStreamOverflowException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.hal.can.CANStreamOverflowException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,7 +26,6 @@ public class ShooterSubsystem extends SubsystemBase {
   CANSparkMax shooter2;
   CANSparkMax pitchMotor;
 
-  double runSpeed;
 
   SparkPIDController shooterPID;
   double kP = Constants.ShooterConstants.kP;         
@@ -35,10 +35,11 @@ public class ShooterSubsystem extends SubsystemBase {
   double kFF = Constants.ShooterConstants.kFF;         
   double kMaxOutput = Constants.ShooterConstants.kMaxOutput;         
   double kMinOutput = Constants.ShooterConstants.kMinOutput; 
+  double runSpeed;
 
   RelativeEncoder encoder1;
 
-  /** Creates a new Shooter. */
+    /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
     SparkPIDController shooterPID;
     shooter1 = new CANSparkMax(ShooterConstants.SHOOTER_1_MOTORID, MotorType.kBrushless);
