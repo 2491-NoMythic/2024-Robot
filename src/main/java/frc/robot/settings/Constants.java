@@ -220,7 +220,7 @@ public final class Constants {
     public static final double k_XY_I = 0.0;
     public static final double k_XY_D = 0.0;
 
-    public static final double k_THETA_P = 1.0;
+    public static final double k_THETA_P = 1;
     public static final double k_THETA_I = 0.0;
     public static final double k_THETA_D = 0.0;
     public static final double k_THETA_TOLORANCE_DEGREES = 2.0;
