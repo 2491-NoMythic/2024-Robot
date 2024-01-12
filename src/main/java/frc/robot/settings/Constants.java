@@ -103,7 +103,7 @@ public final class Constants {
      * this value should result in wheel rotations.
      * these numbers are just gear ratios that are used. Ask build team about these.
      */
-    public static final double DRIVETRAIN_DRIVE_REDUCTION = (15.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
+    public static final double DRIVETRAIN_DRIVE_REDUCTION = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
 
     /**
      * Whether the drive motor should be counterclockwise or clockwise positive. 
@@ -216,11 +216,11 @@ public final class Constants {
 
     // Auto PID loops
     // twin pid controllers that control the x and y robot movements.
-    public static final double k_XY_P = 5;//*2.5;
+    public static final double k_XY_P = 2.5;//*2.5;
     public static final double k_XY_I = 0.0;
     public static final double k_XY_D = 0.0;
 
-    public static final double k_THETA_P = 1.0;
+    public static final double k_THETA_P = 5.0;
     public static final double k_THETA_I = 0.0;
     public static final double k_THETA_D = 0.0;
     public static final double k_THETA_TOLORANCE_DEGREES = 2.0;

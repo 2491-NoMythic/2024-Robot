@@ -105,8 +105,8 @@ public class RobotContainer {
     climber = new Climber();
   }
   private void autoInit() {
-    SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     configureDriveTrain();
+    SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
   }
   
