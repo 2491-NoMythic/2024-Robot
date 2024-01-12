@@ -68,6 +68,7 @@ public class RobotContainer {
   private PS4Controller operatorController;
   private Limelight limelight;
   private Pigeon2 pigeon;
+  private Limelight limelight;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   

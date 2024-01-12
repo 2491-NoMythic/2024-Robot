@@ -57,17 +57,16 @@ public class CollectNote extends Command {
   @Override
   public void execute() {
      detectorData = Limelight.latestDetectorValues;
+
     if (detectorData == null) {
       drivetrain.stop();
       System.err.println("nullDetectorData");
       return;
     }
     if (!detectorData.isResultValid) {
-      drivetrain.stop();
       System.err.println("invalidDetectorData");
       return;
     }
-    
     tx = detectorData.tx;
     ta = detectorData.ta;
 
@@ -80,6 +79,7 @@ public class CollectNote extends Command {
       drivetrain.drive(new ChassisSpeeds(taController.calculate(1/ta), 0, txController.calculate(tx)));
     }
   }
+
 
   // Called once the command ends or is interrupted.
   @Override
