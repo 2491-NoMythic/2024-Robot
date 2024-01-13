@@ -17,6 +17,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import frc.robot.commands.AutoAim;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
@@ -65,6 +66,7 @@ public class RobotContainer {
   private PS4Controller driverController;
   private PS4Controller operatorController;
   private Limelight limelight;
+  private AutoAim autoAim;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -140,6 +142,10 @@ public class RobotContainer {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
   }
+  
+  private void AutoAim(){
+    autoAim = new AutoAim(driveTrain, shooter);
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
