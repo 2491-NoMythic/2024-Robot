@@ -14,6 +14,7 @@ import frc.robot.settings.Constants;
 import  frc.robot.settings.Constants.ShooterConstants;
 import edu.wpi.first.hal.can.CANStreamOverflowException;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,6 +25,15 @@ public class ShooterSubsystem extends SubsystemBase {
   CANSparkMax pitchMotor;
 
   double runSpeed;
+
+  SparkPIDController shooterPID;
+  double kP = Constants.ShooterConstants.kP;         
+  double kI = Constants.ShooterConstants.kI;         
+  double kD = Constants.ShooterConstants.kD;         
+  double kIz = Constants.ShooterConstants.kIz;         
+  double kFF = Constants.ShooterConstants.kFF;         
+  double kMaxOutput = Constants.ShooterConstants.kMaxOutput;         
+  double kMinOutput = Constants.ShooterConstants.kMinOutput; 
 
   RelativeEncoder encoder1;
 
@@ -40,31 +50,55 @@ public class ShooterSubsystem extends SubsystemBase {
 
     encoder1 = shooter1.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4096);
 
-    shooterPID = shooter1.getPIDController();
-     double kP = Constants.ShooterConstants.kP;
-     double kI = Constants.ShooterConstants.kI;
-     double kD = Constants.ShooterConstants.kD;
-     double kIz = Constants.ShooterConstants.kIz;
-     double kFF = Constants.ShooterConstants.kFF;
-     double kMaxOutput = Constants.ShooterConstants.kMaxOutput;
-     double kMinOutput = Constants.ShooterConstants.kMinOutput;
+   shooterPID = shooter1.getPIDController();              
+  
 
 
-    shooterPID.setP(kP);
-    shooterPID.setI(kI);
-    shooterPID.setD(kD);
-    shooterPID.setIZone(kIz);
-    shooterPID.setFF(kFF);
-    shooterPID.setOutputRange(kMinOutput, kMaxOutput);  
+
+   shooterPID.setP(kP);
+   shooterPID.setI(kI);
+   shooterPID.setD(kD);  
+   shooterPID.setIZone(kIz);
+   shooterPID.setFF(kFF);
+   shooterPID.setOutputRange(kMinOutput, kMaxOutput);  
 
 
     //Adjust the value runSpeed later. (SmartDashboard stuff)
     shooterPID.setReference(runSpeed, ControlType.kVelocity);
     
+        SmartDashboard.putNumber("P Gain", Constants.ShooterConstants.kP);
+    SmartDashboard.putNumber("I Gain", Constants.ShooterConstants.kI);
+    SmartDashboard.putNumber("D Gain",Constants.ShooterConstants.kD);
+    SmartDashboard.putNumber("I Zone",Constants.ShooterConstants.kIz);
+    SmartDashboard.putNumber("Feed Forward",Constants.ShooterConstants.kFF);
+    SmartDashboard.putNumber("Max Output",Constants.ShooterConstants.kMaxOutput);
+    SmartDashboard.putNumber("Min Output",Constants.ShooterConstants.kMinOutput);
+    SmartDashboard.putNumber("Set Velocity", runSpeed);
+
+    double p = SmartDashboard.getNumber("P Gain", 0);
+    double i = SmartDashboard.getNumber("I Gain", 0);
+    double d = SmartDashboard.getNumber("D Gain", 0);
+    double iz = SmartDashboard.getNumber("I Zone", 0);
+    double ff = SmartDashboard.getNumber("Feed Forward", 0);
+    double max = SmartDashboard.getNumber("Max Output", 0);
+    double min = SmartDashboard.getNumber("Min Output", 0);   
+    double ve = SmartDashboard.getNumber("Set Velocity", 0);
 
 
+    if((p != kP)) {shooterPID.setP(p); kP = p; }
+    if((i != kI)) {shooterPID.setI(i); kI = i; }
+    if((d != kD)) {shooterPID.setD(d); kD = d; }
 
+    if((iz != kIz)) {shooterPID.setIZone(iz); kIz = iz;}
+    if((ff != kFF)) {shooterPID.setFF(ff); kFF = ff;}
+    if((max != kMaxOutput) || (min != kMinOutput))
+    {
+     shooterPID.setOutputRange(min, max);
+     kMinOutput = min; kMaxOutput = max;
+    }
 
+    SmartDashboard.putNumber("Process Variable", encoder1.getPosition());
+    
   }
   
 
