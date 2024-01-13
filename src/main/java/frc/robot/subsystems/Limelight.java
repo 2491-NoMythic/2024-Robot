@@ -17,6 +17,7 @@ public class Limelight {
     public static LimelightDetectorData latestDetectorValues;
 
     private  Limelight(){
+
       vision_thread();
     }
 
