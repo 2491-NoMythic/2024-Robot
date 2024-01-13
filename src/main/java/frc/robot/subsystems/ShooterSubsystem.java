@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.hal.can.CANStreamOverflowException;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -36,6 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
   double kMaxOutput = Constants.ShooterConstants.kMaxOutput;         
   double kMinOutput = Constants.ShooterConstants.kMinOutput; 
   double runSpeed;
+
 
   RelativeEncoder encoder1;
 
