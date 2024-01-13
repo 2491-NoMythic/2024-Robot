@@ -18,6 +18,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import frc.robot.commands.AutoAim;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
@@ -69,6 +70,7 @@ public class RobotContainer {
   private Limelight limelight;
   private Pigeon2 pigeon;
   private Limelight limelight;
+  private AutoAim autoAim;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   

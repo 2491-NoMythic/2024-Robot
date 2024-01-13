@@ -52,10 +52,6 @@ public class ShooterSubsystem extends SubsystemBase {
     encoder1 = shooter1.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4096);
 
    shooterPID = shooter1.getPIDController();              
-  
-
-
-
    shooterPID.setP(kP);
    shooterPID.setI(kI);
    shooterPID.setD(kD);  

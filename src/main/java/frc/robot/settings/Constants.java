@@ -260,6 +260,7 @@ public static final class ShooterConstants{
   public static final int SHOOTER_2_MOTORID = 2491;
   public static final int PITCH_MOTOR_ID = 2491;
   public static final double SHOOTER_MOTOR_POWER = 1;
+  public static final int PITCH_MOTOR_ID = 2491;
 
   //PID coefficients:
   public static final double kP = 0.1;
