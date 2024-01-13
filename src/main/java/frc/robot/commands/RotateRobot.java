@@ -4,18 +4,24 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.LimelightFiducialData;
+import frc.robot.settings.LimelightValues;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Limelight;
 
 public class RotateRobot extends Command {
+    Limelight m_limelightClass;
     DrivetrainSubsystem m_drivetrain;
+    LimelightFiducialData m_llvalues;
     double desiredRobotAngle;
     double currentHeading;
     double differenceAngle;
     double turningSpeed;
     
-    public RotateRobot(DrivetrainSubsystem drivetrain, double desiredRobotAngle, double currentHeading){
+    public RotateRobot(Limelight limelightClass, DrivetrainSubsystem drivetrain, double currentHeading){
+        m_limelightClass = limelightClass;
         m_drivetrain = drivetrain;
         this.currentHeading = currentHeading;
     }
