@@ -238,6 +238,18 @@ public static final class ShooterConstants{
   public static final int SHOOTER_1_MOTORID = 2491;
   public static final int SHOOTER_2_MOTORID = 2491;
   public static final double SHOOTER_MOTOR_POWER = 1;
+
+  //PID coefficients:
+  public static final double kP = 0.1;
+  public static final double kI = 1e-4;
+  public static final double kD = 1;
+  public static final double kIz = 0;
+  public static final double kFF = 0;
+  public static final double kMaxOutput = 1;
+  public static final double kMinOutput = -1;
+
+
+
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
