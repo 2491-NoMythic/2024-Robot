@@ -264,6 +264,9 @@ public static final class ShooterConstants{
 
 
 
+  //TODO: update these values
+  public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
+  public static final double AUTO_AIM_kP = 0.15;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;

@@ -7,15 +7,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.settings.LimelightFiducialData;
+import frc.robot.settings.LimelightValues;
+import frc.robot.subsystems.Limelight;
 
 public class RotateRobot extends Command {
+    Limelight m_limelightClass;
     DrivetrainSubsystem m_drivetrain;
+    LimelightFiducialData m_llvalues;
     double desiredRobotAngle;
     double currentHeading;
     double differenceAngle;
     double turningSpeed;
     
-    public RotateRobot(DrivetrainSubsystem drivetrain, double desiredRobotAngle, double currentHeading){
+    public RotateRobot(Limelight limelightClass, DrivetrainSubsystem drivetrain, double currentHeading){
+        m_limelightClass = limelightClass;
         m_drivetrain = drivetrain;
         this.currentHeading = currentHeading;
     }
@@ -23,7 +29,24 @@ public class RotateRobot extends Command {
     // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    Pose2d dtvalues = m_drivetrain.getPose();
     
+    //triangle for robot angle
+    double speakerA = Math.abs(dtvalues.getX() - Field.SPEAKER_X);
+    double speakerB = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
+    double speakerC = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
+
+    //getting desired robot angle
+    
+
+    if (dtvalues.getY() <= Field.SPEAKER_Y) {
+        double thetaBelow = (Math.asin(speakerA / speakerC)) + 90;
+        desiredRobotAngle = thetaBelow;
+    }
+    else{
+        double thetaAbove = 360 - (Math.asin(speakerA / speakerC) + 90);
+        desiredRobotAngle = thetaAbove;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
