@@ -11,6 +11,7 @@ import java.util.function.BooleanSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -131,7 +132,6 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
-    new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
 
     new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
 
@@ -139,12 +139,9 @@ public class RobotContainer {
     // cancelling on release.
   }
 
-  private Command ManualShoot(ShooterSubsystem shooter) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
-  }
-  
-
+  // private Command ManualShoot(ShooterSubsystem shooter) {
+  //   // TODO Auto-generated method stub
+  // }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

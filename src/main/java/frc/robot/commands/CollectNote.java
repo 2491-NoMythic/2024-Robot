@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Intake;
@@ -36,20 +39,24 @@ public class CollectNote extends Command {
   @Override
   public void initialize() {
     txController = new PIDController(
-      k_PICKUP_NOTE_tx_P,
-      k_PICKUP_NOTE_tx_I,
-      k_PICKUP_NOTE_tx_D );
+        K_DETECTOR_TX_P,
+        K_DETECTOR_TX_I,
+        K_DETECTOR_TX_D);
     taController = new PIDController(
-      k_PICKUP_NOTE_ta_P,
-      k_PICKUP_NOTE_ta_I, 
-      k_PICKUP_NOTE_ta_D);
+        K_DETECTOR_TA_P,
+        K_DETECTOR_TA_I,
+        K_DETECTOR_TA_D);
+    txController.setSetpoint(0);
+    taController.setSetpoint(0.5);
+    txController.setTolerance(1, 0.25);
+    taController.setTolerance(1, 0.25);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    detectorData = limelightClass.latestDetectorValues;
-
+     detectorData = Limelight.latestDetectorValues;
     if (detectorData == null) {
       drivetrain.stop();
       System.err.println("nullDetectorData");
@@ -81,6 +88,5 @@ public class CollectNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
-  }
+    return (taController.atSetpoint() && txController.atSetpoint());  }
 }
