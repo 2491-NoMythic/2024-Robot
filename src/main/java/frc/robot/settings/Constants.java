@@ -246,6 +246,10 @@ public static final class ShooterConstants{
   public static final int SHOOTER_1_MOTORID = 2491;
   public static final int SHOOTER_2_MOTORID = 2491;
   public static final double SHOOTER_MOTOR_POWER = 1;
+
+  //TODO: update these values
+  public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
+  public static final double AUTO_AIM_kP = 0.15;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
@@ -316,6 +320,14 @@ public static final class CTREConfigs {
 
   public final class PS4Operator{
     public static final int OPERATOR_CONTROLLER_ID = 2;
+  }
+
+  public final class Field{
+
+    //TODO: Update these values for red and blue
+    public static final double SPEAKER_Y = 7;
+    public static final double SPEAKER_X = 23;
+    public static final double SPEAKER_Z = 204.5; //height of opening
   }
 
 public final class Vision{
