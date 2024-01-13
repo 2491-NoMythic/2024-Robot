@@ -64,6 +64,7 @@ public class RobotContainer {
   private Climber climber;
   private PS4Controller driverController;
   private PS4Controller operatorController;
+  private Pigeon2 pigeon;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -76,6 +77,7 @@ public class RobotContainer {
 
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
+    pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
 
     driveTrainInst();
     autoInit();
@@ -125,6 +127,8 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+
+    new Trigger(driverController::getPSButton).onTrue(new InstantCommand(pigeon::reset));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
