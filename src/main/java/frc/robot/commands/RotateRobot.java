@@ -15,7 +15,7 @@ public class RotateRobot extends Command {
     double differenceAngle;
     double turningSpeed;
     
-    public RotateRobot(DrivetrainSubsystem drivetrain, double desiredRobotAngle){
+    public RotateRobot(DrivetrainSubsystem drivetrain, double desiredRobotAngle, double currentHeading){
         m_drivetrain = drivetrain;
         this.currentHeading = currentHeading;
     }
