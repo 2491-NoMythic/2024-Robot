@@ -129,8 +129,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		new Rotation2d();
 		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
+	public double getHeadingLooped() {
+		//returns the heading of the robot, but only out of 360, not accumulative
+		int accumulativeLoops = (int) (getHeadingDegrees()/360); //finding the amount of times that 360 goes into the heading, as an int
+		return getHeadingDegrees()-360*accumulativeLoops;
+	}
 	public Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
+	}
+	public double getHeadingDegrees() {
+		return pigeon.getAngle();
 	}
 	public ChassisSpeeds getChassisSpeeds() {
 		return kinematics.toChassisSpeeds(getModuleStates());

@@ -4,24 +4,17 @@
 
 package frc.robot.commands;
 
-import static frc.robot.settings.Constants.DriveConstants.DRIVETRAIN_PIGEON_ID;
-
-import com.ctre.phoenix6.hardware.Pigeon2;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.PS4Controller;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.settings.Constants.Field;
-import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class AutoAim extends Command {
-  /** Creates a new autoAim. */
-  private final PS4Controller m_AutoAimButton;
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class autoAimParallel extends ParallelCommandGroup {
   DrivetrainSubsystem m_drivetrain;
   ShooterSubsystem m_ShooterSubsystem;
   double m_desiredRobotAngle;
@@ -34,24 +27,17 @@ public class AutoAim extends Command {
   double turningSpeed;
   RotateRobot rotateRobot;
   AngleShooter angleShooter;
-  Pigeon2 pigeon2;
-
-  public AutoAim( DrivetrainSubsystem drivetrain, ShooterSubsystem shooterSubsystem, PS4Controller autoAimButton) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    Pigeon2 pigeon2 = new Pigeon2(DRIVETRAIN_PIGEON_ID);
+  int accumulativeTurns;
+  /** Creates a new autoAimParallel. */
+  public autoAimParallel( DrivetrainSubsystem drivetrain, ShooterSubsystem shooterSubsystem) {
     m_drivetrain = drivetrain;
     m_ShooterSubsystem = shooterSubsystem;
-    m_AutoAimButton = autoAimButton;
 
     addRequirements(drivetrain);
     addRequirements(shooterSubsystem);
-  }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
     Pose2d dtvalues = m_drivetrain.getPose();
-    currentHeading = pigeon2.getAngle();
+    currentHeading = m_drivetrain.getHeadingLooped();
     
     //triangle for robot angle
     speakerA = Math.abs(dtvalues.getX() - Field.SPEAKER_X);
@@ -74,24 +60,11 @@ public class AutoAim extends Command {
     //TODO: Find out if we need projectile motion physics and implement it
     m_DesiredShooterAngle = Math.atan(Field.SPEAKER_Z / speakerDist);
 
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if (m_AutoAimButton.getCrossButton()){
-    new ParallelCommandGroup(new RotateRobot(m_drivetrain, m_desiredRobotAngle), new AngleShooter(m_ShooterSubsystem, m_DesiredShooterAngle));
-    }
-  }
-  
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return Math.abs(differenceAngle) < ShooterConstants.ROBOT_ANGLE_TOLERANCE && Math.abs(differenceAngle) < ShooterConstants.SHOOTER_ANGLE_TOLERANCE;
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+    addCommands(
+      new RotateRobot(drivetrain, m_desiredRobotAngle, currentHeading),
+      new AngleShooter(shooterSubsystem, m_DesiredShooterAngle)
+    );
   }
 }

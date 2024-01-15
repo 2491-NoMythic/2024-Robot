@@ -15,7 +15,7 @@ public class RotateRobot extends Command {
     double differenceAngle;
     double turningSpeed;
     
-    public RotateRobot(DrivetrainSubsystem drivetrain, double desiredRobotAngle){
+    public RotateRobot(DrivetrainSubsystem drivetrain, double desiredRobotAngle, double currentHeading){
         m_drivetrain = drivetrain;
         this.currentHeading = currentHeading;
     }
@@ -44,9 +44,8 @@ public class RotateRobot extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(new ChassisSpeeds(0, 0, 0));
+    m_drivetrain.stop();
   }
-
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

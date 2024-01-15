@@ -17,13 +17,13 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import frc.robot.commands.AutoAim;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.autoAimParallel;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
@@ -66,7 +66,6 @@ public class RobotContainer {
   private PS4Controller driverController;
   private PS4Controller operatorController;
   private Limelight limelight;
-  private AutoAim autoAim;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -134,6 +133,8 @@ public class RobotContainer {
         .onTrue(new ExampleCommand(m_exampleSubsystem));
     new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
 
+    new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
+
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
   }
@@ -143,9 +144,7 @@ public class RobotContainer {
     throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
   }
   
-  private void AutoAim(){
-    autoAim = new AutoAim(driveTrain, shooter);
-    }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
