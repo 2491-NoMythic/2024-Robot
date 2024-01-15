@@ -38,9 +38,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   RelativeEncoder encoder1;
 
-    /** Creates a new Shooter. */
-  CANSparkMax pitchMotor;  
-
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
     SparkPIDController shooterPID;
