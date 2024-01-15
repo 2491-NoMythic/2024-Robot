@@ -8,6 +8,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+
+=======
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.LimelightDetectorData;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -56,12 +58,14 @@ public class CollectNote extends Command {
   @Override
   public void execute() {
      detectorData = Limelight.latestDetectorValues;
+
     if (detectorData == null) {
       drivetrain.stop();
       System.err.println("nullDetectorData");
       return;
     }
     if (!detectorData.isResultValid) {
+
       drivetrain.stop();
       System.err.println("invalidDetectorData");
       return;
@@ -78,6 +82,7 @@ public class CollectNote extends Command {
     }
   }
   
+
 
   // Called once the command ends or is interrupted.
   @Override

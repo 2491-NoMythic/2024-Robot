@@ -24,9 +24,11 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.autoAimParallel;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,6 +66,8 @@ public class RobotContainer {
   private Climber climber;
   private PS4Controller driverController;
   private PS4Controller operatorController;
+  private Limelight limelight;
+
   private Pigeon2 pigeon;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -81,6 +85,7 @@ public class RobotContainer {
 
     driveTrainInst();
     autoInit();
+    limelightInit();
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(climberExists) {climberInst();}
@@ -112,6 +117,9 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
   }
+  private void limelightInit() {
+    limelight = Limelight.getInstance();
+  }
   
 
   /**
@@ -128,7 +136,11 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
+
+    new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(pigeon::reset));
+
+
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
@@ -137,6 +149,7 @@ public class RobotContainer {
   // private Command ManualShoot(ShooterSubsystem shooter) {
   //   // TODO Auto-generated method stub
   // }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
