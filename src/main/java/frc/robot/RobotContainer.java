@@ -11,6 +11,7 @@ import java.util.function.BooleanSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -63,6 +64,7 @@ public class RobotContainer {
   private Climber climber;
   private PS4Controller driverController;
   private PS4Controller operatorController;
+  private Pigeon2 pigeon;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -75,6 +77,7 @@ public class RobotContainer {
 
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
+    pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
 
     driveTrainInst();
     autoInit();
@@ -124,16 +127,16 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
-    new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
+
+    new Trigger(driverController::getPSButton).onTrue(new InstantCommand(pigeon::reset));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
   }
 
-  private Command ManualShoot(ShooterSubsystem shooter) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
-  }
+  // private Command ManualShoot(ShooterSubsystem shooter) {
+  //   // TODO Auto-generated method stub
+  // }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

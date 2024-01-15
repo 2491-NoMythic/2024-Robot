@@ -44,7 +44,7 @@ public class SwerveModule {
   private CoastOut m_coastControl = new CoastOut();
   private StaticBrake m_brakeControl = new StaticBrake();
   private NeutralOut m_neutralControl = new NeutralOut();
-
+  
   /**
    * Constructs a SwerveModule with a drive motor, turning motor and turning encoder.
    *
