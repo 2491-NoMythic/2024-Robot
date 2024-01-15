@@ -140,7 +140,6 @@ public class RobotContainer {
     new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(pigeon::reset));
 
-    new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
 
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
