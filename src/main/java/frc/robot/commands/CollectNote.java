@@ -8,30 +8,31 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+
+=======
+import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.LimelightDetectorData;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import static frc.robot.settings.Constants.DriveConstants.*;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
-import frc.robot.settings.LimelightDetectorData;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import static frc.robot.settings.Constants.DriveConstants.*;
 
 public class CollectNote extends Command {
+
   DrivetrainSubsystem drivetrain;
   Intake intake;
-  Limelight limelightClass;
+  LimelightDetectorData detectorData;
+
   PIDController txController;
   PIDController taController;
-  LimelightDetectorData detectorData;
+
   double tx;
   double ta;
   /** Creates a new CollectNote. */
-  public CollectNote(DrivetrainSubsystem drivetrain, Intake intake, Limelight ll) {
+  public CollectNote(DrivetrainSubsystem drivetrain, Intake intake) {
     addRequirements(drivetrain, intake);
     this.drivetrain = drivetrain;
     this.intake = intake;
-    this.limelightClass = ll;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -64,21 +65,23 @@ public class CollectNote extends Command {
       return;
     }
     if (!detectorData.isResultValid) {
+
+      drivetrain.stop();
       System.err.println("invalidDetectorData");
       return;
     }
+    
     tx = detectorData.tx;
     ta = detectorData.ta;
 
-    SmartDashboard.putNumber("Ttx", txController.calculate(tx));
-    SmartDashboard.putNumber("Tty", taController.calculate(ta));
-
-    if (taController.atSetpoint() && txController.atSetpoint()) {
+     if (taController.atSetpoint() && txController.atSetpoint()) {
       drivetrain.stop();
     } else {
-      drivetrain.drive(new ChassisSpeeds(taController.calculate(1/ta), 0, txController.calculate(tx)));
+      //drives the robot forward faster if the object is taking up less of the screen, and turns it more based on how far away the object is from x=0
+      drivetrain.drive(new ChassisSpeeds(1/taController.calculate(ta), 0, txController.calculate(tx)));
     }
   }
+  
 
 
   // Called once the command ends or is interrupted.

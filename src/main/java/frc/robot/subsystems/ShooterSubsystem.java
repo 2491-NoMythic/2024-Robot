@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.settings.Constants;
 import  frc.robot.settings.Constants.ShooterConstants;
+
 import edu.wpi.first.hal.can.CANStreamOverflowException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.controller.PIDController;
@@ -19,6 +20,7 @@ import edu.wpi.first.hal.can.CANStreamOverflowException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ShooterSubsystem extends SubsystemBase {
   CANSparkMax shooter1;
   CANSparkMax shooter2;
+
   CANSparkMax pitchMotor;
 
 
@@ -43,11 +46,15 @@ public class ShooterSubsystem extends SubsystemBase {
   RelativeEncoder encoder1;
 
   /** Creates a new Shooter. */
+new Shooter. */
+
   public ShooterSubsystem(double runSpeed) {
     SparkPIDController shooterPID;
     shooter1 = new CANSparkMax(ShooterConstants.SHOOTER_1_MOTORID, MotorType.kBrushless);
     shooter2 = new CANSparkMax(ShooterConstants.SHOOTER_2_MOTORID, MotorType.kBrushless);
+
     pitchMotor = new CANSparkMax(ShooterConstants.PITCH_MOTOR_ID, MotorType.kBrushless);
+
     shooter1.restoreFactoryDefaults();
     shooter2.follow(shooter1);
     shooter2.setInverted(true);
@@ -56,6 +63,7 @@ public class ShooterSubsystem extends SubsystemBase {
     encoder1 = shooter1.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4096);
 
    shooterPID = shooter1.getPIDController();              
+
    shooterPID.setP(kP);
    shooterPID.setI(kI);
    shooterPID.setD(kD);  
@@ -99,7 +107,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Process Variable", encoder1.getPosition());
-    
   }
   
 

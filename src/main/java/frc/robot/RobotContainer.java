@@ -67,6 +67,7 @@ public class RobotContainer {
   private PS4Controller driverController;
   private PS4Controller operatorController;
   private Limelight limelight;
+
   private Pigeon2 pigeon;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -135,10 +136,12 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
+
     new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(pigeon::reset));
 
     new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
+
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
