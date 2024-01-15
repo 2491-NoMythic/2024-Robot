@@ -273,11 +273,6 @@ public static final class ShooterConstants{
 
 
 
-  //TODO: update these values
-  public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
-  public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
-  public static final double AUTO_AIM_ROBOT_kP = 0.15;
-  public static final double AUTO_AIM_SHOOTER_kP = 0.15;
   //PID coefficients:
   public static final double kP = 0.1;
   public static final double kI = 1e-4;
