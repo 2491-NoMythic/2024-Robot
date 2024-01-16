@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.settings.Constants;
+import frc.robot.settings.Constants.Field;
 import  frc.robot.settings.Constants.ShooterConstants;
 
 import edu.wpi.first.hal.can.CANStreamOverflowException;
@@ -20,7 +21,8 @@ import edu.wpi.first.hal.can.CANStreamOverflowException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -31,6 +33,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
   CANSparkMax pitchMotor;
 
+  double differenceAngle;
+	double currentHeading;
+	double speakerDist;
+	double speakerA;
+	double speakerB;
+	double m_DesiredShooterAngle;
 
   SparkPIDController shooterPID;
   double kP = Constants.ShooterConstants.kP;         
@@ -118,5 +126,21 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void pitchShooter(double pitchSpeed){
     pitchMotor.set(pitchSpeed);
+  }
+
+  public double calculateSpeakerAngle(Pose2d robPose) {
+    Pose2d dtvalues = robPose;
+    
+		//triangle for robot angle
+		if (DriverStation.getAlliance().equals(Alliance.Red)) {
+		speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+		} else {
+		speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+		}
+		speakerB = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
+		speakerDist = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
+
+    m_DesiredShooterAngle = Math.atan(Field.SPEAKER_Z / speakerDist);
+    return m_DesiredShooterAngle;
   }
 }

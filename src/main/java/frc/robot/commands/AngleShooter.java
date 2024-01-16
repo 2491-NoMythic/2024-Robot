@@ -20,6 +20,7 @@ public class AngleShooter extends Command {
   public AngleShooter(ShooterSubsystem shooter, double desiredShooterAngle) {
     // Use addRequirements() here to declare subsystem dependencies.\
     m_shooter = shooter;
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
