@@ -277,6 +277,10 @@ public static final class ShooterConstants{
   public static final double kMaxOutput = 1;
   public static final double kMinOutput = -1;
 }
+public static final class ClimberConstants{
+  public static final int CLIMBER_MOTOR = 2941;
+  public static final double CLIMBER_SPEED = 0.75;
+}
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
   public TalonFXConfiguration steerMotorConfig;

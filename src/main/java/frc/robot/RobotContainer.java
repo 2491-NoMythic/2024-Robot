@@ -19,9 +19,12 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import frc.robot.commands.Autos;
+import frc.robot.commands.ClimbCommandGroup;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.autoAimParallel;
@@ -104,13 +107,13 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(defaultDriveCommand);
   }
   private void shooterInst() {
-    shooter = new ShooterSubsystem(1);
+    shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
   }
   private void intakeInst() {
     intake = new Intake();
   }
   private void climberInst() {
-    climber = new Climber();
+    climber = new Climber(ClimberConstants.CLIMBER_SPEED);
   }
   private void autoInit() {
     configureDriveTrain();
@@ -136,7 +139,8 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-
+    new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
+    new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
     new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(pigeon::reset));
 
@@ -146,10 +150,15 @@ public class RobotContainer {
     // cancelling on release.
   }
 
-  // private Command ManualShoot(ShooterSubsystem shooter) {
-  //   // TODO Auto-generated method stub
-  // }
 
+  private Command ManualShoot(ShooterSubsystem shooter) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
+  }
+  private Command ClimbCommandGroup(Climber climber, double speed) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
