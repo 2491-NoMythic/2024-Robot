@@ -20,7 +20,7 @@
  public class ShooterSubsystem extends SubsystemBase {
    CANSparkMax shooter1;
    CANSparkMax shooter2;
- 
+   CANSparkMax pitchMotor;
    double runSpeed;
  
    SparkPIDController shooterPID;
@@ -39,7 +39,7 @@
      SparkPIDController shooterPID;
      shooter1 = new CANSparkMax(ShooterConstants.SHOOTER_1_MOTORID, MotorType.kBrushless);
      shooter2 = new CANSparkMax(ShooterConstants.SHOOTER_2_MOTORID, MotorType.kBrushless);
-     
+     pitchMotor = new CANSparkMax(ShooterConstants.PITCH_MOTOR_ID, MotorType.kBrushless);
      shooter1.restoreFactoryDefaults();
      shooter2.follow(shooter1);
      shooter2.setInverted(true);
@@ -105,6 +105,8 @@
   public void turnOff(){
      shooter1.set(0);
    }
- 
+   public void pitchShooter(double pitchSpeed){
+    pitchMotor.set(pitchSpeed);
+  }
 }
  
