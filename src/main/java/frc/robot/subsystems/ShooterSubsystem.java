@@ -46,8 +46,6 @@ public class ShooterSubsystem extends SubsystemBase {
   RelativeEncoder encoder1;
 
   /** Creates a new Shooter. */
-new Shooter. */
-
   public ShooterSubsystem(double runSpeed) {
     SparkPIDController shooterPID;
     shooter1 = new CANSparkMax(ShooterConstants.SHOOTER_1_MOTORID, MotorType.kBrushless);
