@@ -17,6 +17,7 @@ public class Limelight {
     public static LimelightDetectorData latestDetectorValues;
 
     private  Limelight(){
+
       vision_thread();
     }
 
@@ -35,7 +36,7 @@ public class Limelight {
     public static void useDetectorLimelight(boolean enabled) {
       aprilTagEnabled = enabled;
     }
-    private LimelightFiducialData getAprilTagValues(){
+    public LimelightFiducialData getAprilTagValues(){
         return new LimelightFiducialData(LimelightHelpers.getLatestResults(Vision.APRILTAG_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.APRILTAG_LIMELIGHT_NAME));
     }
     private LimelightDetectorData getNeuralDetectorValues(){

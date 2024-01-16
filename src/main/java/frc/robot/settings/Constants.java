@@ -66,7 +66,12 @@ public final class Constants {
       // ROWAN(-0.113525), // Moira BL
       // QUINN(0.108154), //Moira BR
       LIAM(0),
-      LEVI(-0.38501);
+      LEVI(-0.38501),
+      WILLA(-0.152832), //Moira inverted FL
+      OPAL(0.136475), //Moira inverted FR
+      CLOVER(0.239746), //Moira inverted BL
+      NICHOLAS(-0.164551); //Moira inverted BR
+
       private double offset;
       Offsets(double value) {
         offset = value;
@@ -109,7 +114,7 @@ public final class Constants {
      * Whether the drive motor should be counterclockwise or clockwise positive. 
      * If there is an odd number of gear reductions this is typically clockwise-positive.
      */
-    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.CounterClockwise_Positive;
 
     /**
      * The overall steer reduction of the module. Multiplying motor rotations by
@@ -121,7 +126,7 @@ public final class Constants {
      * Whether the steer motor should be counterclockwise or clockwise positive. 
      * If there is an odd number of gear reductions this is typically clockwise-positive.
      */
-    public static final InvertedValue DRIVETRAIN_STEER_INVERTED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue DRIVETRAIN_STEER_INVERTED = InvertedValue.CounterClockwise_Positive;
 
     /**
      * How many meters the wheels travel per rotation. <p>
@@ -208,9 +213,9 @@ public final class Constants {
      * This is the limit of how fast the wheels can change rotation speed.
      */
     public static final double MAX_STEER_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; 
-    public static final double k_STEER_P = 8.0;
-    public static final double k_STEER_I = 0.0;
-    public static final double k_STEER_D = 0.0; 
+    public static final double k_STEER_P = 8;
+    public static final double k_STEER_I = 0;
+    public static final double k_STEER_D = 0; 
     public static final double k_STEER_FF_S = 0.0;
     public static final double k_STEER_FF_V = 0.0;
 
@@ -232,12 +237,36 @@ public final class Constants {
     public static final double k_BALANCE_TOLORANCE_DEGREES = 10.0;
     public static final double k_BALANCE_TOLORANCE_DEG_PER_SEC = 1;
 
+    public static final double K_DETECTOR_TA_P = 1;
+    public static final double K_DETECTOR_TA_I = 0;
+    public static final double K_DETECTOR_TA_D = 0;
+
+    public static final double K_DETECTOR_TX_P = 1;
+    public static final double K_DETECTOR_TX_I = 0;
+    public static final double K_DETECTOR_TX_D = 0;
+
     public static final PathConstraints DEFAUL_PATH_CONSTRAINTS = new PathConstraints(2, 1.5, Math.toRadians(360), Math.toRadians(360));
-}
+
+    public static final double k_PICKUP_NOTE_ta_P = 1;
+    public static final double k_PICKUP_NOTE_ta_I = 0;
+    public static final double k_PICKUP_NOTE_ta_D = 0;
+
+    public static final double k_PICKUP_NOTE_tx_P = 1;
+    public static final double k_PICKUP_NOTE_tx_I = 0;
+    public static final double k_PICKUP_NOTE_tx_D = 0;
+  }
 public static final class ShooterConstants{
   public static final int SHOOTER_1_MOTORID = 2491;
   public static final int SHOOTER_2_MOTORID = 2491;
+  public static final int PITCH_MOTOR_ID = 2491;
   public static final double SHOOTER_MOTOR_POWER = 1;
+
+
+  public static final double AUTO_AIM_ROBOT_kP = 2491;
+  public static final double AUTO_AIM_SHOOTER_kP = 2491;
+  public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
+  public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
+ 
 
   //PID coefficients:
   public static final double kP = 0.1;
@@ -247,9 +276,6 @@ public static final class ShooterConstants{
   public static final double kFF = 0;
   public static final double kMaxOutput = 1;
   public static final double kMinOutput = -1;
-
-
-
 }
 public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR = 2941;
@@ -307,7 +333,7 @@ public static final class CTREConfigs {
   public final class PS4Driver{
     private PS4Driver() {
     }
-    public static final int DRIVE_CONTROLLER_ID = 1;
+    public static final int DRIVE_CONTROLLER_ID = 0;
     /**Left stick Y-axis. <p> Left = -1 || Right = 1*/
     public static final int X_AXIS = 0; 
     /**Left stick X-axis. <p> Forwards = -1 || Backwards = 1*/
@@ -323,7 +349,17 @@ public static final class CTREConfigs {
 }
 
   public final class PS4Operator{
-    public static final int OPERATOR_CONTROLLER_ID = 2;
+    public static final int OPERATOR_CONTROLLER_ID = 1;
+
+  }
+
+  public final class Field{
+
+    //TODO: Update these values for red and blue
+    public static final double SPEAKER_Y = 7;
+    public static final double SPEAKER_X = 23;
+    public static final double SPEAKER_Z = 204.5; //height of opening
+
   }
 
 public final class Vision{

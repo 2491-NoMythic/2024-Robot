@@ -11,6 +11,7 @@ import java.util.function.BooleanSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -26,9 +27,11 @@ import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.autoAimParallel;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -66,6 +69,9 @@ public class RobotContainer {
   private Climber climber;
   private PS4Controller driverController;
   private PS4Controller operatorController;
+  private Limelight limelight;
+
+  private Pigeon2 pigeon;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -78,9 +84,11 @@ public class RobotContainer {
 
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
+    pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
 
     driveTrainInst();
     autoInit();
+    limelightInit();
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(climberExists) {climberInst();}
@@ -112,6 +120,9 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
   }
+  private void limelightInit() {
+    limelight = Limelight.getInstance();
+  }
   
 
   /**
@@ -127,12 +138,18 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+
     new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
     new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
+    new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
+    new Trigger(driverController::getPSButton).onTrue(new InstantCommand(pigeon::reset));
+
+
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
   }
+
 
   private Command ManualShoot(ShooterSubsystem shooter) {
     // TODO Auto-generated method stub
@@ -142,6 +159,7 @@ public class RobotContainer {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
   }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
