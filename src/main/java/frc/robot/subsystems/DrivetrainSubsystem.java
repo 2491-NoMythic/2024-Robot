@@ -282,6 +282,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		double offsetSpeakerX = speakerA-targetOffset.getX();
 		double offsetSpeakerY = speakerB-targetOffset.getY();
 		double offsetSpeakerdist = Math.sqrt(Math.pow(offsetSpeakerX, 2) + Math.pow(offsetSpeakerY, 2));
+		SmartDashboard.putString("offset amount", targetOffset.toString());
+		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle
 		if (dtvalues.getY() >= Field.SPEAKER_Y-targetOffset.getY()) {
 			double thetaAbove = Math.toDegrees(Math.asin(offsetSpeakerX / offsetSpeakerdist))+90;
@@ -313,5 +315,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//for testing RotateRobot:
 		SmartDashboard.putNumber("loopedHeading", getHeadingLooped());
 		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngle());
+
+		SmartDashboard.putNumber("calculated angle while moving", calculateSpeakerAngleMoving());
 	}
 }
