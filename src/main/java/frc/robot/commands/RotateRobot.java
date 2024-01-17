@@ -14,17 +14,20 @@ import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kI;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kP;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_SHOOTER_kP;
 
+import java.util.function.DoubleSupplier;
+
 public class RotateRobot extends Command {
     DrivetrainSubsystem m_drivetrain;
+    DoubleSupplier desiredRobotAngleSupplier;
     double desiredRobotAngle;
     double currentHeading;
     double differenceAngle;
     double turningSpeed;
     PIDController speedController;
     
-  public RotateRobot(DrivetrainSubsystem drivetrain, double desiredRobotAngle){
+  public RotateRobot(DrivetrainSubsystem drivetrain, DoubleSupplier desiredRobotAngle){
         m_drivetrain = drivetrain;
-        this.desiredRobotAngle = desiredRobotAngle;
+        this.desiredRobotAngleSupplier = desiredRobotAngle;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
           AUTO_AIM_ROBOT_kI,
@@ -37,7 +40,10 @@ public class RotateRobot extends Command {
         // Called when the command is initially scheduled.
         @Override
         public void initialize() {
+          desiredRobotAngle = desiredRobotAngleSupplier.getAsDouble();
           speedController.setSetpoint(0);
+          SmartDashboard.putBoolean("isRotateRunning", true);
+
       }
       
       // Called every time the scheduler runs while the command is scheduled.
@@ -49,8 +55,9 @@ public class RotateRobot extends Command {
         differenceAngle = (desiredRobotAngle - this.currentHeading);
         m_drivetrain.drive(new ChassisSpeeds(0, 0, speedController.calculate(differenceAngle)));
 
-        SmartDashboard.putNumber("current Heading", m_drivetrain.getHeadingDegrees());
+        SmartDashboard.putNumber("current Heading", m_drivetrain.getHeadingDegrees()%360);
         SmartDashboard.putNumber("difference", differenceAngle);
+        SmartDashboard.putNumber("desired angle", desiredRobotAngle);
         SmartDashboard.putNumber("PID calculated output", speedController.calculate(differenceAngle));
     
       }
@@ -59,10 +66,11 @@ public class RotateRobot extends Command {
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
+    SmartDashboard.putBoolean("isRotateRunning", false);
   }
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(differenceAngle) < ShooterConstants.ROBOT_ANGLE_TOLERANCE;
+    return Math.abs(differenceAngle-360) < ShooterConstants.ROBOT_ANGLE_TOLERANCE;
   }
 }

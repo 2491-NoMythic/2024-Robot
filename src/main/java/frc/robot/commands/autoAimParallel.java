@@ -34,7 +34,7 @@ public class autoAimParallel extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new RotateRobot(drivetrain, drivetrain.calculateSpeakerAngle())//,
+      new RotateRobot(drivetrain, drivetrain::calculateSpeakerAngle)//,
       // new AngleShooter(shooterSubsystem, shooterSubsystem.calculateSpeakerAngle(drivetrain.getPose()))
     );
   }

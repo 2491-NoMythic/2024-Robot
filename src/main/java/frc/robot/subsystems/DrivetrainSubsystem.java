@@ -245,14 +245,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
 
 		//getting desired robot angle
-		if (dtvalues.getY() <= Field.SPEAKER_Y) {
-			double thetaBelow = /*180 - */Math.toDegrees(Math.asin(speakerA / speakerDist))+90;
-			m_desiredRobotAngle = thetaBelow;
-		}
-		else{
-			double thetaAbove = /*180 + */270-Math.toDegrees(Math.asin(speakerA / speakerDist));
+		if (dtvalues.getY() >= Field.SPEAKER_Y) {
+			double thetaAbove = /*180 - */Math.toDegrees(Math.asin(speakerA / speakerDist))+90;
 			m_desiredRobotAngle = thetaAbove;
 		}
+		else{
+			double thetaBelow = /*180 + */270-Math.toDegrees(Math.asin(speakerA / speakerDist));
+			m_desiredRobotAngle = thetaBelow;
+		}
+		SmartDashboard.putNumber("just angle", Math.toDegrees(Math.asin(speakerA / speakerDist)));
 		return m_desiredRobotAngle;
 	}
 @Override
@@ -272,5 +273,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 		//for testing RotateRobot:
 		SmartDashboard.putNumber("loopedHeading", getHeadingLooped());
+		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngle());
 	}
 }
