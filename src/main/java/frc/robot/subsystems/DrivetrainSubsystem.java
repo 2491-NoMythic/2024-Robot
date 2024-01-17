@@ -293,7 +293,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			double thetaBelow = 270-Math.toDegrees(Math.asin(offsetSpeakerX / offsetSpeakerdist));
 			m_desiredRobotAngle = thetaBelow;
 		}
-		SmartDashboard.putNumber("just angle", Math.toDegrees(Math.asin(speakerA / speakerDist)));
+		SmartDashboard.putNumber("just angle to offset", Math.toDegrees(Math.asin(offsetSpeakerX / offsetspeakerDist)));
 
 		return m_desiredRobotAngle;
 	}
