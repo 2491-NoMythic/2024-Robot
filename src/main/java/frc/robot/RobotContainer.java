@@ -18,6 +18,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import frc.robot.commands.AimRobotMoving;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommandGroup;
 import frc.robot.commands.Drive;
@@ -37,6 +38,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -145,9 +147,16 @@ public class RobotContainer {
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     SmartDashboard.putData(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-    new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
-    new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
+    new Trigger(driverController::getCrossButton).onTrue(new ParallelCommandGroup(
+      new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle),
+      new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle()))));
+    
+    new Trigger(driverController::getR1Button).whileTrue(new AimRobotMoving(
+      driveTrain,
+      () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      driverController::getR1Button));
     
     new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
     new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
