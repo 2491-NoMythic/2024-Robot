@@ -34,6 +34,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -41,6 +43,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+import frc.robot.commands.AngleShooter;
+import frc.robot.commands.RotateRobot;
 import frc.robot.settings.Constants;
 import frc.robot.settings.LimelightValues;
 import frc.robot.settings.Constants.CTREConfigs;
@@ -48,6 +52,7 @@ import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Vision;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
+import frc.robot.settings.Constants.Field;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();
@@ -64,9 +69,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	private final SwerveModule[] modules;
 	private final Rotation2d[] lastAngles;
+	private int accumulativeLoops;
 
 	private final SwerveDrivePoseEstimator odometer;
 	private final Field2d m_field = new Field2d();
+
+	//speaker angle calculating variables:
+	double m_desiredRobotAngle;
+	double differenceAngle;
+	double currentHeading;
+	double speakerDist;
+	double speakerA;
+	double speakerB;
+	double m_DesiredShooterAngle;
+	double turningSpeed;
+	RotateRobot rotateRobot;
+	AngleShooter angleShooter;
+	int accumulativeTurns;
 
 	public DrivetrainSubsystem() {
 
@@ -120,7 +139,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * 'forwards' direction.
 	 */
 	public void zeroGyroscope() {
-		pigeon.setYaw(0.0);
+		pigeon.setYaw(180);
 		odometer.resetPosition(new Rotation2d(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
 	}
 	public void zeroGyroscope(double angleDeg) {
@@ -131,8 +150,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 	public double getHeadingLooped() {
 		//returns the heading of the robot, but only out of 360, not accumulative
-		int accumulativeLoops = (int) (getHeadingDegrees()/360); //finding the amount of times that 360 goes into the heading, as an int
-		return getHeadingDegrees()-360*accumulativeLoops;
+		accumulativeLoops = (int) (getHeadingDegrees()/180); //finding the amount of times that 360 goes into the heading, as an int
+		return getHeadingDegrees()-180*(accumulativeLoops); 
 	}
 	public Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
@@ -213,6 +232,30 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void updateOdometryWithVision(Pose2d estematedPose, double timestampSeconds) {
 		odometer.addVisionMeasurement(estematedPose, timestampSeconds);
 	}
+	public double calculateSpeakerAngle(){
+		Pose2d dtvalues = this.getPose();    
+		//triangle for robot angle
+		if (DriverStation.getAlliance().equals(Alliance.Red)) {
+		speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+		} else {
+		speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+		}
+		speakerB = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
+		speakerDist = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
+		SmartDashboard.putNumber("dist to speakre", speakerDist);
+
+		//getting desired robot angle
+		if (dtvalues.getY() >= Field.SPEAKER_Y) {
+			double thetaAbove = /*180 - */Math.toDegrees(Math.asin(speakerA / speakerDist))+90;
+			m_desiredRobotAngle = thetaAbove;
+		}
+		else{
+			double thetaBelow = /*180 + */270-Math.toDegrees(Math.asin(speakerA / speakerDist));
+			m_desiredRobotAngle = thetaBelow;
+		}
+		SmartDashboard.putNumber("just angle", Math.toDegrees(Math.asin(speakerA / speakerDist)));
+		return m_desiredRobotAngle;
+	}
 @Override
 	public void periodic() {
 		updateOdometry();
@@ -228,5 +271,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+		//for testing RotateRobot:
+		SmartDashboard.putNumber("loopedHeading", getHeadingLooped());
+		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngle());
 	}
 }

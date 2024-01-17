@@ -27,6 +27,7 @@ import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.RotateRobot;
 import frc.robot.commands.autoAimParallel;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -36,6 +37,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
@@ -43,6 +45,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.commands.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.commands.ManualShoot;
@@ -139,16 +142,22 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
+    // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
+    new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
+    SmartDashboard.putData(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
+    new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
+    // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
+    new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
+    
     new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
     new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
-    new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain, shooter));
-    new Trigger(driverController::getPSButton).onTrue(new InstantCommand(pigeon::reset));
 
-
+    //for testing Rotate Robot command
+    };
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-  }
+  
 
 
   private Command ManualShoot(ShooterSubsystem shooter) {

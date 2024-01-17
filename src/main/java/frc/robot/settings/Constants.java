@@ -262,7 +262,10 @@ public static final class ShooterConstants{
   public static final double SHOOTER_MOTOR_POWER = 1;
 
 
-  public static final double AUTO_AIM_ROBOT_kP = 2491;
+  public static final double AUTO_AIM_ROBOT_kP = 0.125;
+  public static final double AUTO_AIM_ROBOT_kI = 0.00;
+  public static final double AUTO_AIM_ROBOT_kD = 0.00;
+  
   public static final double AUTO_AIM_SHOOTER_kP = 2491;
   public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
@@ -354,17 +357,17 @@ public static final class CTREConfigs {
   }
 
   public final class Field{
-
-    //TODO: Update these values for red and blue
-    public static final double SPEAKER_Y = 7;
-    public static final double SPEAKER_X = 23;
-    public static final double SPEAKER_Z = 204.5; //height of opening
+    public static final double SPEAKER_Y = 5.612;
+    public static final double BLUE_SPEAKER_X = 0.23;
+    public static final double RED_SPEAKER_X = 16.412;
+    public static final double SPEAKER_Z = 2.045; //height of opening
 
   }
 
 public final class Vision{
   public static final String APRILTAG_LIMELIGHT_NAME = "AprilLimelight";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "NeuralLimelight";
+
 
   public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
 

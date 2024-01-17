@@ -23,6 +23,13 @@
    CANSparkMax shooter2;
    CANSparkMax pitchMotor;
    double runSpeed;
+
+  double differenceAngle;
+	 double currentHeading;
+	 double speakerDist;
+	 double speakerA;
+	 double speakerB;
+	 double m_DesiredShooterAngle;
  
    SparkPIDController shooterPID;
    double kP = Constants.ShooterConstants.kP;         
