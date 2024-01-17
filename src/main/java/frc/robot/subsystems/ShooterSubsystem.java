@@ -116,15 +116,14 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   
 
+
   public void shootThing(double runSpeed) {
-    shooter1.set(runSpeed);
-  }
-
+     shooter1.set(runSpeed);
+   }
   public void turnOff(){
-    shooter1.set(0);
-  }
-
-  public void pitchShooter(double pitchSpeed){
+     shooter1.set(0);
+   }
+   public void pitchShooter(double pitchSpeed){
     pitchMotor.set(pitchSpeed);
   }
 
@@ -144,3 +143,4 @@ public class ShooterSubsystem extends SubsystemBase {
     return m_DesiredShooterAngle;
   }
 }
+ 

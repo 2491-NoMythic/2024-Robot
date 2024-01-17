@@ -4,14 +4,27 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+ import com.revrobotics.SparkRelativeEncoder;
+ import com.revrobotics.CANSparkBase.ControlType;
+ import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.settings.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
+  CANSparkMax climbMotor;
+  RelativeEncoder climbEncoder;
+  double speed;
   /** Creates a new Climber. */
-  public Climber() {}
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public Climber(double speed) {
+    climbMotor = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR, MotorType.kBrushless);
+    climbEncoder = climbMotor.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
   }
+ public void climberGo(double speed){
+  climbMotor.set(speed);
+ }
+
 }
