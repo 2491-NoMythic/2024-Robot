@@ -88,6 +88,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	RotateRobot rotateRobot;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
+	Pose2d dtvalues;
+	double shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
+	double shootingTime; 
+	double currentXSpeed;
+	double currentYSpeed;
+	Translation2d targetOffset; 
+	double offsetSpeakerX;
+	double offsetSpeakerY;
+	Translation2d adjustedTarget;
+	double offsetSpeakerdist;
 
 	public DrivetrainSubsystem() {
 
@@ -260,8 +270,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 
 	public double calculateSpeakerAngleMoving(){
-		Pose2d dtvalues = this.getPose();
-		double shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
+		dtvalues = this.getPose();
+		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 		//triangle for robot angle
 		if (DriverStation.getAlliance().equals(Alliance.Red)) {
 			speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
@@ -272,16 +282,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		speakerDist = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
 	
-		double shootingTime = speakerDist/shootingSpeed; //calculates how long the note will take to reach the target
-		double currentXSpeed = this.getChassisSpeeds().vxMetersPerSecond;
-		double currentYSpeed = this.getChassisSpeeds().vyMetersPerSecond;
-		Translation2d targetOffset = new Translation2d(currentXSpeed*shootingTime, currentYSpeed*shootingTime); 
+		shootingTime = speakerDist/shootingSpeed; //calculates how long the note will take to reach the target
+		currentXSpeed = this.getChassisSpeeds().vxMetersPerSecond;
+		currentYSpeed = this.getChassisSpeeds().vyMetersPerSecond;
+		targetOffset = new Translation2d(currentXSpeed*shootingTime, currentYSpeed*shootingTime); 
 		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
 		
 		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed
-		double offsetSpeakerX = speakerA-targetOffset.getX();
-		double offsetSpeakerY = speakerB-targetOffset.getY();
-		double offsetSpeakerdist = Math.sqrt(Math.pow(offsetSpeakerX, 2) + Math.pow(offsetSpeakerY, 2));
+		offsetSpeakerX = speakerA-targetOffset.getX();
+		offsetSpeakerY = speakerB-targetOffset.getY();
+		adjustedTarget = new Translation2d(offsetSpeakerX, offsetSpeakerY);
+		offsetSpeakerdist = Math.sqrt(Math.pow(offsetSpeakerX, 2) + Math.pow(offsetSpeakerY, 2));
 		SmartDashboard.putString("offset amount", targetOffset.toString());
 		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle
