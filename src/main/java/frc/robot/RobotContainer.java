@@ -23,8 +23,10 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommandGroup;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
@@ -33,6 +35,7 @@ import frc.robot.commands.autoAimParallel;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,12 +69,14 @@ public class RobotContainer {
   private final boolean intakeExists = Preferences.getBoolean("Intake", true);
   private final boolean shooterExists = Preferences.getBoolean("Shooter", true);
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
+  private final boolean lightsExist = Preferences.getBoolean("Lights", true);
 
   private DrivetrainSubsystem driveTrain;
   private Intake intake;
   private ShooterSubsystem shooter;
   private Drive defaultDriveCommand;
   private Climber climber;
+  private Lights lights;
   private PS4Controller driverController;
   private PS4Controller operatorController;
   private Limelight limelight;
@@ -86,6 +91,8 @@ public class RobotContainer {
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
+    Preferences.initBoolean("Lights", false);
+    
 
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
@@ -97,6 +104,7 @@ public class RobotContainer {
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(climberExists) {climberInst();}
+    if(lightsExist) {lightsInst();}
     // Configure the trigger bindings
     configureBindings();
   }
@@ -128,6 +136,9 @@ public class RobotContainer {
   private void limelightInit() {
     limelight = Limelight.getInstance();
   }
+  private void lightsInst() {
+    lights = new Lights(Constants.LIGHTS_COUNT-1);
+  }
   
 
   /**
@@ -158,8 +169,8 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getR1Button));
     
-    new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
-    new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
+    // new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
+    // new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
 
     //for testing Rotate Robot command
     };
@@ -169,14 +180,14 @@ public class RobotContainer {
   
 
 
-  private Command ManualShoot(ShooterSubsystem shooter) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
-  }
-  private Command ClimbCommandGroup(Climber climber, double speed) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
-  }
+  // private Command ManualShoot(ShooterSubsystem shooter) {
+  //   // TODO Auto-generated method stub
+  //   throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
+  // }
+  // private Command ClimbCommandGroup(Climber climber, double speed) {
+  //   // TODO Auto-generated method stub
+  //   throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
+  // }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -225,4 +236,18 @@ public class RobotContainer {
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
   }
+  
+  public void teleopPeriodic() {
+    SmartDashboard.putData(driveTrain.getCurrentCommand());
+    driveTrain.calculateSpeakerAngle();
+    if(driveTrain.speakerDist<Field.MAX_SHOOTING_DISTANCE) {
+      
+    }
+  }
+
+  public void disabledPeriodic() {
+  
+  }
+
+  public void disabledInit() {}
 }

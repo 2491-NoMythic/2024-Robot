@@ -22,6 +22,9 @@ import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
+
+import javax.swing.text.html.Option;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -80,7 +83,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	double m_desiredRobotAngle;
 	double differenceAngle;
 	double currentHeading;
-	double speakerDist;
+	public double speakerDist;
 	double speakerA;
 	double speakerB;
 	double m_DesiredShooterAngle;
@@ -245,35 +248,47 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		odometer.addVisionMeasurement(estematedPose, timestampSeconds);
 	}
 	public double calculateSpeakerAngle(){
-		Pose2d dtvalues = this.getPose();    
-		//triangle for robot angle
-		if (DriverStation.getAlliance().equals(Alliance.Red)) {
-		speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+		Pose2d dtvalues = this.getPose();
+		// triangle for robot angle
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+			speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
 		} else {
-		speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+			speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
 		}
 		speakerB = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		speakerDist = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
-
+		
 		//getting desired robot angle
-		if (dtvalues.getY() >= Field.SPEAKER_Y) {
-			double thetaAbove = Math.toDegrees(Math.asin(speakerA / speakerDist))+90;
-			m_desiredRobotAngle = thetaAbove;
-		}
-		else{
-			double thetaBelow = 270-Math.toDegrees(Math.asin(speakerA / speakerDist));
-			m_desiredRobotAngle = thetaBelow;
+		if (alliance.get() == Alliance.Blue) {
+			if (dtvalues.getY() >= Field.SPEAKER_Y) {
+				double thetaAbove = Math.toDegrees(Math.asin(speakerA / speakerDist))+90;
+				m_desiredRobotAngle = thetaAbove;
+			}
+			else{
+				double thetaBelow = 270-Math.toDegrees(Math.asin(speakerA / speakerDist));
+				m_desiredRobotAngle = thetaBelow;
+		} } else {
+			if (dtvalues.getY() >= Field.SPEAKER_Y) {
+				double thetaAbove = 270-Math.toDegrees(Math.asin(speakerA / speakerDist));
+				m_desiredRobotAngle = thetaAbove;
+			}
+			else{
+				double thetaBelow = 90+Math.toDegrees(Math.asin(speakerA / speakerDist));
+				m_desiredRobotAngle = thetaBelow;
+			}
 		}
 		SmartDashboard.putNumber("just angle", Math.toDegrees(Math.asin(speakerA / speakerDist)));
 		return m_desiredRobotAngle;
 	}
-
+	
 	public double calculateSpeakerAngleMoving(){
 		dtvalues = this.getPose();
+		Optional<Alliance> alliance = DriverStation.getAlliance();
 		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 		//triangle for robot angle
-		if (DriverStation.getAlliance().equals(Alliance.Red)) {
+		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
 			speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
 		} else {
 			speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
@@ -304,12 +319,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			double thetaBelow = 270-Math.toDegrees(Math.asin(offsetSpeakerX / offsetSpeakerdist));
 			m_desiredRobotAngle = thetaBelow;
 		}
-		SmartDashboard.putNumber("just angle to offset", Math.toDegrees(Math.asin(offsetSpeakerX / offsetspeakerDist)));
+		SmartDashboard.putNumber("just angle to offset", Math.toDegrees(Math.asin(offsetSpeakerX / offsetSpeakerdist)));
 
 		return m_desiredRobotAngle;
 	}
-@Override
+	@Override
 	public void periodic() {
+		SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
 		updateOdometry();
 		if (SmartDashboard.getBoolean("use limelight", false)) {
 			LimelightValues visionData = new LimelightValues(LimelightHelpers.getLatestResults(Vision.APRILTAG_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.APRILTAG_LIMELIGHT_NAME));

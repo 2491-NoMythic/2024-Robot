@@ -362,6 +362,7 @@ public static final class CTREConfigs {
     public static final double BLUE_SPEAKER_X = 0.23;
     public static final double RED_SPEAKER_X = 16.412;
     public static final double SPEAKER_Z = 2.045; //height of opening
+    public static final double MAX_SHOOTING_DISTANCE = 2491;
 
   }
 
@@ -380,4 +381,5 @@ public final class Vision{
   public static final double K_DETECTOR_TA_I = 0;
   public static final double K_DETECTOR_TA_D = 0;
 }
+public static final int LIGHTS_COUNT = 2491;
 }
