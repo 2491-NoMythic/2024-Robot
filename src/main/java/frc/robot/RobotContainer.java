@@ -17,13 +17,15 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommandGroup;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
@@ -31,7 +33,7 @@ import frc.robot.commands.RotateRobot;
 import frc.robot.commands.autoAimParallel;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,6 +51,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.settings.IntakeDirection;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -66,14 +70,14 @@ public class RobotContainer {
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
 
   private DrivetrainSubsystem driveTrain;
-  private Intake intake;
+  private IntakeSubsystem intake;
   private ShooterSubsystem shooter;
   private Drive defaultDriveCommand;
   private Climber climber;
   private PS4Controller driverController;
   private PS4Controller operatorController;
   private Limelight limelight;
-
+  private IntakeDirection iDirection;
   private Pigeon2 pigeon;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -113,7 +117,7 @@ public class RobotContainer {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
   }
   private void intakeInst() {
-    intake = new Intake();
+    intake = new IntakeSubsystem();
   }
   private void climberInst() {
     climber = new Climber(ClimberConstants.CLIMBER_SPEED);
@@ -148,26 +152,21 @@ public class RobotContainer {
     new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
     new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-    
-    new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
-    new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
+
+    new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
+    new Trigger(operatorController::getCrossButtonPressed).onTrue(new ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
+    //Intake bindings
+    new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
+    new Trigger(operatorController::getR1Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
+    new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
 
     //for testing Rotate Robot command
     };
 
+
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
   
-
-
-  private Command ManualShoot(ShooterSubsystem shooter) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
-  }
-  private Command ClimbCommandGroup(Climber climber, double speed) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
