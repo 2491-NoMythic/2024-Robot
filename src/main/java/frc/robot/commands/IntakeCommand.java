@@ -13,6 +13,7 @@ public class IntakeCommand extends Command {
   IntakeSubsystem intake;
   IntakeDirection iDirection;
   public IntakeCommand(IntakeSubsystem intake, IntakeDirection iDirection) {
+  
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
     this.intake = intake;

@@ -51,6 +51,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.settings.IntakeDirection;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -75,7 +77,7 @@ public class RobotContainer {
   private PS4Controller driverController;
   private PS4Controller operatorController;
   private Limelight limelight;
-
+  private IntakeDirection iDirection;
   private Pigeon2 pigeon;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -153,6 +155,10 @@ public class RobotContainer {
     
     new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
     new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
+    //Intake bindings
+    new Trigger(operatorController::getL1Button).onTrue(IntakeCommand(intake, iDirection.INTAKE));
+    new Trigger(operatorController::getR1Button).onTrue(IntakeCommand(intake, iDirection.OUTAKE));
+    new Trigger(operatorController::getR2Button).onTrue(IntakeCommand(intake, iDirection.COAST));
 
     //for testing Rotate Robot command
     };
@@ -162,6 +168,11 @@ public class RobotContainer {
     // cancelling on release.
   
 
+
+  private Command IntakeCommand(IntakeSubsystem intake2, IntakeDirection iDirection) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'IntakeCommand'");
+  }
 
   private Command ManualShoot(ShooterSubsystem shooter) {
     // TODO Auto-generated method stub

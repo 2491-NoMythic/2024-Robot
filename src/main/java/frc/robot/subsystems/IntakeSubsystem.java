@@ -20,7 +20,6 @@ public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax brush1;
   CANSparkMax brush2;
   CANSparkMax brush3;
-  CANSparkMax brush;
 
   double intakeRunSpeed;
   public IntakeSubsystem() {
@@ -34,10 +33,9 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
-    intake2.setIdleMode(IdleMode.kCoast);
-    intake2.setIdleMode(IdleMode.kCoast);
-    intake2.setIdleMode(IdleMode.kCoast);
-    intake2.setIdleMode(IdleMode.kCoast);
+    brush1.setIdleMode(IdleMode.kCoast);
+    brush2.setIdleMode(IdleMode.kCoast);
+    brush3.setIdleMode(IdleMode.kCoast);
   }
 
   public void intakeYes(double intakeRunSpeed) {
@@ -53,6 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
     brush2.set(-intakeRunSpeed);
     brush3.set(-intakeRunSpeed);
   
+    
   }
   public void intakeOff() {
     intake1.set(0);
