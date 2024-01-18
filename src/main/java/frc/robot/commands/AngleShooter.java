@@ -16,10 +16,13 @@ public class AngleShooter extends Command {
   double differenceAngle;
   double angleSpeed;
   ShooterSubsystem m_shooter;
+  double desiredShooterAngleSpeed;
 
+  
   public AngleShooter(ShooterSubsystem shooter, double desiredShooterAngle) {
     // Use addRequirements() here to declare subsystem dependencies.\
     m_shooter = shooter;
+    this.desiredShooterAngle = desiredShooterAngle;
     addRequirements(shooter);
   }
 
@@ -30,14 +33,9 @@ public class AngleShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    differenceAngle = (desiredShooterAngle - currentShooterAngle);
-    SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
-
-    angleSpeed = differenceAngle * ShooterConstants.AUTO_AIM_SHOOTER_kP;
-    SmartDashboard.putNumber("angleSpeedShooter", angleSpeed);
-
-    m_shooter.pitchShooter(angleSpeed);
+    differenceAngle = desiredShooterAngle-m_shooter.getShooterAngle;
+    desiredShooterAngleSpeed = differenceAngle*ShooterConstants.AUTO_AIM_SHOOTER_kP;
+    m_shooter.pitchShooter(desiredShooterAngleSpeed);
   }
 
   // Called once the command ends or is interrupted.
@@ -49,6 +47,6 @@ public class AngleShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(differenceAngle) < ShooterConstants.SHOOTER_ANGLE_TOLERANCE;
+    return false;
   }
 }

@@ -148,9 +148,12 @@ public class RobotContainer {
     new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
     new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
+    new Trigger(driverController::getR1Button).whileTrue(new AngleShooter(shooter, shooter::calculateSpeakerAngle));
     
     new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
     new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
+    new Trigger(operatorController::getR1Button).onTrue(new AngleShooter(shooter, Constants.Field.AMPLIFIER_ANGLE))
+
 
     //for testing Rotate Robot command
     };
