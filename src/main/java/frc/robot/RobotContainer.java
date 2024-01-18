@@ -152,13 +152,13 @@ public class RobotContainer {
     new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
     new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-    
-    new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
-    new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
+
+    new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
+    new Trigger(operatorController::getCrossButtonPressed).onTrue(new ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
     //Intake bindings
-    new Trigger(operatorController::getL1Button).onTrue(IntakeCommand(intake, iDirection.INTAKE));
-    new Trigger(operatorController::getR1Button).onTrue(IntakeCommand(intake, iDirection.OUTAKE));
-    new Trigger(operatorController::getR2Button).onTrue(IntakeCommand(intake, iDirection.COAST));
+    new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
+    new Trigger(operatorController::getR1Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
+    new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
 
     //for testing Rotate Robot command
     };
@@ -167,21 +167,6 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
   
-
-
-  private Command IntakeCommand(IntakeSubsystem intake2, IntakeDirection iDirection) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'IntakeCommand'");
-  }
-
-  private Command ManualShoot(ShooterSubsystem shooter) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
-  }
-  private Command ClimbCommandGroup(Climber climber, double speed) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'ManualShoot'");
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
