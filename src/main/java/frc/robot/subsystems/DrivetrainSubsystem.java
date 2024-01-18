@@ -311,13 +311,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putString("offset amount", targetOffset.toString());
 		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle
-		if (dtvalues.getY() >= Field.SPEAKER_Y-targetOffset.getY()) {
-			double thetaAbove = Math.toDegrees(Math.asin(offsetSpeakerX / offsetSpeakerdist))+90;
-			m_desiredRobotAngle = thetaAbove;
-		}
-		else{
-			double thetaBelow = 270-Math.toDegrees(Math.asin(offsetSpeakerX / offsetSpeakerdist));
-			m_desiredRobotAngle = thetaBelow;
+		if (alliance.get() == Alliance.Blue) {
+			if (dtvalues.getY() >= Field.SPEAKER_Y-targetOffset.getY()) {
+				double thetaAbove = Math.toDegrees(Math.asin(speakerA / speakerDist))+90;
+				m_desiredRobotAngle = thetaAbove;
+			}
+			else{
+				double thetaBelow = 270-Math.toDegrees(Math.asin(speakerA / speakerDist));
+				m_desiredRobotAngle = thetaBelow;
+		} } else {
+			if (dtvalues.getY() >= Field.SPEAKER_Y) {
+				double thetaAbove = 270-Math.toDegrees(Math.asin(speakerA / speakerDist));
+				m_desiredRobotAngle = thetaAbove;
+			}
+			else{
+				double thetaBelow = 90+Math.toDegrees(Math.asin(speakerA / speakerDist));
+				m_desiredRobotAngle = thetaBelow;
+			}
 		}
 		SmartDashboard.putNumber("just angle to offset", Math.toDegrees(Math.asin(offsetSpeakerX / offsetSpeakerdist)));
 
