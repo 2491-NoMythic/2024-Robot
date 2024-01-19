@@ -12,13 +12,13 @@ import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.LimelightDetectorData;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import static frc.robot.settings.Constants.DriveConstants.*;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 
 public class CollectNote extends Command {
 
   DrivetrainSubsystem drivetrain;
-  Intake intake;
+  IntakeSubsystem intake;
   LimelightDetectorData detectorData;
 
   PIDController txController;
@@ -27,7 +27,7 @@ public class CollectNote extends Command {
   double tx;
   double ta;
   /** Creates a new CollectNote. */
-  public CollectNote(DrivetrainSubsystem drivetrain, Intake intake) {
+  public CollectNote(DrivetrainSubsystem drivetrain, IntakeSubsystem intake) {
     addRequirements(drivetrain, intake);
     this.drivetrain = drivetrain;
     this.intake = intake;

@@ -298,6 +298,14 @@ public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR = 2941;
   public static final double CLIMBER_SPEED = 0.75;
 }
+public static final class IntakeConstants{
+  public static final int INTAKE_1_MOTOR = 2491;
+  public static final int INTAKE_2_MOTOR = 2491;
+  public static final int BRUSH_1_MOTOR = 2491;
+  public static final int BRUSH_2_MOTOR = 2491;
+  public static final int BRUSH_3_MOTOR = 2491;
+  public static final double INTAKE_SPEED = 0.75;
+}
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
   public TalonFXConfiguration steerMotorConfig;
