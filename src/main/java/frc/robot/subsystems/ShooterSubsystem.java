@@ -3,21 +3,32 @@
  // the WPILib BSD license file in the root directory of this project.
  
  package frc.robot.subsystems;
- import com.revrobotics.CANSparkMax;
+ import com.ctre.phoenix6.hardware.CANcoder;
+import com.revrobotics.CANSparkMax;
  import com.revrobotics.RelativeEncoder;
  import com.revrobotics.SparkPIDController;
  import com.revrobotics.SparkRelativeEncoder;
  import com.revrobotics.CANSparkBase.ControlType;
  import com.revrobotics.CANSparkLowLevel.MotorType;
- 
- import frc.robot.settings.Constants;
- import  frc.robot.settings.Constants.ShooterConstants;
+
+import frc.robot.commands.AngleShooter;
+import frc.robot.commands.RotateRobot;
+import frc.robot.settings.Constants;
+import frc.robot.settings.Constants.Field;
+import  frc.robot.settings.Constants.ShooterConstants;
  import edu.wpi.first.math.controller.PIDController;
- import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  import edu.wpi.first.wpilibj2.command.SubsystemBase;
  import edu.wpi.first.hal.can.CANStreamOverflowException;
  import edu.wpi.first.math.geometry.Pose2d;
- import static frc.robot.settings.Constants.ShooterConstants.*;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+
+import static frc.robot.settings.Constants.ShooterConstants.*;
+
+import java.util.Optional;
  
  public class ShooterSubsystem extends SubsystemBase {
    CANSparkMax shooter1;
@@ -43,24 +54,19 @@
    double kMinOutput = Constants.ShooterConstants.kMinOutput; 
  
    RelativeEncoder encoder1;
-   UniversalEncoder universalEncoder;
+   CANcoder angleEncoder;
 
    //speaker angle calculating variables:
-	double m_desiredRobotAngle;
-	double differenceAngle;
-	double currentHeading;
-	double speakerDist;
-	double speakerA;
-	double speakerB;
-	double m_DesiredShooterAngle;
+
 	double turningSpeed;
 	RotateRobot rotateRobot;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
-	Pose2d dtvalues;
 	double shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 	double shootingTime; 
 	double currentXSpeed;
+  public static Pose2d dtvalues;
+  public static ChassisSpeeds DTChassisSpeeds;
 	double currentYSpeed;
 	Translation2d targetOffset; 
 	double offsetSpeakerX;
@@ -142,20 +148,20 @@
    public void pitchShooter(double pitchSpeed){
     pitchMotor.set(pitchSpeed);
   }
-  public void setAngle(double angle){
-    pitchPID.setSetpoint(angle*TICKS_PER_DEGREE);
+  public double getShooterAngle(){
+    return angleEncoder.getPosition().getValueAsDouble()*DEGREES_PER_ROTATION;
   }
-  public void goToSetAngle(){
-    pitchMotor.set(pitchPID.calculate(pitchMotor.getVelocityOutput))
+  public static void setDTPose(Pose2d pose) {
+    dtvalues = pose;
   }
-  public void getShooterAngle(){
-    universalEncoder.getPosition/ANGLE_TICKS_PER_DEGREE;
+  public static void setDTChassisSpeeds(ChassisSpeeds speeds) {
+    DTChassisSpeeds = speeds;
   }
-  public void calculateSpeakerAngle() {
-    dtvalues = this.getPose();
+  public double calculateSpeakerAngle() {
 		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 		//triangle for robot angle
-		if (DriverStation.getAlliance().equals(Alliance.Red)) {
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
 			speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
 		} else {
 			speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
@@ -165,8 +171,8 @@
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
 	
 		shootingTime = speakerDist/shootingSpeed; //calculates how long the note will take to reach the target
-		currentXSpeed = this.getChassisSpeeds().vxMetersPerSecond;
-		currentYSpeed = this.getChassisSpeeds().vyMetersPerSecond;
+		currentXSpeed = DTChassisSpeeds.vxMetersPerSecond;
+		currentYSpeed = DTChassisSpeeds.vyMetersPerSecond;
 		targetOffset = new Translation2d(currentXSpeed*shootingTime, currentYSpeed*shootingTime); 
 		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
 		

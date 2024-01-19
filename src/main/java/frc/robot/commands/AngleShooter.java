@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.ShooterConstants;
@@ -12,6 +14,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class AngleShooter extends Command {
   /** Creates a new AngleShooter. */
   double desiredShooterAngle;
+  DoubleSupplier desiredShooterAngleSupplier;
   double currentShooterAngle;
   double differenceAngle;
   double angleSpeed;
@@ -19,9 +22,10 @@ public class AngleShooter extends Command {
   double desiredShooterAngleSpeed;
 
   
-  public AngleShooter(ShooterSubsystem shooter, double desiredShooterAngle) {
+  public AngleShooter(ShooterSubsystem shooter, DoubleSupplier desiredShooterAngleSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.\
     m_shooter = shooter;
+    this.desiredShooterAngleSupplier = desiredShooterAngleSupplier;
     this.desiredShooterAngle = desiredShooterAngle;
     addRequirements(shooter);
   }
@@ -33,7 +37,8 @@ public class AngleShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    differenceAngle = desiredShooterAngle-m_shooter.getShooterAngle;
+    desiredShooterAngle = desiredShooterAngleSupplier.getAsDouble();
+    differenceAngle = desiredShooterAngle-m_shooter.getShooterAngle();
     desiredShooterAngleSpeed = differenceAngle*ShooterConstants.AUTO_AIM_SHOOTER_kP;
     m_shooter.pitchShooter(desiredShooterAngleSpeed);
   }

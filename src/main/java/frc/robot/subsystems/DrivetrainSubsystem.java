@@ -86,7 +86,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	RotateRobot rotateRobot;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
-
+	
 	public DrivetrainSubsystem() {
 
 		Preferences.initString("FL", "AUGIE");
@@ -233,12 +233,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		odometer.addVisionMeasurement(estematedPose, timestampSeconds);
 	}
 	public double calculateSpeakerAngle(){
-		Pose2d dtvalues = this.getPose();    
+		Pose2d dtvalues = this.getPose();
 		//triangle for robot angle
 		if (DriverStation.getAlliance().equals(Alliance.Red)) {
 		speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
 		} else {
-		speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+			speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
 		}
 		speakerB = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		speakerDist = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
@@ -259,6 +259,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 @Override
 	public void periodic() {
 		updateOdometry();
+		ShooterSubsystem.setDTPose(getPose());
+		ShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());   
 		if (SmartDashboard.getBoolean("use limelight", false)) {
 			LimelightValues visionData = new LimelightValues(LimelightHelpers.getLatestResults(Vision.APRILTAG_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.APRILTAG_LIMELIGHT_NAME));
 			Boolean isVisionValid = visionData.isResultValid;

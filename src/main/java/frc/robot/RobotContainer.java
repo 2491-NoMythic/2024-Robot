@@ -22,6 +22,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommandGroup;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.ShooterConstants;
@@ -49,6 +50,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.AngleShooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -152,7 +154,7 @@ public class RobotContainer {
     
     new Trigger(operatorController::getCircleButton).onTrue(ManualShoot(shooter));
     new Trigger(operatorController::getCrossButtonPressed).onTrue(ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
-    new Trigger(operatorController::getR1Button).onTrue(new AngleShooter(shooter, Constants.Field.AMPLIFIER_ANGLE))
+    new Trigger(operatorController::getR1Button).onTrue(new AngleShooter(shooter, this::getAmpAngle));
 
 
     //for testing Rotate Robot command
@@ -190,6 +192,9 @@ public class RobotContainer {
     return value;
   }
 
+  private double getAmpAngle() {
+    return Constants.Field.AMPLIFIER_ANGLE;
+  }
   private void configureDriveTrain() {
     AutoBuilder.configureHolonomic(
                 driveTrain::getPose, // Pose2d supplier
