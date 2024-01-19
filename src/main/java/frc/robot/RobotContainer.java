@@ -51,8 +51,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.AngleShooter;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.settings.IntakeDirection;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -152,12 +154,14 @@ public class RobotContainer {
     new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
     new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-
+    new Trigger(driverController::getR1Button).whileTrue(new AngleShooter(shooter, shooter::calculateSpeakerAngle));
+    
+    new Trigger(operatorController::getR1Button).onTrue(new AngleShooter(shooter, this::getAmpAngle));
     new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
     new Trigger(operatorController::getCrossButtonPressed).onTrue(new ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
     //Intake bindings
     new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
-    new Trigger(operatorController::getR1Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
+    new Trigger(operatorController::getL2Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
     new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
 
     //for testing Rotate Robot command
@@ -186,6 +190,9 @@ public class RobotContainer {
     return value;
   }
 
+  private double getAmpAngle() {
+    return Constants.Field.AMPLIFIER_ANGLE;
+  }
   private void configureDriveTrain() {
     AutoBuilder.configureHolonomic(
                 driveTrain::getPose, // Pose2d supplier

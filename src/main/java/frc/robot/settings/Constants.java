@@ -269,9 +269,13 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_SHOOTER_kP = 2491;
   public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
+  public static final double SHOOTER_HEIGHT = 0.1;
+  public static final double ANGLE_TICKS_PER_DEGREE = 2491;
+  public static final double SHOOTING_SPEED_MPS = 2491;
+  public static final double DEGREES_PER_ROTATION = 2491;
  
 
-  //PID coefficients:
+  //PID coefficients for shooter:
   public static final double kP = 0.1;
   public static final double kI = 1e-4;
   public static final double kD = 1;
@@ -279,6 +283,16 @@ public static final class ShooterConstants{
   public static final double kFF = 0;
   public static final double kMaxOutput = 1;
   public static final double kMinOutput = -1;
+
+  //PID values for pitch motor (changes angle of shooter):
+  public static final double pitchkP = 2491;
+  public static final double pitchkI = 2491;
+  public static final double pitchkD = 2491;
+  public static final double pitchkIz = 2491;
+  public static final double pitchFeedForward = 2491;
+  public static final double pitchMaxOutput = 2491;
+  public static final double pitchMinOutput = 2491;
+
 }
 public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR = 2941;
@@ -369,6 +383,8 @@ public static final class CTREConfigs {
     public static final double BLUE_SPEAKER_X = 0.23;
     public static final double RED_SPEAKER_X = 16.412;
     public static final double SPEAKER_Z = 2.045; //height of opening
+
+    public static final double AMPLIFIER_ANGLE = 110;
 
   }
 
