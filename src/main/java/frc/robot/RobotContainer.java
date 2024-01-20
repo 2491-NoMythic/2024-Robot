@@ -22,6 +22,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommandGroup;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.IndexCommand;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
@@ -33,6 +34,7 @@ import frc.robot.commands.RotateRobot;
 import frc.robot.commands.autoAimParallel;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -70,6 +72,8 @@ public class RobotContainer {
   private final boolean intakeExists = Preferences.getBoolean("Intake", true);
   private final boolean shooterExists = Preferences.getBoolean("Shooter", true);
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
+  private final boolean indexerExists = Preferences.getBoolean("Indexer", true);
+
 
   private DrivetrainSubsystem driveTrain;
   private IntakeSubsystem intake;
@@ -81,6 +85,8 @@ public class RobotContainer {
   private Limelight limelight;
   private IntakeDirection iDirection;
   private Pigeon2 pigeon;
+  private IndexCommand defaulNoteHandlingCommand;
+  private IndexerSubsystem indexer;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -90,6 +96,8 @@ public class RobotContainer {
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
+    Preferences.initBoolean("Indexer", false);
+
 
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
@@ -101,6 +109,8 @@ public class RobotContainer {
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(climberExists) {climberInst();}
+    if(indexerExists) {indexInit();}
+    if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
     // Configure the trigger bindings
     configureBindings();
   }
@@ -116,7 +126,7 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(defaultDriveCommand);
   }
   private void shooterInst() {
-    shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
+    shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER, ()-> (operatorController.getPOV() == 0));
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
@@ -124,6 +134,13 @@ public class RobotContainer {
   private void climberInst() {
     climber = new Climber(ClimberConstants.CLIMBER_SPEED);
   }
+  private void indexInit() {
+    indexer = new IndexerSubsystem();
+  }
+  private void indexCommandInst() {
+    defaulNoteHandlingCommand = new IndexCommand(indexer, operatorController::getL1Button, shooter, intake);
+  }
+
   private void autoInit() {
     configureDriveTrain();
     SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
@@ -159,10 +176,10 @@ public class RobotContainer {
     new Trigger(operatorController::getR1Button).onTrue(new AngleShooter(shooter, this::getAmpAngle));
     new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
     new Trigger(operatorController::getCrossButtonPressed).onTrue(new ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
-    //Intake bindings
-    new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
-    new Trigger(operatorController::getL2Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
-    new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
+    // //Intake bindings
+    // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
+    // new Trigger(operatorController::getL2Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
+    // new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
 
     //for testing Rotate Robot command
     };

@@ -29,6 +29,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import static frc.robot.settings.Constants.ShooterConstants.*;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
  
  public class ShooterSubsystem extends SubsystemBase {
    CANSparkMax shooter1;
@@ -73,10 +74,12 @@ import java.util.Optional;
 	double offsetSpeakerY;
 	Translation2d adjustedTarget;
 	double offsetSpeakerdist;
+  BooleanSupplier aimAtAmp;
  
      /** Creates a new Shooter. */
-   public ShooterSubsystem(double runSpeed) {
+   public ShooterSubsystem(double runSpeed, BooleanSupplier aimAtAmp) {
      SparkPIDController shooterPID;
+     this.aimAtAmp = aimAtAmp;
      shooter1 = new CANSparkMax(ShooterConstants.SHOOTER_1_MOTORID, MotorType.kBrushless);
      shooter2 = new CANSparkMax(ShooterConstants.SHOOTER_2_MOTORID, MotorType.kBrushless);
      pitchMotor = new CANSparkMax(ShooterConstants.PITCH_MOTOR_ID, MotorType.kBrushless);
@@ -192,8 +195,19 @@ import java.util.Optional;
     SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
 
     return differenceAngle;
+  }
 
-
+@Override
+  public void periodic() {
+    if (!aimAtAmp.getAsBoolean()) {
+    double desiredShooterAngleSpeed = calculateSpeakerAngle()*ShooterConstants.AUTO_AIM_SHOOTER_kP;
+    pitchShooter(desiredShooterAngleSpeed);
+  }
+   else {
+    double differenceAmp = Field.AMPLIFIER_ANGLE-this.getShooterAngle();
+    double ampSpeed = differenceAmp*ShooterConstants.AUTO_AIM_SHOOTER_kP;
+    pitchShooter(ampSpeed);
+  }
   }
 }
  
