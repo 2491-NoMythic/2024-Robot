@@ -295,8 +295,15 @@ public static final class ShooterConstants{
 
 }
 public static final class ClimberConstants{
-  public static final int CLIMBER_MOTOR = 2941;
-  public static final double CLIMBER_SPEED = 0.75;
+  public static final int CLIMBER_MOTOR_RIGHT = 2941;
+  public static final int CLIMBER_MOTOR_LEFT = 2491;
+  public static final double CLIMBER_SPEED_DOWN = 0.75;
+  public static final double CLIMBER_SPEED_UP = 0.75;
+
+  //TODO: refine these values
+  public static final double CLIMBER_VOLTAGE_ALIGN = 0.75;
+  public static final double CLIMBER_VOLTAGE_PULL_DOWN = 3;
+  public static final double CLIMBER_RPM = 0.1;
 }
 public static final class IndexerConstants{
   public static final int FEEDER_1_MOTOR = 2491;

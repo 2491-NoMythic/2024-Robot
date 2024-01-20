@@ -19,7 +19,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ClimbCommandGroup;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.settings.Constants;
@@ -31,6 +30,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.RotateRobot;
 import frc.robot.commands.autoAimParallel;
+import frc.robot.commands.climber_commands.AutoClimb;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -122,7 +122,7 @@ public class RobotContainer {
     intake = new IntakeSubsystem();
   }
   private void climberInst() {
-    climber = new Climber(ClimberConstants.CLIMBER_SPEED);
+    climber = new Climber();
   }
   private void autoInit() {
     configureDriveTrain();
@@ -158,7 +158,9 @@ public class RobotContainer {
     
     new Trigger(operatorController::getR1Button).onTrue(new AngleShooter(shooter, this::getAmpAngle));
     new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
-    new Trigger(operatorController::getCrossButtonPressed).onTrue(new ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
+    new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+    new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
+    
     //Intake bindings
     new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
     new Trigger(operatorController::getL2Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
