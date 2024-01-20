@@ -298,6 +298,13 @@ public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR = 2941;
   public static final double CLIMBER_SPEED = 0.75;
 }
+public static final class IndexerConstants{
+  public static final int FEEDER_1_MOTOR = 2491;
+  public static final int FEEDER_2_MOTOR = 2491;
+  public static final int HOLDER_1_MOTOR = 2491;
+  public static final int HOLDER_2_MOTOR = 2491;
+  public static final double INDEXER_SPEED = 0.75;
+}
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 2491;
   public static final int INTAKE_2_MOTOR = 2491;
