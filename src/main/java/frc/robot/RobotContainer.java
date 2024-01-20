@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.PS4Operator.*;
 
+import java.nio.file.Path;
 import java.util.function.BooleanSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
@@ -14,8 +15,10 @@ import static frc.robot.settings.Constants.DriveConstants.*;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.Autos;
@@ -26,6 +29,7 @@ import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.IntakeConstants;
+import frc.robot.settings.Constants.PathConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
@@ -80,6 +84,16 @@ public class RobotContainer {
   private IntakeDirection iDirection;
   private Pigeon2 pigeon;
 
+//BA means B for blue alliance and A amp-side. S is source-side, and M is middle.
+  private Command climbBA; 
+  private Command climbBM; 
+  private Command climbBS; 
+  private Command climbRA; 
+  private Command climbRM; 
+  private Command climbRS; 
+  private Command ampRed_Go;
+  private Command ampBlue_Go;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -92,9 +106,9 @@ public class RobotContainer {
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
+    // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
 
     driveTrainInst();
-    autoInit();
     limelightInit();
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
@@ -124,6 +138,16 @@ public class RobotContainer {
   }
   private void autoInit() {
     configureDriveTrain();
+    PathPlannerPath amPath = PathPlannerPath.fromPathFile(PathConstants.PATH_PLAN_AMP);
+    climbBA = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BS_POSE, DEFAUL_PATH_CONSTRAINTS);
+    climbBM = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BM_POSE, DEFAUL_PATH_CONSTRAINTS);
+    climbBS = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BS_POSE, DEFAUL_PATH_CONSTRAINTS);
+    climbRA = AutoBuilder.pathfindToPose(PathConstants.CLIMB_RA_POSE, DEFAUL_PATH_CONSTRAINTS);
+    climbRM = AutoBuilder.pathfindToPose(PathConstants.CLIMB_RM_POSE, DEFAUL_PATH_CONSTRAINTS);
+    climbRS = AutoBuilder.pathfindToPose(PathConstants.CLIMB_RS_POSE, DEFAUL_PATH_CONSTRAINTS);
+    ampRed_Go = AutoBuilder.pathfindToPose(PathConstants.AMP_RED_POSE, DEFAUL_PATH_CONSTRAINTS);
+    ampBlue_Go = AutoBuilder.pathfindToPose(PathConstants.AMP_BLUE_POSE, DEFAUL_PATH_CONSTRAINTS);
+
     SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
   }
@@ -159,6 +183,20 @@ public class RobotContainer {
     new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
     new Trigger(operatorController::getR1Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
     new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
+    //Path finding is pretty epic. It was a dark and stormy night. I was waiting, at my computer in the programming room.
+    // More specifically, I was waiting for Rowan, who was working with sequential command groups. I called over to Rowan if he could come help soon, and he answered.
+    //but his voice sounded kinda weird. I didn't think much of it at the time
+    if (DriverStation.getAlliance().get() == Alliance.Red) {
+    new Trigger(()->driverController.getPOV() == 0).onTrue(climbRA);
+    new Trigger(()->driverController.getPOV() == 90).onTrue(climbRS);
+    new Trigger(()->driverController.getPOV() == 180).onTrue(climbRS);
+    new Trigger(()->driverController.getL2Button()).onTrue(ampRed_Go);
+  } else {
+    new Trigger(()->driverController.getPOV() == 0).onTrue(climbBA);
+    new Trigger(()->driverController.getPOV() == 90).onTrue(climbBS);
+    new Trigger(()->driverController.getPOV() == 180).onTrue(climbBS);
+    new Trigger(()->driverController.getL2Button()).onTrue(ampBlue_Go);
+    }
 
     //for testing Rotate Robot command
     };

@@ -387,4 +387,27 @@ public final class Vision{
   public static final double K_DETECTOR_TA_I = 0;
   public static final double K_DETECTOR_TA_D = 0;
 }
+public final class PathConstants{
+  public static final String PATH_PLAN_AMP = "Replace Name Later";
+  //I messed up the heading, it needs to be fixed. Yup
+  // PLEASE DO NOT MISS THIS MESSAGE
+  //Amp side of the blue stage
+  public static final Pose2d CLIMB_BA_POSE = new Pose2d(4.33, 4.88, new Rotation2d(116.98));
+  //Middle side of the blue stage
+  public static final Pose2d CLIMB_BM_POSE = new Pose2d(5.91, 4.12, new Rotation2d(-0.90));
+  //Source side of the blue stage
+  public static final Pose2d CLIMB_BS_POSE = new Pose2d(4.52, 3.24, new Rotation2d(-120.96));
+
+ //Amp side of the red stage
+  public static final Pose2d CLIMB_RA_POSE = new Pose2d(12.30, 4.88, new Rotation2d(59.86));
+  //Middle side of the red stage
+  public static final Pose2d CLIMB_RM_POSE = new Pose2d( 8.97, 4.00, new Rotation2d(-179.64));
+  //Source side of the red stage
+  public static final Pose2d CLIMB_RS_POSE = new Pose2d(12.19, 3.24, new Rotation2d(-61.23));
+
+
+  public static final Pose2d AMP_RED_POSE = new Pose2d(14.77, 7.33, new Rotation2d(-89.33));
+  public static final Pose2d AMP_BLUE_POSE = new Pose2d(1.93, 7.33, new Rotation2d(-89.33));
+
+}
 }
