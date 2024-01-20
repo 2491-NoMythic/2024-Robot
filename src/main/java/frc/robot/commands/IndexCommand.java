@@ -21,7 +21,7 @@ public class IndexCommand extends Command {
   IntakeSubsystem intake;
 
   /** Creates a new IndexCommand. */
-  public void IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootButtonSupplier, ShooterSubsystem shooter, IntakeSubsystem intake) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootButtonSupplier, ShooterSubsystem shooter, IntakeSubsystem intake) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootButtonSupplier = shootButtonSupplier;
     this.shooter = shooter;
