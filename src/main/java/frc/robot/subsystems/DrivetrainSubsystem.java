@@ -78,12 +78,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	private final SwerveDrivePoseEstimator odometer;
 	private final Field2d m_field = new Field2d();
+	Lights lights;
 
 	//speaker angle calculating variables:
 	double m_desiredRobotAngle;
 	double differenceAngle;
 	double currentHeading;
-	public double speakerDist;
 	double speakerA;
 	double speakerB;
 	double m_DesiredShooterAngle;
@@ -101,8 +101,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	double offsetSpeakerY;
 	Translation2d adjustedTarget;
 	double offsetSpeakerdist;
+	public double speakerDist;
 
-	public DrivetrainSubsystem() {
+	Boolean lightsExist;
+
+	public DrivetrainSubsystem(Lights lights, Boolean lightsExist) {
+		this.lights = lights;
+		this.lightsExist = lightsExist;
 
 		Preferences.initString("FL", "AUGIE");
 		Preferences.initString("FR", "AUGIE");
@@ -259,6 +264,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		speakerB = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		speakerDist = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
+		if(speakerDist<ShooterConstants.MAX_SHOOTING_DISTANCE && lightsExist) {
+			lights.setLights(0, Constants.LIGHTS_COUNT, 0, 100, 0);
+		} else {
+			lights.lightsOut();
+		}
 		
 		//getting desired robot angle
 		if (alliance.get() == Alliance.Blue) {
@@ -308,6 +318,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		offsetSpeakerY = speakerB-targetOffset.getY();
 		adjustedTarget = new Translation2d(offsetSpeakerX, offsetSpeakerY);
 		offsetSpeakerdist = Math.sqrt(Math.pow(offsetSpeakerX, 2) + Math.pow(offsetSpeakerY, 2));
+		if(offsetSpeakerdist<ShooterConstants.MAX_SHOOTING_DISTANCE && lightsExist) {
+			lights.setLights(0, Constants.LIGHTS_COUNT, 0, 100, 0);
+		} else {
+			lights.lightsOut();
+		}
 		SmartDashboard.putString("offset amount", targetOffset.toString());
 		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle

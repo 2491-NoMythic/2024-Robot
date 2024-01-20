@@ -110,7 +110,7 @@ public class RobotContainer {
   }
 
   private void driveTrainInst() {
-    driveTrain = new DrivetrainSubsystem();
+    driveTrain = new DrivetrainSubsystem(lights, lightsExist);
     defaultDriveCommand = new Drive(
       driveTrain, 
       () -> driverController.getL1Button(),
