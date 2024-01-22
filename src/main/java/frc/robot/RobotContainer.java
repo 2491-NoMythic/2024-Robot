@@ -241,5 +241,9 @@ public class RobotContainer {
 
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
+    NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));
+    NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
+    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));
+    NamedCommands.registerCommand("intakeOn", new InstantCommand(intake))
   }
 }

@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.935875169047636,
+        "y": 7.432741351969191
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 10.035994846764469,
+        "y": 7.931955323370106
+      },
+      "isLocked": false,
+      "linkedName": "RedAmpShoot"
+    },
+    {
+      "anchor": {
+        "x": 11.783243746667674,
+        "y": 6.4528028155155415
+      },
+      "prevControl": {
+        "x": 10.710858178473114,
+        "y": 6.563739253604634
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": -7.125016348901826,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -8.471144633014871,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "to shooting pos",
+  "previewStartingState": {
+    "rotation": 176.87786953788435,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

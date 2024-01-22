@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.786494430131717,
+        "y": 4.0606698356253865
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.870561969485848,
+        "y": 4.006515899231621
+      },
+      "isLocked": false,
+      "linkedName": "CollectNote3Blue"
+    },
+    {
+      "anchor": {
+        "x": 4.405970613743029,
+        "y": 4.788756244179155
+      },
+      "prevControl": {
+        "x": 6.643188781873059,
+        "y": 3.04150734427595
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "MiddleShootPose"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 164.74488129694225,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 166.2637316943774,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "to shooting pos",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

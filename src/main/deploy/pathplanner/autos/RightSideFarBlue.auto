@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3182397535966242,
+      "y": 3.096975563320497
+    },
+    "rotation": 126.75928817029215
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "initalShotBlueSource"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue5PickupSourceSide"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueSourceShoot5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue4PickupSourceSide"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueSourceShoot4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue3PickupUnderStageSource"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueMiddleShoot3"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
