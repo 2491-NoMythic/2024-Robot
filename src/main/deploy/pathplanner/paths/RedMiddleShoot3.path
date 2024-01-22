@@ -3,35 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.863489600853075,
-        "y": 4.585372774349152
+        "x": 8.769470511913998,
+        "y": 4.039935287077782
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.9475571402072065,
-        "y": 4.531218837955387
+        "x": 11.10838041495903,
+        "y": 4.141627021992783
       },
       "isLocked": false,
-      "linkedName": "CollectNote3Blue"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.405970613743029,
-        "y": 4.788756244179155
+        "x": 12.263968311720408,
+        "y": 4.844224463223702
       },
       "prevControl": {
-        "x": 6.643188781873059,
-        "y": 3.04150734427595
+        "x": 10.960465164173572,
+        "y": 3.9105094426405076
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MiddleShootPose"
+      "linkedName": "RedMiddleShoot"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": -165.2564371635294,
+      "rotationDegrees": 16.113418233089362,
       "rotateFast": false
     }
   ],
@@ -45,11 +45,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 166.2637316943774,
+    "rotation": 14.036243467926521,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
-  "previewStartingState": null,
+  "folder": "to shooting pos",
+  "previewStartingState": {
+    "rotation": 176.87786953788435,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }
