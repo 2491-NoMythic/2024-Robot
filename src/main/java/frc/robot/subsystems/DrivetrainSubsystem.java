@@ -264,11 +264,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		speakerB = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		speakerDist = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
-		if(speakerDist<ShooterConstants.MAX_SHOOTING_DISTANCE && lightsExist) {
+		if(speakerDist<Field.MAX_SHOOTING_DISTANCE && lightsExist) {
 			lights.setLights(0, Constants.LIGHTS_COUNT, 0, 100, 0);
-		} else {
+		} else {if(lights != null) {
 			lights.lightsOut();
-		}
+		} }
 		
 		//getting desired robot angle
 		if (alliance.get() == Alliance.Blue) {
@@ -318,11 +318,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		offsetSpeakerY = speakerB-targetOffset.getY();
 		adjustedTarget = new Translation2d(offsetSpeakerX, offsetSpeakerY);
 		offsetSpeakerdist = Math.sqrt(Math.pow(offsetSpeakerX, 2) + Math.pow(offsetSpeakerY, 2));
-		if(offsetSpeakerdist<ShooterConstants.MAX_SHOOTING_DISTANCE && lightsExist) {
+		if(offsetSpeakerdist<Field.MAX_SHOOTING_DISTANCE && lightsExist) {
 			lights.setLights(0, Constants.LIGHTS_COUNT, 0, 100, 0);
-		} else {
+		} else {if(lightsExist) {
 			lights.lightsOut();
-		}
+		}}
 		SmartDashboard.putString("offset amount", targetOffset.toString());
 		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle

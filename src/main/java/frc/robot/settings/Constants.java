@@ -367,8 +367,8 @@ public static final class CTREConfigs {
   }
 
 public final class Vision{
-  public static final String APRILTAG_LIMELIGHT_NAME = "AprilLimelight";
-  public static final String OBJ_DETECITON_LIMELIGHT_NAME = "NeuralLimelight";
+  public static final String APRILTAG_LIMELIGHT_NAME = "limelight-april";
+  public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
 
 
   public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);

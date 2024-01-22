@@ -239,10 +239,8 @@ public class RobotContainer {
   
   public void teleopPeriodic() {
     SmartDashboard.putData(driveTrain.getCurrentCommand());
+    SmartDashboard.putNumber("robot angle according to limelight", limelight.getAprilTagValues().getbotPose().getRotation().getDegrees());
     driveTrain.calculateSpeakerAngle();
-    if(driveTrain.speakerDist<Field.MAX_SHOOTING_DISTANCE) {
-      
-    }
   }
 
   public void disabledPeriodic() {
