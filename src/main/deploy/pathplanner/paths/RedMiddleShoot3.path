@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.769470511913998,
+        "y": 4.039935287077782
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 11.10838041495903,
+        "y": 4.141627021992783
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 12.263968311720408,
+        "y": 4.844224463223702
+      },
+      "prevControl": {
+        "x": 10.960465164173572,
+        "y": 3.9105094426405076
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RedMiddleShoot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 16.113418233089362,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 14.036243467926521,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "to shooting pos",
+  "previewStartingState": {
+    "rotation": 176.87786953788435,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

@@ -109,6 +109,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		this.lights = lights;
 		this.lightsExist = lightsExist;
 
+
 		Preferences.initString("FL", "AUGIE");
 		Preferences.initString("FR", "AUGIE");
 		Preferences.initString("BL", "AUGIE");
@@ -260,6 +261,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			deltaY = Math.abs(dtvalues.getY() - Field.RED_SPEAKER_Y);
 		} else {
 			deltaY = Math.abs(dtvalues.getY() - Field.BLUE_SPEAKER_Y);
+
 		}
 		deltaX = Math.abs(dtvalues.getX() - Field.SPEAKER_X);
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
@@ -357,6 +359,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void periodic() {
 		SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
 		updateOdometry();
+		ShooterSubsystem.setDTPose(getPose());
+		ShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());   
 		if (SmartDashboard.getBoolean("use limelight", false)) {
 			LimelightValues visionData = new LimelightValues(LimelightHelpers.getLatestResults(Vision.APRILTAG_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.APRILTAG_LIMELIGHT_NAME));
 			Boolean isVisionValid = visionData.isResultValid;

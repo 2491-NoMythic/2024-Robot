@@ -270,9 +270,13 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_SHOOTER_kP = 2491;
   public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
+  public static final double SHOOTER_HEIGHT = 0.1;
+  public static final double ANGLE_TICKS_PER_DEGREE = 2491;
+  public static final double SHOOTING_SPEED_MPS = 2491;
+  public static final double DEGREES_PER_ROTATION = 2491;
  
 
-  //PID coefficients:
+  //PID coefficients for shooter:
   public static final double kP = 0.1;
   public static final double kI = 1e-4;
   public static final double kD = 1;
@@ -280,10 +284,42 @@ public static final class ShooterConstants{
   public static final double kFF = 0;
   public static final double kMaxOutput = 1;
   public static final double kMinOutput = -1;
+
+  //PID values for pitch motor (changes angle of shooter):
+  public static final double pitchkP = 2491;
+  public static final double pitchkI = 2491;
+  public static final double pitchkD = 2491;
+  public static final double pitchkIz = 2491;
+  public static final double pitchFeedForward = 2491;
+  public static final double pitchMaxOutput = 2491;
+  public static final double pitchMinOutput = 2491;
+
 }
 public static final class ClimberConstants{
-  public static final int CLIMBER_MOTOR = 2941;
-  public static final double CLIMBER_SPEED = 0.75;
+  public static final int CLIMBER_MOTOR_RIGHT = 2941;
+  public static final int CLIMBER_MOTOR_LEFT = 2491;
+  public static final double CLIMBER_SPEED_DOWN = 0.75;
+  public static final double CLIMBER_SPEED_UP = 0.75;
+
+  //TODO: refine these values
+  public static final double CLIMBER_VOLTAGE_ALIGN = 0.75;
+  public static final double CLIMBER_VOLTAGE_PULL_DOWN = 3;
+  public static final double CLIMBER_RPM = 0.1;
+}
+public static final class IndexerConstants{
+  public static final int FEEDER_1_MOTOR = 2491;
+  public static final int FEEDER_2_MOTOR = 2491;
+  public static final int HOLDER_1_MOTOR = 2491;
+  public static final int HOLDER_2_MOTOR = 2491;
+  public static final double INDEXER_SPEED = 0.75;
+}
+public static final class IntakeConstants{
+  public static final int INTAKE_1_MOTOR = 2491;
+  public static final int INTAKE_2_MOTOR = 2491;
+  public static final int BRUSH_1_MOTOR = 2491;
+  public static final int BRUSH_2_MOTOR = 2491;
+  public static final int BRUSH_3_MOTOR = 2491;
+  public static final double INTAKE_SPEED = 0.75;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
@@ -363,6 +399,8 @@ public static final class CTREConfigs {
     public static final double SPEAKER_X = 0.23;//16.412;
     public static final double SPEAKER_Z = 2.045; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
+
+    public static final double AMPLIFIER_ANGLE = 110;
 
   }
 

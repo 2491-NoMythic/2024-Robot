@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.029894257986713,
+        "y": 2.4960698570045796
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.005304262860778,
+        "y": 1.682535977684569
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.9896948365325304,
+        "y": 2.433470009797163
+      },
+      "prevControl": {
+        "x": 4.572111136500266,
+        "y": 1.4350420669953317
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "SourceSideBlueShoot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 146.98388319699862,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 148.60298946245044,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "to shooting pos",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}
