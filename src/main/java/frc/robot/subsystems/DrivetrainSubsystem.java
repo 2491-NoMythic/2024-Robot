@@ -333,19 +333,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//getting desired robot angle
 		if (alliance.get() == Alliance.Blue) {
 			if (dtvalues.getY() >= Field.BLUE_SPEAKER_Y-targetOffset.getY()) {
-				double thetaAbove = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
+				double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
 				m_desiredRobotAngle = thetaAbove;
 			}
 			else{
-				double thetaBelow = 270-Math.toDegrees(Math.asin(deltaX / speakerDist));
+				double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
 				m_desiredRobotAngle = thetaBelow;
 		} } else {
 			if (dtvalues.getY() >= Field.RED_SPEAKER_Y) {
-				double thetaAbove = 270-Math.toDegrees(Math.asin(deltaX / speakerDist));
+				double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
 				m_desiredRobotAngle = thetaAbove;
 			}
 			else{
-				double thetaBelow = 90+Math.toDegrees(Math.asin(deltaX / speakerDist));
+				double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
 				m_desiredRobotAngle = thetaBelow;
 			}
 		}
