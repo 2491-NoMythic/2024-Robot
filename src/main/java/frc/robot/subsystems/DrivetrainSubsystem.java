@@ -22,6 +22,9 @@ import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
+
+import javax.swing.text.html.Option;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -30,6 +33,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -53,6 +57,7 @@ import frc.robot.settings.Constants.Vision;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
 import frc.robot.settings.Constants.Field;
+import frc.robot.settings.Constants.ShooterConstants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();
@@ -73,21 +78,37 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	private final SwerveDrivePoseEstimator odometer;
 	private final Field2d m_field = new Field2d();
+	Lights lights;
 
 	//speaker angle calculating variables:
 	double m_desiredRobotAngle;
 	double differenceAngle;
 	double currentHeading;
-	double speakerDist;
-	double speakerA;
-	double speakerB;
+	double deltaX;
+	double deltaY;
 	double m_DesiredShooterAngle;
 	double turningSpeed;
 	RotateRobot rotateRobot;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
-	
-	public DrivetrainSubsystem() {
+	Pose2d dtvalues;
+	double shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
+	double shootingTime; 
+	double currentXSpeed;
+	double currentYSpeed;
+	Translation2d targetOffset; 
+	double offsetSpeakerX;
+	double offsetSpeakerY;
+	Translation2d adjustedTarget;
+	double offsetSpeakerdist;
+	public double speakerDist;
+
+	Boolean lightsExist;
+
+	public DrivetrainSubsystem(Lights lights, Boolean lightsExist) {
+		this.lights = lights;
+		this.lightsExist = lightsExist;
+
 
 		Preferences.initString("FL", "AUGIE");
 		Preferences.initString("FR", "AUGIE");
@@ -139,7 +160,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * 'forwards' direction.
 	 */
 	public void zeroGyroscope() {
-		pigeon.setYaw(180);
+		pigeon.setYaw(0); //TODO make sure this is right for both alliances
 		odometer.resetPosition(new Rotation2d(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
 	}
 	public void zeroGyroscope(double angleDeg) {
@@ -234,30 +255,109 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 	public double calculateSpeakerAngle(){
 		Pose2d dtvalues = this.getPose();
-		//triangle for robot angle
-		if (DriverStation.getAlliance().equals(Alliance.Red)) {
-		speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+		// triangle for robot angle
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+			deltaY = Math.abs(dtvalues.getY() - Field.RED_SPEAKER_Y);
 		} else {
-			speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
-		}
-		speakerB = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
-		speakerDist = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
-		SmartDashboard.putNumber("dist to speakre", speakerDist);
+			deltaY = Math.abs(dtvalues.getY() - Field.BLUE_SPEAKER_Y);
 
+		}
+		deltaX = Math.abs(dtvalues.getX() - Field.SPEAKER_X);
+		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+		SmartDashboard.putNumber("dist to speakre", speakerDist);
+		if(speakerDist<Field.MAX_SHOOTING_DISTANCE && lightsExist) {
+			lights.setLights(0, Constants.LIGHTS_COUNT, 0, 100, 0);
+		} else {if(lights != null) {
+			lights.lightsOut();
+		} }
+		
 		//getting desired robot angle
-		if (dtvalues.getY() >= Field.SPEAKER_Y) {
-			double thetaAbove = /*180 - */Math.toDegrees(Math.asin(speakerA / speakerDist))+90;
+		if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
+			if (dtvalues.getY() >= Field.BLUE_SPEAKER_Y) {
+				//the robot is to the left of the speaker
+				double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
+				m_desiredRobotAngle = thetaAbove;
+			}
+			else{
+				double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
+				m_desiredRobotAngle = thetaBelow;
+			} 
+		} else {
+		if (dtvalues.getY() >= Field.RED_SPEAKER_Y) {
+			//the robot is to the left of the speaker
+			double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
 			m_desiredRobotAngle = thetaAbove;
 		}
 		else{
-			double thetaBelow = /*180 + */270-Math.toDegrees(Math.asin(speakerA / speakerDist));
+			double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
 			m_desiredRobotAngle = thetaBelow;
 		}
-		SmartDashboard.putNumber("just angle", Math.toDegrees(Math.asin(speakerA / speakerDist)));
+		// m_desiredRobotAngle = m_desiredRobotAngle + 180;
+		}
+		SmartDashboard.putNumber("just angle", Math.toDegrees(Math.asin(deltaX / speakerDist)));
+		SmartDashboard.putNumber("desired angle", m_desiredRobotAngle);
 		return m_desiredRobotAngle;
 	}
-@Override
+	
+	public double calculateSpeakerAngleMoving(){
+		dtvalues = this.getPose();
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
+		//triangle for robot angle
+		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+			deltaY = Math.abs(dtvalues.getY() - Field.RED_SPEAKER_Y);
+		} else {
+			deltaY = Math.abs(dtvalues.getY() - Field.BLUE_SPEAKER_Y);
+		}
+		deltaX = Math.abs(dtvalues.getX() - Field.SPEAKER_X);
+		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+		SmartDashboard.putNumber("dist to speakre", speakerDist);
+	
+		shootingTime = speakerDist/shootingSpeed; //calculates how long the note will take to reach the target
+		currentXSpeed = this.getChassisSpeeds().vxMetersPerSecond;
+		currentYSpeed = this.getChassisSpeeds().vyMetersPerSecond;
+		targetOffset = new Translation2d(currentXSpeed*shootingTime, currentYSpeed*shootingTime); 
+		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
+		
+		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed
+		offsetSpeakerX = deltaX-targetOffset.getX();
+		offsetSpeakerY = deltaY-targetOffset.getY();
+		adjustedTarget = new Translation2d(offsetSpeakerX, offsetSpeakerY);
+		offsetSpeakerdist = Math.sqrt(Math.pow(offsetSpeakerX, 2) + Math.pow(offsetSpeakerY, 2));
+		if(offsetSpeakerdist<Field.MAX_SHOOTING_DISTANCE && lightsExist) {
+			lights.setLights(0, Constants.LIGHTS_COUNT, 0, 100, 0);
+		} else {if(lightsExist) {
+			lights.lightsOut();
+		}}
+		SmartDashboard.putString("offset amount", targetOffset.toString());
+		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
+		//getting desired robot angle
+		if (alliance.get() == Alliance.Blue) {
+			if (dtvalues.getY() >= Field.BLUE_SPEAKER_Y-targetOffset.getY()) {
+				double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
+				m_desiredRobotAngle = thetaAbove;
+			}
+			else{
+				double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
+				m_desiredRobotAngle = thetaBelow;
+		} } else {
+			if (dtvalues.getY() >= Field.RED_SPEAKER_Y) {
+				double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
+				m_desiredRobotAngle = thetaAbove;
+			}
+			else{
+				double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
+				m_desiredRobotAngle = thetaBelow;
+			}
+		}
+		SmartDashboard.putNumber("just angle to offset", Math.toDegrees(Math.asin(offsetSpeakerX / offsetSpeakerdist)));
+
+		return m_desiredRobotAngle;
+	}
+	@Override
 	public void periodic() {
+		SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
 		updateOdometry();
 		ShooterSubsystem.setDTPose(getPose());
 		ShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());   
@@ -276,5 +376,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//for testing RotateRobot:
 		SmartDashboard.putNumber("loopedHeading", getHeadingLooped());
 		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngle());
+
+		SmartDashboard.putNumber("calculated angle while moving", calculateSpeakerAngleMoving());
 	}
 }

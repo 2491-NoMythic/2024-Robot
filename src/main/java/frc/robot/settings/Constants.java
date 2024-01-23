@@ -260,6 +260,7 @@ public static final class ShooterConstants{
   public static final int SHOOTER_2_MOTORID = 2491;
   public static final int PITCH_MOTOR_ID = 2491;
   public static final double SHOOTER_MOTOR_POWER = 1;
+  public static final double SHOOTING_SPEED_MPS = 10;
 
 
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
@@ -393,18 +394,19 @@ public static final class CTREConfigs {
   }
 
   public final class Field{
-    public static final double SPEAKER_Y = 5.612;
-    public static final double BLUE_SPEAKER_X = 0.23;
-    public static final double RED_SPEAKER_X = 16.412;
+    public static final double BLUE_SPEAKER_Y = 5.612;
+    public static final double RED_SPEAKER_Y = 2.636;
+    public static final double SPEAKER_X = 0.23;//16.412;
     public static final double SPEAKER_Z = 2.045; //height of opening
+    public static final double MAX_SHOOTING_DISTANCE = 2491;
 
     public static final double AMPLIFIER_ANGLE = 110;
 
   }
 
 public final class Vision{
-  public static final String APRILTAG_LIMELIGHT_NAME = "AprilLimelight";
-  public static final String OBJ_DETECITON_LIMELIGHT_NAME = "NeuralLimelight";
+  public static final String APRILTAG_LIMELIGHT_NAME = "limelight-april";
+  public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
 
 
   public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
@@ -417,4 +419,5 @@ public final class Vision{
   public static final double K_DETECTOR_TA_I = 0;
   public static final double K_DETECTOR_TA_D = 0;
 }
+public static final int LIGHTS_COUNT = 2491;
 }

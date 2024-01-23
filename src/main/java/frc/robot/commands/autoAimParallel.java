@@ -29,7 +29,7 @@ public class autoAimParallel extends ParallelCommandGroup {
     m_drivetrain = drivetrain;
     // m_ShooterSubsystem = shooterSubsystem;
 
-    addRequirements(drivetrain);
+    ;
     
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
