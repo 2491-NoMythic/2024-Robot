@@ -47,7 +47,6 @@ public class AimRobotMoving extends Command {
         // Called when the command is initially scheduled.
         @Override
         public void initialize() {
-          speedController.setSetpoint(0);
           SmartDashboard.putBoolean("isRotateRunning", true);
           
         }
@@ -55,17 +54,22 @@ public class AimRobotMoving extends Command {
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute() {
-        desiredRobotAngle = m_drivetrain.calculateSpeakerAngle();
+          desiredRobotAngle = m_drivetrain.calculateSpeakerAngle();
+          speedController.setSetpoint(desiredRobotAngle);
         //move robot to desired angle
-        this.currentHeading = m_drivetrain.getHeadingDegrees();
+        this.currentHeading = m_drivetrain.getGyroscopeRotation().getDegrees();
 
-        differenceAngle = (desiredRobotAngle - this.currentHeading);
-        m_drivetrain.drive(new ChassisSpeeds(
+        m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
           translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
           translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-          speedController.calculate(differenceAngle)));
+          speedController.calculate(currentHeading),
+          m_drivetrain.getGyroscopeRotation()));
+        // m_drivetrain.drive(new ChassisSpeeds(
+        //   translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+        //   translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+        //   speedController.calculate(differenceAngle)));
 
-        SmartDashboard.putNumber("current Heading", m_drivetrain.getHeadingDegrees()%360);
+        SmartDashboard.putNumber("current Heading", m_drivetrain.getGyroscopeRotation().getDegrees()%360);
         SmartDashboard.putNumber("difference", differenceAngle);
         SmartDashboard.putNumber("desired angle", desiredRobotAngle);
         SmartDashboard.putNumber("PID calculated output", speedController.calculate(differenceAngle));
