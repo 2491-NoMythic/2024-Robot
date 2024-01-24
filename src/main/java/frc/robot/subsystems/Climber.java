@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
  import com.revrobotics.SparkRelativeEncoder;
- import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -22,12 +25,16 @@ public class Climber extends SubsystemBase {
   RelativeEncoder climbEncoderL;
   double speed;
   double voltage;
+  SparkLimitSwitch limitSwitchR;
+  SparkLimitSwitch limitSwitchL;
   /** Creates a new Climber. */
   public Climber() {
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
     climbMotorL = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_LEFT, MotorType.kBrushless);
     climbEncoderR = climbMotorR.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
     climbEncoderL = climbMotorL.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
+    limitSwitchR = climbMotorR.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    limitSwitchL = climbMotorL.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
     climbMotorL.setIdleMode(IdleMode.kBrake);
     climbMotorR.setIdleMode(IdleMode.kBrake);
   }
@@ -53,5 +60,9 @@ public class Climber extends SubsystemBase {
  public double getLeftRPM(){
   return climbEncoderL.getVelocity();
  }
+
+ public boolean isClimberIn(){
+  return limitSwitchR.isPressed() && limitSwitchL.isPressed();
+}
 
 }
