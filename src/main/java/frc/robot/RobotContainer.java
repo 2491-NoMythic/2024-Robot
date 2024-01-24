@@ -35,11 +35,14 @@ import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.RotateRobot;
 import frc.robot.commands.autoAimParallel;
+import frc.robot.commands.goToPose.GoToAmp;
+import frc.robot.commands.goToPose.GoToNearestClimbSpot;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -83,8 +86,8 @@ public class RobotContainer {
   private Limelight limelight;
   private IntakeDirection iDirection;
   private Pigeon2 pigeon;
-
-//BA means B for blue alliance and A amp-side. S is source-side, and M is middle.
+  public SendableChooser<String> climbSpotChooser;
+//BA means B for blue alliance and A is for amp-chain. S is source-chain, and M is middle.
   private Command climbBA; 
   private Command climbBM; 
   private Command climbBS; 
@@ -107,16 +110,33 @@ public class RobotContainer {
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
-
     driveTrainInst();
     limelightInit();
+    autoInit();
+
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(climberExists) {climberInst();}
+    climbSpotChooserInit();
     // Configure the trigger bindings
     configureBindings();
   }
+  private void climbSpotChooserInit() {
+    climbSpotChooser = new SendableChooser<String>();
+    climbSpotChooser.addOption("Climb L-Chain Right", "L-Chain Right");
+    climbSpotChooser.addOption("Climb L-Chain Middle", "L-Chain Middle");
+    climbSpotChooser.addOption("Climb L-Chain Left", "L-Chain Left");
 
+
+    climbSpotChooser.addOption("Climb Mid-Chain Left", "Mid-Chain Left");
+    climbSpotChooser.addOption("Climb Mid-Chain Right", "Mid-Chain Right");
+    climbSpotChooser.addOption("Climb Mid-Chain Middle", "Mid-Chain Middle");
+
+    climbSpotChooser.addOption("Climb R-Chain Left", "R-Chain Left");
+    climbSpotChooser.addOption("Climb R-Chain Right", "R-Chain Right");
+    climbSpotChooser.addOption("Climb R-Chain Middle", "R-Chain Middle");
+    SmartDashboard.putData(climbSpotChooser);
+  }
   private void driveTrainInst() {
     driveTrain = new DrivetrainSubsystem();
     defaultDriveCommand = new Drive(
@@ -138,8 +158,7 @@ public class RobotContainer {
   }
   private void autoInit() {
     configureDriveTrain();
-    PathPlannerPath amPath = PathPlannerPath.fromPathFile(PathConstants.PATH_PLAN_AMP);
-    climbBA = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BS_POSE, DEFAUL_PATH_CONSTRAINTS);
+   /*  climbBA = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BS_POSE, DEFAUL_PATH_CONSTRAINTS);
     climbBM = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BM_POSE, DEFAUL_PATH_CONSTRAINTS);
     climbBS = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BS_POSE, DEFAUL_PATH_CONSTRAINTS);
     climbRA = AutoBuilder.pathfindToPose(PathConstants.CLIMB_RA_POSE, DEFAUL_PATH_CONSTRAINTS);
@@ -147,7 +166,7 @@ public class RobotContainer {
     climbRS = AutoBuilder.pathfindToPose(PathConstants.CLIMB_RS_POSE, DEFAUL_PATH_CONSTRAINTS);
     ampRed_Go = AutoBuilder.pathfindToPose(PathConstants.AMP_RED_POSE, DEFAUL_PATH_CONSTRAINTS);
     ampBlue_Go = AutoBuilder.pathfindToPose(PathConstants.AMP_BLUE_POSE, DEFAUL_PATH_CONSTRAINTS);
-
+*/
     SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
   }
@@ -173,30 +192,22 @@ public class RobotContainer {
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     SmartDashboard.putData(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-    new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
-    // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
-    new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
+    // new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
+    // // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
+    // new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
 
-    new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
-    new Trigger(operatorController::getCrossButtonPressed).onTrue(new ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));
+    if(shooterExists){new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));}
+    if(climberExists) {new Trigger(operatorController::getCrossButtonPressed).onTrue(new ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));}
     //Intake bindings
-    new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
-    new Trigger(operatorController::getR1Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
-    new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
+    // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
+    // new Trigger(operatorController::getR1Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
+    // new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
     //Path finding is pretty epic. It was a dark and stormy night. I was waiting, at my computer in the programming room.
     // More specifically, I was waiting for Rowan, who was working with sequential command groups. I called over to Rowan if he could come help soon, and he answered.
     //but his voice sounded kinda weird. I didn't think much of it at the time
-    if (DriverStation.getAlliance().get() == Alliance.Red) {
-    new Trigger(()->driverController.getPOV() == 0).onTrue(climbRA);
-    new Trigger(()->driverController.getPOV() == 90).onTrue(climbRS);
-    new Trigger(()->driverController.getPOV() == 180).onTrue(climbRS);
-    new Trigger(()->driverController.getL2Button()).onTrue(ampRed_Go);
-  } else {
-    new Trigger(()->driverController.getPOV() == 0).onTrue(climbBA);
-    new Trigger(()->driverController.getPOV() == 90).onTrue(climbBS);
-    new Trigger(()->driverController.getPOV() == 180).onTrue(climbBS);
-    new Trigger(()->driverController.getL2Button()).onTrue(ampBlue_Go);
-    }
+    new Trigger(driverController::getTriangleButton).onTrue(new GoToNearestClimbSpot(driveTrain, climbSpotChooser));
+    new Trigger(driverController::getCrossButton).onTrue(new GoToAmp(driveTrain, ()->DriverStation.getAlliance().get().equals(Alliance.Red)));
+
 
     //for testing Rotate Robot command
     };
