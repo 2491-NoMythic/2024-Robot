@@ -40,7 +40,7 @@ public class IndexCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Sensor.noseeing()) {
+    if (m_Indexer) {
       intake.intakeYes(1);
       m_Indexer.holderRetrieve(0.5);
     } else {

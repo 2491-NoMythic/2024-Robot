@@ -2,7 +2,8 @@ package frc.robot.subsystems;
  
 import com.revrobotics.CANSparkMax;
  import com.revrobotics.RelativeEncoder;
- import com.revrobotics.SparkPIDController;
+import com.revrobotics.Rev2mDistanceSensor;
+import com.revrobotics.SparkPIDController;
  import com.revrobotics.SparkRelativeEncoder;
  import com.revrobotics.CANSparkBase.ControlType;
  import com.revrobotics.CANSparkBase.IdleMode;
@@ -15,6 +16,7 @@ public class IndexerSubsystem extends SubsystemBase{
     CANSparkMax holder2;
     CANSparkMax feeder1;
     CANSparkMax feeder2;
+    Rev2mDistanceSensor DistanceSensor;
     //sensor Sensorthingy;
     boolean isHolding;
     public IndexerSubsystem(){
