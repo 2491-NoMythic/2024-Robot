@@ -138,7 +138,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, operatorController::getL1Button, shooter, intake);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, shooter, intake);
   }
 
   private void autoInit() {
@@ -244,6 +244,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));
     NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));
-    NamedCommands.registerCommand("intakeOn", new InstantCommand(intake))
+    NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
   }
 }
