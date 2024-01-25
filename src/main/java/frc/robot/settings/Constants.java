@@ -14,7 +14,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.path.PathConstraints;
-import com.revrobotics.Rev2mDistanceSensor.Port;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -312,7 +311,6 @@ public static final class IndexerConstants{
   public static final int HOLDER_1_MOTOR = 2491;
   public static final int HOLDER_2_MOTOR = 2491;
   public static final double INDEXER_SPEED = 0.75;
-  public static final Port DIST_SENSOR_PORT = Port.kOnboard;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 2491;
