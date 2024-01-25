@@ -41,8 +41,8 @@ import java.util.function.BooleanSupplier;
   double differenceAngle;
 	 double currentHeading;
 	 double speakerDist;
-	 double speakerA;
-	 double speakerB;
+	 double deltaY;
+	 double deltaX;
 	 double m_DesiredShooterAngle;
  
    SparkPIDController shooterPID;
@@ -168,12 +168,12 @@ import java.util.function.BooleanSupplier;
 		//triangle for robot angle
 		Optional<Alliance> alliance = DriverStation.getAlliance();
 		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-			speakerA = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+			deltaY = Math.abs(dtvalues.getY() - Field.RED_SPEAKER_Y);
 		} else {
-			speakerA = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+			deltaY = Math.abs(dtvalues.getY() - Field.BLUE_SPEAKER_Y);
 		}
-		speakerB = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
-		speakerDist = Math.sqrt(Math.pow(speakerA, 2) + Math.pow(speakerB, 2));
+		deltaX = Math.abs(dtvalues.getX() - Field.SPEAKER_X);
+		speakerDist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
 	
 		shootingTime = speakerDist/shootingSpeed; //calculates how long the note will take to reach the target
@@ -183,8 +183,8 @@ import java.util.function.BooleanSupplier;
 		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
 		
 		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed
-		offsetSpeakerX = speakerA-targetOffset.getX();
-		offsetSpeakerY = speakerB-targetOffset.getY();
+		offsetSpeakerX = deltaX-targetOffset.getX();
+		offsetSpeakerY = deltaY-targetOffset.getY();
 		offsetSpeakerdist = Math.sqrt(Math.pow(offsetSpeakerX, 2) + Math.pow(offsetSpeakerY, 2));
 		SmartDashboard.putString("offset amount", targetOffset.toString());
 		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
