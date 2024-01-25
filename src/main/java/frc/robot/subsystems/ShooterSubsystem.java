@@ -9,7 +9,8 @@ import com.revrobotics.CANSparkMax;
  import com.revrobotics.SparkPIDController;
  import com.revrobotics.SparkRelativeEncoder;
  import com.revrobotics.CANSparkBase.ControlType;
- import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
@@ -86,6 +87,8 @@ import java.util.function.BooleanSupplier;
      shooter1.restoreFactoryDefaults();
      shooter2.follow(shooter1);
      shooter2.setInverted(true);
+     shooter1.setIdleMode(IdleMode.kCoast);
+     shooter2.setIdleMode(IdleMode.kCoast);
      
  
      encoder1 = shooter1.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4096);
