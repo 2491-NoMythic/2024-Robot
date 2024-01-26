@@ -86,17 +86,19 @@ public class RobotContainer {
   private Limelight limelight;
   private IntakeDirection iDirection;
   private Pigeon2 pigeon;
-  public SendableChooser<String> climbSpotChooser;
-//BA means B for blue alliance and A is for amp-chain. S is source-chain, and M is middle.
-  private Command climbBA; 
-  private Command climbBM; 
-  private Command climbBS; 
-  private Command climbRA; 
-  private Command climbRM; 
-  private Command climbRS; 
-  private Command ampRed_Go;
-  private Command ampBlue_Go;
 
+//BA means B for blue alliance and A amp-side. S is source-side, and M is middle.
+  private Command climbMidR; 
+  private Command climbMidM; 
+  private Command climbMidL; 
+  private Command climbAmpSideR; 
+  private Command climbAmpSideM; 
+  private Command climbAmpSideL; 
+  private Command climbSourceSideR; 
+  private Command climbSourceSideM; 
+  private Command climbSourceSideL; 
+  private Command goToAmp;
+  private SendableChooser<String> climbSpotChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -158,15 +160,36 @@ public class RobotContainer {
   }
   private void autoInit() {
     configureDriveTrain();
-   /*  climbBA = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BS_POSE, DEFAUL_PATH_CONSTRAINTS);
-    climbBM = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BM_POSE, DEFAUL_PATH_CONSTRAINTS);
-    climbBS = AutoBuilder.pathfindToPose(PathConstants.CLIMB_BS_POSE, DEFAUL_PATH_CONSTRAINTS);
-    climbRA = AutoBuilder.pathfindToPose(PathConstants.CLIMB_RA_POSE, DEFAUL_PATH_CONSTRAINTS);
-    climbRM = AutoBuilder.pathfindToPose(PathConstants.CLIMB_RM_POSE, DEFAUL_PATH_CONSTRAINTS);
-    climbRS = AutoBuilder.pathfindToPose(PathConstants.CLIMB_RS_POSE, DEFAUL_PATH_CONSTRAINTS);
-    ampRed_Go = AutoBuilder.pathfindToPose(PathConstants.AMP_RED_POSE, DEFAUL_PATH_CONSTRAINTS);
-    ampBlue_Go = AutoBuilder.pathfindToPose(PathConstants.AMP_BLUE_POSE, DEFAUL_PATH_CONSTRAINTS);
-*/
+    PathPlannerPath ampPath = PathPlannerPath.fromPathFile(PathConstants.PATH_PLAN_AMP);
+    PathPlannerPath climbMidRPath = PathPlannerPath.fromPathFile("climbMidR");
+    PathPlannerPath climbMidMPath = PathPlannerPath.fromPathFile("climbMidM");
+    PathPlannerPath climbMidLPath = PathPlannerPath.fromPathFile("climbMidL");
+    PathPlannerPath climbSourceSideRPath = PathPlannerPath.fromPathFile("climbSourceSideR");
+    PathPlannerPath climbSourceSideMPath = PathPlannerPath.fromPathFile("climbSourceSideM");
+    PathPlannerPath climbSourceSideLPath = PathPlannerPath.fromPathFile("climbSourceSideL");
+    PathPlannerPath climbAmpSideRPath = PathPlannerPath.fromPathFile("climbAmpSideR");
+    PathPlannerPath climbAmpSideMPath = PathPlannerPath.fromPathFile("climbAmpSideM");
+    PathPlannerPath climbAmpSideLPath = PathPlannerPath.fromPathFile("climbAmpSideL");
+    climbMidR = AutoBuilder.pathfindThenFollowPath(climbMidRPath, DEFAUL_PATH_CONSTRAINTS);
+    climbMidM = AutoBuilder.pathfindThenFollowPath(climbMidMPath, DEFAUL_PATH_CONSTRAINTS);
+    climbMidL = AutoBuilder.pathfindThenFollowPath(climbMidLPath, DEFAUL_PATH_CONSTRAINTS);
+    climbAmpSideR = AutoBuilder.pathfindThenFollowPath(climbAmpSideRPath, DEFAUL_PATH_CONSTRAINTS);
+    climbAmpSideM = AutoBuilder.pathfindThenFollowPath(climbAmpSideMPath, DEFAUL_PATH_CONSTRAINTS);
+    climbAmpSideL = AutoBuilder.pathfindThenFollowPath(climbAmpSideLPath, DEFAUL_PATH_CONSTRAINTS);
+    climbSourceSideR = AutoBuilder.pathfindThenFollowPath(climbSourceSideRPath, DEFAUL_PATH_CONSTRAINTS);
+    climbSourceSideM = AutoBuilder.pathfindThenFollowPath(climbSourceSideMPath, DEFAUL_PATH_CONSTRAINTS);
+    climbSourceSideL = AutoBuilder.pathfindThenFollowPath(climbSourceSideLPath, DEFAUL_PATH_CONSTRAINTS);
+    goToAmp = AutoBuilder.pathfindThenFollowPath(ampPath, DEFAUL_PATH_CONSTRAINTS);
+    climbSpotChooser = new SendableChooser<String>();
+    climbSpotChooser.addOption("AmpSideR", "AmpSideR");
+    climbSpotChooser.addOption("AmpSideM", "AmpSideM");
+    climbSpotChooser.addOption("AmpSideL", "AmpSideL");
+    climbSpotChooser.addOption("SourceSideR", "SourceSideR");
+    climbSpotChooser.addOption("SourceSideM", "SourceSideM");
+    climbSpotChooser.addOption("SourceSideL", "SourceSideL");
+    climbSpotChooser.addOption("MiddleR", "MiddleR");
+    climbSpotChooser.addOption("MiddleM", "MiddleM");
+    climbSpotChooser.addOption("MiddleL", "MiddleL");
     SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
   }
