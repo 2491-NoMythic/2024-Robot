@@ -404,7 +404,8 @@ public static final class CTREConfigs {
   }
 
 public final class Vision{
-  public static final String APRILTAG_LIMELIGHT_NAME = "limelight-april";
+  public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-april2";
+  public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-april3";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
 
 

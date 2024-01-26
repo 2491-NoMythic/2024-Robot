@@ -104,11 +104,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public double speakerDist;
 
 	Boolean lightsExist;
+	Limelight limelight;
 
 	public DrivetrainSubsystem(Lights lights, Boolean lightsExist) {
 		this.lights = lights;
 		this.lightsExist = lightsExist;
-
 
 		Preferences.initString("FL", "AUGIE");
 		Preferences.initString("FR", "AUGIE");
@@ -355,6 +355,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		return m_desiredRobotAngle;
 	}
+	public Pose2d getAverageBotPose(LimelightValues ll2, LimelightValues ll3) {
+		double ll2X = ll2.getbotPose().getX();
+		double ll3X = ll3.getbotPose().getX();
+		double ll2Y = ll2.getbotPose().getY();
+		double ll3Y = ll3.getbotPose().getY();
+		double ll2rotation = ll2.getbotPose().getRotation().getRadians();
+		double ll3rotation = ll3.getbotPose().getRotation().getRadians();
+		Rotation2d averageRotation = new Rotation2d((ll2rotation+ll3rotation)/2);
+		double averageX = (ll2X+ll3X)/2;
+		double averageY = (ll2Y+ll3Y)/2;
+		return new Pose2d(new Translation2d(averageX, averageY), averageRotation);
+	}
 	@Override
 	public void periodic() {
 		SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
@@ -362,12 +374,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		ShooterSubsystem.setDTPose(getPose());
 		ShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());   
 		if (SmartDashboard.getBoolean("use limelight", false)) {
-			LimelightValues visionData = new LimelightValues(LimelightHelpers.getLatestResults(Vision.APRILTAG_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.APRILTAG_LIMELIGHT_NAME));
-			Boolean isVisionValid = visionData.isResultValid;
-			Boolean isVisionTrustworthy = isVisionValid && visionData.isPoseTrustworthy(odometer.getEstimatedPosition());
-			SmartDashboard.putBoolean("visionValid", isVisionTrustworthy);
-			if (isVisionTrustworthy || ((SmartDashboard.getBoolean("trust limelight", false)) && isVisionValid)) {
-				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
+			LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
+			LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
+			Boolean isLL2VisionValid = ll2.isResultValid;
+			Boolean isLL3VisionValid = ll3.isResultValid;
+			Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
+			Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(odometer.getEstimatedPosition());
+			SmartDashboard.putBoolean("LL2visionValid", isLL2VisionTrustworthy);
+			SmartDashboard.putBoolean("LL3visionValid", isLL3VisionTrustworthy);
+			if (SmartDashboard.getBoolean("trust limelight", false)) {
+				if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getbotPose(), ll2.gettimestamp());}
+				if (!isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(ll3.getbotPose(), ll3.gettimestamp());}
+				if (isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
 			}
 		}
 		m_field.setRobotPose(odometer.getEstimatedPosition());
