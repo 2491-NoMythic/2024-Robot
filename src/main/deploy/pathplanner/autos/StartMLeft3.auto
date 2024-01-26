@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4649253051475237,
+      "y": 4.114397967513275
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue1Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueAmpShoot1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue2Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueAmpShoot2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue3PickupAmpSide"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueMiddleShoot3"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
