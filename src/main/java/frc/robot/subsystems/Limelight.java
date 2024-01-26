@@ -39,6 +39,9 @@ public class Limelight {
     public LimelightFiducialData getAprilTagValues(){
         return new LimelightFiducialData(LimelightHelpers.getLatestResults(Vision.APRILTAG_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.APRILTAG_LIMELIGHT_NAME));
     }
+    public LimelightValues getLimelightValues(String name) {
+      return new LimelightValues(LimelightHelpers.getLatestResults(name).targetingResults, LimelightHelpers.getTV(name));
+    }
     private LimelightDetectorData getNeuralDetectorValues(){
         return new LimelightDetectorData(LimelightHelpers.getLatestResults(Vision.OBJ_DETECITON_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.OBJ_DETECITON_LIMELIGHT_NAME));
     }
