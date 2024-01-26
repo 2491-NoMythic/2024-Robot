@@ -36,7 +36,7 @@ import frc.robot.commands.ManualShoot;
 import frc.robot.commands.RotateRobot;
 import frc.robot.commands.autoAimParallel;
 import frc.robot.commands.goToPose.GoToAmp;
-import frc.robot.commands.goToPose.GoToNearestClimbSpot;
+import frc.robot.commands.goToPose.GoToClimbSpot;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -125,18 +125,17 @@ public class RobotContainer {
   }
   private void climbSpotChooserInit() {
     climbSpotChooser = new SendableChooser<String>();
-    climbSpotChooser.addOption("Climb L-Chain Right", "L-Chain Right");
+    climbSpotChooser.addOption("Climb L-Chain Amp", "L-Chain Amp");
     climbSpotChooser.addOption("Climb L-Chain Middle", "L-Chain Middle");
-    climbSpotChooser.addOption("Climb L-Chain Left", "L-Chain Left");
+    climbSpotChooser.addOption("Climb L-Chain Source", "L-Chain Source");
 
-
-    climbSpotChooser.addOption("Climb Mid-Chain Left", "Mid-Chain Left");
-    climbSpotChooser.addOption("Climb Mid-Chain Right", "Mid-Chain Right");
+    climbSpotChooser.addOption("Climb Mid-Chain Source", "Mid-Chain Source");
+    climbSpotChooser.addOption("Climb Mid-Chain Amp", "Mid-Chain Amp");
     climbSpotChooser.addOption("Climb Mid-Chain Middle", "Mid-Chain Middle");
 
-    climbSpotChooser.addOption("Climb R-Chain Left", "R-Chain Left");
+    climbSpotChooser.addOption("Climb R-Chain Source", "R-Chain Source");
     climbSpotChooser.addOption("Climb R-Chain Right", "R-Chain Right");
-    climbSpotChooser.addOption("Climb R-Chain Middle", "R-Chain Middle");
+    climbSpotChooser.addOption("Climb R-Chain Amp", "R-Chain Amp");
     SmartDashboard.putData(climbSpotChooser);
   }
   private void driveTrainInst() {
@@ -160,36 +159,6 @@ public class RobotContainer {
   }
   private void autoInit() {
     configureDriveTrain();
-    PathPlannerPath ampPath = PathPlannerPath.fromPathFile(PathConstants.PATH_PLAN_AMP);
-    PathPlannerPath climbMidRPath = PathPlannerPath.fromPathFile("climbMidR");
-    PathPlannerPath climbMidMPath = PathPlannerPath.fromPathFile("climbMidM");
-    PathPlannerPath climbMidLPath = PathPlannerPath.fromPathFile("climbMidL");
-    PathPlannerPath climbSourceSideRPath = PathPlannerPath.fromPathFile("climbSourceSideR");
-    PathPlannerPath climbSourceSideMPath = PathPlannerPath.fromPathFile("climbSourceSideM");
-    PathPlannerPath climbSourceSideLPath = PathPlannerPath.fromPathFile("climbSourceSideL");
-    PathPlannerPath climbAmpSideRPath = PathPlannerPath.fromPathFile("climbAmpSideR");
-    PathPlannerPath climbAmpSideMPath = PathPlannerPath.fromPathFile("climbAmpSideM");
-    PathPlannerPath climbAmpSideLPath = PathPlannerPath.fromPathFile("climbAmpSideL");
-    climbMidR = AutoBuilder.pathfindThenFollowPath(climbMidRPath, DEFAUL_PATH_CONSTRAINTS);
-    climbMidM = AutoBuilder.pathfindThenFollowPath(climbMidMPath, DEFAUL_PATH_CONSTRAINTS);
-    climbMidL = AutoBuilder.pathfindThenFollowPath(climbMidLPath, DEFAUL_PATH_CONSTRAINTS);
-    climbAmpSideR = AutoBuilder.pathfindThenFollowPath(climbAmpSideRPath, DEFAUL_PATH_CONSTRAINTS);
-    climbAmpSideM = AutoBuilder.pathfindThenFollowPath(climbAmpSideMPath, DEFAUL_PATH_CONSTRAINTS);
-    climbAmpSideL = AutoBuilder.pathfindThenFollowPath(climbAmpSideLPath, DEFAUL_PATH_CONSTRAINTS);
-    climbSourceSideR = AutoBuilder.pathfindThenFollowPath(climbSourceSideRPath, DEFAUL_PATH_CONSTRAINTS);
-    climbSourceSideM = AutoBuilder.pathfindThenFollowPath(climbSourceSideMPath, DEFAUL_PATH_CONSTRAINTS);
-    climbSourceSideL = AutoBuilder.pathfindThenFollowPath(climbSourceSideLPath, DEFAUL_PATH_CONSTRAINTS);
-    goToAmp = AutoBuilder.pathfindThenFollowPath(ampPath, DEFAUL_PATH_CONSTRAINTS);
-    climbSpotChooser = new SendableChooser<String>();
-    climbSpotChooser.addOption("AmpSideR", "AmpSideR");
-    climbSpotChooser.addOption("AmpSideM", "AmpSideM");
-    climbSpotChooser.addOption("AmpSideL", "AmpSideL");
-    climbSpotChooser.addOption("SourceSideR", "SourceSideR");
-    climbSpotChooser.addOption("SourceSideM", "SourceSideM");
-    climbSpotChooser.addOption("SourceSideL", "SourceSideL");
-    climbSpotChooser.addOption("MiddleR", "MiddleR");
-    climbSpotChooser.addOption("MiddleM", "MiddleM");
-    climbSpotChooser.addOption("MiddleL", "MiddleL");
     SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
   }
@@ -228,8 +197,8 @@ public class RobotContainer {
     //Path finding is pretty epic. It was a dark and stormy night. I was waiting, at my computer in the programming room.
     // More specifically, I was waiting for Rowan, who was working with sequential command groups. I called over to Rowan if he could come help soon, and he answered.
     //but his voice sounded kinda weird. I didn't think much of it at the time
-    new Trigger(driverController::getTriangleButton).onTrue(new GoToNearestClimbSpot(driveTrain, climbSpotChooser));
-    new Trigger(driverController::getCrossButton).onTrue(new GoToAmp(driveTrain, ()->DriverStation.getAlliance().get().equals(Alliance.Red)));
+    new Trigger(driverController::getTriangleButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
+    new Trigger(driverController::getCrossButton).onTrue(new GoToAmp(driveTrain));
 
 
     //for testing Rotate Robot command

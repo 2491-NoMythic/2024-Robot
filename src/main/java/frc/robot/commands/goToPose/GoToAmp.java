@@ -9,6 +9,7 @@ import static frc.robot.settings.Constants.DriveConstants.DEFAUL_PATH_CONSTRAINT
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.PathConstants;
@@ -19,8 +20,7 @@ public class GoToAmp extends Command {
   /** Creates a new GoToAmp. */
   BooleanSupplier isAllianceRed;
   DrivetrainSubsystem driveTrain;
-  public GoToAmp(DrivetrainSubsystem drivetrain, BooleanSupplier isAllianceRedSupl) {
-    isAllianceRed = isAllianceRedSupl;
+  public GoToAmp(DrivetrainSubsystem drivetrain) {
     this.driveTrain = drivetrain;
     addRequirements(drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,12 +29,8 @@ public class GoToAmp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (isAllianceRed.getAsBoolean()) {
-      actualCommand = AutoBuilder.pathfindToPose(PathConstants.AMP_RED_POSE, DEFAUL_PATH_CONSTRAINTS);
-    }
-    else{
-      actualCommand = AutoBuilder.pathfindToPose(PathConstants.AMP_BLUE_POSE, DEFAUL_PATH_CONSTRAINTS);
-    }
+    PathPlannerPath ampPath = PathPlannerPath.fromPathFile("goToAmp");
+    actualCommand = AutoBuilder.pathfindThenFollowPath(ampPath, DEFAUL_PATH_CONSTRAINTS);
     actualCommand.initialize();
   }
 
