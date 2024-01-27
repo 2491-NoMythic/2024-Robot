@@ -4,27 +4,65 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
  import com.revrobotics.SparkRelativeEncoder;
- import com.revrobotics.CANSparkBase.ControlType;
- import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
-  CANSparkMax climbMotor;
-  RelativeEncoder climbEncoder;
+  CANSparkMax climbMotorR;
+  CANSparkMax climbMotorL;
+  RelativeEncoder climbEncoderR;
+  RelativeEncoder climbEncoderL;
   double speed;
+  double voltage;
+  SparkLimitSwitch limitSwitchR;
+  SparkLimitSwitch limitSwitchL;
   /** Creates a new Climber. */
-  public Climber(double speed) {
-    climbMotor = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR, MotorType.kBrushless);
-    climbEncoder = climbMotor.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
+  public Climber() {
+    climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
+    climbMotorL = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_LEFT, MotorType.kBrushless);
+    climbEncoderR = climbMotorR.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
+    climbEncoderL = climbMotorL.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
+    limitSwitchR = climbMotorR.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    limitSwitchL = climbMotorL.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    climbMotorL.setIdleMode(IdleMode.kBrake);
+    climbMotorR.setIdleMode(IdleMode.kBrake);
   }
  public void climberGo(double speed){
-  climbMotor.set(speed);
+  climbMotorR.set(speed);
+  climbMotorL.set(speed);
  }
+
+ public void climberStop(){
+  climbMotorR.set(0);
+  climbMotorL.set(0);
+ }
+
+ public void climberVoltage(double voltage){
+  climbMotorR.setVoltage(voltage);
+  climbMotorL.setVoltage(voltage);
+ }
+
+ public double getRightRPM(){
+  return climbEncoderR.getVelocity();
+ }
+
+ public double getLeftRPM(){
+  return climbEncoderL.getVelocity();
+ }
+
+ public boolean isClimberIn(){
+  return limitSwitchR.isPressed() && limitSwitchL.isPressed();
+}
 
 }

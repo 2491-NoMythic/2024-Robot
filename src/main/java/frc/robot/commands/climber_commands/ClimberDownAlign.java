@@ -2,48 +2,41 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.climber_commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Climber;
-import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
+import frc.robot.subsystems.Climber;
 
-public class RunClimberDown extends Command {
-  public Climber climber;
-  private double speed;
-  /** Creates a new RunClimber. */
-  public RunClimberDown(double speed, Climber climber) {
+public class ClimberDownAlign extends Command {
+  /** Creates a new ClimberDown. */
+  Climber m_climber;
+  
+  public ClimberDownAlign(Climber climber) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climber);
-    this.climber = climber;
+    m_climber = climber;
+
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    // Climb start
-
-    
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //Climber go climbing
-    climber.climberGo(speed);
+    m_climber.climberVoltage(ClimberConstants.CLIMBER_VOLTAGE_ALIGN);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //Climber no climbing
-    climber.climberGo(0);
+    m_climber.climberStop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_climber.getRightRPM() < ClimberConstants.CLIMBER_RPM && m_climber.getLeftRPM() < ClimberConstants.CLIMBER_RPM;
   }
 }

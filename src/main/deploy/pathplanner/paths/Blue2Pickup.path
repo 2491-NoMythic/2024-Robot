@@ -1,0 +1,60 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.652433485047149,
+        "y": 6.240174642511447
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.068445127881247,
+        "y": 6.101504094900082
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.808021381808529,
+        "y": 5.898120625070079
+      },
+      "prevControl": {
+        "x": 7.410499145322615,
+        "y": 6.018301766333263
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CollectNote2Blue"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -12.380756928807017,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 0,
+      "rotationDegrees": -13.172553423326905,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -16.460014812039997,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Collect Notes",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

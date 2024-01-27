@@ -20,11 +20,15 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import frc.robot.commands.AimRobotMoving;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ClimbCommandGroup;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+
+import frc.robot.settings.Constants.Field;
+import frc.robot.commands.IndexCommand;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
@@ -37,8 +41,11 @@ import frc.robot.commands.RotateRobot;
 import frc.robot.commands.autoAimParallel;
 import frc.robot.commands.goToPose.GoToAmp;
 import frc.robot.commands.goToPose.GoToClimbSpot;
+import frc.robot.commands.climber_commands.AutoClimb;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -46,6 +53,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -58,8 +66,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.AngleShooter;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.settings.IntakeDirection;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -75,17 +85,22 @@ public class RobotContainer {
   private final boolean intakeExists = Preferences.getBoolean("Intake", true);
   private final boolean shooterExists = Preferences.getBoolean("Shooter", true);
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
+  private final boolean lightsExist = Preferences.getBoolean("Lights", true);
+  private final boolean indexerExists = Preferences.getBoolean("Indexer", true);
 
   private DrivetrainSubsystem driveTrain;
   private IntakeSubsystem intake;
   private ShooterSubsystem shooter;
   private Drive defaultDriveCommand;
   private Climber climber;
+  private Lights lights;
   private PS4Controller driverController;
   private PS4Controller operatorController;
   private Limelight limelight;
   private IntakeDirection iDirection;
   private Pigeon2 pigeon;
+  private IndexCommand defaulNoteHandlingCommand;
+  private IndexerSubsystem indexer;
 
 //BA means B for blue alliance and A amp-side. S is source-side, and M is middle.
   private Command climbMidR; 
@@ -107,6 +122,8 @@ public class RobotContainer {
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
+    Preferences.initBoolean("Lights", false);
+    Preferences.initBoolean("Indexer", false);
 
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
@@ -120,6 +137,9 @@ public class RobotContainer {
     if(shooterExists) {shooterInst();}
     if(climberExists) {climberInst();}
     climbSpotChooserInit();
+    if(lightsExist) {lightsInst();}
+    if(indexerExists) {indexInit();}
+    if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
     // Configure the trigger bindings
     configureBindings();
   }
@@ -139,7 +159,7 @@ public class RobotContainer {
     SmartDashboard.putData(climbSpotChooser);
   }
   private void driveTrainInst() {
-    driveTrain = new DrivetrainSubsystem();
+    driveTrain = new DrivetrainSubsystem(lights, lightsExist);
     defaultDriveCommand = new Drive(
       driveTrain, 
       () -> driverController.getL1Button(),
@@ -149,14 +169,21 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(defaultDriveCommand);
   }
   private void shooterInst() {
-    shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
+    shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER, ()-> (operatorController.getPOV() == 0));
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
   }
   private void climberInst() {
-    climber = new Climber(ClimberConstants.CLIMBER_SPEED);
+    climber = new Climber();
   }
+  private void indexInit() {
+    indexer = new IndexerSubsystem();
+  }
+  private void indexCommandInst() {
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, shooter, intake);
+  }
+
   private void autoInit() {
     configureDriveTrain();
     SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
@@ -164,6 +191,9 @@ public class RobotContainer {
   }
   private void limelightInit() {
     limelight = Limelight.getInstance();
+  }
+  private void lightsInst() {
+    lights = new Lights(Constants.LIGHTS_COUNT-1);
   }
   
 
@@ -188,7 +218,6 @@ public class RobotContainer {
     // // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
     // new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
 
-    if(shooterExists){new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));}
     if(climberExists) {new Trigger(operatorController::getCrossButtonPressed).onTrue(new ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));}
     //Intake bindings
     // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
@@ -200,7 +229,26 @@ public class RobotContainer {
     new Trigger(driverController::getTriangleButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
     new Trigger(driverController::getCrossButton).onTrue(new GoToAmp(driveTrain));
 
+    // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
 
+    
+    new Trigger(driverController::getR1Button).whileTrue(new AimRobotMoving(
+      driveTrain,
+      () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      driverController::getR1Button));
+
+    // new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
+    
+    new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
+
+    new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+    new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
+    
+    // //Intake bindings
+    // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
+   // new Trigger(operatorController::getL2Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
+   // new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
     //for testing Rotate Robot command
     };
 
@@ -227,6 +275,9 @@ public class RobotContainer {
     return value;
   }
 
+  private double getAmpAngle() {
+    return Constants.Field.AMPLIFIER_ANGLE;
+  }
   private void configureDriveTrain() {
     AutoBuilder.configureHolonomic(
                 driveTrain::getPose, // Pose2d supplier
@@ -255,5 +306,20 @@ public class RobotContainer {
 
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
+    NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));
+    NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
+    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));
+    NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
   }
+  
+  public void teleopPeriodic() {
+    SmartDashboard.putData(driveTrain.getCurrentCommand());
+    driveTrain.calculateSpeakerAngle();
+  }
+
+  public void disabledPeriodic() {
+  
+  }
+
+  public void disabledInit() {}
 }

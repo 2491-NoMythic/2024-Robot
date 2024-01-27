@@ -36,8 +36,8 @@ public class Limelight {
     public static void useDetectorLimelight(boolean enabled) {
       aprilTagEnabled = enabled;
     }
-    public LimelightFiducialData getAprilTagValues(){
-        return new LimelightFiducialData(LimelightHelpers.getLatestResults(Vision.APRILTAG_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.APRILTAG_LIMELIGHT_NAME));
+    public LimelightValues getLimelightValues(String name) {
+      return new LimelightValues(LimelightHelpers.getLatestResults(name).targetingResults, LimelightHelpers.getTV(name));
     }
     private LimelightDetectorData getNeuralDetectorValues(){
         return new LimelightDetectorData(LimelightHelpers.getLatestResults(Vision.OBJ_DETECITON_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.OBJ_DETECITON_LIMELIGHT_NAME));
@@ -59,7 +59,6 @@ public class Limelight {
       }
     
       public void periodic() {
-        if (aprilTagEnabled) Limelight.latestAprilTagValues = getAprilTagValues();
         if (detectorEnabled) Limelight.latestDetectorValues = getNeuralDetectorValues();
       }
 }
