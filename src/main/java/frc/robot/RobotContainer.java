@@ -119,7 +119,7 @@ public class RobotContainer {
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     driveTrainInst();
     limelightInit();
-    autoInit();
+    
 
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
@@ -128,6 +128,7 @@ public class RobotContainer {
     if(lightsExist) {lightsInst();}
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
+    autoInit();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -202,37 +203,20 @@ public class RobotContainer {
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     SmartDashboard.putData(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-    // new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
-    // // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
-    // new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-
-    if(climberExists) {new Trigger(operatorController::getCrossButtonPressed).onTrue(new AutoClimb(climber));}
-    //Intake bindings
-    // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
-    // new Trigger(operatorController::getR1Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
-    // new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
-    //Path finding is pretty epic. It was a dark and stormy night. I was waiting, at my computer in the programming room.
-    // More specifically, I was waiting for Rowan, who was working with sequential command groups. I called over to Rowan if he could come help soon, and he answered.
-    //but his voice sounded kinda weird. I didn't think much of it at the time
     new Trigger(driverController::getTriangleButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
     new Trigger(driverController::getCrossButton).onTrue(new GoToAmp(driveTrain));
-
-    // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
-
-    
     new Trigger(driverController::getR1Button).whileTrue(new AimRobotMoving(
       driveTrain,
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getR1Button));
 
-    // new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-    
-    new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
-
-    new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-    new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
-    
+    if(shooterExists) {new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));}
+    if(climberExists) {
+      new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(operatorController::getCrossButtonPressed).onTrue(new AutoClimb(climber));
+    }
     // //Intake bindings
     // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
    // new Trigger(operatorController::getL2Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
@@ -294,10 +278,10 @@ public class RobotContainer {
 
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
-    NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));
-    NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
-    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));
-    NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
+    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));}
+    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
+    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));}
+    if(intakeExists) {NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));}
   }
   
   public void teleopPeriodic() {
