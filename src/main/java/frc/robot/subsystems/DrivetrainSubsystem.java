@@ -362,9 +362,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				m_desiredRobotAngle = thetaBelow;
 			}
 		}
-		SmartDashboard.putNumber("just angle to offset", Math.toDegrees(Math.asin(offsetSpeakerX / offsetSpeakerdist)));
 		MathRanNumber++;
-		SmartDashboard.putNumber("math ran #", MathRanNumber);
 		SmartDashboard.putString("adjusted target", adjustedTarget.toString());
 		return m_desiredRobotAngle;
 	}
