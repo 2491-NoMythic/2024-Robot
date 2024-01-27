@@ -54,7 +54,7 @@ public class AimRobotMoving extends Command {
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute() {
-          desiredRobotAngle = m_drivetrain.calculateSpeakerAngle();
+          desiredRobotAngle = m_drivetrain.calculateSpeakerAngleMoving();
           speedController.setSetpoint(desiredRobotAngle);
         //move robot to desired angle
         this.currentHeading = m_drivetrain.getGyroscopeRotation().getDegrees();
