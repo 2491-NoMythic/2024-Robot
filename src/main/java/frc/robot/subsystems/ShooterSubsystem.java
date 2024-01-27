@@ -183,9 +183,12 @@ import java.util.function.BooleanSupplier;
 		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
 		
 		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed
-		offsetSpeakerX = deltaX-targetOffset.getX();
-		offsetSpeakerY = deltaY-targetOffset.getY();
-		offsetSpeakerdist = Math.sqrt(Math.pow(offsetSpeakerX, 2) + Math.pow(offsetSpeakerY, 2));
+		offsetSpeakerX = Field.SPEAKER_X+targetOffset.getX();
+		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {offsetSpeakerY = Field.RED_SPEAKER_Y+targetOffset.getY();}
+		else {offsetSpeakerY = Field.BLUE_SPEAKER_Y+targetOffset.getY();}
+		double offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
+		double offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
+		offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaX, 2) + Math.pow(offsetDeltaY, 2));
 		SmartDashboard.putString("offset amount", targetOffset.toString());
 		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle
