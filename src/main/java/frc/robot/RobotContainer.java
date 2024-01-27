@@ -24,6 +24,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import frc.robot.commands.AimRobotMoving;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.Autos;
+import frc.robot.commands.CollectNote;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
 
@@ -298,6 +299,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));
     NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
+   if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, intake));}
   }
   
   public void teleopPeriodic() {
