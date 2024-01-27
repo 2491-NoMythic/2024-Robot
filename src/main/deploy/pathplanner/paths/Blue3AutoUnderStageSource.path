@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.428277420657405,
-        "y": 6.034183692299009
+        "x": 3.9896948365325304,
+        "y": 2.433470009797163
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.51936731789143,
-        "y": 5.992920747398125
+        "x": 4.165608331216663,
+        "y": 4.661707609129505
       },
       "isLocked": false,
-      "linkedName": "CollectNote2Blue"
+      "linkedName": "SourceSideBlueShoot"
     },
     {
       "anchor": {
-        "x": 4.276544769305755,
-        "y": 6.378845190122813
+        "x": 7.311335876233006,
+        "y": 4.1046482092964185
       },
       "prevControl": {
-        "x": 6.504518234261694,
-        "y": 6.748633317086454
+        "x": 6.138579245005459,
+        "y": 4.133967125077106
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SourceSideShoot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": -165.2564371635294,
-      "rotateFast": false
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0.0,
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
@@ -45,11 +45,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -164.20759647114264,
+    "rotation": 1.5911402711946643,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "to shooting pos",
+  "folder": "Collect Notes",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }
