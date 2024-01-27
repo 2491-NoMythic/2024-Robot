@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.087122174244349,
+      "y": 7.036539787365289
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeOn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CloseLeftPickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CloseMiddlePickupFromLeft"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CloseRightPickupFromMiddle"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.PS4Operator.*;
 
+import java.nio.file.Path;
 import java.util.function.BooleanSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
@@ -14,8 +15,10 @@ import static frc.robot.settings.Constants.DriveConstants.*;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import frc.robot.commands.AimRobotMoving;
@@ -30,12 +33,14 @@ import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.IntakeConstants;
-
+import frc.robot.settings.Constants.PathConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.RotateRobot;
 import frc.robot.commands.autoAimParallel;
+import frc.robot.commands.goToPose.GoToAmp;
+import frc.robot.commands.goToPose.GoToClimbSpot;
 import frc.robot.commands.climber_commands.AutoClimb;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -44,6 +49,7 @@ import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -95,7 +101,7 @@ public class RobotContainer {
   private Pigeon2 pigeon;
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
-
+  private SendableChooser<String> climbSpotChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -110,20 +116,36 @@ public class RobotContainer {
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
-
+    // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     driveTrainInst();
-    autoInit();
     limelightInit();
+    autoInit();
+
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(climberExists) {climberInst();}
+    climbSpotChooserInit();
     if(lightsExist) {lightsInst();}
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
     // Configure the trigger bindings
     configureBindings();
   }
+  private void climbSpotChooserInit() {
+    climbSpotChooser = new SendableChooser<String>();
+    climbSpotChooser.addOption("Climb L-Chain Amp", "L-Chain Amp");
+    climbSpotChooser.addOption("Climb L-Chain Middle", "L-Chain Middle");
+    climbSpotChooser.addOption("Climb L-Chain Source", "L-Chain Source");
 
+    climbSpotChooser.addOption("Climb Mid-Chain Source", "Mid-Chain Source");
+    climbSpotChooser.addOption("Climb Mid-Chain Amp", "Mid-Chain Amp");
+    climbSpotChooser.addOption("Climb Mid-Chain Middle", "Mid-Chain Middle");
+
+    climbSpotChooser.addOption("Climb R-Chain Source", "R-Chain Source");
+    climbSpotChooser.addOption("Climb R-Chain Right", "R-Chain Right");
+    climbSpotChooser.addOption("Climb R-Chain Amp", "R-Chain Amp");
+    SmartDashboard.putData(climbSpotChooser);
+  }
   private void driveTrainInst() {
     driveTrain = new DrivetrainSubsystem(lights, lightsExist);
     defaultDriveCommand = new Drive(
@@ -159,7 +181,7 @@ public class RobotContainer {
     limelight = Limelight.getInstance();
   }
   private void lightsInst() {
-    lights = new Lights(Constants.LIGHTS_COUNT-1);
+    lights = new Lights(Constants.LED_COUNT-1);
   }
   
 
@@ -180,6 +202,21 @@ public class RobotContainer {
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     SmartDashboard.putData(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
+    // new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()->SmartDashboard.putNumber("calculated robot angle", driveTrain.calculateSpeakerAngle())));
+    // // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
+    // new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
+
+    if(climberExists) {new Trigger(operatorController::getCrossButtonPressed).onTrue(new AutoClimb(climber));}
+    //Intake bindings
+    // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
+    // new Trigger(operatorController::getR1Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
+    // new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
+    //Path finding is pretty epic. It was a dark and stormy night. I was waiting, at my computer in the programming room.
+    // More specifically, I was waiting for Rowan, who was working with sequential command groups. I called over to Rowan if he could come help soon, and he answered.
+    //but his voice sounded kinda weird. I didn't think much of it at the time
+    new Trigger(driverController::getTriangleButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
+    new Trigger(driverController::getCrossButton).onTrue(new GoToAmp(driveTrain));
+
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
 
     
@@ -189,9 +226,8 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getR1Button));
 
-    new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
+    // new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
     
-    new Trigger(operatorController::getR1Button).onTrue(new AngleShooter(shooter, this::getAmpAngle));
     new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
 
     new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));

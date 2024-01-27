@@ -23,6 +23,22 @@
         "x": 4.572111136500266,
         "y": 1.4350420669953317
       },
+      "nextControl": {
+        "x": 5.802874109263657,
+        "y": -1.4482422802850352
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 14.783900564952129,
+        "y": 7.87016593976208
+      },
+      "prevControl": {
+        "x": 10.293387337107893,
+        "y": 3.2109618297385225
+      },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "SourceSideBlueShoot"

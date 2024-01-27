@@ -267,7 +267,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
 		if(speakerDist<Field.MAX_SHOOTING_DISTANCE && lightsExist) {
-			lights.setLights(0, Constants.LIGHTS_COUNT, 0, 100, 0);
+			lights.setLights(0, Constants.LED_COUNT, 0, 100, 0);
 		} else {if(lights != null) {
 			lights.lightsOut();
 		} }
@@ -326,7 +326,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		adjustedTarget = new Translation2d(offsetSpeakerX, offsetSpeakerY);
 		offsetSpeakerdist = Math.sqrt(Math.pow(offsetSpeakerX, 2) + Math.pow(offsetSpeakerY, 2));
 		if(offsetSpeakerdist<Field.MAX_SHOOTING_DISTANCE && lightsExist) {
-			lights.setLights(0, Constants.LIGHTS_COUNT, 0, 100, 0);
+			lights.setLights(0, Constants.LED_COUNT, 0, 100, 0);
 		} else {if(lightsExist) {
 			lights.lightsOut();
 		}}
