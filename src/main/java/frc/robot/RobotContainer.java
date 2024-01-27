@@ -101,18 +101,6 @@ public class RobotContainer {
   private Pigeon2 pigeon;
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
-
-//BA means B for blue alliance and A amp-side. S is source-side, and M is middle.
-  private Command climbMidR; 
-  private Command climbMidM; 
-  private Command climbMidL; 
-  private Command climbAmpSideR; 
-  private Command climbAmpSideM; 
-  private Command climbAmpSideL; 
-  private Command climbSourceSideR; 
-  private Command climbSourceSideM; 
-  private Command climbSourceSideL; 
-  private Command goToAmp;
   private SendableChooser<String> climbSpotChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
