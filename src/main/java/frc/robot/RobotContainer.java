@@ -218,7 +218,7 @@ public class RobotContainer {
     // // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain));
     // new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
 
-    if(climberExists) {new Trigger(operatorController::getCrossButtonPressed).onTrue(new ClimbCommandGroup(climber, ClimberConstants.CLIMBER_SPEED));}
+    if(climberExists) {new Trigger(operatorController::getCrossButtonPressed).onTrue(new AutoClimb(climber));}
     //Intake bindings
     // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
     // new Trigger(operatorController::getR1Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
