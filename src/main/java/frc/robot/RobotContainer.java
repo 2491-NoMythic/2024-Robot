@@ -283,7 +283,7 @@ public class RobotContainer {
     if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));}
     if(intakeExists) {NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));};
-    if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, intake));}
+    if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, intake, limelight));}
   }
   
   public void teleopPeriodic() {

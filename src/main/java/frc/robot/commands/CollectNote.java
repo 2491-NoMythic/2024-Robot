@@ -20,17 +20,19 @@ public class CollectNote extends Command {
   DrivetrainSubsystem drivetrain;
   IntakeSubsystem intake;
   LimelightDetectorData detectorData;
+  Limelight limelight;
 
   PIDController txController;
-  PIDController taController;
+  PIDController tyController;
 
   double tx;
-  double ta;
+  double ty;
   /** Creates a new CollectNote. */
-  public CollectNote(DrivetrainSubsystem drivetrain, IntakeSubsystem intake) {
+  public CollectNote(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, Limelight limelight) {
     addRequirements(drivetrain, intake);
     this.drivetrain = drivetrain;
     this.intake = intake;
+    this.limelight = limelight;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -41,14 +43,14 @@ public class CollectNote extends Command {
         K_DETECTOR_TX_P,
         K_DETECTOR_TX_I,
         K_DETECTOR_TX_D);
-    taController = new PIDController(
+    tyController = new PIDController(
         K_DETECTOR_TA_P,
         K_DETECTOR_TA_I,
         K_DETECTOR_TA_D);
     txController.setSetpoint(0);
-    taController.setSetpoint(0.5);
+    tyController.setSetpoint(0);
     txController.setTolerance(1, 0.25);
-    taController.setTolerance(1, 0.25);
+    tyController.setTolerance(1, 0.25);
 
   }
 
@@ -70,24 +72,26 @@ public class CollectNote extends Command {
     }
     
     tx = detectorData.tx;
-    ta = detectorData.ta;
-
-     if (taController.atSetpoint() && txController.atSetpoint()) {
-      drivetrain.stop();
-    } else {
-      //drives the robot forward faster if the object is taking up less of the screen, and turns it more based on how far away the object is from x=0
-      drivetrain.drive(new ChassisSpeeds(1/taController.calculate(ta), 0, txController.calculate(tx)));
-    }
+    ty = detectorData.ty;
+    
+    //drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
+    drivetrain.drive(new ChassisSpeeds(
+      0,
+      -tyController.calculate(ty),
+      txController.calculate(tx)));
   }
   
 
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.stop();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (taController.atSetpoint() && txController.atSetpoint());  }
+    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || !detectorData.isResultValid); 
+  }
 }
