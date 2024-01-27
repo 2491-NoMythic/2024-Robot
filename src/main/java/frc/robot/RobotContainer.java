@@ -229,10 +229,10 @@ public class RobotContainer {
 
     // new Trigger(driverController::getCrossButton).onTrue(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
     
-    new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
+    if(shooterExists) {new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));}
 
-    new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-    new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
+    if(climberExists) {new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+    new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));}
     
     // //Intake bindings
     // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
@@ -295,16 +295,17 @@ public class RobotContainer {
 
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
-    NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));
-    NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
-    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));
-    NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
-   if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, intake));}
+    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));
+    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));}
+    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));}
+    if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, intake));
+    NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));}
   }
   
   public void teleopPeriodic() {
     SmartDashboard.putData(driveTrain.getCurrentCommand());
     driveTrain.calculateSpeakerAngle();
+    SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
   }
 
   public void disabledPeriodic() {

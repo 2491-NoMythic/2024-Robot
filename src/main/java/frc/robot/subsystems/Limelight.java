@@ -39,9 +39,10 @@ public class Limelight {
     public LimelightValues getLimelightValues(String name) {
       return new LimelightValues(LimelightHelpers.getLatestResults(name).targetingResults, LimelightHelpers.getTV(name));
     }
-    private LimelightDetectorData getNeuralDetectorValues(){
+    public LimelightDetectorData getNeuralDetectorValues(){
         return new LimelightDetectorData(LimelightHelpers.getLatestResults(Vision.OBJ_DETECITON_LIMELIGHT_NAME).targetingResults, LimelightHelpers.getTV(Vision.OBJ_DETECITON_LIMELIGHT_NAME));
     }
+ 
     
     public void vision_thread(){
         try{
