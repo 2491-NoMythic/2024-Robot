@@ -33,8 +33,8 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
  
  public class ShooterSubsystem extends SubsystemBase {
-   CANSparkMax shooter1;
-   CANSparkMax shooter2;
+   CANSparkMax shooterR;
+   CANSparkMax shooterL;
    CANSparkMax pitchMotor;
    double runSpeed;
 
@@ -81,19 +81,19 @@ import java.util.function.BooleanSupplier;
    public ShooterSubsystem(double runSpeed, BooleanSupplier aimAtAmp) {
      SparkPIDController shooterPID;
      this.aimAtAmp = aimAtAmp;
-     shooter1 = new CANSparkMax(ShooterConstants.SHOOTER_1_MOTORID, MotorType.kBrushless);
-     shooter2 = new CANSparkMax(ShooterConstants.SHOOTER_2_MOTORID, MotorType.kBrushless);
+     shooterR = new CANSparkMax(ShooterConstants.SHOOTER_R_MOTORID, MotorType.kBrushless);
+     shooterL = new CANSparkMax(ShooterConstants.SHOOTER_L_MOTORID, MotorType.kBrushless);
      pitchMotor = new CANSparkMax(ShooterConstants.PITCH_MOTOR_ID, MotorType.kBrushless);
-     shooter1.restoreFactoryDefaults();
-     shooter2.follow(shooter1);
-     shooter2.setInverted(true);
-     shooter1.setIdleMode(IdleMode.kCoast);
-     shooter2.setIdleMode(IdleMode.kCoast);
+     shooterR.restoreFactoryDefaults();
+     shooterL.follow(shooterR);
+     shooterL.setInverted(true);
+     shooterR.setIdleMode(IdleMode.kCoast);
+     shooterL.setIdleMode(IdleMode.kCoast);
      
  
-     encoder1 = shooter1.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4096);
+     encoder1 = shooterR.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4096);
  
-    shooterPID = shooter1.getPIDController();
+    shooterPID = shooterR.getPIDController();
     pitchPID = pitchMotor.getPIDController();              
   
     pitchPID.setFF(pitchFeedForward);
@@ -146,11 +146,13 @@ import java.util.function.BooleanSupplier;
    
 
   public void shootThing(double runSpeed) {
-     shooter1.set(runSpeed);
+     shooterR.set(runSpeed);
+     shooterL.set(runSpeed);
    }
   public void turnOff(){
-     shooter1.set(0);
-   }
+     shooterR.set(0);
+     shooterL.set(0);
+    }
    public void pitchShooter(double pitchSpeed){
     pitchMotor.set(pitchSpeed);
   }
