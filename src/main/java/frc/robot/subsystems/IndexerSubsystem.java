@@ -7,11 +7,9 @@ import frc.robot.settings.Constants.IndexerConstants;
 
 public class IndexerSubsystem extends SubsystemBase {
     CANSparkMax m_IndexerMotor;
-    boolean Indexer;
 
     public IndexerSubsystem() {
-        CANSparkMax indexerMotor = new CANSparkMax(IndexerConstants.INDEXER_MOTOR, MotorType.kBrushless);
-        indexerMotor = m_IndexerMotor;
+        m_IndexerMotor = new CANSparkMax(IndexerConstants.INDEXER_MOTOR, MotorType.kBrushless);
     }
 
     public double getInchesFromSensor() {
