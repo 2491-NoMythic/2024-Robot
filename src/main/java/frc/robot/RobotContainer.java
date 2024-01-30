@@ -43,6 +43,7 @@ import frc.robot.commands.autoAimParallel;
 import frc.robot.commands.goToPose.GoToAmp;
 import frc.robot.commands.goToPose.GoToClimbSpot;
 import frc.robot.commands.climber_commands.AutoClimb;
+import frc.robot.commands.climber_commands.ClimberPullDown;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Lights;
@@ -217,7 +218,7 @@ public class RobotContainer {
     if(climberExists) {
       new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(operatorController::getCrossButtonPressed).onTrue(new AutoClimb(climber));
+      new Trigger(operatorController::getSquareButton).onTrue(new ClimberPullDown(climber));
     }
 
     // //Intake bindings
