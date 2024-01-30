@@ -218,7 +218,6 @@ public class RobotContainer {
     if(climberExists) {
       new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(operatorController::getCrossButtonPressed).onTrue(new AutoClimb(climber));
       new Trigger(operatorController::getSquareButton).onTrue(new ClimberPullDown(climber));
     }
 
