@@ -7,8 +7,10 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.Vision;
 import frc.robot.settings.LimelightDetectorData;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import static frc.robot.settings.Constants.DriveConstants.*;
@@ -18,21 +20,22 @@ import frc.robot.subsystems.Limelight;
 public class CollectNote extends Command {
 
   DrivetrainSubsystem drivetrain;
-  IntakeSubsystem intake;
   LimelightDetectorData detectorData;
   Limelight limelight;
+  double runsInvalid;
 
   PIDController txController;
   PIDController tyController;
+  SlewRateLimiter tyLimiter;
 
   double tx;
   double ty;
   /** Creates a new CollectNote. */
-  public CollectNote(DrivetrainSubsystem drivetrain, IntakeSubsystem intake, Limelight limelight) {
-    addRequirements(drivetrain, intake);
+  public CollectNote(DrivetrainSubsystem drivetrain, Limelight limelight) {
+    addRequirements(drivetrain);
     this.drivetrain = drivetrain;
-    this.intake = intake;
     this.limelight = limelight;
+    runsInvalid = 0;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -40,16 +43,17 @@ public class CollectNote extends Command {
   @Override
   public void initialize() {
     txController = new PIDController(
-        K_DETECTOR_TX_P,
-        K_DETECTOR_TX_I,
-        K_DETECTOR_TX_D);
+        Vision.K_DETECTOR_TX_P,
+        Vision.K_DETECTOR_TX_I,
+        Vision.K_DETECTOR_TX_D);
     tyController = new PIDController(
-        K_DETECTOR_TA_P,
-        K_DETECTOR_TA_I,
-        K_DETECTOR_TA_D);
+        Vision.K_DETECTOR_TY_P,
+        Vision.K_DETECTOR_TY_I,
+        Vision.K_DETECTOR_TY_D);
+    tyLimiter = new SlewRateLimiter( 1, -1, 0);
     txController.setSetpoint(0);
     tyController.setSetpoint(0);
-    txController.setTolerance(1, 0.25);
+    txController.setTolerance(3.5, 0.25);
     tyController.setTolerance(1, 0.25);
 
   }
@@ -65,19 +69,25 @@ public class CollectNote extends Command {
       return;
     }
     if (!detectorData.isResultValid) {
-
-      drivetrain.stop();
+      if (runsInvalid <= 10) { // don't stop imediately, in case only a couple frames were missed
+        drivetrain.drive(new ChassisSpeeds(tyLimiter.calculate(0), 0, 0));
+      } else {
+        drivetrain.stop();
+      }
       System.err.println("invalidDetectorData");
+      runsInvalid++;
       return;
+    } else {
+      runsInvalid = 0;
     }
     
     tx = detectorData.tx;
     ty = detectorData.ty;
     
-    //drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
+    // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
     drivetrain.drive(new ChassisSpeeds(
+      tyLimiter.calculate(-tyController.calculate(ty)),
       0,
-      -tyController.calculate(ty),
       txController.calculate(tx)));
   }
   
@@ -92,6 +102,6 @@ public class CollectNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || !detectorData.isResultValid); 
+    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>30); 
   }
 }

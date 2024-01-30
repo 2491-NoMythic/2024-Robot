@@ -88,6 +88,7 @@ public class RobotContainer {
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
   private final boolean lightsExist = Preferences.getBoolean("Lights", true);
   private final boolean indexerExists = Preferences.getBoolean("Indexer", true);
+  private final boolean useDetectorLimelight = Preferences.getBoolean("Detector Limelight", true);
 
   private DrivetrainSubsystem driveTrain;
   private IntakeSubsystem intake;
@@ -113,7 +114,8 @@ public class RobotContainer {
     Preferences.initBoolean("Shooter", false);
     Preferences.initBoolean("Lights", false);
     Preferences.initBoolean("Indexer", false);
-
+    Preferences.initBoolean("Detector Limelight", false);
+    
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
@@ -129,6 +131,7 @@ public class RobotContainer {
     if(lightsExist) {lightsInst();}
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
+    Limelight.useDetectorLimelight(useDetectorLimelight);
     autoInit();
     // Configure the trigger bindings
     configureBindings();
@@ -211,7 +214,8 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getR1Button));
-
+    new Trigger(driverController::getCircleButton).onTrue(new CollectNote(driveTrain, limelight));
+    new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
     if(shooterExists) {new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));}
     if(climberExists) {
       new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
@@ -283,7 +287,7 @@ public class RobotContainer {
     if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));}
     if(intakeExists) {NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));};
-    if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, intake, limelight));}
+    if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));}
   }
   
   public void teleopPeriodic() {
