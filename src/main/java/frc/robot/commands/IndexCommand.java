@@ -42,15 +42,15 @@ public class IndexCommand extends Command {
   public void execute() {
     if (m_Indexer.getInchesFromSensor()>8) {
       intake.intakeYes(1);
-      m_Indexer.holderRetrieve(0.5);
+      m_Indexer.on();
       shooter.turnOff();
     } else {
       intake.intakeOff();
-      m_Indexer.holderOff();
+      m_Indexer.off();
       shooter.shootThing(1);
     }
     if (shootButtonSupplier.getAsBoolean()) {
-      m_Indexer.feederFeed(0.5);
+      m_Indexer.on();
     }
   }
 

@@ -248,8 +248,8 @@ public final class Constants {
     public static final double k_PICKUP_NOTE_tx_D = 0;
   }
 public static final class ShooterConstants{
-  public static final int SHOOTER_1_MOTORID = 2491;
-  public static final int SHOOTER_2_MOTORID = 2491;
+  public static final int SHOOTER_R_MOTORID = 2491;
+  public static final int SHOOTER_L_MOTORID = 2491;
   public static final int PITCH_MOTOR_ID = 2491;
   public static final double SHOOTER_MOTOR_POWER = 1;
   public static final double SHOOTING_SPEED_MPS = 10;
@@ -298,11 +298,8 @@ public static final class ClimberConstants{
   public static final double CLIMBER_RPM = 0.1;
 }
 public static final class IndexerConstants{
-  public static final int FEEDER_1_MOTOR = 2491;
-  public static final int FEEDER_2_MOTOR = 2491;
-  public static final int HOLDER_1_MOTOR = 2491;
-  public static final int HOLDER_2_MOTOR = 2491;
-  public static final double INDEXER_SPEED = 0.75;
+  public static final int INDEXER_MOTOR = 2491;
+  public static final double INDEXER_SPEED = 2491;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 2491;
