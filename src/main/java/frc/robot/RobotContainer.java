@@ -278,7 +278,7 @@ public class RobotContainer {
                     new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0).getNorm(), //drive base radius
                     new ReplanningConfig()
                 ),
-                ()->DriverStation.getAlliance().equals(Alliance.Red),
+                ()->DriverStation.getAlliance().get().equals(Alliance.Red),
                 driveTrain
     );
   }
