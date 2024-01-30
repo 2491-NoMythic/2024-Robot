@@ -104,6 +104,7 @@ public class RobotContainer {
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
   private SendableChooser<String> climbSpotChooser;
+  private SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -179,8 +180,9 @@ public class RobotContainer {
 
   private void autoInit() {
     configureDriveTrain();
-    SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   private void limelightInit() {
     limelight = Limelight.getInstance();
@@ -241,7 +243,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return autoChooser.getSelected();
   }
 
   private double modifyAxis(double value, double deadband) {
@@ -284,10 +286,13 @@ public class RobotContainer {
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
     if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));}
-    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
-    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));}
+    if(indexerExists) {
+      NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));
+      NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));
+    }
     if(intakeExists) {NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));};
     if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));}
+    NamedCommands.registerCommand("print HIIII", new InstantCommand(()->System.err.println("HIIII")));
   }
   
   public void teleopPeriodic() {
