@@ -292,8 +292,8 @@ public class RobotContainer {
 
     if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));
 
-    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::feederOff, indexer));}
-    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.feederFeed(0.5), indexer));}
+    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
+    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(indexer::on, indexer));}
     if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
     NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));}
   }
