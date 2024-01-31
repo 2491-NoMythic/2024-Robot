@@ -24,13 +24,11 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	CANSparkMax pitchMotor;
 	SparkPIDController pitchPID;
 	CANcoder angleEncoder;
-	BooleanSupplier aimAtAmp;
 	double shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 	public static Pose2d dtvalues;
 	public static ChassisSpeeds DTChassisSpeeds;
 
-	public AngleShooterSubsystem(BooleanSupplier aimAtAmp) {
-		this.aimAtAmp = aimAtAmp;
+	public AngleShooterSubsystem() {
 		pitchMotor = new CANSparkMax(ShooterConstants.PITCH_MOTOR_ID, MotorType.kBrushless);
 
 		pitchPID = pitchMotor.getPIDController();
@@ -105,15 +103,5 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		return differenceAngle;
 	}
 
-	@Override
-	public void periodic() {
-		if (!aimAtAmp.getAsBoolean()) {
-			double desiredShooterAngleSpeed = calculateSpeakerAngle() * ShooterConstants.AUTO_AIM_SHOOTER_kP;
-			pitchShooter(desiredShooterAngleSpeed);
-		} else {
-			double differenceAmp = Field.AMPLIFIER_ANGLE - this.getShooterAngle();
-			double ampSpeed = differenceAmp * ShooterConstants.AUTO_AIM_SHOOTER_kP;
-			pitchShooter(ampSpeed);
-		}
-	}
+	
 }

@@ -21,6 +21,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import frc.robot.commands.AimShooter;
 import frc.robot.commands.AimRobotMoving;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.Autos;
@@ -167,7 +168,8 @@ public class RobotContainer {
   }
   private void shooterInst() {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
-    angleShooterSubsystem = new AngleShooterSubsystem(()-> (operatorController.getPOV() == 0));
+    angleShooterSubsystem = new AngleShooterSubsystem();
+    angleShooterSubsystem.setDefaultCommand(new AimShooter(angleShooterSubsystem, ()-> (operatorController.getPOV() == 0)));
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
