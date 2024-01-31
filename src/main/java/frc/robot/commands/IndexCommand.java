@@ -46,7 +46,7 @@ public class IndexCommand extends Command {
       shooter.turnOff();
     } else {
       intake.intakeOff();
-      if(shootButtonSupplier.getAsBoolean()) {
+      if(!shootButtonSupplier.getAsBoolean()) {
         m_Indexer.off();
       }
       shooter.shootThing(1);
