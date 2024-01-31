@@ -40,13 +40,15 @@ public class IndexCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_Indexer.getInchesFromSensor()>8) {
+    if (!m_Indexer.isNoteIn()) {
       intake.intakeYes(1);
       m_Indexer.on();
       shooter.turnOff();
     } else {
       intake.intakeOff();
-      m_Indexer.off();
+      if(!shootButtonSupplier.getAsBoolean()) {
+        m_Indexer.off();
+      }
       shooter.shootThing(1);
     }
     if (shootButtonSupplier.getAsBoolean()) {
