@@ -382,8 +382,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void periodic() {
 		SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
 		updateOdometry();
-		ShooterSubsystem.setDTPose(getPose());
-		ShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());   
+		AngleShooterSubsystem.setDTPose(getPose());
+		AngleShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());   
 		if (SmartDashboard.getBoolean("use limelight", false)) {
 			LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
 			LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);

@@ -9,7 +9,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.ShooterConstants;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.AngleShooterSubsystem;
 
 public class AngleShooter extends Command {
   /** Creates a new AngleShooter. */
@@ -18,11 +18,11 @@ public class AngleShooter extends Command {
   double currentShooterAngle;
   double differenceAngle;
   double angleSpeed;
-  ShooterSubsystem m_shooter;
+  AngleShooterSubsystem m_shooter;
   double desiredShooterAngleSpeed;
-
   
-  public AngleShooter(ShooterSubsystem shooter, DoubleSupplier desiredShooterAngleSupplier) {
+  
+  public AngleShooter(AngleShooterSubsystem shooter, DoubleSupplier desiredShooterAngleSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.\
     m_shooter = shooter;
     this.desiredShooterAngleSupplier = desiredShooterAngleSupplier;

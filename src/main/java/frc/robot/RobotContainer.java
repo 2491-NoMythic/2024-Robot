@@ -36,6 +36,7 @@ import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.PathConstants;
 import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.RotateRobot;
@@ -94,6 +95,7 @@ public class RobotContainer {
   private DrivetrainSubsystem driveTrain;
   private IntakeSubsystem intake;
   private ShooterSubsystem shooter;
+  private AngleShooterSubsystem angleShooterSubsystem;
   private Drive defaultDriveCommand;
   private Climber climber;
   private Lights lights;
@@ -164,7 +166,8 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(defaultDriveCommand);
   }
   private void shooterInst() {
-    shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER, ()-> (operatorController.getPOV() == 0));
+    shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
+    angleShooterSubsystem = new AngleShooterSubsystem(()-> (operatorController.getPOV() == 0));
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
