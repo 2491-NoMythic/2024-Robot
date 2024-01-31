@@ -89,6 +89,7 @@ public class RobotContainer {
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
   private final boolean lightsExist = Preferences.getBoolean("Lights", true);
   private final boolean indexerExists = Preferences.getBoolean("Indexer", true);
+  private final boolean useDetectorLimelight = Preferences.getBoolean("Detector Limelight", true);
 
   private DrivetrainSubsystem driveTrain;
   private IntakeSubsystem intake;
@@ -104,6 +105,7 @@ public class RobotContainer {
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
   private SendableChooser<String> climbSpotChooser;
+  private SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -114,7 +116,8 @@ public class RobotContainer {
     Preferences.initBoolean("Shooter", false);
     Preferences.initBoolean("Lights", false);
     Preferences.initBoolean("Indexer", false);
-
+    Preferences.initBoolean("Detector Limelight", false);
+    
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
@@ -130,6 +133,7 @@ public class RobotContainer {
     if(lightsExist) {lightsInst();}
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
+    Limelight.useDetectorLimelight(useDetectorLimelight);
     autoInit();
     // Configure the trigger bindings
     configureBindings();
@@ -177,8 +181,9 @@ public class RobotContainer {
 
   private void autoInit() {
     configureDriveTrain();
-    SmartDashboard.putData("Auto Chooser", AutoBuilder.buildAutoChooser());
     registerNamedCommands();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   private void limelightInit() {
     limelight = Limelight.getInstance();
@@ -213,6 +218,8 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getR1Button));
 
+    new Trigger(driverController::getCircleButton).onTrue(new CollectNote(driveTrain, limelight));
+    new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
 
     if(shooterExists) {new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));}
     if(climberExists) {
@@ -240,7 +247,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return autoChooser.getSelected();
   }
 
   private double modifyAxis(double value, double deadband) {
@@ -275,17 +282,19 @@ public class RobotContainer {
                     new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0).getNorm(), //drive base radius
                     new ReplanningConfig()
                 ),
-                ()->DriverStation.getAlliance().equals(Alliance.Red),
+                ()->DriverStation.getAlliance().get().equals(Alliance.Red),
                 driveTrain
     );
   }
 
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
+
     if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));
+
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
-    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.on(), indexer));}
-    if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, intake));
+    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(indexer::on, indexer));}
+    if(intakeExists) {NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
     NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));}
   }
  

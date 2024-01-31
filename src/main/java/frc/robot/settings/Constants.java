@@ -237,14 +237,6 @@ public final class Constants {
     public static final double k_BALANCE_TOLORANCE_DEGREES = 10.0;
     public static final double k_BALANCE_TOLORANCE_DEG_PER_SEC = 1;
 
-    public static final double K_DETECTOR_TA_P = 1;
-    public static final double K_DETECTOR_TA_I = 0;
-    public static final double K_DETECTOR_TA_D = 0;
-
-    public static final double K_DETECTOR_TX_P = 1;
-    public static final double K_DETECTOR_TX_I = 0;
-    public static final double K_DETECTOR_TX_D = 0;
-
     public static final PathConstraints DEFAUL_PATH_CONSTRAINTS = new PathConstraints(2, 1.5, Math.toRadians(360), Math.toRadians(360));
 
     public static final double k_PICKUP_NOTE_ta_P = 1;
@@ -412,9 +404,9 @@ public final class Vision{
   public static final double K_DETECTOR_TX_I = 0;
   public static final double K_DETECTOR_TX_D = 0;
   
-  public static final double K_DETECTOR_TA_P = 0.1;
-  public static final double K_DETECTOR_TA_I = 0;
-  public static final double K_DETECTOR_TA_D = 0;
+  public static final double K_DETECTOR_TY_P = 0.1;
+  public static final double K_DETECTOR_TY_I = 0;
+  public static final double K_DETECTOR_TY_D = 0;
 }
 public final class PathConstants{
   //Welcome, to  Pathconstantic Park

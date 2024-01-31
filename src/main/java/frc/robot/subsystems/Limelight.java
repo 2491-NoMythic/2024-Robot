@@ -31,10 +31,10 @@ public class Limelight {
       aprilTagEnabled = enabled;
     }
     public static void forceTrustAprilTag(boolean enabled) {
-      aprilTagEnabled = enabled;
+      aprilTagForceTrust = enabled;
     }
     public static void useDetectorLimelight(boolean enabled) {
-      aprilTagEnabled = enabled;
+      detectorEnabled = enabled;
     }
     public LimelightValues getLimelightValues(String name) {
       return new LimelightValues(LimelightHelpers.getLatestResults(name).targetingResults, LimelightHelpers.getTV(name));
