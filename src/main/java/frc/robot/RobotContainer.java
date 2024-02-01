@@ -4,8 +4,7 @@
 
 package frc.robot;
 
-import static frc.robot.settings.Constants.PS4Driver.*;
-import static frc.robot.settings.Constants.PS4Operator.*;
+import static frc.robot.settings.Constants.Xboxdriver.*;
 
 import java.nio.file.Path;
 import java.util.function.BooleanSupplier;
@@ -37,6 +36,7 @@ import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.PathConstants;
 import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.settings.Constants.Xboxdriver;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
@@ -62,6 +62,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.commands.Drive;
 import edu.wpi.first.math.MathUtil;
@@ -73,6 +75,9 @@ import frc.robot.commands.ManualShoot;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.settings.IntakeDirection;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.XboxController.Axis;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 
 /**
@@ -100,8 +105,7 @@ public class RobotContainer {
   private Drive defaultDriveCommand;
   private Climber climber;
   private Lights lights;
-  private PS4Controller driverController;
-  private PS4Controller operatorController;
+  private XboxController m_Controller;
   private Limelight limelight;
   private IntakeDirection iDirection;
   private Pigeon2 pigeon;
@@ -109,7 +113,7 @@ public class RobotContainer {
   private IndexerSubsystem indexer;
   private SendableChooser<String> climbSpotChooser;
   private SendableChooser<Command> autoChooser;
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  // Replace with CommandPS4m_Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -121,8 +125,7 @@ public class RobotContainer {
     Preferences.initBoolean("Indexer", false);
     Preferences.initBoolean("Detector Limelight", false);
     
-    driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
-    operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
+    m_Controller = new XboxController(DRIVE_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     driveTrainInst();
@@ -160,16 +163,16 @@ public class RobotContainer {
     driveTrain = new DrivetrainSubsystem(lights, lightsExist);
     defaultDriveCommand = new Drive(
       driveTrain, 
-      () -> driverController.getL1Button(),
-      () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
+      () -> m_Controller.getLeftBumper(),
+      () -> modifyAxis(-m_Controller.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-m_Controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-m_Controller.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     driveTrain.setDefaultCommand(defaultDriveCommand);
   }
   private void shooterInst() {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
     angleShooterSubsystem = new AngleShooterSubsystem();
-    angleShooterSubsystem.setDefaultCommand(new AimShooter(angleShooterSubsystem, ()-> (operatorController.getPOV() == 0)));
+    angleShooterSubsystem.setDefaultCommand(new AimShooter(angleShooterSubsystem, ()-> (m_Controller.getPOV() == 0)));
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
@@ -181,7 +184,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, shooter, intake);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, m_Controller::getRightBumper, shooter, intake);
   }
 
   private void autoInit() {
@@ -212,31 +215,31 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
-    new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
+    // new Trigger(driverm_Controller::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
+    new Trigger(m_Controller::getStartButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     SmartDashboard.putData(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-    new Trigger(driverController::getTriangleButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
-    new Trigger(driverController::getCrossButton).onTrue(new GoToAmp(driveTrain));
-    new Trigger(driverController::getR1Button).whileTrue(new AimRobotMoving(
+    new Trigger(m_Controller::getYButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
+    new Trigger(m_Controller::getXButton).onTrue(new GoToAmp(driveTrain));
+    new Trigger(m_Controller::getLeftBumper).whileTrue(new AimRobotMoving(
       driveTrain,
-      () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      driverController::getR1Button));
+      () -> modifyAxis(-m_Controller.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-m_Controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      m_Controller::getLeftBumper));
 
-    new Trigger(driverController::getCircleButton).onTrue(new CollectNote(driveTrain, limelight));
-    new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
+    new Trigger(m_Controller::getAButton).onTrue(new CollectNote(driveTrain, limelight));
+   // new Trigger(m_Controller::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
 
-    if(shooterExists) {new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));}
+    if(shooterExists) {new Trigger(m_Controller::getBButton).onTrue(new ManualShoot(shooter));}
     if(climberExists) {
-      new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(operatorController::getSquareButton).onTrue(new ClimberPullDown(climber));
+      new Trigger(m_Controller::getLeftStickButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(m_Controller::getRightStickButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(m_Controller::getBButton).onTrue(new ClimberPullDown(climber));
     }
 
     // //Intake bindings
-    // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
-   // new Trigger(operatorController::getL2Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
-   // new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
+    // new Trigger(operatorm_Controller::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
+   // new Trigger(operatorm_Controller::getL2Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
+   // new Trigger(operatorm_Controller::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
     //for testing Rotate Robot command
     };
 

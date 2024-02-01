@@ -358,8 +358,8 @@ public static final class CTREConfigs {
       pigeon2Config.MountPose.MountPoseYaw = 0;
   }
 }
-  public final class PS4Driver{
-    private PS4Driver() {
+  public final class Xboxdriver{
+    private Xboxdriver() {
     }
     public static final int DRIVE_CONTROLLER_ID = 0;
     /**Left stick Y-axis. <p> Left = -1 || Right = 1*/
@@ -367,7 +367,7 @@ public static final class CTREConfigs {
     /**Left stick X-axis. <p> Forwards = -1 || Backwards = 1*/
     public static final int Y_AXIS = 1;
     /**Right stick Z-axis. <p> Left = -1 || Right = 1*/
-    public static final int Z_AXIS = 2;
+    public static final int Z_AXIS = 4;
     /**Right stick Z-rotate. <p> Forwards = -1 || Backwards = 1*/
     public static final int Z_ROTATE = 5;
     /**Value used to differentiate between angle 0 and rest position.*/
@@ -375,11 +375,6 @@ public static final class CTREConfigs {
     public static final double DEADBAND_NORMAL = 0.08;
     public static final double DEADBAND_LARGE = 0.1;
 }
-
-  public final class PS4Operator{
-    public static final int OPERATOR_CONTROLLER_ID = 1;
-
-  }
 
   public final class Field{
     public static final double BLUE_SPEAKER_Y = 5.612;
