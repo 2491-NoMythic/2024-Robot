@@ -115,13 +115,14 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-//preferences are initialized IF they don't already exist on the Rio
+    //preferences are initialized IF they don't already exist on the Rio
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
     Preferences.initBoolean("Lights", false);
     Preferences.initBoolean("Indexer", false);
     Preferences.initBoolean("Detector Limelight", false);
+    Preferences.initDouble("wait # of seconds", 0);
     
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
@@ -304,8 +305,7 @@ public class RobotContainer {
     if(intakeExists) {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
     }
-    NamedCommands.registerCommand("wait x seconds", new WaitCommand(SmartDashboard.getNumber("wait # of seconds", 0)));
-    
+    NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
  
   public void teleopPeriodic() {
