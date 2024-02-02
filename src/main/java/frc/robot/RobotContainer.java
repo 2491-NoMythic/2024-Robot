@@ -109,6 +109,7 @@ public class RobotContainer {
   private Pigeon2 pigeon;
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
+  private AimShooter defaultShooterAngleCommand;
   private SendableChooser<String> climbSpotChooser;
   private SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -132,13 +133,13 @@ public class RobotContainer {
     limelightInit();
     
 
+    if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(climberExists) {climberInst();}
     climbSpotChooserInit();
     if(lightsExist) {lightsInst();}
     if(indexerExists) {indexInit();}
-    if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
     Limelight.useDetectorLimelight(useDetectorLimelight);
     autoInit();
     // Configure the trigger bindings
@@ -171,20 +172,24 @@ public class RobotContainer {
   }
   private void shooterInst() {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
+    shooter.setDefaultCommand(defaulNoteHandlingCommand);
     angleShooterSubsystem = new AngleShooterSubsystem();
-    angleShooterSubsystem.setDefaultCommand(new AimShooter(angleShooterSubsystem, ()-> (operatorController.getPOV() == 0)));
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, operatorController::getPOV);
+    angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
+    intake.setDefaultCommand(defaulNoteHandlingCommand);
   }
   private void climberInst() {
     climber = new Climber();
   }
   private void indexInit() {
     indexer = new IndexerSubsystem();
+    indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, shooter, intake);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem);
   }
 
   private void autoInit() {
@@ -222,6 +227,7 @@ public class RobotContainer {
     new Trigger(driverController::getCrossButton).onTrue(new GoToAmp(driveTrain));
     new Trigger(driverController::getR1Button).whileTrue(new AimRobotMoving(
       driveTrain,
+      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getR1Button));

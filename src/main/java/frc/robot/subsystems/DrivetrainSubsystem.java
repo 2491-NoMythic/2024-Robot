@@ -366,6 +366,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putString("adjusted target", adjustedTarget.toString());
 		return m_desiredRobotAngle;
 	}
+	public double getSpeakerAngleDifference() {
+		return calculateSpeakerAngleMoving()-(getGyroscopeRotation().getDegrees()%360);
+	}
 	public Pose2d getAverageBotPose(LimelightValues ll2, LimelightValues ll3) {
 		double ll2X = ll2.getbotPose().getX();
 		double ll3X = ll3.getbotPose().getX();

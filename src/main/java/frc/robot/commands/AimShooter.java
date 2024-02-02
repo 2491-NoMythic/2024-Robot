@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.Field;
@@ -9,11 +10,11 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 
 public class AimShooter extends Command {
 	AngleShooterSubsystem angleShooterSubsystem;
-	BooleanSupplier aimAtAmp;
+	DoubleSupplier aimAtAmpSupplier;
 
-	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier aimAtAmp) {
+	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier aimAtAmp) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
-		this.aimAtAmp = aimAtAmp;
+		this.aimAtAmpSupplier = aimAtAmp;
 	}
 
 	@Override
@@ -23,8 +24,8 @@ public class AimShooter extends Command {
 
 	@Override
 	public void execute() {
-		if (!aimAtAmp.getAsBoolean()) {
-			double desiredShooterAngleSpeed = angleShooterSubsystem.calculateSpeakerAngle() * ShooterConstants.AUTO_AIM_SHOOTER_kP;
+		if (!(aimAtAmpSupplier.getAsDouble() == 0)) {
+			double desiredShooterAngleSpeed = angleShooterSubsystem.calculateSpeakerAngleDifference() * ShooterConstants.AUTO_AIM_SHOOTER_kP;
 			angleShooterSubsystem.pitchShooter(desiredShooterAngleSpeed);
 		} else {
 			double differenceAmp = Field.AMPLIFIER_ANGLE - angleShooterSubsystem.getShooterAngle();

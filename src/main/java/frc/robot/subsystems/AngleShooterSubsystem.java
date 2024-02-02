@@ -52,7 +52,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		DTChassisSpeeds = speeds;
 	}
 
-	public double calculateSpeakerAngle() {
+	public double calculateSpeakerAngleDifference() {
 		double deltaY;
 		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 		// triangle for robot angle

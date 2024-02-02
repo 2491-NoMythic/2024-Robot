@@ -8,24 +8,36 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.subsystems.AngleShooterSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 
 public class IndexCommand extends Command {
-  BooleanSupplier shootButtonSupplier;
-  Boolean shootButton;
+  BooleanSupplier revUpSupplier;
+  Boolean revUp;
+  BooleanSupplier shootIfReadySupplier;
+  Boolean shootIfReady;
+
   IndexerSubsystem m_Indexer;
   ShooterSubsystem shooter;
   IntakeSubsystem intake;
+  DrivetrainSubsystem drivetrain;
+  AngleShooterSubsystem angleShooterSubsytem;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootButtonSupplier, ShooterSubsystem shooter, IntakeSubsystem intake) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem) {
     this.m_Indexer = m_IndexerSubsystem;
-    this.shootButtonSupplier = shootButtonSupplier;
+    this.shootIfReadySupplier = shootIfReadySupplier;
+    this.revUpSupplier = revUpSupplier;
     this.shooter = shooter;
     this.intake = intake;
+    this.drivetrain = drivetrain;
+    this.angleShooterSubsytem = angleShooterSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IndexerSubsystem, shooter, intake);
@@ -46,13 +58,20 @@ public class IndexCommand extends Command {
       shooter.turnOff();
     } else {
       intake.intakeOff();
-      if(!shootButtonSupplier.getAsBoolean()) {
+      if(revUpSupplier.getAsBoolean()) {
+        shooter.shootThing(1);
+      } else {
+        shooter.shootThing(0.3);
+      }
+    }
+    if (shootIfReadySupplier.getAsBoolean()) {
+      if((angleShooterSubsytem.calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ERROR)
+        && drivetrain.getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR
+        && Math.abs(shooter.getError())<ShooterConstants.ALLOWED_SPEED_ERROR) {
+          m_Indexer.on();
+      } else {
         m_Indexer.off();
       }
-      shooter.shootThing(1);
-    }
-    if (shootButtonSupplier.getAsBoolean()) {
-      m_Indexer.on();
     }
   }
 

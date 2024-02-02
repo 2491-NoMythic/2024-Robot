@@ -36,6 +36,7 @@ public final class Constants {
   public static final int LED_COUNT = 52;
 
   public static final class DriveConstants {
+    public static final double ALLOWED_ERROR = 1;
     public enum Positions{
       FL(0),
       FR(0.25),
@@ -253,7 +254,9 @@ public static final class ShooterConstants{
   public static final int PITCH_MOTOR_ID = 2491;
   public static final double SHOOTER_MOTOR_POWER = 1;
   public static final double SHOOTING_SPEED_MPS = 10;
-
+  public static final double RUNNING_VELOCITY_RPS = 2491;
+  public static final double ALLOWED_ERROR = 1;
+  public static final double ALLOWED_SPEED_ERROR = 1;
 
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;

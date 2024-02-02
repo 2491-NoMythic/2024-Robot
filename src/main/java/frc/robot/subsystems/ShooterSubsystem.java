@@ -10,6 +10,7 @@
  import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
@@ -116,6 +117,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
      shooterR.set(runSpeed);
      shooterL.set(runSpeed);
    }
+  public double getError() {
+    return Math.abs(shooterR.getAbsoluteEncoder(Type.kDutyCycle).getVelocity()-ShooterConstants.RUNNING_VELOCITY_RPS);
+  }
   public void turnOff(){
      shooterR.set(0);
      shooterL.set(0);
