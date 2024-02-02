@@ -10,11 +10,6 @@ import java.nio.file.Path;
 import java.util.function.BooleanSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
-import static frc.robot.settings.Constants.PS4Driver.DEADBAND_NORMAL;
-import static frc.robot.settings.Constants.PS4Driver.DRIVE_CONTROLLER_ID;
-import static frc.robot.settings.Constants.PS4Driver.X_AXIS;
-import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
-import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -50,6 +45,8 @@ import frc.robot.commands.autoAimParallel;
 import frc.robot.commands.goToPose.GoToAmp;
 import frc.robot.commands.goToPose.GoToClimbSpot;
 import frc.robot.commands.climber_commands.AutoClimb;
+import frc.robot.commands.climber_commands.ClimberDownAlign;
+import frc.robot.commands.climber_commands.ClimberGoUp;
 import frc.robot.commands.climber_commands.ClimberPullDown;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -64,6 +61,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
@@ -71,6 +69,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.commands.Drive;
+import edu.wpi.first.hal.ThreadsJNI;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -189,7 +188,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, m_Controller::getRightBumper, shooter, intake);
+   // defaulNoteHandlingCommand = new IndexCommand(indexer, m_Controller::getRightBumper, shooter, intake);
   }
 
   private void autoInit() {
@@ -234,12 +233,15 @@ public class RobotContainer {
    // new Trigger(m_Controller::getAButton).onTrue(new CollectNote(driveTrain, limelight));
    // new Trigger(m_Controller::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
 
-    if(shooterExists) {new Trigger(m_Controller::getBButton).onTrue(new ManualShoot(shooter));}
+    if(shooterExists) {
+      ShooterSubsystem shootNoteCommand = new ShooterSubsystem(.75);
+      SmartDashboard.putData("Emergency Shoot Button", shootNoteCommand);
+    }
     if(climberExists) {
     //  new Trigger(m_Controller::getLeftStickButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
     //  new Trigger(m_Controller::getRightStickButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(m_Controller::getBButton).onTrue(new ClimberPullDown(climber));
-      new Trigger(m_Controller::getBButton).onTrue(new ClimberPullUp(climber));
+      new Trigger(m_Controller::getAButton).onTrue( new SequentialCommandGroup (new ClimberDownAlign(climber), new ClimberPullDown(climber)));
+      new Trigger(m_Controller::getYButton).onTrue(new ClimberGoUp(climber));
 
     }
 
