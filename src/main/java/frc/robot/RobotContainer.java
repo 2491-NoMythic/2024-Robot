@@ -240,7 +240,7 @@ public class RobotContainer {
     if(climberExists) {
     //  new Trigger(m_Controller::getLeftStickButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
     //  new Trigger(m_Controller::getRightStickButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(m_Controller::getAButton).onTrue( new SequentialCommandGroup (new ClimberDownAlign(climber), new ClimberPullDown(climber)));
+      new Trigger(m_Controller::getAButton).onTrue(new SequentialCommandGroup (new ClimberDownAlign(climber), new ClimberPullDown(climber)));
       new Trigger(m_Controller::getYButton).onTrue(new ClimberGoUp(climber));
 
     }
