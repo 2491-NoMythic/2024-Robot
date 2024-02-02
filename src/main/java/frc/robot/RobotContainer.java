@@ -168,8 +168,6 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     driveTrain.setDefaultCommand(defaultDriveCommand);
-    SmartDashboard.putData("Rotate Robot", new RotateRobot(driveTrain, ()-> 90));
-
   }
   private void shooterInst() {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
