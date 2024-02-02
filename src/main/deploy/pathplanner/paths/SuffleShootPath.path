@@ -1,0 +1,119 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3576779647621067,
+        "y": 2.17419608235891
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.147408380327451,
+        "y": 1.7744559954678114
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.9329136995566167,
+        "y": 4.094898451079563
+      },
+      "prevControl": {
+        "x": 0.9596300064068812,
+        "y": 4.201559677726109
+      },
+      "nextControl": {
+        "x": 2.6446460493871116,
+        "y": 4.016900385344714
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.6056470165196877,
+        "y": 4.094898451079563
+      },
+      "prevControl": {
+        "x": 2.6056470165196877,
+        "y": 3.997400868911001
+      },
+      "nextControl": {
+        "x": 2.6056470165196877,
+        "y": 4.603383628819343
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.888390004808514,
+        "y": 7.000326399702681
+      },
+      "prevControl": {
+        "x": 2.6933948404713925,
+        "y": 6.620085829245293
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 144.11786275379578,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": -179.99999999999994,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "feedShooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeOn"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -142.12501634890182,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 178.49256424122495,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
