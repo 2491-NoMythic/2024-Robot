@@ -107,6 +107,7 @@ public class RobotContainer {
   private Pigeon2 pigeon;
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
+  private AimShooter defaultShooterAngleCommand;
   private SendableChooser<String> climbSpotChooser;
   private SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -170,7 +171,8 @@ public class RobotContainer {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
     shooter.setDefaultCommand(defaulNoteHandlingCommand);
     angleShooterSubsystem = new AngleShooterSubsystem();
-    angleShooterSubsystem.setDefaultCommand(new AimShooter(angleShooterSubsystem, ()-> (operatorController.getPOV() == 0)));
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, operatorController::getPOV);
+    angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();

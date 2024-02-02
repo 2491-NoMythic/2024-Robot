@@ -26,7 +26,6 @@ public class AngleShooter extends Command {
     // Use addRequirements() here to declare subsystem dependencies.\
     m_shooter = shooter;
     this.desiredShooterAngleSupplier = desiredShooterAngleSupplier;
-    this.desiredShooterAngle = desiredShooterAngle;
     addRequirements(shooter);
   }
 

@@ -66,7 +66,7 @@ public class IndexCommand extends Command {
     }
     if (shootIfReadySupplier.getAsBoolean()) {
       if((angleShooterSubsytem.calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ERROR)
-        && (drivetrain.getSpeakerAngleDifference())<DriveConstants.ALLOWED_ERROR
+        && drivetrain.getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR
         && Math.abs(shooter.getError())<ShooterConstants.ALLOWED_SPEED_ERROR) {
           m_Indexer.on();
       } else {
