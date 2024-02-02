@@ -9,6 +9,7 @@ import static frc.robot.settings.Constants.PS4Operator.*;
 
 import java.nio.file.Path;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
 
@@ -67,6 +68,7 @@ import frc.robot.commands.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.commands.ManualShoot;
@@ -109,6 +111,7 @@ public class RobotContainer {
   private IndexerSubsystem indexer;
   private SendableChooser<String> climbSpotChooser;
   private SendableChooser<Command> autoChooser;
+  private DoubleSupplier angleSup;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -165,6 +168,8 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     driveTrain.setDefaultCommand(defaultDriveCommand);
+    SmartDashboard.putData("Rotate Robot", new RotateRobot(driveTrain, ()-> 90));
+
   }
   private void shooterInst() {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
@@ -226,7 +231,12 @@ public class RobotContainer {
     new Trigger(driverController::getCircleButton).onTrue(new CollectNote(driveTrain, limelight));
     new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
 
-    if(shooterExists) {new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));}
+    if(shooterExists) {
+      new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
+      AngleShooter shooterUpCommand = new AngleShooter(angleShooterSubsystem, () -> Constants.ShooterConstants.shooterup);
+      new Trigger(driverController::getL1Button).onTrue(shooterUpCommand);
+      SmartDashboard.putData("Manual Angle Shooter Up", shooterUpCommand);
+    }
     if(climberExists) {
       new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
