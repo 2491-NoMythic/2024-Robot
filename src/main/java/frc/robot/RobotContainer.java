@@ -10,6 +10,11 @@ import java.nio.file.Path;
 import java.util.function.BooleanSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
+import static frc.robot.settings.Constants.PS4Driver.DEADBAND_NORMAL;
+import static frc.robot.settings.Constants.PS4Driver.DRIVE_CONTROLLER_ID;
+import static frc.robot.settings.Constants.PS4Driver.X_AXIS;
+import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
+import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -218,22 +223,24 @@ public class RobotContainer {
     // new Trigger(driverm_Controller::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(m_Controller::getStartButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     SmartDashboard.putData(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-    new Trigger(m_Controller::getYButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
-    new Trigger(m_Controller::getXButton).onTrue(new GoToAmp(driveTrain));
-    new Trigger(m_Controller::getLeftBumper).whileTrue(new AimRobotMoving(
+   // new Trigger(m_Controller::getYButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
+    new Trigger(() -> m_Controller.getPOV() == 0).onTrue(new GoToAmp(driveTrain));
+    new Trigger(() -> m_Controller.getLeftTriggerAxis() > .25).whileTrue(new AimRobotMoving(
       driveTrain,
       () -> modifyAxis(-m_Controller.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-m_Controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      m_Controller::getLeftBumper));
+      () -> m_Controller.getLeftTriggerAxis() > .25));
 
-    new Trigger(m_Controller::getAButton).onTrue(new CollectNote(driveTrain, limelight));
+   // new Trigger(m_Controller::getAButton).onTrue(new CollectNote(driveTrain, limelight));
    // new Trigger(m_Controller::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
 
     if(shooterExists) {new Trigger(m_Controller::getBButton).onTrue(new ManualShoot(shooter));}
     if(climberExists) {
-      new Trigger(m_Controller::getLeftStickButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(m_Controller::getRightStickButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
+    //  new Trigger(m_Controller::getLeftStickButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+    //  new Trigger(m_Controller::getRightStickButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(m_Controller::getBButton).onTrue(new ClimberPullDown(climber));
+      new Trigger(m_Controller::getBButton).onTrue(new ClimberPullUp(climber));
+
     }
 
     // //Intake bindings
