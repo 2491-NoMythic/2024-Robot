@@ -29,8 +29,10 @@ public class AimRobotMoving extends Command {
     DoubleSupplier translationXSupplier;
     DoubleSupplier translationYSupplier;
     BooleanSupplier run;
+    DoubleSupplier rotationSupplier;
+    double rotationSpeed;
     
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -40,6 +42,7 @@ public class AimRobotMoving extends Command {
           speedController.enableContinuousInput(-180, 180);
           this.translationXSupplier = translationXSupplier;
           this.translationYSupplier = translationYSupplier;
+          this.rotationSupplier = rotationSupplier;
           this.run = run;
           addRequirements(drivetrain);
         }
@@ -58,11 +61,15 @@ public class AimRobotMoving extends Command {
           speedController.setSetpoint(desiredRobotAngle);
         //move robot to desired angle
         this.currentHeading = m_drivetrain.getGyroscopeRotation().getDegrees();
-
+        if(Math.abs(rotationSupplier.getAsDouble()) > 0.3) {
+          rotationSpeed = rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+        } else {
+          rotationSpeed = speedController.calculate(currentHeading);
+        }
         m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
           translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
           translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-          speedController.calculate(currentHeading),
+          rotationSpeed,
           m_drivetrain.getGyroscopeRotation()));
         // m_drivetrain.drive(new ChassisSpeeds(
         //   translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
