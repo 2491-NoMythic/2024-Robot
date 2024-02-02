@@ -287,6 +287,7 @@ public static final class ShooterConstants{
   public static final double pitchFeedForward = 2491;
   public static final double pitchMaxOutput = 2491;
   public static final double pitchMinOutput = 2491;
+  public static final double shooterup = 2491;
 
 }
 public static final class ClimberConstants{
