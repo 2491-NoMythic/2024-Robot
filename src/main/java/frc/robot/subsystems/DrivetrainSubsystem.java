@@ -19,6 +19,7 @@ import static frc.robot.settings.Constants.DriveConstants.FL_STEER_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_DRIVE_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
+import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -323,7 +324,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		shootingTime = speakerDist/shootingSpeed; //calculates how long the note will take to reach the target
 		currentXSpeed = this.getChassisSpeeds().vxMetersPerSecond;
 		currentYSpeed = this.getChassisSpeeds().vyMetersPerSecond;
-		targetOffset = new Translation2d(currentXSpeed*shootingTime, currentYSpeed*shootingTime); 
+		targetOffset = new Translation2d(currentXSpeed*shootingTime*OFFSET_MULTIPLIER, currentYSpeed*shootingTime*OFFSET_MULTIPLIER); 
 		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
 		
 		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed

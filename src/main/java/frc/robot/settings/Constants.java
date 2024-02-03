@@ -268,6 +268,9 @@ public static final class ShooterConstants{
   public static final double SHOOTER_HEIGHT = 0.1;
   public static final double ANGLE_TICKS_PER_DEGREE = 2491;
   public static final double DEGREES_PER_ROTATION = 2491;
+  public static final double DISTANCE_MULTIPLIER = 0;
+  public static final double OFFSET_MULTIPLIER = 1;
+
  
 
   //PID coefficients for shooter:
