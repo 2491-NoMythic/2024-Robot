@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 
+import static frc.robot.settings.Constants.ShooterConstants.DISTANCE_MULTIPLIER;
+import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
+import static frc.robot.settings.Constants.ShooterConstants.ROBOT_ANGLE_TOLERANCE;
+
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -69,7 +73,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double shootingTime = speakerDist / shootingSpeed; // calculates how long the note will take to reach the target
 		double currentXSpeed = DTChassisSpeeds.vxMetersPerSecond;
 		double currentYSpeed = DTChassisSpeeds.vyMetersPerSecond;
-		Translation2d targetOffset = new Translation2d(currentXSpeed * shootingTime, currentYSpeed * shootingTime);
+		Translation2d targetOffset = new Translation2d(currentXSpeed * shootingTime*OFFSET_MULTIPLIER, currentYSpeed * shootingTime*OFFSET_MULTIPLIER);
 		// line above calculates how much our current speed will affect the ending
 		// location of the note if it's in the air for ShootingTime
 
@@ -94,7 +98,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
 		double desiredShooterAngle = Math
 				.toDegrees(Math.asin(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT / totalDistToSpeaker));
-
+		desiredShooterAngle = desiredShooterAngle+(speakerDist*DISTANCE_MULTIPLIER);
 		SmartDashboard.putNumber("desired shooter angle", desiredShooterAngle);
 
 		double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
