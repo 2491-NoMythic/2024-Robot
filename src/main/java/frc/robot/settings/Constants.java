@@ -68,7 +68,7 @@ public final class Constants {
       LIAM(0),
       LEVI(-0.38501),
       WILLA(-0.152832), //Moira inverted FL
-      OPAL(0.136475), //Moira inverted FR
+      OPAL(0.211419-0.25), //Moira inverted FR
       CLOVER(0.239746), //Moira inverted BL
       NICHOLAS(-0.164551); //Moira inverted BR
 
