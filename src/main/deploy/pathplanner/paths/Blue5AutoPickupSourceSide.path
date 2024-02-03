@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9896948365325304,
-        "y": 2.433470009797163
+        "x": 4.2728556716020805,
+        "y": 2.3496917302623217
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.674154254291414,
-        "y": 1.4968517686323124
+        "x": 5.957315089360964,
+        "y": 1.4130734890974712
       },
       "isLocked": false,
       "linkedName": "SourceSideBlueShoot"
     },
     {
       "anchor": {
-        "x": 7.1593118684812875,
-        "y": 1.0641680542620358
+        "x": 7.334279751694896,
+        "y": 0.9944753381193234
       },
       "prevControl": {
-        "x": 5.814484107600694,
-        "y": 1.3682160697654735
+        "x": 5.9894519908143025,
+        "y": 1.2985233536227612
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": -19.290046219188806,
+      "rotationDegrees": 160.71,
       "rotateFast": true
     }
   ],
@@ -45,7 +45,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -14.322719978203544,
+    "rotation": 165.68,
     "rotateFast": false
   },
   "reversed": false,
