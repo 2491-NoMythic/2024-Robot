@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3552185662929883,
+      "y": 4.779511541005064
+    },
+    "rotation": 179.80105712063937
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "initalShotBlueMiddle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FleePathAmp+Mid"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
