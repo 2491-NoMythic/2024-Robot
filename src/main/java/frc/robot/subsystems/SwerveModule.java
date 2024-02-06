@@ -112,7 +112,7 @@ public class SwerveModule {
  */
   public double findOffset() {
     return MathUtil.inputModulus(
-      (m_steerEncoder.getPosition().getValue()+m_steerEncoderOffset.getRotations()),
+      (m_steerEncoder.getPosition().getValue()-m_steerEncoderOffset.getRotations()),
       -0.5,
       0.5);
   }
