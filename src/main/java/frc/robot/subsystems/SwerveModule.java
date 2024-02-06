@@ -107,6 +107,15 @@ public class SwerveModule {
   public double getTargetAngle() {
     return m_desiredSteerAngle;
   }
+/**finds the curernt encoder position, it removes the current offset so we just get the raw position
+ * @return
+ */
+  public double findOffset() {
+    return MathUtil.inputModulus(
+      (m_steerEncoder.getPosition().getValue()+m_steerEncoderOffset.getRotations()),
+      -0.5,
+      0.5);
+  }
   /**
    * Returns the target speed of the wheel.
    * @return The target speed of the wheel in meters/second.

@@ -249,6 +249,7 @@ public class RobotContainer {
       new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(operatorController::getSquareButton).onTrue(new ClimberPullDown(climber));
     }
+    SmartDashboard.putData(new InstantCommand(driveTrain::setEncoderOffsets));
 
     // //Intake bindings
     // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
