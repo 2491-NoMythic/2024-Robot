@@ -57,16 +57,16 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	}
 
 	public double calculateSpeakerAngleDifference() {
-		double deltaY;
+		double deltaX;
 		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 		// triangle for robot angle
 		Optional<Alliance> alliance = DriverStation.getAlliance();
 		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-			deltaY = Math.abs(dtvalues.getY() - Field.RED_SPEAKER_Y);
+			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
 		} else {
-			deltaY = Math.abs(dtvalues.getY() - Field.BLUE_SPEAKER_Y);
+			deltaX = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
 		}
-		double deltaX = Math.abs(dtvalues.getX() - Field.SPEAKER_X);
+		double deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		double speakerDist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
 
@@ -79,13 +79,13 @@ public class AngleShooterSubsystem extends SubsystemBase {
 
 		// next 3 lines set where we actually want to aim, given the offset our shooting
 		// will have based on our speed
-		double offsetSpeakerX = Field.SPEAKER_X + targetOffset.getX();
-		double offsetSpeakerY;
+		double offsetSpeakerY = Field.SPEAKER_Y + targetOffset.getY();
+		double offsetSpeakerX;
 
 		if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-			offsetSpeakerY = Field.RED_SPEAKER_Y + targetOffset.getY();
+			offsetSpeakerX = Field.RED_SPEAKER_X + targetOffset.getX();
 		} else {
-			offsetSpeakerY = Field.BLUE_SPEAKER_Y + targetOffset.getY();
+			offsetSpeakerX = Field.BLUE_SPEAKER_X + targetOffset.getX();
 		}
 		double offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		double offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);

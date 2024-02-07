@@ -321,7 +321,9 @@ public class RobotContainer {
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
- 
+  public void teleopInit() {
+    driveTrain.forceUpdateOdometryWithVision();
+  }
   public void teleopPeriodic() {
     SmartDashboard.putData(driveTrain.getCurrentCommand());
     driveTrain.calculateSpeakerAngle();
