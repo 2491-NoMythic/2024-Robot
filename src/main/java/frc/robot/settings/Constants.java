@@ -58,10 +58,10 @@ public final class Constants {
       BENH(0.153564),
       EVELYN(-0.111084),
       OMARIAHN(0.266846),
-      PHOEBE(-0.2458), //Moira FL
-      ROYCE(-0.0031), // Moira FR
-      ROWAN(0.3916), // Moira BL
-      QUINN(0.3557), //Moira BR
+     // PHOEBE(-0.2458), //Moira FL
+     // ROYCE(-0.0031), // Moira FR
+     // ROWAN(0.3916), // Moira BL
+      //QUINN(0.3557), //Moira BR
       // PHOEBE(0.253174), //Moira FL
       // ROYCE(-0.254639), // Moira FR
       // ROWAN(-0.113525), // Moira BL
@@ -71,7 +71,12 @@ public final class Constants {
       WILLA(-0.152832), //Moira inverted FL
       OPAL(0.211419-0.25), //Moira inverted FR
       CLOVER(0.239746), //Moira inverted BL
-      NICHOLAS(-0.164551); //Moira inverted BR
+      NICHOLAS(-0.164551), //Moira inverted BR
+      QUINN(-0.394287), //FL
+      ROYCE(0.248291), //FR
+      PHOEBE(-0.486572), //BL
+      ROWAN(-0.360840); //BR
+
 
       private double offset;
       Offsets(double value) {
