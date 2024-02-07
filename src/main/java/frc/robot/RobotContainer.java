@@ -171,7 +171,7 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
-    driveTrain.setDefaultCommand(defaultDriveCommand);
+      driveTrain.setDefaultCommand(defaultDriveCommand);
   }
   private void shooterInst() {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
@@ -249,7 +249,7 @@ public class RobotContainer {
       new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(operatorController::getSquareButton).onTrue(new ClimberPullDown(climber));
     }
-    SmartDashboard.putData(new InstantCommand(driveTrain::setEncoderOffsets));
+    SmartDashboard.putData("set offsets", new InstantCommand(driveTrain::setEncoderOffsets));
 
     // //Intake bindings
     // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
