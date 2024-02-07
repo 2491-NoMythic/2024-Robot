@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 
 public class Lights extends SubsystemBase {
   /** Creates a new SubsystemLights. */
@@ -28,21 +30,16 @@ public class Lights extends SubsystemBase {
     for(int i = start; i < end; i++){
       setOneLightRGB(i, R, G, B);
     }
-  } 
-  public void setLightsCone() {
-    for(int i = 0; i < 52; i++){
-      setOneLightRGB(i, 100, 64, 0);
   }
-}
-  public void setLightsCube() {
-    for(int i = 0; i < 52; i++){
-      setOneLightRGB(i, 0, 0, 100);
+  public void setSectionOne(int R, int G, int B){
+    setLights(0, LEDBuffer.getLength()/2, R, G, B);
   }
+  public void setSectionTwo(int R, int G, int B){
+    setLights(LEDBuffer.getLength()/2, LEDBuffer.getLength(), R, G, B);
   }
+
   public void lightsOut() {
-    for(int i = 0; i < LEDBuffer.getLength(); i++) {
-      setOneLightRGB(i, 0, 0, 0);
-    }
+    setLights(0, LEDBuffer.getLength(), 0, 0, 0);
   }
   @Override
   public void periodic() {

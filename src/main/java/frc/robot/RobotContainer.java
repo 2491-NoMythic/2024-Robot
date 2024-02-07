@@ -33,6 +33,7 @@ import frc.robot.commands.ExampleCommand;
 
 import frc.robot.settings.Constants.Field;
 import frc.robot.commands.IndexCommand;
+import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
@@ -208,6 +209,7 @@ public class RobotContainer {
   }
   private void lightsInst() {
     lights = new Lights(Constants.LED_COUNT-1);
+    lights.setDefaultCommand(new IndicatorLights(lights));
   }
   
 
