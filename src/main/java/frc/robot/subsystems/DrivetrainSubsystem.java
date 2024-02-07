@@ -386,6 +386,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		double averageY = (ll2Y+ll3Y)/2;
 		return new Pose2d(new Translation2d(averageX, averageY), averageRotation);
 	}
+	public void forceUpdateOdometryWithVision() {
+		LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
+		LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
+		if (ll2.isResultValid && !ll3.isResultValid) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
+		if (!ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
+		if (ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
+	}
 	@Override
 	public void periodic() {
 		SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
