@@ -265,12 +265,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		// triangle for robot angle
 		Optional<Alliance> alliance = DriverStation.getAlliance();
 		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-			deltaY = Math.abs(dtvalues.getY() - Field.RED_SPEAKER_Y);
+			deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		} else {
-			deltaY = Math.abs(dtvalues.getY() - Field.BLUE_SPEAKER_Y);
+			deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 
 		}
-		deltaX = Math.abs(dtvalues.getX() - Field.SPEAKER_X);
+		if(DriverStation.getAlliance().get() == Alliance.Red) {
+			deltaX = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+		} else {
+			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+		}
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
 		if(speakerDist<Field.MAX_SHOOTING_DISTANCE && lightsExist) {
@@ -280,8 +284,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		} }
 		
 		//getting desired robot angle
-		if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
-			if (dtvalues.getY() >= Field.BLUE_SPEAKER_Y) {
+		// if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
+			if (dtvalues.getY() >= Field.SPEAKER_Y) {
 				//the robot is to the left of the speaker
 				double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
 				m_desiredRobotAngle = thetaAbove;
@@ -290,18 +294,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
 				m_desiredRobotAngle = thetaBelow;
 			} 
-		} else {
-		if (dtvalues.getY() >= Field.RED_SPEAKER_Y) {
-			//the robot is to the left of the speaker
-			double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
-			m_desiredRobotAngle = thetaAbove;
-		}
-		else{
-			double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
-			m_desiredRobotAngle = thetaBelow;
-		}
+		// } else {
+		// if (dtvalues.getY() >= Field.RED_SPEAKER_Y) {
+		// 	//the robot is to the left of the speaker
+		// 	double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
+		// 	m_desiredRobotAngle = thetaAbove;
+		// }
+		// else{
+		// 	double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
+		// 	m_desiredRobotAngle = thetaBelow;
+		// }
 		// m_desiredRobotAngle = m_desiredRobotAngle + 180;
-		}
+		// }
 		SmartDashboard.putNumber("just angle", Math.toDegrees(Math.asin(deltaX / speakerDist)));
 		SmartDashboard.putNumber("desired angle", m_desiredRobotAngle);
 		return m_desiredRobotAngle;
@@ -313,11 +317,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 		//triangle for robot angle
 		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-			deltaY = Math.abs(dtvalues.getY() - Field.RED_SPEAKER_Y);
+			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
 		} else {
-			deltaY = Math.abs(dtvalues.getY() - Field.BLUE_SPEAKER_Y);
+			deltaX = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
 		}
-		deltaX = Math.abs(dtvalues.getX() - Field.SPEAKER_X);
+		deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
 	
@@ -328,9 +332,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
 		
 		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed
-		offsetSpeakerX = Field.SPEAKER_X+targetOffset.getX();
-		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {offsetSpeakerY = Field.RED_SPEAKER_Y+targetOffset.getY();}
-		else {offsetSpeakerY = Field.BLUE_SPEAKER_Y+targetOffset.getY();}
+		offsetSpeakerY = Field.SPEAKER_Y+targetOffset.getY();
+		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {offsetSpeakerX = Field.RED_SPEAKER_X+targetOffset.getX();}
+		else {offsetSpeakerX = Field.BLUE_SPEAKER_X+targetOffset.getX();}
 		offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
 	
@@ -355,11 +359,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				m_desiredRobotAngle = thetaBelow;
 		} } else {
 			if (dtvalues.getY() >= adjustedTarget.getY()) {
-				double thetaAbove = -Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))-90;
+				double thetaAbove = Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))-90;
 				m_desiredRobotAngle = thetaAbove;
 			}
 			else{
-				double thetaBelow = Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))+90;
+				double thetaBelow = -Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))+90;
 				m_desiredRobotAngle = thetaBelow;
 			}
 		}
@@ -371,12 +375,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return calculateSpeakerAngleMoving()-(getGyroscopeRotation().getDegrees()%360);
 	}
 	public Pose2d getAverageBotPose(LimelightValues ll2, LimelightValues ll3) {
-		double ll2X = ll2.getbotPose().getX();
-		double ll3X = ll3.getbotPose().getX();
-		double ll2Y = ll2.getbotPose().getY();
-		double ll3Y = ll3.getbotPose().getY();
-		double ll2rotation = ll2.getbotPose().getRotation().getRadians();
-		double ll3rotation = ll3.getbotPose().getRotation().getRadians();
+		double ll2X = ll2.getBotPoseBlue().getX();
+		double ll3X = ll3.getBotPoseBlue().getX();
+		double ll2Y = ll2.getBotPoseBlue().getY();
+		double ll3Y = ll3.getBotPoseBlue().getY();
+		double ll2rotation = ll2.getBotPoseBlue().getRotation().getRadians();
+		double ll3rotation = ll3.getBotPoseBlue().getRotation().getRadians();
 		Rotation2d averageRotation = new Rotation2d((ll2rotation+ll3rotation)/2);
 		double averageX = (ll2X+ll3X)/2;
 		double averageY = (ll2Y+ll3Y)/2;
@@ -398,8 +402,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			SmartDashboard.putBoolean("LL2visionValid", isLL2VisionTrustworthy);
 			SmartDashboard.putBoolean("LL3visionValid", isLL3VisionTrustworthy);
 			if (SmartDashboard.getBoolean("trust limelight", false)) {
-				if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getbotPose(), ll2.gettimestamp());}
-				if (!isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(ll3.getbotPose(), ll3.gettimestamp());}
+				if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
+				if (!isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
 				if (isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
 			}
 		}

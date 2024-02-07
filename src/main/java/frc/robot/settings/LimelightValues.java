@@ -52,6 +52,9 @@ public class LimelightValues {
                 return botPoseBlue;
             }
         }
+        public Pose2d getBotPoseBlue() {
+            return botPoseBlue;
+        }
         public boolean isPoseTrustworthy(Pose2d robotPose){
             Pose2d poseEstimate = this.getbotPose();
             if ((poseEstimate.getX()<fieldCorner.getX() && poseEstimate.getY()<fieldCorner.getY()) //Don't trust estimations that are outside the field perimeter.

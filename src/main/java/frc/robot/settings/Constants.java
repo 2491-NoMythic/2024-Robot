@@ -389,9 +389,9 @@ public static final class CTREConfigs {
   }
 
   public final class Field{
-    public static final double BLUE_SPEAKER_Y = 5.612;
-    public static final double RED_SPEAKER_Y = 2.636;
-    public static final double SPEAKER_X = 0.23;//16.412;
+    public static final double BLUE_SPEAKER_X = 0.23;
+    public static final double RED_SPEAKER_X = 16.49;
+    public static final double SPEAKER_Y = 5.612;//16.412;
     public static final double SPEAKER_Z = 2.045; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
 
