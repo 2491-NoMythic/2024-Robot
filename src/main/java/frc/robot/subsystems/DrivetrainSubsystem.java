@@ -332,12 +332,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
 		
 		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed
-		offsetSpeakerY = Field.SPEAKER_Y+targetOffset.getY();
-		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {offsetSpeakerX = Field.RED_SPEAKER_X+targetOffset.getX();}
-		else {offsetSpeakerX = Field.BLUE_SPEAKER_X+targetOffset.getX();}
+		int correctionDirection;
+		double speakerX;
+		if(DriverStation.getAlliance().get() == Alliance.Blue) {
+			correctionDirection = 1;
+			speakerX = Field.BLUE_SPEAKER_X;
+		} else {
+			correctionDirection = -1;
+			speakerX = Field.RED_SPEAKER_X;
+		}
+		offsetSpeakerX = speakerX+(targetOffset.getX()*correctionDirection);
+		offsetSpeakerY = Field.SPEAKER_Y+(targetOffset.getY()*correctionDirection);
 		offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
-	
+		
 		adjustedTarget = new Translation2d(offsetSpeakerX, offsetSpeakerY);
 		offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaY, 2) + Math.pow(offsetDeltaX, 2));
 		SmartDashboard.putNumber("offsetSpeakerDis", offsetSpeakerdist);
