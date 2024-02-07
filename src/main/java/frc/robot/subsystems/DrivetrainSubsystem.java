@@ -132,28 +132,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			FL_DRIVE_MOTOR_ID,
 			FL_STEER_MOTOR_ID,
 			FL_STEER_ENCODER_ID,
-			new Rotation2d(Preferences.getDouble("FL offset", 0)),
+			Rotation2d.fromRotations(Preferences.getDouble("FL offset", 0)),
 			CANIVORE_DRIVETRAIN);
 		modules[1] = new SwerveModule(
 			"FR",
 			FR_DRIVE_MOTOR_ID,
 			FR_STEER_MOTOR_ID,
 			FR_STEER_ENCODER_ID,
-			new Rotation2d(Preferences.getDouble("FR offset", 0)),
+			Rotation2d.fromRotations(Preferences.getDouble("FR offset", 0)),
 			CANIVORE_DRIVETRAIN);
 		modules[2] = new SwerveModule(
 			"BL",
 			BL_DRIVE_MOTOR_ID,
 			BL_STEER_MOTOR_ID,
 			BL_STEER_ENCODER_ID,
-			new Rotation2d(Preferences.getDouble("BL offset", 0)),
+			Rotation2d.fromRotations(Preferences.getDouble("BL offset", 0)),
 			CANIVORE_DRIVETRAIN);
 		modules[3] = new SwerveModule(
 			"BR",
 			BR_DRIVE_MOTOR_ID,
 			BR_STEER_MOTOR_ID,
 			BR_STEER_ENCODER_ID,
-			new Rotation2d(Preferences.getDouble("BR offset", 0)),
+			Rotation2d.fromRotations(Preferences.getDouble("BR offset", 0)),
 			CANIVORE_DRIVETRAIN);
 		
 		odometer = new SwerveDrivePoseEstimator(
@@ -203,8 +203,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void setEncoderOffsets() {
 		Preferences.setDouble("FL offset", modules[0].findOffset());
 		Preferences.setDouble("FR offset", modules[1].findOffset());
-		Preferences.setDouble("BR offset", modules[2].findOffset());
-		Preferences.setDouble("BL offset", modules[3].findOffset());
+		Preferences.setDouble("BL offset", modules[2].findOffset());
+		Preferences.setDouble("BR offset", modules[3].findOffset());
 	}
 	public Pose2d getPose() {
 		return odometer.getEstimatedPosition();
