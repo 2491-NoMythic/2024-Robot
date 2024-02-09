@@ -118,10 +118,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		this.lightsExist = lightsExist;
 		this.limelight=Limelight.getInstance();
 
-		Preferences.initString("FL", "AUGIE");
-		Preferences.initString("FR", "AUGIE");
-		Preferences.initString("BL", "AUGIE");
-		Preferences.initString("BR", "AUGIE");
+		Preferences.initDouble("FL offset", 0);
+		Preferences.initDouble("FR offset", 0);
+		Preferences.initDouble("BL offset", 0);
+		Preferences.initDouble("BR offset", 0);
 		PathPlannerLogging.setLogActivePathCallback((poses) -> m_field.getObject("path").setPoses(poses));
 		SmartDashboard.putData("Field", m_field);
 		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
@@ -133,28 +133,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			FL_DRIVE_MOTOR_ID,
 			FL_STEER_MOTOR_ID,
 			FL_STEER_ENCODER_ID,
-			Offsets.valueOf(Preferences.getString("FL", "AUGIE")).getValue(Positions.FL),
+			Rotation2d.fromRotations(Preferences.getDouble("FL offset", 0)),
 			CANIVORE_DRIVETRAIN);
 		modules[1] = new SwerveModule(
 			"FR",
 			FR_DRIVE_MOTOR_ID,
 			FR_STEER_MOTOR_ID,
 			FR_STEER_ENCODER_ID,
-			Offsets.valueOf(Preferences.getString("FR", "AUGIE")).getValue(Positions.FR),
+			Rotation2d.fromRotations(Preferences.getDouble("FR offset", 0)),
 			CANIVORE_DRIVETRAIN);
 		modules[2] = new SwerveModule(
 			"BL",
 			BL_DRIVE_MOTOR_ID,
 			BL_STEER_MOTOR_ID,
 			BL_STEER_ENCODER_ID,
-			Offsets.valueOf(Preferences.getString("BL", "AUGIE")).getValue(Positions.BL),
+			Rotation2d.fromRotations(Preferences.getDouble("BL offset", 0)),
 			CANIVORE_DRIVETRAIN);
 		modules[3] = new SwerveModule(
 			"BR",
 			BR_DRIVE_MOTOR_ID,
 			BR_STEER_MOTOR_ID,
 			BR_STEER_ENCODER_ID,
-			Offsets.valueOf(Preferences.getString("BR", "AUGIE")).getValue(Positions.BR),
+			Rotation2d.fromRotations(Preferences.getDouble("BR offset", 0)),
 			CANIVORE_DRIVETRAIN);
 		
 		odometer = new SwerveDrivePoseEstimator(
@@ -200,6 +200,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SwerveModuleState[] states = new SwerveModuleState[4];
 		for (int i = 0; i < 4; i++) states[i] = modules[i].getState();
 		return states;
+	}
+	public void setEncoderOffsets() {
+		Preferences.setDouble("FL offset", modules[0].findOffset());
+		Preferences.setDouble("FR offset", modules[1].findOffset());
+		Preferences.setDouble("BL offset", modules[2].findOffset());
+		Preferences.setDouble("BR offset", modules[3].findOffset());
 	}
 	public Pose2d getPose() {
 		return odometer.getEstimatedPosition();
