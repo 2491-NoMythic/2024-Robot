@@ -116,6 +116,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		MathRanNumber = 0;
 		this.lights = lights;
 		this.lightsExist = lightsExist;
+		this.limelight=Limelight.getInstance();
 
 		Preferences.initString("FL", "AUGIE");
 		Preferences.initString("FR", "AUGIE");

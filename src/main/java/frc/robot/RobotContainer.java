@@ -131,9 +131,10 @@ public class RobotContainer {
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
+    
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
-    driveTrainInst();
     limelightInit();
+    driveTrainInst();
     
 
     if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
@@ -327,7 +328,9 @@ public class RobotContainer {
   public void teleopPeriodic() {
     SmartDashboard.putData(driveTrain.getCurrentCommand());
     driveTrain.calculateSpeakerAngle();
-    SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
+    if(useDetectorLimelight) {
+      SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
+    }
   }
 
   public void disabledPeriodic() {
