@@ -80,7 +80,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	private final SwerveDrivePoseEstimator odometer;
 	private final Field2d m_field = new Field2d();
-	Lights lights;
 
 	//speaker angle calculating variables:
 	double m_desiredRobotAngle;
@@ -106,16 +105,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	Translation2d adjustedTarget;
 	double offsetSpeakerdist;
 	public double speakerDist;
-
-	Boolean lightsExist;
 	Limelight limelight;
 
 	double MathRanNumber;
 
-	public DrivetrainSubsystem(Lights lights, Boolean lightsExist) {
+	public DrivetrainSubsystem() {
 		MathRanNumber = 0;
-		this.lights = lights;
-		this.lightsExist = lightsExist;
 		this.limelight=Limelight.getInstance();
 
 		Preferences.initDouble("FL offset", 0);
@@ -362,11 +357,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		adjustedTarget = new Translation2d(offsetSpeakerX, offsetSpeakerY);
 		offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaY, 2) + Math.pow(offsetDeltaX, 2));
 		SmartDashboard.putNumber("offsetSpeakerDis", offsetSpeakerdist);
-		if(offsetSpeakerdist<Field.MAX_SHOOTING_DISTANCE && lightsExist) {
-			lights.setLights(0, Constants.LED_COUNT, 0, 100, 0);
-		} else {if(lightsExist) {
-			lights.lightsOut();
-		}}
+		RobotState.getInstance().ShooterInRange = offsetSpeakerdist<Field.MAX_SHOOTING_DISTANCE;
 		SmartDashboard.putString("offset amount", targetOffset.toString());
 		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle

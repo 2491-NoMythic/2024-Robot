@@ -169,7 +169,7 @@ public class RobotContainer {
     SmartDashboard.putData(climbSpotChooser);
   }
   private void driveTrainInst() {
-    driveTrain = new DrivetrainSubsystem(lights, lightsExist);
+    driveTrain = new DrivetrainSubsystem();
     defaultDriveCommand = new Drive(
       driveTrain, 
       () -> driverController.getL1Button(),
