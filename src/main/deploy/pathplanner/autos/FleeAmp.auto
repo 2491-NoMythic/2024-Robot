@@ -2,19 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.1333456901148034,
-      "y": 6.915037974220092
+      "x": 0.7523718013035084,
+      "y": 6.631709206478911
     },
-    "rotation": 0
+    "rotation": -120.37688046831643
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "initalShotBlueAmp"
+            "name": "initialShot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {

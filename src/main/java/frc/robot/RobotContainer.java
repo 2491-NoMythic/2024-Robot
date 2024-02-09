@@ -14,6 +14,7 @@ import java.util.function.DoubleSupplier;
 import static frc.robot.settings.Constants.DriveConstants.*;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -43,6 +44,8 @@ import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.RotateRobot;
 import frc.robot.commands.autoAimParallel;
+import frc.robot.commands.NamedCommands.initialShot;
+import frc.robot.commands.NamedCommands.shootNote;
 import frc.robot.commands.goToPose.GoToAmp;
 import frc.robot.commands.goToPose.GoToClimbSpot;
 import frc.robot.commands.climber_commands.AutoClimb;
@@ -320,6 +323,10 @@ public class RobotContainer {
     if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(indexer::on, indexer));}
     if(intakeExists) {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
+    }
+    if(indexerExists&&shooterExists) {
+      NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 0.75, 0.5));
+      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 0.5));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }

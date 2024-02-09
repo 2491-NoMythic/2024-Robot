@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.DriveConstants;
@@ -28,6 +29,7 @@ public class IndexCommand extends Command {
   IntakeSubsystem intake;
   DrivetrainSubsystem drivetrain;
   AngleShooterSubsystem angleShooterSubsytem;
+  boolean auto;
 
   /** Creates a new IndexCommand. */
   public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem) {
@@ -38,7 +40,6 @@ public class IndexCommand extends Command {
     this.intake = intake;
     this.drivetrain = drivetrain;
     this.angleShooterSubsytem = angleShooterSubsystem;
-
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IndexerSubsystem, shooter, intake);
   }
@@ -52,10 +53,17 @@ public class IndexCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(DriverStation.isAutonomousEnabled()) {
+      auto = true;
+    } else {
+      auto = false;
+    }
     if (!m_Indexer.isNoteIn()) {
       intake.intakeYes(1);
       m_Indexer.on();
-      shooter.turnOff();
+      if(!auto) {
+        shooter.turnOff();
+      }
     } else {
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()) {

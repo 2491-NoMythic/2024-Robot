@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.952560925752258,
-        "y": 7.448538179873802
+        "x": 7.637274017134038,
+        "y": 7.410764619868505
       },
       "isLocked": false,
       "linkedName": "CollectNote1Blue"
     },
     {
       "anchor": {
-        "x": 4.276544769305755,
-        "y": 6.378845190122813
+        "x": 5.309845969632628,
+        "y": 7.001760527838968
       },
       "prevControl": {
-        "x": 5.692854468473409,
-        "y": 6.73197085882371
+        "x": 5.679897290992685,
+        "y": 7.099142454512667
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,7 +49,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "to shooting pos",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

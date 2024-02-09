@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3552185662929883,
-      "y": 4.779511541005064
+      "x": 1.3074487833435935,
+      "y": 5.52155524239874
     },
     "rotation": 179.80105712063937
   },
@@ -12,9 +12,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "initalShotBlueMiddle"
+            "name": "initialShot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.25
           }
         },
         {
