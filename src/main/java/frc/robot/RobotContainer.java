@@ -176,24 +176,24 @@ public class RobotContainer {
   }
   private void shooterInst() {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
-    shooter.setDefaultCommand(defaulNoteHandlingCommand);
     angleShooterSubsystem = new AngleShooterSubsystem();
     defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, operatorController::getPOV);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
-    intake.setDefaultCommand(defaulNoteHandlingCommand);
   }
   private void climberInst() {
     climber = new Climber();
   }
   private void indexInit() {
     indexer = new IndexerSubsystem();
-    indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
   private void indexCommandInst() {
     defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem);
+    indexer.setDefaultCommand(defaulNoteHandlingCommand);
+    shooter.setDefaultCommand(defaulNoteHandlingCommand);
+    intake.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
   private void autoInit() {
