@@ -288,7 +288,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 		SmartDashboard.putNumber("dist to speakre", speakerDist);
 
-		RobotState.getInstance().ShooterInRange = speakerDist<Field.MAX_SHOOTING_DISTANCE;
+		// RobotState.getInstance().ShooterInRange = speakerDist<Field.MAX_SHOOTING_DISTANCE;
 		
 		//getting desired robot angle
 		// if (alliance.isPresent() && alliance.get() == Alliance.Blue) {

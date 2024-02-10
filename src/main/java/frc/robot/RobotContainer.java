@@ -57,6 +57,7 @@ import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -340,6 +341,7 @@ public class RobotContainer {
     driveTrain.calculateSpeakerAngle();
     if(useDetectorLimelight) {
       SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
+      RobotState.getInstance().IsNoteSeen = limelight.getNeuralDetectorValues().isResultValid;
     }
   }
 
