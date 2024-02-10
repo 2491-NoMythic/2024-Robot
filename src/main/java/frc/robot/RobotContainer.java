@@ -228,7 +228,7 @@ public class RobotContainer {
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     SmartDashboard.putData(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
     new Trigger(driverController::getTriangleButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
-    new Trigger(driverController::getCrossButton).onTrue(new GoToAmp(driveTrain));
+    new Trigger(driverController::getCrossButton).whileTrue(new GoToAmp(driveTrain));
     new Trigger(driverController::getR1Button).whileTrue(new AimRobotMoving(
       driveTrain,
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
