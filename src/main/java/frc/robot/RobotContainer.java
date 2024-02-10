@@ -251,6 +251,7 @@ public class RobotContainer {
       new Trigger(operatorController::getSquareButton).onTrue(new ClimberPullDown(climber));
     }
     SmartDashboard.putData("set offsets", new InstantCommand(driveTrain::setEncoderOffsets));
+    SmartDashboard.putData(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
 
     // //Intake bindings
     // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));

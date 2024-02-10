@@ -2,7 +2,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.DriveConstants;
@@ -31,6 +34,7 @@ public class AimRobotMoving extends Command {
     BooleanSupplier run;
     DoubleSupplier rotationSupplier;
     double rotationSpeed;
+    double allianceOffset;
     
   public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run){
         m_drivetrain = drivetrain;
@@ -66,11 +70,16 @@ public class AimRobotMoving extends Command {
         } else {
           rotationSpeed = speedController.calculate(currentHeading);
         }
+        if(DriverStation.getAlliance().get() == Alliance.Red) {
+          allianceOffset = Math.PI;
+        } else {
+          allianceOffset = 0;
+        }
         m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
           translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
           translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
           rotationSpeed,
-          m_drivetrain.getGyroscopeRotation()));
+          new Rotation2d(m_drivetrain.getGyroscopeRotation().getRadians()+allianceOffset)));
         // m_drivetrain.drive(new ChassisSpeeds(
         //   translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
         //   translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
