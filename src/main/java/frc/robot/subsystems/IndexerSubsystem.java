@@ -5,6 +5,7 @@ import com.revrobotics.SparkAnalogSensor;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAnalogSensor.Mode;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.IndexerConstants;
 
@@ -18,7 +19,7 @@ public class IndexerSubsystem extends SubsystemBase {
     }
     
     public boolean isNoteIn() {
-        return m_DistanceSensor.getVoltage()>1;
+        return m_DistanceSensor.getVoltage()>2;
     }
 
     public void on() {
@@ -31,5 +32,9 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public void reverse() {
         m_IndexerMotor.set(-IndexerConstants.INDEXER_SPEED);
+    }
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
     }
 }
