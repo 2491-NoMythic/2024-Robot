@@ -411,12 +411,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return new Pose2d(new Translation2d(averageX, averageY), averageRotation);
 	}
 	public void forceUpdateOdometryWithVision() {
-		if(SmartDashboard.getBoolean("use limelight", false) && SmartDashboard.getBoolean("use 2 limelights", false)) {
-			LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-			LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
-			if (ll2.isResultValid && !ll3.isResultValid) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
-			if (!ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
-			if (ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
+		if(SmartDashboard.getBoolean("use limelight", false)) {
+			if(SmartDashboard.getBoolean("use 2 limelights", false)) {
+				LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
+				LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
+				if (ll2.isResultValid && !ll3.isResultValid) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
+				if (!ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
+				if (ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
+			} else {
+				LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
+				if(ll2.isResultValid) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
+			}
 		}
 	}
 	@Override
