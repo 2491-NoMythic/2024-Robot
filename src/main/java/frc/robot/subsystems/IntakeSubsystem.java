@@ -6,12 +6,12 @@ package frc.robot.subsystems;
 
  import com.revrobotics.CANSparkMax;
  import com.revrobotics.RelativeEncoder;
- import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkPIDController;
  import com.revrobotics.SparkRelativeEncoder;
  import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
- import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
  import frc.robot.settings.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
@@ -23,11 +23,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   double intakeRunSpeed;
   public IntakeSubsystem() {
-    CANSparkMax intake1 = new CANSparkMax(IntakeConstants.INTAKE_1_MOTOR, MotorType.kBrushless);
-    CANSparkMax intake2 = new CANSparkMax(IntakeConstants.INTAKE_1_MOTOR, MotorType.kBrushless);
-    CANSparkMax brush1 = new CANSparkMax(IntakeConstants.BRUSH_1_MOTOR, MotorType.kBrushless);
-    CANSparkMax brush2 = new CANSparkMax(IntakeConstants.BRUSH_2_MOTOR, MotorType.kBrushless);
-    CANSparkMax brush3 = new CANSparkMax(IntakeConstants.BRUSH_3_MOTOR, MotorType.kBrushless);
+    intake1 = new CANSparkMax(IntakeConstants.INTAKE_1_MOTOR, MotorType.kBrushless);
+    intake2 = new CANSparkMax(IntakeConstants.INTAKE_1_MOTOR, MotorType.kBrushless);
+    brush1 = new CANSparkMax(IntakeConstants.BRUSH_1_MOTOR, MotorType.kBrushless);
+    brush2 = new CANSparkMax(IntakeConstants.BRUSH_2_MOTOR, MotorType.kBrushless);
+    brush3 = new CANSparkMax(IntakeConstants.BRUSH_3_MOTOR, MotorType.kBrushless);
 
     intake2.follow(intake1);
     intake2.setInverted(true);
