@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3576779647621067,
-        "y": 2.17419608235891
+        "x": 2.6513193714406413,
+        "y": 4.0900409202953645
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.147408380327451,
-        "y": 1.7744559954678114
+        "x": 2.5149846740974624,
+        "y": 4.021873571623774
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.9329136995566167,
-        "y": 4.094898451079563
+        "x": 1.9696458847247476,
+        "y": 4.060826342293255
       },
       "prevControl": {
-        "x": 0.9596300064068812,
-        "y": 4.201559677726109
+        "x": 1.748962420788093,
+        "y": 3.860671572676289
       },
       "nextControl": {
-        "x": 2.6446460493871116,
-        "y": 4.016900385344714
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.6056470165196877,
-        "y": 4.094898451079563
-      },
-      "prevControl": {
-        "x": 2.6056470165196877,
-        "y": 3.997400868911001
-      },
-      "nextControl": {
-        "x": 2.6056470165196877,
-        "y": 4.603383628819343
+        "x": 3.225872738815466,
+        "y": 5.200194884375534
       },
       "isLocked": false,
       "linkedName": null
@@ -62,13 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 144.11786275379578,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 2,
-      "rotationDegrees": -179.99999999999994,
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 152.349644753163,
       "rotateFast": false
     }
   ],
@@ -76,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "parallel",
         "data": {
@@ -86,11 +65,39 @@
               "data": {
                 "name": "feedShooter"
               }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
-                "name": "intakeOn"
+                "name": "shootNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "shootNote"
               }
             }
           ]

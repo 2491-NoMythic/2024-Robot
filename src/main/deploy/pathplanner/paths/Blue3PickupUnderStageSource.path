@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.2728556716020805,
-        "y": 2.3496917302623217
+        "x": 5.212464042958929,
+        "y": 1.665230946120256
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.448769166286213,
-        "y": 4.577929329594664
+        "x": 2.748701298114341,
+        "y": 4.7814525996786275
       },
       "isLocked": false,
       "linkedName": "SourceSideBlueShoot"
@@ -49,7 +49,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Collect Notes",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

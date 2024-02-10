@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.087122174244349,
-      "y": 7.036539787365289
+      "x": 0.7523718013035084,
+      "y": 6.641447399146282
     },
-    "rotation": 0
+    "rotation": -120.96375653207352
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeOn"
+            "name": "initialShot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.25
           }
         },
         {

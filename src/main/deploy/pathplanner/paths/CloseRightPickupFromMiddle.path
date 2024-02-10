@@ -63,7 +63,7 @@
             {
               "type": "named",
               "data": {
-                "name": "feedShooter"
+                "name": "shootNote"
               }
             }
           ]
@@ -83,7 +83,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Collect Notes",
+  "folder": null,
   "previewStartingState": {
     "rotation": -178.1523897340052,
     "velocity": 0.0

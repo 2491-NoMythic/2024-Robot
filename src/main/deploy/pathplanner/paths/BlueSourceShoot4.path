@@ -16,28 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.9896948365325304,
-        "y": 2.433470009797163
+        "x": 5.212464042958929,
+        "y": 1.665230946120256
       },
       "prevControl": {
-        "x": 4.572111136500266,
-        "y": 1.4350420669953317
-      },
-      "nextControl": {
-        "x": 5.802874109263657,
-        "y": -1.4482422802850352
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.2728556716020805,
-        "y": 2.3496917302623217
-      },
-      "prevControl": {
-        "x": -0.21765755624215544,
-        "y": -2.3095123797612356
+        "x": 6.0499486123527415,
+        "y": 1.5775872121139263
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.5,
       "rotationDegrees": 146.98388319699862,
       "rotateFast": false
     }
@@ -65,7 +49,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "to shooting pos",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

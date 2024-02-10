@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7434431971001721,
-      "y": 2.17419608235891
+      "x": 0.7328954159687686,
+      "y": 4.421139470985942
     },
-    "rotation": 0
+    "rotation": 119.74488129694214
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeOn"
+            "name": "initialShot"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "shooterOn"
+            "waitTime": 1.25
           }
         },
         {

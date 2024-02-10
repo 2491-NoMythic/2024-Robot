@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.5585241906825855,
-        "y": 5.937602754065366
+        "x": 7.958634375157244,
+        "y": 5.872130178424058
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.649614087916611,
-        "y": 5.896339809164482
+        "x": 7.706285650918117,
+        "y": 6.147494346140698
       },
       "isLocked": false,
       "linkedName": "CollectNote2Blue"
     },
     {
       "anchor": {
-        "x": 4.276544769305755,
-        "y": 6.378845190122813
+        "x": 5.309845969632628,
+        "y": 7.001760527838968
       },
       "prevControl": {
-        "x": 6.504518234261694,
-        "y": 6.748633317086454
+        "x": 6.7413602917360045,
+        "y": 6.534327279805212
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,7 +49,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "to shooting pos",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }
