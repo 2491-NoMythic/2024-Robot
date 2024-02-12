@@ -343,6 +343,9 @@ public class RobotContainer {
       SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
       RobotState.getInstance().IsNoteSeen = limelight.getNeuralDetectorValues().isResultValid;
     }
+    SmartDashboard.putBoolean("is note seen", RobotState.getInstance().IsNoteSeen);
+		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);
+		SmartDashboard.putBoolean("shooter ready", RobotState.getInstance().ShooterReady);
   }
 
   public void disabledPeriodic() {
