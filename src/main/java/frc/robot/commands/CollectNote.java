@@ -86,7 +86,7 @@ public class CollectNote extends Command {
     
     // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
     drivetrain.drive(new ChassisSpeeds(
-      tyLimiter.calculate(-tyController.calculate(ty)),
+      tyLimiter.calculate(tyController.calculate(ty)),
       0,
       txController.calculate(tx)));
   }
@@ -96,7 +96,10 @@ public class CollectNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.stop();
+    new SequentialCommandGroup(
+      drivetrain.drive(new ChassisSpeeds(2, 0, 0)),
+      new WaitCommand(0.25),
+      drivetrain.stop())
   }
 
   // Returns true when the command should end.
