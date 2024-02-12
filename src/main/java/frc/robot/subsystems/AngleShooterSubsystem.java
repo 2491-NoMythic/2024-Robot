@@ -99,6 +99,12 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double desiredShooterAngle = Math
 				.toDegrees(Math.asin(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT / totalDistToSpeaker));
 		desiredShooterAngle = desiredShooterAngle+(speakerDist*DISTANCE_MULTIPLIER);
+		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
+			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;
+		}
+		if(desiredShooterAngle>ShooterConstants.MAXIMUM_SHOOTER_ANGLE) {
+			desiredShooterAngle = ShooterConstants.MAXIMUM_SHOOTER_ANGLE;
+		}
 		SmartDashboard.putNumber("desired shooter angle", desiredShooterAngle);
 
 		double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
