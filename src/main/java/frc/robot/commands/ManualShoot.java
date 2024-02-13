@@ -8,7 +8,6 @@ import frc.robot.subsystems.IndexerSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ManualShoot extends Command {
-  public ShooterSubsystem shooter;
   private IndexerSubsystem indexer;
   /** Creates a new ManualShoot. */
   public ManualShoot(IndexerSubsystem indexer) {
