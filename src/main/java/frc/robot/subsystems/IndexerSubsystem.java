@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAnalogSensor;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -10,16 +11,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.IndexerConstants;
 
 public class IndexerSubsystem extends SubsystemBase {
-    CANSparkMax m_IndexerMotor;
-    SparkAnalogSensor m_DistanceSensor;
+    TalonFX m_IndexerMotor;
 
     public IndexerSubsystem() {
-        m_IndexerMotor = new CANSparkMax(IndexerConstants.INDEXER_MOTOR, MotorType.kBrushless);
-        m_DistanceSensor = m_IndexerMotor.getAnalog(Mode.kAbsolute);
-    }
-    
-    public boolean isNoteIn() {
-        return m_DistanceSensor.getVoltage()>2;
+        m_IndexerMotor = new TalonFX(IndexerConstants.INDEXER_MOTOR);
     }
 
     public void on() {
@@ -32,9 +27,5 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public void reverse() {
         m_IndexerMotor.set(-IndexerConstants.INDEXER_SPEED);
-    }
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
     }
 }
