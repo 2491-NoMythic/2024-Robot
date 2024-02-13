@@ -69,7 +69,7 @@ public class IndexCommand extends Command {
       if(revUpSupplier.getAsBoolean()) {
         shooter.shootThing(1);
       } else {
-        shooter.shootThing(0.3);
+        shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER);
       }
     }
     if (shootIfReadySupplier.getAsBoolean()) {
