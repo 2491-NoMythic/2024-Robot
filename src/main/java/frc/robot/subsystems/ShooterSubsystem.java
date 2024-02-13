@@ -3,7 +3,15 @@
  // the WPILib BSD license file in the root directory of this project.
  
  package frc.robot.subsystems;
- import com.revrobotics.CANSparkMax;
+ import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkMax;
  import com.revrobotics.RelativeEncoder;
  import com.revrobotics.SparkPIDController;
  import com.revrobotics.SparkRelativeEncoder;
@@ -17,19 +25,21 @@ import frc.robot.commands.RotateRobot;
 import frc.robot.settings.Constants;
 import  frc.robot.settings.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
- import edu.wpi.first.wpilibj2.command.SubsystemBase;
- import static frc.robot.settings.Constants.ShooterConstants.*;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.robot.settings.Constants.ShooterConstants.*;
  
  public class ShooterSubsystem extends SubsystemBase {
-   CANSparkMax shooterR;
-   CANSparkMax shooterL;
+   TalonFX shooterR;
+   TalonFX shooterL;
    double runSpeed;
+   TalonFXConfigurator configurator;
 
   double differenceAngle;
 	 double currentHeading;
 	 double m_DesiredShooterAngle;
  
-   SparkPIDController shooterPID;
+   Slot0Configs PIDconfigs = new Slot0Configs();
+   
    SparkPIDController pitchPID;
    double kP = Constants.ShooterConstants.kP;         
    double kI = Constants.ShooterConstants.kI;         
@@ -49,34 +59,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 	int accumulativeTurns;
  
      /** Creates a new Shooter. */
-   public ShooterSubsystem(double runSpeed) {
-     SparkPIDController shooterPID;
-     shooterR = new CANSparkMax(ShooterConstants.SHOOTER_R_MOTORID, MotorType.kBrushless);
-     shooterL = new CANSparkMax(ShooterConstants.SHOOTER_L_MOTORID, MotorType.kBrushless);
-     shooterR.restoreFactoryDefaults();
-     shooterL.follow(shooterR);
-     shooterL.setInverted(true);
-     shooterR.setIdleMode(IdleMode.kCoast);
-     shooterL.setIdleMode(IdleMode.kCoast);
-     
- 
-     encoder1 = shooterR.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4096);
- 
-    shooterPID = shooterR.getPIDController();
-  
+  public ShooterSubsystem(double runSpeed) {
+    shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
+    shooterL = new TalonFX(ShooterConstants.SHOOTER_L_MOTORID);
+    shooterL.setInverted(true);
+    shooterL.setControl(shooterR.getAppliedControl());
+    shooterL.setNeutralMode(NeutralModeValue.Coast);
+    shooterR.setNeutralMode(NeutralModeValue.Coast);
+    PIDconfigs = new Slot0Configs();
+
+    configurator = shooterR.getConfigurator();
+    
     pitchPID.setFF(pitchFeedForward);
+    
+    PIDconfigs.kP = kP;
+    PIDconfigs.kI = kI;
+    PIDconfigs.kD = kD;
+    PIDconfigs.kS = kFF; 
  
-    shooterPID.setP(kP);
-    shooterPID.setI(kI);
-    shooterPID.setD(kD);  
-    shooterPID.setIZone(kIz);
-    shooterPID.setFF(kFF);
-    shooterPID.setOutputRange(kMinOutput, kMaxOutput);  
- 
- 
-     //Adjust the value runSpeed later. (SmartDashboard stuff)
-     shooterPID.setReference(runSpeed, ControlType.kVelocity);
-     
      SmartDashboard.putNumber("P Gain", Constants.ShooterConstants.kP);
      SmartDashboard.putNumber("I Gain", Constants.ShooterConstants.kI);
      SmartDashboard.putNumber("D Gain",Constants.ShooterConstants.kD);
@@ -96,29 +96,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
      double ve = SmartDashboard.getNumber("Set Velocity", 0);
  
  
-     if((p != kP)) {shooterPID.setP(p); kP = p; }
-     if((i != kI)) {shooterPID.setI(i); kI = i; }
-     if((d != kD)) {shooterPID.setD(d); kD = d; }
+     if((p != kP)) {PIDconfigs.kP = p; kP = p; }
+     if((i != kI)) {PIDconfigs.kI = i; kI = i; }
+     if((d != kD)) {PIDconfigs.kD = d; kD = d; }
  
-     if((iz != kIz)) {shooterPID.setIZone(iz); kIz = iz;}
-     if((ff != kFF)) {shooterPID.setFF(ff); kFF = ff;}
-     if((max != kMaxOutput) || (min != kMinOutput))
-     {
-      shooterPID.setOutputRange(min, max);
-      kMinOutput = min; kMaxOutput = max;
-     }
- 
-     SmartDashboard.putNumber("Process Variable", encoder1.getPosition());
-     
+     if((ff != kFF)) {PIDconfigs.kS = ff; kFF = ff;}
+    configurator.apply(PIDconfigs);
    }
    
 
   public void shootThing(double runSpeed) {
      shooterR.set(runSpeed);
-     shooterL.set(runSpeed);
    }
   public double getError() {
-    return Math.abs(shooterR.getAbsoluteEncoder(Type.kDutyCycle).getVelocity()-ShooterConstants.RUNNING_VELOCITY_RPS);
+    return Math.abs(shooterR.getVelocity().asSupplier().get()-ShooterConstants.RUNNING_VELOCITY_RPS);
   }
   public void turnOff(){
      shooterR.set(0);
