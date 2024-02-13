@@ -234,7 +234,7 @@ public class RobotContainer {
     new Trigger(driverController::getR1Button).onTrue(new CollectNote(driveTrain, limelight));
     if(shooterExists) {
       AngleShooter shooterUpCommand = new AngleShooter(angleShooterSubsystem, () -> Constants.ShooterConstants.shooterup);
-      new Trigger(()->driverController.getPOV == 180).whileTrue(shooterUpCommand);
+      new Trigger(()->driverController.getPOV() == 180).whileTrue(shooterUpCommand);
       SmartDashboard.putData("Manual Angle Shooter Up", shooterUpCommand);
     }
     if(indexerExists) {
