@@ -97,7 +97,7 @@ public class CollectNote extends Command {
   @Override
   public void end(boolean interrupted) {
     new SequentialCommandGroup(
-      drivetrain.drive(new ChassisSpeeds(2, 0, 0)),
+      drivetrain.drive(new ChassisSpeeds(-2, 0, 0)),
       new WaitCommand(0.25),
       drivetrain.stop())
   }
