@@ -58,7 +58,7 @@ public class IndexCommand extends Command {
     } else {
       auto = false;
     }
-    if (!intake.isNoteIn()) {
+    if (!m_Indexer.isNoteIn()) {
       intake.intakeYes(1);
       m_Indexer.on();
       if(!auto) {

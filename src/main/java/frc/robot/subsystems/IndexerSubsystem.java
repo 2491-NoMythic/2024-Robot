@@ -11,10 +11,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.IndexerConstants;
 
 public class IndexerSubsystem extends SubsystemBase {
-    TalonFX m_IndexerMotor;
+    CANSparkMax m_IndexerMotor;
+    SparkAnalogSensor m_DistanceSensor;
 
     public IndexerSubsystem() {
-        m_IndexerMotor = new TalonFX(IndexerConstants.INDEXER_MOTOR);
+        m_IndexerMotor = new CANSparkMax(IndexerConstants.INDEXER_MOTOR, MotorType.kBrushless);
+        m_DistanceSensor = m_IndexerMotor.getAnalog(Mode.kAbsolute);
     }
 
     public void on() {
@@ -27,5 +29,13 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public void reverse() {
         m_IndexerMotor.set(-IndexerConstants.INDEXER_SPEED);
+    }
+    public boolean isNoteIn() {
+        return m_DistanceSensor.getVoltage()>2;
+      }
+    
+    @Override
+    public void periodic() {
+    SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
     }
 }
