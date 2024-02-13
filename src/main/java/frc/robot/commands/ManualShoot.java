@@ -4,16 +4,16 @@
 
 package frc.robot.commands;
 import frc.robot.settings.Constants.ShooterConstants;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ManualShoot extends Command {
-  public ShooterSubsystem shooter;
+  private IndexerSubsystem indexer;
   /** Creates a new ManualShoot. */
-  public ManualShoot(ShooterSubsystem shooter) {
+  public ManualShoot(IndexerSubsystem indexer) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
-    this.shooter = shooter;
+    addRequirements(indexer);
+    this.indexer = indexer;
   }
 
   // Called when the command is initially scheduled.
@@ -23,13 +23,13 @@ public class ManualShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.shootThing(ShooterConstants.SHOOTER_MOTOR_POWER);
+    indexer.on();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.turnOff();
+    indexer.off();
   }
 
   // Returns true when the command should end.

@@ -258,6 +258,7 @@ public static final class ShooterConstants{
   public static final int SHOOTER_L_MOTORID = 2491;
   public static final int PITCH_MOTOR_ID = 2491;
   public static final double SHOOTER_MOTOR_POWER = 1;
+  public static final double SHOOTER_AMP_POWER = 0.3;
   public static final double SHOOTING_SPEED_MPS = 10;
   public static final double RUNNING_VELOCITY_RPS = 2491;
   public static final double ALLOWED_ERROR = 1;
