@@ -29,6 +29,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CollectNote;
 import frc.robot.commands.Drive;
+import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.ExampleCommand;
 
 import frc.robot.settings.Constants.Field;
@@ -65,6 +66,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -234,7 +236,12 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getL2Button));
 
-    new Trigger(driverController::getR1Button).onTrue(new CollectNote(driveTrain, limelight));
+    new Trigger(driverController::getR1Button).onTrue(new SequentialCommandGroup(
+      new CollectNote(driveTrain, limelight),
+      new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
+      ));
+    new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
+
     if(shooterExists) {
       AngleShooter shooterUpCommand = new AngleShooter(angleShooterSubsystem, () -> Constants.ShooterConstants.shooterup);
       new Trigger(()->driverController.getPOV() == 180).whileTrue(shooterUpCommand);

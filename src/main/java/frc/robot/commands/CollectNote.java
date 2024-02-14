@@ -9,6 +9,9 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Vision;
 import frc.robot.settings.LimelightDetectorData;
@@ -55,13 +58,14 @@ public class CollectNote extends Command {
     tyController.setSetpoint(0);
     txController.setTolerance(3.5, 0.25);
     tyController.setTolerance(1, 0.25);
-
+    detectorData = Limelight.latestDetectorValues;
+    SmartDashboard.putBoolean("note seen", detectorData.isResultValid);
   }
-
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     detectorData = Limelight.latestDetectorValues;
+    detectorData = Limelight.latestDetectorValues;
 
     if (detectorData == null) {
       drivetrain.stop();
@@ -86,7 +90,7 @@ public class CollectNote extends Command {
     
     // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
     drivetrain.drive(new ChassisSpeeds(
-      tyLimiter.calculate(-tyController.calculate(ty)),
+      tyLimiter.calculate(tyController.calculate(ty)),
       0,
       txController.calculate(tx)));
   }
@@ -96,7 +100,6 @@ public class CollectNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.stop();
   }
 
   // Returns true when the command should end.
