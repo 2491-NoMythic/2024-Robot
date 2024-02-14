@@ -24,7 +24,7 @@ public class AimShooter extends Command {
 
 	@Override
 	public void execute() {
-		if (!(aimAtAmpSupplier.getAsDouble() == 0)) {
+		if (!(aimAtAmpSupplier.getAsDouble() == 90)) {
 			double desiredShooterAngleSpeed = angleShooterSubsystem.calculateSpeakerAngleDifference() * ShooterConstants.AUTO_AIM_SHOOTER_kP;
 			angleShooterSubsystem.pitchShooter(desiredShooterAngleSpeed);
 		} else {

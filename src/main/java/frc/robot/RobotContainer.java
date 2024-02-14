@@ -34,6 +34,7 @@ import frc.robot.commands.ExampleCommand;
 
 import frc.robot.settings.Constants.Field;
 import frc.robot.commands.IndexCommand;
+import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
@@ -57,6 +58,7 @@ import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -170,7 +172,7 @@ public class RobotContainer {
     SmartDashboard.putData(climbSpotChooser);
   }
   private void driveTrainInst() {
-    driveTrain = new DrivetrainSubsystem(lights, lightsExist);
+    driveTrain = new DrivetrainSubsystem();
     defaultDriveCommand = new Drive(
       driveTrain, 
       () -> driverController.getL1Button(),
@@ -197,8 +199,6 @@ public class RobotContainer {
   private void indexCommandInst() {
     defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
-    shooter.setDefaultCommand(defaulNoteHandlingCommand);
-    intake.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
   private void autoInit() {
@@ -212,6 +212,7 @@ public class RobotContainer {
   }
   private void lightsInst() {
     lights = new Lights(Constants.LED_COUNT-1);
+    lights.setDefaultCommand(new IndicatorLights(lights));
   }
   
 
@@ -225,21 +226,15 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
-    SmartDashboard.putData(new RotateRobot(driveTrain, driveTrain::calculateSpeakerAngle));
-    new Trigger(driverController::getTriangleButton).onTrue(new GoToClimbSpot(driveTrain, climbSpotChooser));
-    new Trigger(driverController::getCrossButton).whileTrue(new GoToAmp(driveTrain));
-    new Trigger(driverController::getR1Button).whileTrue(new AimRobotMoving(
+    new Trigger(driverController::getCircleButton).whileTrue(new GoToAmp(driveTrain));
+    new Trigger(driverController::getL2Button).whileTrue(new AimRobotMoving(
       driveTrain,
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      driverController::getR1Button));
+      driverController::getL2Button));
 
     new Trigger(driverController::getR1Button).onTrue(new SequentialCommandGroup(
       new CollectNote(driveTrain, limelight),
@@ -248,24 +243,33 @@ public class RobotContainer {
     new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
 
     if(shooterExists) {
-      new Trigger(operatorController::getCircleButton).onTrue(new ManualShoot(shooter));
       AngleShooter shooterUpCommand = new AngleShooter(angleShooterSubsystem, () -> Constants.ShooterConstants.shooterup);
-      new Trigger(driverController::getL1Button).onTrue(shooterUpCommand);
+      new Trigger(()->driverController.getPOV() == 180).whileTrue(shooterUpCommand);
       SmartDashboard.putData("Manual Angle Shooter Up", shooterUpCommand);
     }
+    if(indexerExists) {
+      new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer));
+    }
     if(climberExists) {
-      new Trigger(operatorController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(operatorController::getSquareButton).onTrue(new ClimberPullDown(climber));
+      new Trigger(driverController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     SmartDashboard.putData("set offsets", new InstantCommand(driveTrain::setEncoderOffsets));
     SmartDashboard.putData(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
-
-    // //Intake bindings
-    // new Trigger(operatorController::getL1Button).onTrue(new IntakeCommand(intake, iDirection.INTAKE));
-   // new Trigger(operatorController::getL2Button).onTrue(new IntakeCommand(intake, iDirection.OUTAKE));
-   // new Trigger(operatorController::getR2Button).onTrue(new IntakeCommand(intake, iDirection.COAST));
-    //for testing Rotate Robot command
+/* bindings:
+ *    L2: aim at speaker and rev up shooter to max (hold)
+ *    L1: manually feed shooter (hold)
+ *    R2: shoot if everything is lined up (hold)
+ *    R1: automatically pick up note (press)
+ *    Circle: lineup with the amp (hold)
+ *    D-Pad down: move shooter up manually (hold)
+ *    D-pad right: aim shooter at amp (hold)
+ *    Triangle: move climber up (hold)
+ *    Cross: auto-climb down (hold)
+ *    Square: manually pull down with climber (hold)
+ *    
+ */
     };
 
 
@@ -344,7 +348,11 @@ public class RobotContainer {
     driveTrain.calculateSpeakerAngle();
     if(useDetectorLimelight) {
       SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
+      RobotState.getInstance().IsNoteSeen = limelight.getNeuralDetectorValues().isResultValid;
     }
+    SmartDashboard.putBoolean("is note seen", RobotState.getInstance().IsNoteSeen);
+		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);
+		SmartDashboard.putBoolean("shooter ready", RobotState.getInstance().ShooterReady);
   }
 
   public void disabledPeriodic() {
