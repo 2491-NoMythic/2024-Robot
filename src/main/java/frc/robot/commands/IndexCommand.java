@@ -15,6 +15,7 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.ShooterSubsystem;
 
 
@@ -72,20 +73,30 @@ public class IndexCommand extends Command {
         shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER);
       }
     }
-    if (shootIfReadySupplier.getAsBoolean()) {
-      if((angleShooterSubsytem.calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ERROR)
-        && drivetrain.getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR
-        && Math.abs(shooter.getError())<ShooterConstants.ALLOWED_SPEED_ERROR) {
-          m_Indexer.on();
-      } else {
-        m_Indexer.off();
+    boolean indexer = false;
+    if((angleShooterSubsytem.calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ERROR)
+      && drivetrain.getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR
+      && Math.abs(shooter.getError())<ShooterConstants.ALLOWED_SPEED_ERROR)
+    {
+      RobotState.getInstance().ShooterReady = true;
+      if (shootIfReadySupplier.getAsBoolean()) {
+        indexer = true;
       }
+    } else {
+      RobotState.getInstance().ShooterReady = false;
+    }
+    if (indexer) {
+      m_Indexer.on();
+    } else {
+      m_Indexer.off();
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    RobotState.getInstance().ShooterReady = false;
+  }
 
   // Returns true when the command should end.
   @Override

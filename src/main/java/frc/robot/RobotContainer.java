@@ -33,6 +33,7 @@ import frc.robot.commands.ExampleCommand;
 
 import frc.robot.settings.Constants.Field;
 import frc.robot.commands.IndexCommand;
+import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
@@ -56,6 +57,7 @@ import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -168,7 +170,7 @@ public class RobotContainer {
     SmartDashboard.putData(climbSpotChooser);
   }
   private void driveTrainInst() {
-    driveTrain = new DrivetrainSubsystem(lights, lightsExist);
+    driveTrain = new DrivetrainSubsystem();
     defaultDriveCommand = new Drive(
       driveTrain, 
       () -> driverController.getL1Button(),
@@ -208,6 +210,7 @@ public class RobotContainer {
   }
   private void lightsInst() {
     lights = new Lights(Constants.LED_COUNT-1);
+    lights.setDefaultCommand(new IndicatorLights(lights));
   }
   
 
@@ -338,7 +341,11 @@ public class RobotContainer {
     driveTrain.calculateSpeakerAngle();
     if(useDetectorLimelight) {
       SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
+      RobotState.getInstance().IsNoteSeen = limelight.getNeuralDetectorValues().isResultValid;
     }
+    SmartDashboard.putBoolean("is note seen", RobotState.getInstance().IsNoteSeen);
+		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);
+		SmartDashboard.putBoolean("shooter ready", RobotState.getInstance().ShooterReady);
   }
 
   public void disabledPeriodic() {
