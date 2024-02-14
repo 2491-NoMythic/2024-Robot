@@ -16,6 +16,8 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public IndexerSubsystem() {
         m_IndexerMotor = new CANSparkMax(IndexerConstants.INDEXER_MOTOR, MotorType.kBrushless);
+        m_IndexerMotor.setInverted(false);
+        m_IndexerMotor.burnFlash();
         m_DistanceSensor = m_IndexerMotor.getAnalog(Mode.kAbsolute);
     }
 
