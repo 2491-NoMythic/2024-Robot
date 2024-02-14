@@ -22,15 +22,16 @@ public class IndicatorLights extends Command {
   @Override
   public void execute() {
   
-    lights.setSectionOne(255,192,203);
-    lights.setSectionTwo(255,0,255);
+    lights.setSectionOne(50,0,50);
+    lights.setSectionTwo(0,50,0);
     lights.dataSetter();
   }
 
 
   @Override
   public void end(boolean interrupted) {
-    
+    lights.lightsOut();
+    lights.dataSetter();
   }
 
   // Returns true when the command should end.
