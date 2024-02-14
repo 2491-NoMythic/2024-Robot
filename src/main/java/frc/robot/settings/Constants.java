@@ -272,7 +272,7 @@ public static final class ShooterConstants{
   public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_HEIGHT = 0.1;
   public static final double ANGLE_TICKS_PER_DEGREE = 2491;
-  public static final double DEGREES_PER_ROTATION = 2491;
+  public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0;
   public static final double OFFSET_MULTIPLIER = 1;
 
@@ -314,11 +314,11 @@ public static final class IndexerConstants{
   public static final double INDEXER_SPEED = 2491;
 }
 public static final class IntakeConstants{
-  public static final int INTAKE_1_MOTOR = 2491;
-  public static final int INTAKE_2_MOTOR = 2491;
-  public static final int BRUSH_1_MOTOR = 2491;
-  public static final int BRUSH_2_MOTOR = 2491;
-  public static final int BRUSH_3_MOTOR = 2491;
+  public static final int INTAKE_1_MOTOR = 20;
+  public static final int INTAKE_2_MOTOR = 21;
+  public static final int BRUSH_1_MOTOR = 22;
+  public static final int BRUSH_2_MOTOR = 23;
+  public static final int BRUSH_3_MOTOR = 24;
   public static final double INTAKE_SPEED = 0.75;
 }
 public static final class CTREConfigs {

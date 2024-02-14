@@ -63,6 +63,7 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
     shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
     shooterL = new TalonFX(ShooterConstants.SHOOTER_L_MOTORID);
     shooterL.setInverted(true);
+    shooterR.setInverted(false);
     shooterL.setControl(shooterR.getAppliedControl());
     shooterL.setNeutralMode(NeutralModeValue.Coast);
     shooterR.setNeutralMode(NeutralModeValue.Coast);
