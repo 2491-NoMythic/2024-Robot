@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.RobotState;
 public class IndicatorLights extends Command {
  
   Lights lights;
@@ -21,9 +22,18 @@ public class IndicatorLights extends Command {
 
   @Override
   public void execute() {
-  
-    lights.setSectionOne(50,0,50);
-    lights.setSectionTwo(0,50,0);
+    if (RobotState.getInstance().IsNoteSeen) {
+    lights.setSectionOne(50,40,0);
+    } else {
+      lights.setSectionOne(50, 0, 50);
+    }
+    if (RobotState.getInstance().ShooterInRange && RobotState.getInstance().ShooterReady){
+      lights.setSectionTwo(0,50,0);
+    } else if (RobotState.getInstance().ShooterInRange){
+      lights.setSectionTwo(50, 50, 0);
+    } else {
+      lights.setSectionTwo(50, 0, 50);
+    }
     lights.dataSetter();
   }
 
