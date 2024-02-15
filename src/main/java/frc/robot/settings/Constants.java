@@ -254,9 +254,9 @@ public final class Constants {
     public static final double k_PICKUP_NOTE_tx_D = 0;
   }
 public static final class ShooterConstants{
-  public static final int SHOOTER_R_MOTORID = 2491;
-  public static final int SHOOTER_L_MOTORID = 2491;
-  public static final int PITCH_MOTOR_ID = 2491;
+  public static final int SHOOTER_R_MOTORID = 10;
+  public static final int SHOOTER_L_MOTORID = 9;
+  public static final int PITCH_MOTOR_ID = 22;
   public static final double SHOOTER_MOTOR_POWER = 1;
   public static final double SHOOTER_AMP_POWER = 0.3;
   public static final double SHOOTING_SPEED_MPS = 10;
@@ -273,7 +273,7 @@ public static final class ShooterConstants{
   public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_HEIGHT = 0.1;
   public static final double ANGLE_TICKS_PER_DEGREE = 2491;
-  public static final double DEGREES_PER_ROTATION = 2491;
+  public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0;
   public static final double OFFSET_MULTIPLIER = 1;
   public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
@@ -282,9 +282,9 @@ public static final class ShooterConstants{
  
 
   //PID coefficients for shooter:
-  public static final double kP = 0.1;
-  public static final double kI = 1e-4;
-  public static final double kD = 1;
+  public static final double kP = 1;
+  public static final double kI = 0;
+  public static final double kD = 0;
   public static final double kIz = 0;
   public static final double kFF = 0;
   public static final double kMaxOutput = 1;
@@ -313,12 +313,12 @@ public static final class ClimberConstants{
   public static final double CLIMBER_RPM = 0.1;
 }
 public static final class IndexerConstants{
-  public static final int INDEXER_MOTOR = 2491;
+  public static final int INDEXER_MOTOR = 23;
   public static final double INDEXER_SPEED = 2491;
 }
 public static final class IntakeConstants{
-  public static final int INTAKE_1_MOTOR = 2491;
-  public static final int INTAKE_2_MOTOR = 2491;
+  public static final int INTAKE_1_MOTOR = 20;
+  public static final int INTAKE_2_MOTOR = 21;
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
