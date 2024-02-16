@@ -25,7 +25,6 @@ public class AimShooter extends Command {
 
 	@Override
 	public void execute() {
-		SmartDashboard.putNumber("TESTING shooter angle difference", angleShooterSubsystem.getSpeakerAngleDifference());
 		if (!(aimAtAmpSupplier.getAsDouble() == 90)) {
 			double desiredShooterAngleSpeed = angleShooterSubsystem.calculateSpeakerAngleDifference() * ShooterConstants.AUTO_AIM_SHOOTER_kP;
 			angleShooterSubsystem.pitchShooter(desiredShooterAngleSpeed);

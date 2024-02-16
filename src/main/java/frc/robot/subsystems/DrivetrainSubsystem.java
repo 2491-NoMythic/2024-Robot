@@ -452,6 +452,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//for testing RotateRobot:
 		SmartDashboard.putNumber("loopedHeading", getHeadingLooped());
 		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngle());
-		SmartDashboard.putNumber("TESTING robot angle difference", getSpeakerAngleDifference());
 	}
 }

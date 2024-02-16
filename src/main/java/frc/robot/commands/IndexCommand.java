@@ -60,7 +60,7 @@ public class IndexCommand extends Command {
       auto = false;
     }
     if (!m_Indexer.isNoteIn()) {
-      intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+      intake.intakeYes(1);
       m_Indexer.on();
       if(!auto) {
         shooter.turnOff();
@@ -68,7 +68,7 @@ public class IndexCommand extends Command {
     } else {
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()) {
-        shooter.shootThing(ShooterConstants.SHOOTER_MOTOR_POWER);
+        shooter.shootThing(1);
       } else {
         shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER);
       }
