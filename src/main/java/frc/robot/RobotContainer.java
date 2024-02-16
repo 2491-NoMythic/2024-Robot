@@ -276,7 +276,21 @@ public class RobotContainer {
  *    Square: manually pull down with climber (hold)
  *    
  */
-    };
+//FOR TESTING PURPOSES:
+    if(intakeExists) {
+      SmartDashboard.putData("intake on", new InstandCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED), intake));
+      SmartDashboard.putData("intake off", new InstandCommand(intake::intakeOff, intake));
+    }
+    if(shooterExists) {
+      SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootThing(ShooterConstants.SHOOTER_MOTOR_POWER), shooter));
+      SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER), shooter));
+      SmartDashboard.putData("shooter off", new InstantCommand(shooter::turnOff, shooter));
+    }
+    if(angleShooterExists) {
+      double testAngle = 45;
+      SmartDashboard.putData("go to angle", new AngleShooter(angleShooterSubsystem, ()->testAngle))
+    }
+  };
 
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,

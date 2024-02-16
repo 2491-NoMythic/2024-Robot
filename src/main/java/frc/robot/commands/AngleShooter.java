@@ -39,7 +39,8 @@ public class AngleShooter extends Command {
     desiredShooterAngle = desiredShooterAngleSupplier.getAsDouble();
     differenceAngle = desiredShooterAngle-m_shooter.getShooterAngle();
     desiredShooterAngleSpeed = differenceAngle*ShooterConstants.AUTO_AIM_SHOOTER_kP;
-    m_shooter.pitchShooter(desiredShooterAngleSpeed);
+    SmartDashboard.putNumber("desired pitch motor speed", desiredShooterAngleSpeed)
+    // m_shooter.pitchShooter(desiredShooterAngleSpeed);
   }
 
   // Called once the command ends or is interrupted.
