@@ -13,6 +13,7 @@ public class AimShooter extends Command {
 	DoubleSupplier aimAtAmpSupplier;
 
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier aimAtAmp) {
+		addRequirements(angleShooterSubsystem); 
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.aimAtAmpSupplier = aimAtAmp;
 	}

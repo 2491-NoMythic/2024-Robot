@@ -104,7 +104,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double totalDistToSpeaker = Math
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
 		double desiredShooterAngle = Math
-		.toDegrees(Math.asin(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT / totalDistToSpeaker));
+				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalDistToSpeaker));
 		desiredShooterAngle = desiredShooterAngle+(speakerDist*DISTANCE_MULTIPLIER);
 		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
 			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;

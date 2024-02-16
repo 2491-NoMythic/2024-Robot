@@ -98,6 +98,7 @@ public class RobotContainer {
 // preferences are information saved on the Rio. They are initialized once, then gotten every time we run the code.
   private final boolean intakeExists = Preferences.getBoolean("Intake", true);
   private final boolean shooterExists = Preferences.getBoolean("Shooter", true);
+  private final boolean angleShooterExists = Preferences.getBoolean("AngleShooter", true);
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
   private final boolean lightsExist = Preferences.getBoolean("Lights", true);
   private final boolean indexerExists = Preferences.getBoolean("Indexer", true);
@@ -131,6 +132,7 @@ public class RobotContainer {
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
+    Preferences.initBoolean("Angle Shooter", false);
     Preferences.initBoolean("Lights", false);
     Preferences.initBoolean("Indexer", false);
     Preferences.initBoolean("Detector Limelight", false);
@@ -148,6 +150,7 @@ public class RobotContainer {
     if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
+    if(angleShooterExists) {angleShooterInst();}
     if(climberExists) {climberInst();}
     climbSpotChooserInit();
     if(lightsExist) {lightsInst();}
@@ -184,6 +187,8 @@ public class RobotContainer {
   }
   private void shooterInst() {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
+  }
+  private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
     defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, operatorController::getPOV);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);

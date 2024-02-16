@@ -268,7 +268,7 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
-  public static final double AUTO_AIM_SHOOTER_kP = 2491;
+  public static final double AUTO_AIM_SHOOTER_kP = 0.003;
   public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_HEIGHT = 0.1;
