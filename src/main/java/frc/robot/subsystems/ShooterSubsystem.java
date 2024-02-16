@@ -57,6 +57,7 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
 	RotateRobot rotateRobot;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
+  public double desiredSpeed;
  
      /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
@@ -107,14 +108,22 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
    
 
   public void shootThing(double runSpeed) {
+     desiredSpeed = runSpeed;
      shooterR.set(runSpeed);
    }
   public double getError() {
-    return Math.abs(shooterR.getVelocity().asSupplier().get()-ShooterConstants.RUNNING_VELOCITY_RPS);
+    return Math.abs(shooterR.getVelocity().asSupplier().get()-desiredSpeed);
   }
   public void turnOff(){
      shooterR.set(0);
      shooterL.set(0);
+  }
+  public double getSpeedRPS() {
+    return shooterR.getVelocity().asSupplier().get();
+  }
+@Override
+  public void periodic() {
+    SmartDashboard.putNumber("TESTING shooter speed error", getError());
   }
 }
  
