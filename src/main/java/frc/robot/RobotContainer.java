@@ -278,8 +278,8 @@ public class RobotContainer {
  */
 //FOR TESTING PURPOSES:
     if(intakeExists) {
-      SmartDashboard.putData("intake on", new InstandCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED), intake));
-      SmartDashboard.putData("intake off", new InstandCommand(intake::intakeOff, intake));
+      SmartDashboard.putData("intake on", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED), intake));
+      SmartDashboard.putData("intake off", new InstantCommand(intake::intakeOff, intake));
     }
     if(shooterExists) {
       SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootThing(ShooterConstants.SHOOTER_MOTOR_POWER), shooter));
@@ -288,7 +288,7 @@ public class RobotContainer {
     }
     if(angleShooterExists) {
       double testAngle = 45;
-      SmartDashboard.putData("go to angle", new AngleShooter(angleShooterSubsystem, ()->testAngle))
+      SmartDashboard.putData("go to angle", new AngleShooter(angleShooterSubsystem, ()->testAngle));
     }
   };
 
