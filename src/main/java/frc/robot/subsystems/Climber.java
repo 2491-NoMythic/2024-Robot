@@ -44,11 +44,15 @@ public class Climber extends SubsystemBase {
     climbMotorR.setIdleMode(IdleMode.kBrake);
   }
  public void climberGo(double speed){
-  if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
-  climbMotorL.set(speed);}
-  if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
-  climbMotorR.set(speed);}
-  
+  if (speed<0) {
+    climbMotorL.set(speed);
+    climbMotorR.set(speed);
+  } else {
+    if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
+    climbMotorL.set(speed);}
+    if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
+    climbMotorR.set(speed);}
+  }
  }
 
  public void climberStop(){
