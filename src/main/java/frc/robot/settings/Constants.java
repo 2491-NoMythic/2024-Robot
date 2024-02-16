@@ -306,6 +306,7 @@ public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR_LEFT = 2491;
   public static final double CLIMBER_SPEED_DOWN = 0.75;
   public static final double CLIMBER_SPEED_UP = 0.75;
+  public static final double MAX_MOTOR_ROTATIONS = 2491;
 
   //TODO: refine these values
   public static final double CLIMBER_VOLTAGE_ALIGN = 0.75;

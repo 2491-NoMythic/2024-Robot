@@ -10,7 +10,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
  import com.revrobotics.SparkRelativeEncoder;
-import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -25,8 +24,12 @@ public class Climber extends SubsystemBase {
   RelativeEncoder climbEncoderL;
   double speed;
   double voltage;
+  double currentEncoderRotationsL;
+  double currentEncoderRotationsR;
   SparkLimitSwitch limitSwitchR;
   SparkLimitSwitch limitSwitchL;
+  double initialEncoderRotationsL;
+  double initialEncoderRotationsR;
   /** Creates a new Climber. */
   public Climber() {
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
@@ -35,12 +38,21 @@ public class Climber extends SubsystemBase {
     climbEncoderL = climbMotorL.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
     limitSwitchR = climbMotorR.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
     limitSwitchL = climbMotorL.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    initialEncoderRotationsL = Math.abs(climbEncoderL.getPosition());
+    initialEncoderRotationsL = Math.abs(climbEncoderR.getPosition());
     climbMotorL.setIdleMode(IdleMode.kBrake);
     climbMotorR.setIdleMode(IdleMode.kBrake);
   }
  public void climberGo(double speed){
-  climbMotorR.set(speed);
-  climbMotorL.set(speed);
+  if (speed<0) {
+    climbMotorL.set(speed);
+    climbMotorR.set(speed);
+  } else {
+    if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
+    climbMotorL.set(speed);}
+    if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
+    climbMotorR.set(speed);}
+  }
  }
 
  public void climberStop(){
@@ -64,5 +76,9 @@ public class Climber extends SubsystemBase {
  public boolean isClimberIn(){
   return limitSwitchR.isPressed() && limitSwitchL.isPressed();
 }
-
+@Override
+public void periodic() {
+  currentEncoderRotationsL = Math.abs(climbEncoderL.getPosition()) - initialEncoderRotationsL;
+  currentEncoderRotationsR = Math.abs(climbEncoderR.getPosition()) - initialEncoderRotationsR;
+}
 }
