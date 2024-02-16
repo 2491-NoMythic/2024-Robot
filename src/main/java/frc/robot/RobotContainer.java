@@ -128,6 +128,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
+    Preferences.initBoolean("Brushes", false);
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);

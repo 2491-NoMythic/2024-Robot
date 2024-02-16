@@ -11,6 +11,9 @@ import com.revrobotics.SparkPIDController;
  import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
  import frc.robot.settings.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
@@ -24,40 +27,46 @@ public class IntakeSubsystem extends SubsystemBase {
   double intakeRunSpeed;
   public IntakeSubsystem() {
     intake1 = new CANSparkMax(IntakeConstants.INTAKE_1_MOTOR, MotorType.kBrushless);
-    intake2 = new CANSparkMax(IntakeConstants.INTAKE_1_MOTOR, MotorType.kBrushless);
-    brush1 = new CANSparkMax(IntakeConstants.BRUSH_1_MOTOR, MotorType.kBrushless);
-    brush2 = new CANSparkMax(IntakeConstants.BRUSH_2_MOTOR, MotorType.kBrushless);
-    brush3 = new CANSparkMax(IntakeConstants.BRUSH_3_MOTOR, MotorType.kBrushless);
-
+    intake2 = new CANSparkMax(IntakeConstants.INTAKE_2_MOTOR, MotorType.kBrushless);
+    if(Preferences.getBoolean("Brushes", false)) {
+      brush1 = new CANSparkMax(IntakeConstants.BRUSH_1_MOTOR, MotorType.kBrushless);
+      brush2 = new CANSparkMax(IntakeConstants.BRUSH_2_MOTOR, MotorType.kBrushless);
+      brush3 = new CANSparkMax(IntakeConstants.BRUSH_3_MOTOR, MotorType.kBrushless);
+      brush1.setIdleMode(IdleMode.kCoast);
+      brush2.setIdleMode(IdleMode.kCoast);
+      brush3.setIdleMode(IdleMode.kCoast);
+    }
     intake2.follow(intake1);
     intake2.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
-    brush1.setIdleMode(IdleMode.kCoast);
-    brush2.setIdleMode(IdleMode.kCoast);
-    brush3.setIdleMode(IdleMode.kCoast);
+    intake1.burnFlash();
+    intake2.burnFlash();
   }
 
   public void intakeYes(double intakeRunSpeed) {
     intake1.set(intakeRunSpeed);
-    brush1.set(intakeRunSpeed);
-    brush2.set(intakeRunSpeed);
-    brush3.set(intakeRunSpeed);
+    if(Preferences.getBoolean("Brushes", false)) {
+      brush1.set(intakeRunSpeed);
+      brush2.set(intakeRunSpeed);
+      brush3.set(intakeRunSpeed);
+    }
    
   }
   public void intakeNo(double intakeRunSpeed) {
     intake1.set(-intakeRunSpeed);
-    brush1.set(-intakeRunSpeed);
-    brush2.set(-intakeRunSpeed);
-    brush3.set(-intakeRunSpeed);
-  
-    
+    if(Preferences.getBoolean("Brushes", false)) {
+      brush1.set(-intakeRunSpeed);
+      brush2.set(-intakeRunSpeed);
+      brush3.set(-intakeRunSpeed);
+    }
   }
   public void intakeOff() {
     intake1.set(0);
-    brush2.set(0);
-    brush1.set(0);
-    brush3.set(0);
+    if(Preferences.getBoolean("Brushes", false)) {
+      brush2.set(0);
+      brush1.set(0);
+      brush3.set(0);
+    }
   }
-
 }
