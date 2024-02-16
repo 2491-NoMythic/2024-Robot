@@ -76,7 +76,7 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
     PIDconfigs.kP = kP;
     PIDconfigs.kI = kI;
     PIDconfigs.kD = kD;
-    PIDconfigs.kS = kFF; 
+    PIDconfigs.kS = kFF;
  
      SmartDashboard.putNumber("P Gain", Constants.ShooterConstants.kP);
      SmartDashboard.putNumber("I Gain", Constants.ShooterConstants.kI);
