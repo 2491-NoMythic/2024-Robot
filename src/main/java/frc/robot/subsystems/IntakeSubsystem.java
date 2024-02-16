@@ -32,6 +32,12 @@ public class IntakeSubsystem extends SubsystemBase {
       brush1 = new CANSparkMax(IntakeConstants.BRUSH_1_MOTOR, MotorType.kBrushless);
       brush2 = new CANSparkMax(IntakeConstants.BRUSH_2_MOTOR, MotorType.kBrushless);
       brush3 = new CANSparkMax(IntakeConstants.BRUSH_3_MOTOR, MotorType.kBrushless);
+      brush1.setSmartCurrentLimit(20, 20, 60);
+      brush2.setSmartCurrentLimit(20, 20, 60);
+      brush3.setSmartCurrentLimit(20, 20, 60);
+      brush1.burnFlash();
+      brush2.burnFlash();
+      brush3.burnFlash();
       brush1.setIdleMode(IdleMode.kCoast);
       brush2.setIdleMode(IdleMode.kCoast);
       brush3.setIdleMode(IdleMode.kCoast);
@@ -40,6 +46,8 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
+    intake1.setSmartCurrentLimit(20, 20, 60);
+    intake2.setSmartCurrentLimit(20, 20, 60);
     intake1.burnFlash();
     intake2.burnFlash();
   }
