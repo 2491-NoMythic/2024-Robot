@@ -24,11 +24,12 @@ public class Climber extends SubsystemBase {
   RelativeEncoder climbEncoderL;
   double speed;
   double voltage;
-  double currentEncoderTicksL;
-  double currentEncoderTicksR;
+  double currentEncoderRotationsL;
+  double currentEncoderRotationsR;
   SparkLimitSwitch limitSwitchR;
   SparkLimitSwitch limitSwitchL;
-  double initialEncoderTicks;
+  double initialEncoderRotationsL;
+  double initialEncoderRotationsR;
   /** Creates a new Climber. */
   public Climber() {
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
@@ -37,16 +38,17 @@ public class Climber extends SubsystemBase {
     climbEncoderL = climbMotorL.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
     limitSwitchR = climbMotorR.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
     limitSwitchL = climbMotorL.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    currentEncoderTicksL = Math.abs(climbEncoderL.getPosition());
-    currentEncoderTicksR = Math.abs(climbEncoderR.getPosition());
+    initialEncoderRotationsL = Math.abs(climbEncoderL.getPosition());
+    initialEncoderRotationsL = Math.abs(climbEncoderR.getPosition());
     climbMotorL.setIdleMode(IdleMode.kBrake);
     climbMotorR.setIdleMode(IdleMode.kBrake);
   }
  public void climberGo(double speed){
-  if (currentEncoderTicksL < ClimberConstants.MAX_ENCODER_TICKS && currentEncoderTicksR < ClimberConstants.MAX_ENCODER_TICKS){
-  climbMotorR.set(speed);
-  climbMotorL.set(speed);
-  }
+  if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
+  climbMotorL.set(speed);}
+  if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
+  climbMotorR.set(speed);}
+  
  }
 
  public void climberStop(){
@@ -70,5 +72,9 @@ public class Climber extends SubsystemBase {
  public boolean isClimberIn(){
   return limitSwitchR.isPressed() && limitSwitchL.isPressed();
 }
-
+@Override
+public void periodic() {
+  currentEncoderRotationsL = Math.abs(climbEncoderL.getPosition()) - initialEncoderRotationsL;
+  currentEncoderRotationsR = Math.abs(climbEncoderR.getPosition()) - initialEncoderRotationsR;
+}
 }
