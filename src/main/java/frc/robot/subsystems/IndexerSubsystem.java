@@ -18,7 +18,6 @@ public class IndexerSubsystem extends SubsystemBase {
         m_IndexerMotor = new CANSparkMax(IndexerConstants.INDEXER_MOTOR, MotorType.kBrushless);
         m_IndexerMotor.setInverted(false);
         m_IndexerMotor.burnFlash();
-        m_DistanceSensor = m_IndexerMotor.getAnalog(Mode.kAbsolute);
     }
 
     public void on() {
@@ -32,12 +31,8 @@ public class IndexerSubsystem extends SubsystemBase {
     public void reverse() {
         m_IndexerMotor.set(-IndexerConstants.INDEXER_SPEED);
     }
-    public boolean isNoteIn() {
-        return m_DistanceSensor.getVoltage()>2;
-      }
-    
+
     @Override
     public void periodic() {
-    SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
     }
 }
