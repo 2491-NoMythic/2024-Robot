@@ -15,9 +15,11 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -34,17 +36,22 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	double shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 	public static Pose2d dtvalues;
 	public static ChassisSpeeds DTChassisSpeeds;
+	public double desiredZeroOffset;
 
 	public AngleShooterSubsystem() {
 		pitchMotor = new CANSparkMax(ShooterConstants.PITCH_MOTOR_ID, MotorType.kBrushless);
 		pitchMotor.setInverted(true);
+		pitchMotor.setIdleMode(IdleMode.kBrake);
 		pitchPID = pitchMotor.getPIDController();
 		pitchPID.setFF(ShooterConstants.pitchFeedForward);
-
 		absoluteEncoder = pitchMotor.getAbsoluteEncoder(Type.kDutyCycle);
 		absoluteEncoder.setPositionConversionFactor(1);
-		absoluteEncoder.setInverted(false);
-		SmartDashboard.putData("set zero offset", new InstantCommand(()->absoluteEncoder.setZeroOffset(SmartDashboard.getNumber("shooter encoder zero offset", absoluteEncoder.getZeroOffset()))));
+		absoluteEncoder.setInverted(true);
+		desiredZeroOffset = 38;//absoluteEncoder.getZeroOffset();
+		absoluteEncoder.setZeroOffset(Math.toRadians(desiredZeroOffset));
+		pitchMotor.burnFlash();
+		SmartDashboard.putData("set zero offset", new InstantCommand(()->absoluteEncoder.setZeroOffset(desiredZeroOffset)));
+		SmartDashboard.putNumber("shooter encoder zero offset", desiredZeroOffset/*absoluteEncoder.getZeroOffset()*/);
 	}
 	
 	public void pitchShooter(double pitchSpeed) {
@@ -52,7 +59,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	}
 	
 	public double getShooterAngle() {
-		return absoluteEncoder.getPosition() * ShooterConstants.DEGREES_PER_ROTATION;
+		return Math.toDegrees(absoluteEncoder.getPosition());// * ShooterConstants.DEGREES_PER_ROTATION;
 	}
 	
 	public static void setDTPose(Pose2d pose) {
@@ -122,7 +129,8 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	
 	@Override
 	public void periodic() {
-		SmartDashboard.putNumber("shooter angle encoder position", absoluteEncoder.getPosition());
-		SmartDashboard.putNumber("shooter encoder zero offset", absoluteEncoder.getZeroOffset());
+		// SmartDashboard.putNumber("shooter angle encoder position", Math.toDegrees(absoluteEncoder.getPosition()));
+		// desiredZeroOffset = SmartDashboard.getNumber("shooter encoder zero offset", absoluteEncoder.getZeroOffset());
+		// SmartDashboard.putNumber("shooter encoder zero offset", absoluteEncoder.getZeroOffset());
 	}
 }

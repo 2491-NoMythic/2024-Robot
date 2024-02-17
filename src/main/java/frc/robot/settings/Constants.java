@@ -256,7 +256,7 @@ public final class Constants {
 public static final class ShooterConstants{
   public static final int SHOOTER_R_MOTORID = 10;
   public static final int SHOOTER_L_MOTORID = 9;
-  public static final int PITCH_MOTOR_ID = 22;
+  public static final int PITCH_MOTOR_ID = 24;
   public static final double SHOOTER_MOTOR_POWER = 1;
   public static final double SHOOTER_AMP_POWER = 0.3;
   public static final double SHOOTING_SPEED_MPS = 10;
@@ -267,6 +267,10 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
+
+  public static final double ANGLE_SHOOTER_POWER_KP = 1;
+  public static final double ANGLE_SHOOTER_POWER_KI = 0;
+  public static final double ANGLE_SHOOTER_POWER_KD = 0;
   
   public static final double AUTO_AIM_SHOOTER_kP = 0.003;
   public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
@@ -302,8 +306,8 @@ public static final class ShooterConstants{
 
 }
 public static final class ClimberConstants{
-  public static final int CLIMBER_MOTOR_RIGHT = 2941;
-  public static final int CLIMBER_MOTOR_LEFT = 2491;
+  public static final int CLIMBER_MOTOR_RIGHT = 23;
+  public static final int CLIMBER_MOTOR_LEFT = 22;
   public static final double CLIMBER_SPEED_DOWN = 0.75;
   public static final double CLIMBER_SPEED_UP = 0.75;
   public static final double MAX_MOTOR_ROTATIONS = 2491;
@@ -312,10 +316,13 @@ public static final class ClimberConstants{
   public static final double CLIMBER_VOLTAGE_ALIGN = 0.75;
   public static final double CLIMBER_VOLTAGE_PULL_DOWN = 3;
   public static final double CLIMBER_RPM = 0.1;
+  public static final int Right_HALL_EFFECT_INPUT = 9;
+  public static final int LEFT_HALL_EFFECT_INPUT = 8;
 }
 public static final class IndexerConstants{
-  public static final int INDEXER_MOTOR = 23;
-  public static final double INDEXER_SPEED = 2491;
+  public static final int INDEXER_MOTOR = 11;
+  public static final double INDEXER_INTAKE_SPEED = 0.5;
+  public static final double INDEXER_SHOOTING_SPEED = 0.5;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;

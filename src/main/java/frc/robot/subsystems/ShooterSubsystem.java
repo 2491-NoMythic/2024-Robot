@@ -112,15 +112,15 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
      shooterR.set(runSpeed);
    }
   public double getError() {
-    return Math.abs(shooterR.getVelocity().asSupplier().get()-desiredSpeed);
+    return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
   }
   public void turnOff(){
      shooterR.set(0);
      shooterL.set(0);
   }
-  public double getSpeedRPS() {
-    return shooterR.getVelocity().asSupplier().get();
-  }
+  // public double getSpeedRPS() {
+  //   return shooterR.getVelocity().asSupplier().get();
+  // }
 @Override
   public void periodic() {
     SmartDashboard.putNumber("TESTING shooter speed error", getError());

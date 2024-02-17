@@ -33,6 +33,7 @@ import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.ExampleCommand;
 
 import frc.robot.settings.Constants.Field;
+import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.commands.IndexCommand;
 import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
@@ -191,7 +192,7 @@ public class RobotContainer {
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
     defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, operatorController::getPOV);
-    angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
+    // angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
@@ -289,6 +290,14 @@ public class RobotContainer {
     if(angleShooterExists) {
       double testAngle = 45;
       SmartDashboard.putData("go to angle", new AngleShooter(angleShooterSubsystem, ()->testAngle));
+      SmartDashboard.putData("run indexer down slow", new InstantCommand(()->angleShooterSubsystem.pitchShooter(0.02), angleShooterSubsystem));
+      SmartDashboard.putData("run indexer up slow", new InstantCommand(()->angleShooterSubsystem.pitchShooter(-0.02), angleShooterSubsystem));
+      SmartDashboard.putData("stop pitch", new InstantCommand(()->angleShooterSubsystem.pitchShooter(0), angleShooterSubsystem));
+    }
+    if(indexerExists) {
+      SmartDashboard.putData("indexer intake speed", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED)));
+      SmartDashboard.putData("indexer shooting speed", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED)));
+      SmartDashboard.putData("indexer off", new InstantCommand(()->indexer.off()));
     }
   };
 
@@ -362,6 +371,13 @@ public class RobotContainer {
   }
   public void teleopInit() {
     driveTrain.forceUpdateOdometryWithVision();
+    if(climberExists) {
+      new SequentialCommandGroup(
+        new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),
+        new WaitCommand(0.1),
+        new InstantCommand(()->climber.climberStop(), climber)
+      );
+    }
   }
   public void teleopPeriodic() {
     SmartDashboard.putData(driveTrain.getCurrentCommand());

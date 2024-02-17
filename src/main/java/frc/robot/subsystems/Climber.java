@@ -14,6 +14,8 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.ClimberConstants;
 
@@ -30,28 +32,36 @@ public class Climber extends SubsystemBase {
   SparkLimitSwitch limitSwitchL;
   double initialEncoderRotationsL;
   double initialEncoderRotationsR;
+  DigitalInput hallEffectR;
+  DigitalInput hallEffectL;
   /** Creates a new Climber. */
   public Climber() {
+    hallEffectL = new DigitalInput(ClimberConstants.LEFT_HALL_EFFECT_INPUT);
+    hallEffectR = new DigitalInput(ClimberConstants.Right_HALL_EFFECT_INPUT);
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
     climbMotorL = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_LEFT, MotorType.kBrushless);
     climbEncoderR = climbMotorR.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
     climbEncoderL = climbMotorL.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
     limitSwitchR = climbMotorR.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
     limitSwitchL = climbMotorL.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    initialEncoderRotationsL = Math.abs(climbEncoderL.getPosition());
-    initialEncoderRotationsL = Math.abs(climbEncoderR.getPosition());
     climbMotorL.setIdleMode(IdleMode.kBrake);
     climbMotorR.setIdleMode(IdleMode.kBrake);
+    initialEncoderRotationsL = Math.abs(climbEncoderL.getPosition());
+    initialEncoderRotationsL = Math.abs(climbEncoderR.getPosition());
   }
  public void climberGo(double speed){
   if (speed<0) {
-    climbMotorL.set(speed);
-    climbMotorR.set(speed);
+    if(hallEffectL.get()) {
+      climbMotorL.set(speed);
+    } 
+    if(hallEffectR.get()) {
+      climbMotorR.set(speed);
+    }
   } else {
     if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
-    climbMotorL.set(speed);}
+      climbMotorL.set(speed);}
     if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
-    climbMotorR.set(speed);}
+      climbMotorR.set(speed);}
   }
  }
 
@@ -74,11 +84,13 @@ public class Climber extends SubsystemBase {
  }
 
  public boolean isClimberIn(){
-  return limitSwitchR.isPressed() && limitSwitchL.isPressed();
+  return !hallEffectL.get() && !hallEffectR.get();
 }
 @Override
 public void periodic() {
   currentEncoderRotationsL = Math.abs(climbEncoderL.getPosition()) - initialEncoderRotationsL;
   currentEncoderRotationsR = Math.abs(climbEncoderR.getPosition()) - initialEncoderRotationsR;
+  SmartDashboard.putBoolean("left hall effect value", hallEffectL.get());
+  SmartDashboard.putBoolean("right hall effect value", hallEffectR.get());
 }
 }

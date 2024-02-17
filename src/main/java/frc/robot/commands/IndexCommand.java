@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
@@ -60,9 +61,9 @@ public class IndexCommand extends Command {
     } else {
       auto = false;
     }
-    if (!m_Indexer.isNoteIn()) {
+    if (!intake.isNoteIn()) {
       intake.intakeYes(IntakeConstants.INTAKE_SPEED);
-      m_Indexer.on();
+      m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
       if(!auto) {
         shooter.turnOff();
       }
@@ -87,7 +88,7 @@ public class IndexCommand extends Command {
       RobotState.getInstance().ShooterReady = false;
     }
     if (indexer) {
-      m_Indexer.on();
+      m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
     } else {
       m_Indexer.off();
     }

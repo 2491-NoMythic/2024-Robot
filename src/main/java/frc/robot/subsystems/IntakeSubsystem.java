@@ -82,7 +82,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
   public boolean isNoteIn() {
-    return m_DistanceSensor.getVoltage()>2;
+    return m_DistanceSensor.getVoltage()<2;
   }
 
   @Override
