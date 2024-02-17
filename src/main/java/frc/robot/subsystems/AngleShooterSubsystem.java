@@ -12,9 +12,13 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
@@ -31,6 +35,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	CANSparkMax pitchMotor;
 	SparkPIDController pitchPID;
 	SparkAbsoluteEncoder absoluteEncoder;
+	AbsoluteEncoder otherEncoder;
 	double shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 	public static Pose2d dtvalues;
 	public static ChassisSpeeds DTChassisSpeeds;
@@ -40,15 +45,18 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		pitchMotor.setInverted(true);
 		pitchPID = pitchMotor.getPIDController();
 		pitchPID.setFF(ShooterConstants.pitchFeedForward);
-
+		pitchPID.setFeedbackDevice(absoluteEncoder);
 		absoluteEncoder = pitchMotor.getAbsoluteEncoder(Type.kDutyCycle);
 		absoluteEncoder.setPositionConversionFactor(1);
 		absoluteEncoder.setInverted(false);
 		SmartDashboard.putData("set zero offset", new InstantCommand(()->absoluteEncoder.setZeroOffset(SmartDashboard.getNumber("shooter encoder zero offset", absoluteEncoder.getZeroOffset()))));
+		pitchMotor.burnFlash();
 	}
 	
-	public void pitchShooter(double pitchSpeed) {
-		pitchMotor.set(pitchSpeed);
+	public void setShooterAngle(double pitchAngle) {
+		// pitchPID.setReference(pitchAngle, CANSparkMax.ControlType.kPosition);
+		pitchPID.setReference(Math.toRadians(pitchAngle), ControlType.kPosition);
+		//pitchPID.setReference(pitchAngle/360, ControlType.kPosition, 0, ShooterConstants.pitchFeedForward);
 	}
 	
 	public double getShooterAngle() {
@@ -75,7 +83,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		}
 		double deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		double speakerDist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2));
-		SmartDashboard.putNumber("dist to speakre", speakerDist);
+		SmartDashboard.putNumber("dist to speaker", speakerDist);
 		
 		double shootingTime = speakerDist / shootingSpeed; // calculates how long the note will take to reach the target
 		double currentXSpeed = DTChassisSpeeds.vxMetersPerSecond;

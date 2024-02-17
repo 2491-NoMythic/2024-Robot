@@ -291,14 +291,14 @@ public static final class ShooterConstants{
   public static final double kMinOutput = -1;
 
   //PID values for pitch motor (changes angle of shooter):
-  public static final double pitchkP = 2491;
-  public static final double pitchkI = 2491;
-  public static final double pitchkD = 2491;
-  public static final double pitchkIz = 2491;
-  public static final double pitchFeedForward = 2491;
-  public static final double pitchMaxOutput = 2491;
-  public static final double pitchMinOutput = 2491;
-  public static final double shooterup = 2491;
+  public static final double pitchkP = 1;
+  public static final double pitchkI = 0;
+  public static final double pitchkD = 0;
+  public static final double pitchkIz = 0;
+  public static final double pitchFeedForward = 0.5;
+  public static final double pitchMaxOutput = 1;
+  public static final double pitchMinOutput = -1;
+  public static final double shooterup = 1;
 
 }
 public static final class ClimberConstants{

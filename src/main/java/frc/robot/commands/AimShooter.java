@@ -27,11 +27,11 @@ public class AimShooter extends Command {
 	public void execute() {
 		if (!(aimAtAmpSupplier.getAsDouble() == 90)) {
 			double desiredShooterAngleSpeed = angleShooterSubsystem.calculateSpeakerAngleDifference() * ShooterConstants.AUTO_AIM_SHOOTER_kP;
-			angleShooterSubsystem.pitchShooter(desiredShooterAngleSpeed);
+			angleShooterSubsystem.setShooterAngle(desiredShooterAngleSpeed);
 		} else {
 			double differenceAmp = Field.AMPLIFIER_ANGLE - angleShooterSubsystem.getShooterAngle();
 			double ampSpeed = differenceAmp * ShooterConstants.AUTO_AIM_SHOOTER_kP;
-			angleShooterSubsystem.pitchShooter(ampSpeed);
+			angleShooterSubsystem.setShooterAngle(ampSpeed);
 		}
 	}
 
@@ -42,6 +42,6 @@ public class AimShooter extends Command {
 
 	@Override
 	public void end(boolean interrupted) {
-		angleShooterSubsystem.pitchShooter(0);
+		angleShooterSubsystem.setShooterAngle(0);
 	}
 }
