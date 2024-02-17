@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
  import com.revrobotics.CANSparkMax;
  import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkAnalogSensor;
+import com.revrobotics.SparkAnalogSensor.Mode;
 import com.revrobotics.SparkPIDController;
  import com.revrobotics.SparkRelativeEncoder;
  import com.revrobotics.CANSparkBase.ControlType;
@@ -20,6 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
   CANSparkMax intake1;
   CANSparkMax intake2;
+  SparkAnalogSensor m_DistanceSensor;
   CANSparkMax brush1;
   CANSparkMax brush2;
   CANSparkMax brush3;
@@ -28,6 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     intake1 = new CANSparkMax(IntakeConstants.INTAKE_1_MOTOR, MotorType.kBrushless);
     intake2 = new CANSparkMax(IntakeConstants.INTAKE_2_MOTOR, MotorType.kBrushless);
+    m_DistanceSensor = intake2.getAnalog(Mode.kAbsolute);
     if(Preferences.getBoolean("Brushes", false)) {
       brush1 = new CANSparkMax(IntakeConstants.BRUSH_1_MOTOR, MotorType.kBrushless);
       brush2 = new CANSparkMax(IntakeConstants.BRUSH_2_MOTOR, MotorType.kBrushless);
@@ -46,8 +50,8 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
-    intake1.setSmartCurrentLimit(20, 20, 60);
-    intake2.setSmartCurrentLimit(20, 20, 60);
+    intake1.setSmartCurrentLimit(30, 40, 1000);
+    intake2.setSmartCurrentLimit(30, 40, 1000);
     intake1.burnFlash();
     intake2.burnFlash();
   }
@@ -76,5 +80,14 @@ public class IntakeSubsystem extends SubsystemBase {
       brush1.set(0);
       brush3.set(0);
     }
+  }
+  public boolean isNoteIn() {
+    return m_DistanceSensor.getVoltage()>2;
+  }
+
+  @Override
+  public void periodic() {
+  SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
+  SmartDashboard.putBoolean("is not in", isNoteIn());
   }
 }
