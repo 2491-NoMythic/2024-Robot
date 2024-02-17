@@ -39,9 +39,7 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
 	 double m_DesiredShooterAngle;
  
    Slot0Configs PIDconfigs = new Slot0Configs();
-   
-   SparkPIDController pitchPID;
-   double kP = Constants.ShooterConstants.kP;         
+      double kP = Constants.ShooterConstants.kP;         
    double kI = Constants.ShooterConstants.kI;         
    double kD = Constants.ShooterConstants.kD;         
    double kIz = Constants.ShooterConstants.kIz;         
@@ -57,7 +55,6 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
 	RotateRobot rotateRobot;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
-  public double desiredSpeed;
  
      /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
@@ -71,9 +68,7 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
     PIDconfigs = new Slot0Configs();
 
     configurator = shooterR.getConfigurator();
-    
-    pitchPID.setFF(pitchFeedForward);
-    
+        
     PIDconfigs.kP = kP;
     PIDconfigs.kI = kI;
     PIDconfigs.kD = kD;
@@ -103,13 +98,13 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
      if((d != kD)) {PIDconfigs.kD = d; kD = d; }
  
      if((ff != kFF)) {PIDconfigs.kS = ff; kFF = ff;}
-    configurator.apply(PIDconfigs);
+     configurator.apply(PIDconfigs);
    }
    
 
   public void shootThing(double runSpeed) {
-     desiredSpeed = runSpeed;
      shooterR.set(runSpeed);
+     shooterL.set(runSpeed);
    }
   public double getError() {
     return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());

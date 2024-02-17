@@ -50,8 +50,8 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
-    intake1.setSmartCurrentLimit(30, 40, 1000);
-    intake2.setSmartCurrentLimit(30, 40, 1000);
+    intake1.setSmartCurrentLimit(25, 40, 1000);
+    intake2.setSmartCurrentLimit(25, 40, 1000);
     intake1.burnFlash();
     intake2.burnFlash();
   }
@@ -88,6 +88,6 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
   SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
-  SmartDashboard.putBoolean("is not in", isNoteIn());
+  SmartDashboard.putBoolean("is note in", isNoteIn());
   }
 }

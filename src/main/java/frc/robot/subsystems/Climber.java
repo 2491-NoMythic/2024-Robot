@@ -13,6 +13,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkLimitSwitch.Type;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,29 +33,31 @@ public class Climber extends SubsystemBase {
   SparkLimitSwitch limitSwitchL;
   double initialEncoderRotationsL;
   double initialEncoderRotationsR;
-  DigitalInput hallEffectR;
-  DigitalInput hallEffectL;
+  SparkLimitSwitch hallEffectR;
+  SparkLimitSwitch hallEffectL;
   /** Creates a new Climber. */
   public Climber() {
-    hallEffectL = new DigitalInput(ClimberConstants.LEFT_HALL_EFFECT_INPUT);
-    hallEffectR = new DigitalInput(ClimberConstants.Right_HALL_EFFECT_INPUT);
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
     climbMotorL = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_LEFT, MotorType.kBrushless);
-    climbEncoderR = climbMotorR.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
-    climbEncoderL = climbMotorL.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 4098);
-    limitSwitchR = climbMotorR.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    limitSwitchL = climbMotorL.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    climbMotorR.setInverted(true);
+    climbMotorL.setInverted(true);
+    hallEffectL = climbMotorL.getForwardLimitSwitch(Type.kNormallyOpen);
+    hallEffectR = climbMotorL.getForwardLimitSwitch(Type.kNormallyOpen);
+    climbEncoderR = climbMotorR.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
+    climbEncoderL = climbMotorL.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
     climbMotorL.setIdleMode(IdleMode.kBrake);
     climbMotorR.setIdleMode(IdleMode.kBrake);
     initialEncoderRotationsL = Math.abs(climbEncoderL.getPosition());
     initialEncoderRotationsL = Math.abs(climbEncoderR.getPosition());
+    climbMotorL.burnFlash();
+    climbMotorR.burnFlash();
   }
  public void climberGo(double speed){
-  if (speed<0) {
-    if(hallEffectL.get()) {
+  if (speed>0) {
+    if(!hallEffectL.isPressed()) {
       climbMotorL.set(speed);
     } 
-    if(hallEffectR.get()) {
+    if(!hallEffectR.isPressed()) {
       climbMotorR.set(speed);
     }
   } else {
@@ -63,6 +66,8 @@ public class Climber extends SubsystemBase {
     if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
       climbMotorR.set(speed);}
   }
+    // climbMotorL.set(speed);
+    // climbMotorR.set(speed);
  }
 
  public void climberStop(){
@@ -84,13 +89,13 @@ public class Climber extends SubsystemBase {
  }
 
  public boolean isClimberIn(){
-  return !hallEffectL.get() && !hallEffectR.get();
+  return (hallEffectL.isPressed() && hallEffectR.isPressed());
 }
 @Override
 public void periodic() {
-  currentEncoderRotationsL = Math.abs(climbEncoderL.getPosition()) - initialEncoderRotationsL;
-  currentEncoderRotationsR = Math.abs(climbEncoderR.getPosition()) - initialEncoderRotationsR;
-  SmartDashboard.putBoolean("left hall effect value", hallEffectL.get());
-  SmartDashboard.putBoolean("right hall effect value", hallEffectR.get());
+  currentEncoderRotationsL = Math.abs(Math.abs(climbEncoderL.getPosition()) - initialEncoderRotationsL);
+  currentEncoderRotationsR = Math.abs(Math.abs(climbEncoderR.getPosition()) - initialEncoderRotationsR);
+  SmartDashboard.putBoolean("left hall effect value", hallEffectL.isPressed());
+  SmartDashboard.putBoolean("right hall effect value", hallEffectR.isPressed());
 }
 }

@@ -280,7 +280,7 @@ public static final class ShooterConstants{
   public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0;
   public static final double OFFSET_MULTIPLIER = 1;
-  public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
+  public static final double MINIMUM_SHOOTER_ANGLE = 15;//still has to be found
   public static final double MAXIMUM_SHOOTER_ANGLE = 120;//still has to be found
 
  
@@ -308,12 +308,12 @@ public static final class ShooterConstants{
 public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR_RIGHT = 23;
   public static final int CLIMBER_MOTOR_LEFT = 22;
-  public static final double CLIMBER_SPEED_DOWN = 0.75;
-  public static final double CLIMBER_SPEED_UP = 0.75;
+  public static final double CLIMBER_SPEED_DOWN = 0.3;
+  public static final double CLIMBER_SPEED_UP = -0.5;
   public static final double MAX_MOTOR_ROTATIONS = 2491;
 
   //TODO: refine these values
-  public static final double CLIMBER_VOLTAGE_ALIGN = 0.75;
+  public static final double CLIMBER_VOLTAGE_ALIGN = 0.25;
   public static final double CLIMBER_VOLTAGE_PULL_DOWN = 3;
   public static final double CLIMBER_RPM = 0.1;
   public static final int Right_HALL_EFFECT_INPUT = 9;
@@ -416,8 +416,8 @@ public static final class CTREConfigs {
   }
 
 public final class Vision{
-  public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-april2";
-  public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-april";
+  public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-aprill";
+  public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-aprilr";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
 
 

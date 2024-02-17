@@ -74,7 +74,6 @@ public class IndexCommand extends Command {
       } else {
         shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER);
       }
-    }
     boolean indexer = false;
     if((angleShooterSubsytem.calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ERROR)
       && drivetrain.getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR
@@ -92,6 +91,7 @@ public class IndexCommand extends Command {
     } else {
       m_Indexer.off();
     }
+  }
   }
 
   // Called once the command ends or is interrupted.

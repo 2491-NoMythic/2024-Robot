@@ -8,6 +8,7 @@ import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.PS4Operator.*;
 
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -133,7 +134,7 @@ public class RobotContainer {
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
-    Preferences.initBoolean("Angle Shooter", false);
+    Preferences.initBoolean("AngleShooter", false);
     Preferences.initBoolean("Lights", false);
     Preferences.initBoolean("Indexer", false);
     Preferences.initBoolean("Detector Limelight", false);
@@ -148,7 +149,6 @@ public class RobotContainer {
     driveTrainInst();
     
 
-    if(intakeExists && shooterExists && indexerExists) {indexCommandInst();}
     if(intakeExists) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(angleShooterExists) {angleShooterInst();}
@@ -156,6 +156,7 @@ public class RobotContainer {
     climbSpotChooserInit();
     if(lightsExist) {lightsInst();}
     if(indexerExists) {indexInit();}
+    if(intakeExists && shooterExists && indexerExists && angleShooterExists) {indexCommandInst();}
     Limelight.useDetectorLimelight(useDetectorLimelight);
     autoInit();
     // Configure the trigger bindings
@@ -191,7 +192,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, operatorController::getPOV);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV);
     // angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -204,7 +205,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getTouchpad, shooter, intake, driveTrain, angleShooterSubsystem);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -248,8 +249,8 @@ public class RobotContainer {
       new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
       ));
     new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
-
-    if(shooterExists) {
+    SmartDashboard.putData("force update limelight position", new InstantCommand(()->driveTrain.forceUpdateOdometryWithVision(), driveTrain));
+    if(angleShooterExists) {
       AngleShooter shooterUpCommand = new AngleShooter(angleShooterSubsystem, () -> Constants.ShooterConstants.shooterup);
       new Trigger(()->driverController.getPOV() == 180).whileTrue(shooterUpCommand);
       SmartDashboard.putData("Manual Angle Shooter Up", shooterUpCommand);
@@ -258,7 +259,7 @@ public class RobotContainer {
       new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer));
     }
     if(climberExists) {
-      new Trigger(driverController::getCrossButton).onTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
@@ -298,6 +299,11 @@ public class RobotContainer {
       SmartDashboard.putData("indexer intake speed", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED)));
       SmartDashboard.putData("indexer shooting speed", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED)));
       SmartDashboard.putData("indexer off", new InstantCommand(()->indexer.off()));
+    }
+    if(climberExists) {
+      SmartDashboard.putData("climber up", new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP)));
+      SmartDashboard.putData("climber down", new InstantCommand(()-> climber.climberGo(-ClimberConstants.CLIMBER_SPEED_UP)));
+      SmartDashboard.putData("climber stop", new InstantCommand(()-> climber.climberStop()));
     }
   };
 
@@ -374,7 +380,7 @@ public class RobotContainer {
     if(climberExists) {
       new SequentialCommandGroup(
         new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),
-        new WaitCommand(0.1),
+        new WaitCommand(2),
         new InstantCommand(()->climber.climberStop(), climber)
       );
     }

@@ -129,8 +129,8 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	
 	@Override
 	public void periodic() {
-		// SmartDashboard.putNumber("shooter angle encoder position", Math.toDegrees(absoluteEncoder.getPosition()));
-		// desiredZeroOffset = SmartDashboard.getNumber("shooter encoder zero offset", absoluteEncoder.getZeroOffset());
-		// SmartDashboard.putNumber("shooter encoder zero offset", absoluteEncoder.getZeroOffset());
+		SmartDashboard.putNumber("shooter angle encoder position", Math.toDegrees(absoluteEncoder.getPosition()));
+		desiredZeroOffset = SmartDashboard.getNumber("shooter encoder zero offset", absoluteEncoder.getZeroOffset());
+		SmartDashboard.putNumber("shooter encoder zero offset", absoluteEncoder.getZeroOffset());
 	}
 }

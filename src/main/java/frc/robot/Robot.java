@@ -30,10 +30,10 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     Preferences.setBoolean("Intake", true);
-    Preferences.setBoolean("Indexer", false);
-    Preferences.setBoolean("Shooter", false);
-    Preferences.setBoolean("Angle Shooter", true);
-    Preferences.setBoolean("Climber", false);
+    Preferences.setBoolean("Indexer", true);
+    Preferences.setBoolean("Shooter", true);
+    Preferences.setBoolean("AngleShooter", true);
+    Preferences.setBoolean("Climber", true);
     m_robotContainer = new RobotContainer();
   }
 
