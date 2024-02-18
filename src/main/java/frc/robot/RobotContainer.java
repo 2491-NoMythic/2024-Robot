@@ -189,7 +189,7 @@ public class RobotContainer {
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
     defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV);
-    // angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
+    angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
@@ -254,7 +254,8 @@ public class RobotContainer {
       new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer));
     }
     if(climberExists) {
-      new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+      // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
