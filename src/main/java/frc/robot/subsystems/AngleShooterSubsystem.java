@@ -84,7 +84,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		DTChassisSpeeds = speeds;
 	}
 	
-	public double calculateSpeakerAngleDifference() {
+	public double calculateSpeakerAngle() {
 		double deltaX;
 		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 		// triangle for robot angle
@@ -138,7 +138,11 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
 		SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
 		
-		return differenceAngle;
+		return desiredShooterAngle;
+	}
+
+	public double calculateSpeakerAngleDifference() {
+		return Math.abs(calculateSpeakerAngle() - this.getShooterAngle());
 	}
 	
 	@Override
