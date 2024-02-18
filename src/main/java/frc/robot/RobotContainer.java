@@ -27,11 +27,9 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import frc.robot.commands.AimShooter;
 import frc.robot.commands.AimRobotMoving;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.Autos;
 import frc.robot.commands.CollectNote;
 import frc.robot.commands.Drive;
 import frc.robot.commands.DriveTimeCommand;
-import frc.robot.commands.ExampleCommand;
 
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
@@ -55,7 +53,6 @@ import frc.robot.commands.goToPose.GoToClimbSpot;
 import frc.robot.commands.climber_commands.AutoClimb;
 import frc.robot.commands.climber_commands.ClimberPullDown;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -95,7 +92,6 @@ import frc.robot.settings.IntakeDirection;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
 // preferences are information saved on the Rio. They are initialized once, then gotten every time we run the code.
   private final boolean intakeExists = Preferences.getBoolean("Intake", true);
@@ -294,6 +290,9 @@ public class RobotContainer {
       SmartDashboard.putData("run indexer down slow", new InstantCommand(()->angleShooterSubsystem.pitchShooter(0.02), angleShooterSubsystem));
       SmartDashboard.putData("run indexer up slow", new InstantCommand(()->angleShooterSubsystem.pitchShooter(-0.02), angleShooterSubsystem));
       SmartDashboard.putData("stop pitch", new InstantCommand(()->angleShooterSubsystem.pitchShooter(0), angleShooterSubsystem));
+      SmartDashboard.putData("set reference to 60", new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(60)));
+      SmartDashboard.putData("set reference to 30", new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(45)));
+      SmartDashboard.putData("set reference to 15", new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(17)));
     }
     if(indexerExists) {
       SmartDashboard.putData("indexer intake speed", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED)));
@@ -382,8 +381,11 @@ public class RobotContainer {
         new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),
         new WaitCommand(2),
         new InstantCommand(()->climber.climberStop(), climber)
-      );
-    }
+        );
+      }
+      if(angleShooterExists) {
+        angleShooterSubsystem.pitchShooter(0);
+      }
   }
   public void teleopPeriodic() {
     SmartDashboard.putData(driveTrain.getCurrentCommand());
@@ -401,5 +403,7 @@ public class RobotContainer {
   
   }
 
-  public void disabledInit() {}
+  public void disabledInit() {
+    new InstantCommand(angleShooterSubsystem::stop, angleShooterSubsystem);
+  }
 }

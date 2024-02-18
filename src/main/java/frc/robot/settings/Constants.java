@@ -254,6 +254,7 @@ public final class Constants {
     public static final double k_PICKUP_NOTE_tx_D = 0;
   }
 public static final class ShooterConstants{
+  public static final double ANGLE_ENCODER_ZERO_OFFSET = 324;
   public static final int SHOOTER_R_MOTORID = 10;
   public static final int SHOOTER_L_MOTORID = 9;
   public static final int PITCH_MOTOR_ID = 24;
@@ -267,10 +268,14 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
-
-  public static final double ANGLE_SHOOTER_POWER_KP = 1;
+  
+  //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
+  public static final double ANGLE_SHOOTER_POWER_KP = 0.026;
   public static final double ANGLE_SHOOTER_POWER_KI = 0;
-  public static final double ANGLE_SHOOTER_POWER_KD = 0;
+  public static final double ANGLE_SHOOTER_POWER_KD = 0.001;
+  public static final double pitchFeedForward = 0.001;
+  public static final double pitchMaxOutput = 1;
+  public static final double pitchMinOutput = -1;
   
   public static final double AUTO_AIM_SHOOTER_kP = 0.003;
   public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
@@ -281,7 +286,7 @@ public static final class ShooterConstants{
   public static final double DISTANCE_MULTIPLIER = 0;
   public static final double OFFSET_MULTIPLIER = 1;
   public static final double MINIMUM_SHOOTER_ANGLE = 15;//still has to be found
-  public static final double MAXIMUM_SHOOTER_ANGLE = 120;//still has to be found
+  public static final double MAXIMUM_SHOOTER_ANGLE = 78;//still has to be found
 
  
 
@@ -295,14 +300,7 @@ public static final class ShooterConstants{
   public static final double kMinOutput = -1;
 
   //PID values for pitch motor (changes angle of shooter):
-  public static final double pitchkP = 2491;
-  public static final double pitchkI = 2491;
-  public static final double pitchkD = 2491;
-  public static final double pitchkIz = 2491;
-  public static final double pitchFeedForward = 2491;
-  public static final double pitchMaxOutput = 2491;
-  public static final double pitchMinOutput = 2491;
-  public static final double shooterup = 2491;
+  public static final double shooterup = 45;
 
 }
 public static final class ClimberConstants{
