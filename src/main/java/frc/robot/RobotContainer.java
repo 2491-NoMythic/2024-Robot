@@ -203,7 +203,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getTouchpad, shooter, intake, driveTrain, angleShooterSubsystem);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -260,6 +260,9 @@ public class RobotContainer {
       new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
+    }
+    if(shooterExists) {
+      new Trigger(()->driverController.getPOV == 90).whileTrue(new InstantCommand(()->shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER), shooter))
     }
     SmartDashboard.putData("set offsets", new InstantCommand(driveTrain::setEncoderOffsets));
     SmartDashboard.putData(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
