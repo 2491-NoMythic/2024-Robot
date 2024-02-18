@@ -262,7 +262,7 @@ public class RobotContainer {
       new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
-      new Trigger(()->driverController.getPOV == 90).whileTrue(new InstantCommand(()->shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER), shooter))
+      new Trigger(()->driverController.getPOV == 90).whileTrue(new InstantCommand(()->shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER), shooter));
     }
     SmartDashboard.putData("set offsets", new InstantCommand(driveTrain::setEncoderOffsets));
     SmartDashboard.putData(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
