@@ -120,10 +120,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		PathPlannerLogging.setLogActivePathCallback((poses) -> m_field.getObject("path").setPoses(poses));
 		SmartDashboard.putData("Field", m_field);
 		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
-		SmartDashboard.putBoolean("use limelight", false);
-		SmartDashboard.putBoolean("trust limelight", false);
 		SmartDashboard.putBoolean("force use limelight", false);
-		SmartDashboard.putBoolean("use 2 limelights", false);
 		modules = new SwerveModule[4];
 		lastAngles = new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()}; // manually make empty angles to avoid null errors.
 
@@ -286,7 +283,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
 		}
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-		SmartDashboard.putNumber("dist to speakre", speakerDist);
+		// SmartDashboard.putNumber("dist to speakre", speakerDist);
 
 		// RobotState.getInstance().ShooterInRange = speakerDist<Field.MAX_SHOOTING_DISTANCE;
 		
@@ -330,7 +327,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 		deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-		SmartDashboard.putNumber("dist to speakre", speakerDist);
+		// SmartDashboard.putNumber("dist to speakre", speakerDist);
 		
 		Rotation2d unadjustedAngle = Rotation2d.fromDegrees(Math.asin(deltaX/speakerDist));
 		shootingTime = speakerDist/shootingSpeed; //calculates how long the note will take to reach the target
@@ -358,8 +355,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaY, 2) + Math.pow(offsetDeltaX, 2));
 		SmartDashboard.putNumber("offsetSpeakerDis", offsetSpeakerdist);
 		RobotState.getInstance().ShooterInRange = offsetSpeakerdist<Field.MAX_SHOOTING_DISTANCE;
-		SmartDashboard.putString("offset amount", targetOffset.toString());
-		SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
+		// SmartDashboard.putString("offset amount", targetOffset.toString());
+		// SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle
 		if (alliance.get() == Alliance.Blue) {
 			if (dtvalues.getY() >= adjustedTarget.getY()) {
@@ -399,8 +396,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return new Pose2d(new Translation2d(averageX, averageY), averageRotation);
 	}
 	public void forceUpdateOdometryWithVision() {
-		if(SmartDashboard.getBoolean("use limelight", false)) {
-			if(SmartDashboard.getBoolean("use 2 limelights", false)) {
+		if(Preferences.getBoolean("Use Limelight", false)) {
+			if(Preferences.getBoolean("Use 2 Limelights", false)) {
 				LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
 				LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
 				if (ll2.isResultValid && !ll3.isResultValid) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
@@ -421,8 +418,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		if(SmartDashboard.getBoolean("force use limelight", false)) {
 			forceUpdateOdometryWithVision();
 		} else {
-			if (SmartDashboard.getBoolean("use limelight", false)) {
-				if(SmartDashboard.getBoolean("use 2 limelights", false)) {
+			if (Preferences.getBoolean("Use Limelight", false)) {
+				if(Preferences.getBoolean("Use 2 Limelights", false)) {
 					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
 					LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
 					Boolean isLL2VisionValid = ll2.isResultValid;
@@ -431,11 +428,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(odometer.getEstimatedPosition());
 					SmartDashboard.putBoolean("LL2visionValid", isLL2VisionTrustworthy);
 					SmartDashboard.putBoolean("LL3visionValid", isLL3VisionTrustworthy);
-					if (SmartDashboard.getBoolean("trust limelight", false)) {
-						if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
-						if (!isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
-						if (isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
-					}
+					if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
+					if (!isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
+					if (isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());
 				} else {
 					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
 					Boolean isLL2VisionValid = ll2.isResultValid;
@@ -449,8 +444,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-		//for testing RotateRobot:
-		SmartDashboard.putNumber("loopedHeading", getHeadingLooped());
 		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngle());
 		SmartDashboard.putNumber("TESTING robot angle difference", getSpeakerAngleDifference());
 	}

@@ -134,6 +134,8 @@ public class RobotContainer {
     Preferences.initBoolean("Lights", false);
     Preferences.initBoolean("Indexer", false);
     Preferences.initBoolean("Detector Limelight", false);
+    Preferences.initBoolean("Use Limelight", false);
+    Preferences.initBoolean("Use 2 Limelights", false);
     Preferences.initDouble("wait # of seconds", 0);
     
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);

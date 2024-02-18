@@ -96,7 +96,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		}
 		double deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		double speakerDist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2));
-		SmartDashboard.putNumber("dist to speakre", speakerDist);
+		// SmartDashboard.putNumber("dist to speakre", speakerDist);
 		
 		double shootingTime = speakerDist / shootingSpeed; // calculates how long the note will take to reach the target
 		double currentXSpeed = DTChassisSpeeds.vxMetersPerSecond;
@@ -136,7 +136,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("desired shooter angle", desiredShooterAngle);
 		
 		double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
-		SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
+		// SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
 		
 		return desiredShooterAngle;
 	}
@@ -152,6 +152,6 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		// desiredZeroOffset = SmartDashboard.getNumber("ANGLE SHOOTER encoder zero offset", absoluteEncoder.getZeroOffset());
 		SmartDashboard.putNumber("ANGLE SHOOTER encoder zero offset", absoluteEncoder.getZeroOffset());
 
-		// SmartDashboard.putNumber("ANGLE SHOOTER speaker angle error", calculateSpeakerAngleDifference());
+		SmartDashboard.putNumber("ANGLE SHOOTER speaker angle error", calculateSpeakerAngleDifference());
 	}
 }
