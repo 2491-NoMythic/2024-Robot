@@ -3,6 +3,7 @@ package frc.robot.commands;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
@@ -25,13 +26,11 @@ public class AimShooter extends Command {
 
 	@Override
 	public void execute() {
-		if (!(aimAtAmpSupplier.getAsDouble() == 90)) {
-			double desiredShooterAngleSpeed = angleShooterSubsystem.calculateSpeakerAngleDifference() * ShooterConstants.AUTO_AIM_SHOOTER_kP;
-			angleShooterSubsystem.pitchShooter(desiredShooterAngleSpeed);
+		SmartDashboard.putNumber("TESTING shooter angle difference", angleShooterSubsystem.calculateSpeakerAngleDifference());
+		if (aimAtAmpSupplier.getAsDouble() == 90) {
+			angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_ANGLE);
 		} else {
-			double differenceAmp = Field.AMPLIFIER_ANGLE - angleShooterSubsystem.getShooterAngle();
-			double ampSpeed = differenceAmp * ShooterConstants.AUTO_AIM_SHOOTER_kP;
-			angleShooterSubsystem.pitchShooter(ampSpeed);
+			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 		}
 	}
 

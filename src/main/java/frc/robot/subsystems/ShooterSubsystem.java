@@ -39,9 +39,7 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
 	 double m_DesiredShooterAngle;
  
    Slot0Configs PIDconfigs = new Slot0Configs();
-   
-   SparkPIDController pitchPID;
-   double kP = Constants.ShooterConstants.kP;         
+      double kP = Constants.ShooterConstants.kP;         
    double kI = Constants.ShooterConstants.kI;         
    double kD = Constants.ShooterConstants.kD;         
    double kIz = Constants.ShooterConstants.kIz;         
@@ -70,9 +68,7 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
     PIDconfigs = new Slot0Configs();
 
     configurator = shooterR.getConfigurator();
-    
-    pitchPID.setFF(pitchFeedForward);
-    
+        
     PIDconfigs.kP = kP;
     PIDconfigs.kI = kI;
     PIDconfigs.kD = kD;
@@ -102,19 +98,27 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
      if((d != kD)) {PIDconfigs.kD = d; kD = d; }
  
      if((ff != kFF)) {PIDconfigs.kS = ff; kFF = ff;}
-    configurator.apply(PIDconfigs);
+     configurator.apply(PIDconfigs);
    }
    
 
   public void shootThing(double runSpeed) {
      shooterR.set(runSpeed);
+     shooterL.set(runSpeed);
    }
   public double getError() {
-    return Math.abs(shooterR.getVelocity().asSupplier().get()-ShooterConstants.RUNNING_VELOCITY_RPS);
+    return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
   }
   public void turnOff(){
      shooterR.set(0);
      shooterL.set(0);
+  }
+  // public double getSpeedRPS() {
+  //   return shooterR.getVelocity().asSupplier().get();
+  // }
+@Override
+  public void periodic() {
+    SmartDashboard.putNumber("TESTING shooter speed error", getError());
   }
 }
  

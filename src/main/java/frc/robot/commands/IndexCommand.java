@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -59,20 +61,19 @@ public class IndexCommand extends Command {
     } else {
       auto = false;
     }
-    if (!m_Indexer.isNoteIn()) {
-      intake.intakeYes(1);
-      m_Indexer.on();
+    if (!intake.isNoteIn()) {
+      intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+      m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
       if(!auto) {
         shooter.turnOff();
       }
     } else {
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()) {
-        shooter.shootThing(1);
+        shooter.shootThing(ShooterConstants.SHOOTER_MOTOR_POWER);
       } else {
         shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER);
       }
-    }
     boolean indexer = false;
     if((angleShooterSubsytem.calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ERROR)
       && drivetrain.getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR
@@ -86,10 +87,11 @@ public class IndexCommand extends Command {
       RobotState.getInstance().ShooterReady = false;
     }
     if (indexer) {
-      m_Indexer.on();
+      m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
     } else {
       m_Indexer.off();
     }
+  }
   }
 
   // Called once the command ends or is interrupted.

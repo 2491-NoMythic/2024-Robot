@@ -254,9 +254,10 @@ public final class Constants {
     public static final double k_PICKUP_NOTE_tx_D = 0;
   }
 public static final class ShooterConstants{
+  public static final double ANGLE_ENCODER_ZERO_OFFSET = 324;
   public static final int SHOOTER_R_MOTORID = 10;
   public static final int SHOOTER_L_MOTORID = 9;
-  public static final int PITCH_MOTOR_ID = 22;
+  public static final int PITCH_MOTOR_ID = 24;
   public static final double SHOOTER_MOTOR_POWER = 1;
   public static final double SHOOTER_AMP_POWER = 0.3;
   public static final double SHOOTING_SPEED_MPS = 10;
@@ -268,6 +269,14 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
+  //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
+  public static final double ANGLE_SHOOTER_POWER_KP = 0.026;
+  public static final double ANGLE_SHOOTER_POWER_KI = 0;
+  public static final double ANGLE_SHOOTER_POWER_KD = 0.001;
+  public static final double pitchFeedForward = 0.001;
+  public static final double pitchMaxOutput = 1;
+  public static final double pitchMinOutput = -1;
+  
   public static final double AUTO_AIM_SHOOTER_kP = 0.003;
   public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
@@ -276,8 +285,8 @@ public static final class ShooterConstants{
   public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0;
   public static final double OFFSET_MULTIPLIER = 1;
-  public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
-  public static final double MAXIMUM_SHOOTER_ANGLE = 120;//still has to be found
+  public static final double MINIMUM_SHOOTER_ANGLE = 15;//still has to be found
+  public static final double MAXIMUM_SHOOTER_ANGLE = 78;//still has to be found
 
  
 
@@ -291,31 +300,27 @@ public static final class ShooterConstants{
   public static final double kMinOutput = -1;
 
   //PID values for pitch motor (changes angle of shooter):
-  public static final double pitchkP = 2491;
-  public static final double pitchkI = 2491;
-  public static final double pitchkD = 2491;
-  public static final double pitchkIz = 2491;
-  public static final double pitchFeedForward = 2491;
-  public static final double pitchMaxOutput = 2491;
-  public static final double pitchMinOutput = 2491;
-  public static final double shooterup = 2491;
+  public static final double shooterup = 45;
 
 }
 public static final class ClimberConstants{
-  public static final int CLIMBER_MOTOR_RIGHT = 2941;
-  public static final int CLIMBER_MOTOR_LEFT = 2491;
-  public static final double CLIMBER_SPEED_DOWN = 0.75;
-  public static final double CLIMBER_SPEED_UP = 0.75;
+  public static final int CLIMBER_MOTOR_RIGHT = 23;
+  public static final int CLIMBER_MOTOR_LEFT = 22;
+  public static final double CLIMBER_SPEED_DOWN = 0.3;
+  public static final double CLIMBER_SPEED_UP = -0.5;
   public static final double MAX_MOTOR_ROTATIONS = 2491;
 
   //TODO: refine these values
-  public static final double CLIMBER_VOLTAGE_ALIGN = 0.75;
+  public static final double CLIMBER_VOLTAGE_ALIGN = 0.25;
   public static final double CLIMBER_VOLTAGE_PULL_DOWN = 3;
   public static final double CLIMBER_RPM = 0.1;
+  public static final int Right_HALL_EFFECT_INPUT = 9;
+  public static final int LEFT_HALL_EFFECT_INPUT = 8;
 }
 public static final class IndexerConstants{
-  public static final int INDEXER_MOTOR = 23;
-  public static final double INDEXER_SPEED = 2491;
+  public static final int INDEXER_MOTOR = 11;
+  public static final double INDEXER_INTAKE_SPEED = 0.5;
+  public static final double INDEXER_SHOOTING_SPEED = 0.5;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
@@ -323,7 +328,7 @@ public static final class IntakeConstants{
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
-  public static final double INTAKE_SPEED = 0.75;
+  public static final double INTAKE_SPEED = 1;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
@@ -409,8 +414,8 @@ public static final class CTREConfigs {
   }
 
 public final class Vision{
-  public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-april2";
-  public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-april";
+  public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-aprill";
+  public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-aprilr";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
 
 

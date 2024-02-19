@@ -37,9 +37,7 @@ public class AngleShooter extends Command {
   @Override
   public void execute() {
     desiredShooterAngle = desiredShooterAngleSupplier.getAsDouble();
-    differenceAngle = desiredShooterAngle-m_shooter.getShooterAngle();
-    desiredShooterAngleSpeed = differenceAngle*ShooterConstants.AUTO_AIM_SHOOTER_kP;
-    m_shooter.pitchShooter(desiredShooterAngleSpeed);
+    m_shooter.setDesiredShooterAngle(desiredShooterAngle);
   }
 
   // Called once the command ends or is interrupted.

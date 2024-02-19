@@ -37,6 +37,6 @@ public class ClimberDownAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_climber.getRightRPM() < ClimberConstants.CLIMBER_RPM && m_climber.getLeftRPM() < ClimberConstants.CLIMBER_RPM;
+    return Math.abs(m_climber.getRightRPM()) < ClimberConstants.CLIMBER_RPM && Math.abs(m_climber.getLeftRPM()) < ClimberConstants.CLIMBER_RPM;
   }
 }
