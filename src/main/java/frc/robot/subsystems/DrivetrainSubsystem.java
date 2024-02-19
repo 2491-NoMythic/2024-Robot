@@ -430,7 +430,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					SmartDashboard.putBoolean("LL3visionValid", isLL3VisionTrustworthy);
 					if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
 					if (!isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
-					if (isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());
+					if (isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
 				} else {
 					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
 					Boolean isLL2VisionValid = ll2.isResultValid;
