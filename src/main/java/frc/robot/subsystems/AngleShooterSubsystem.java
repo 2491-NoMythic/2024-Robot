@@ -3,10 +3,6 @@ package frc.robot.subsystems;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 
-import static frc.robot.settings.Constants.ShooterConstants.DISTANCE_MULTIPLIER;
-import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
-import static frc.robot.settings.Constants.ShooterConstants.ROBOT_ANGLE_TOLERANCE;
-
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -22,6 +18,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -97,23 +94,23 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		double speakerDist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2));
 		// SmartDashboard.putNumber("dist to speakre", speakerDist);
-		
+		Rotation2d unadjustedAngle = Rotation2d.fromRadians(Math.asin(deltaX/speakerDist));
 		double shootingTime = speakerDist / shootingSpeed; // calculates how long the note will take to reach the target
 		double currentXSpeed = DTChassisSpeeds.vxMetersPerSecond;
 		double currentYSpeed = DTChassisSpeeds.vyMetersPerSecond;
-		Translation2d targetOffset = new Translation2d(currentXSpeed * shootingTime*OFFSET_MULTIPLIER, currentYSpeed * shootingTime*OFFSET_MULTIPLIER);
+		Translation2d targetOffset = new Translation2d(currentXSpeed * shootingTime*OFFSET_MULTIPLIER * unadjustedAngle.getRadians(), currentYSpeed * shootingTime*OFFSET_MULTIPLIER * unadjustedAngle.getRadians());
 		// line above calculates how much our current speed will affect the ending
 		// location of the note if it's in the air for ShootingTime
 		
 		// next 3 lines set where we actually want to aim, given the offset our shooting
 		// will have based on our speed
-		double offsetSpeakerY = Field.SPEAKER_Y + targetOffset.getY();
+		double offsetSpeakerY = Field.SPEAKER_Y - targetOffset.getY();
 		double offsetSpeakerX;
 		
 		if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-			offsetSpeakerX = Field.RED_SPEAKER_X + targetOffset.getX();
+			offsetSpeakerX = Field.RED_SPEAKER_X - targetOffset.getX();
 		} else {
-			offsetSpeakerX = Field.BLUE_SPEAKER_X + targetOffset.getX();
+			offsetSpeakerX = Field.BLUE_SPEAKER_X - targetOffset.getX();
 		}
 		double offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		double offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
@@ -126,7 +123,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
 		double desiredShooterAngle = Math
 				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalDistToSpeaker));
-		desiredShooterAngle = desiredShooterAngle+(speakerDist*DISTANCE_MULTIPLIER);
+		desiredShooterAngle = desiredShooterAngle+(Math.pow(offsetSpeakerdist, 2)*DISTANCE_MULTIPLIER);
 		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
 			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;
 		}

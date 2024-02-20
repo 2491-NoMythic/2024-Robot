@@ -329,7 +329,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 		// SmartDashboard.putNumber("dist to speakre", speakerDist);
 		
-		Rotation2d unadjustedAngle = Rotation2d.fromDegrees(Math.asin(deltaX/speakerDist));
+		Rotation2d unadjustedAngle = Rotation2d.fromRadians(Math.asin(deltaX/speakerDist));
 		shootingTime = speakerDist/shootingSpeed; //calculates how long the note will take to reach the target
 		currentXSpeed = this.getChassisSpeeds().vxMetersPerSecond;
 		currentYSpeed = this.getChassisSpeeds().vyMetersPerSecond;
