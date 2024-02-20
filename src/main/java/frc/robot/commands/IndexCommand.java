@@ -4,12 +4,16 @@
 
 package frc.robot.commands;
 
+import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
+
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.settings.Constants.IntakeConstants;
@@ -43,6 +47,8 @@ public class IndexCommand extends Command {
     this.intake = intake;
     this.drivetrain = drivetrain;
     this.angleShooterSubsytem = angleShooterSubsystem;
+    SmartDashboard.putNumber("amp RPS", AMP_RPS);
+    SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IndexerSubsystem, shooter, intake);
   }
@@ -70,15 +76,12 @@ public class IndexCommand extends Command {
     } else {
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()) {
-        shooter.shootThing(ShooterConstants.SHOOTER_MOTOR_POWER);
+        shooter.shootRPS(ShooterConstants.SHOOTING_RPS);
       } else {
-        shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER);
+        shooter.shootRPS(SmartDashboard.getNumber("amp RPS", ShooterConstants.AMP_RPS)/*ShooterConstants.AMP_RPS*/);
       }
     boolean indexer = false;
-    if((angleShooterSubsytem.calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ERROR)
-      && drivetrain.getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR
-      && Math.abs(shooter.getError())<ShooterConstants.ALLOWED_SPEED_ERROR)
-    {
+    if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot()) {
       RobotState.getInstance().ShooterReady = true;
       if (shootIfReadySupplier.getAsBoolean()) {
         indexer = true;

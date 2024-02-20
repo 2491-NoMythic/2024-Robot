@@ -34,9 +34,10 @@ public final class Constants {
   private Constants () {}
 
   public static final int LED_COUNT = 24;
-
+  public static final int LOOPS_VALID_FOR_SHOT = 20;
+  
   public static final class DriveConstants {
-    public static final double ALLOWED_ERROR = 1;
+    public static final double ALLOWED_ERROR = 2;
     public enum Positions{
       FL(0),
       FR(0.25),
@@ -107,7 +108,7 @@ public final class Constants {
     /**
      * The diameter of the module's wheel in meters.
      */
-    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.097;
+    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.093;
 
     /**
      * The overall drive reduction of the module. Multiplying motor rotations by
@@ -254,21 +255,25 @@ public final class Constants {
     public static final double k_PICKUP_NOTE_tx_D = 0;
   }
 public static final class ShooterConstants{
-  public static final double ANGLE_ENCODER_ZERO_OFFSET = 324;
+  public static final double ANGLE_ENCODER_ZERO_OFFSET = 328;//should be 328 but changed for trying to aim at the speaker
   public static final int SHOOTER_R_MOTORID = 10;
   public static final int SHOOTER_L_MOTORID = 9;
   public static final int PITCH_MOTOR_ID = 24;
   public static final double SHOOTER_MOTOR_POWER = 1;
   public static final double SHOOTER_AMP_POWER = 0.3;
-  public static final double SHOOTING_SPEED_MPS = 10;
+  //power at 0.3 for bounce techinque, didnt work
+  public static final double SHOOTING_SPEED_MPS = 19.665; //calculated with slo mo videos
   public static final double RUNNING_VELOCITY_RPS = 2491;
-  public static final double ALLOWED_ERROR = 1;
-  public static final double ALLOWED_SPEED_ERROR = 1;
+  public static final double ALLOWED_ANGLE_ERROR = 1.5;
+  public static final double ALLOWED_SPEED_ERROR = 4;
 
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
+  public static final double SHOOTING_RPS = 90;
+  public static final double AMP_RPS = 9.5;
+
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
   public static final double ANGLE_SHOOTER_POWER_KP = 0.026;
   public static final double ANGLE_SHOOTER_POWER_KI = 0;
@@ -280,22 +285,22 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_SHOOTER_kP = 0.003;
   public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
-  public static final double SHOOTER_HEIGHT = 0.1;
+  public static final double SHOOTER_HEIGHT = 0.254;
   public static final double ANGLE_TICKS_PER_DEGREE = 2491;
   public static final double DEGREES_PER_ROTATION = 360;
-  public static final double DISTANCE_MULTIPLIER = 0;
+  public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
-  public static final double MINIMUM_SHOOTER_ANGLE = 15;//still has to be found
-  public static final double MAXIMUM_SHOOTER_ANGLE = 78;//still has to be found
+  public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
+  public static final double MAXIMUM_SHOOTER_ANGLE = 73;//still has to be found
 
  
 
   //PID coefficients for shooter:
-  public static final double kP = 1;
+  public static final double kP = 0.128;
   public static final double kI = 0;
   public static final double kD = 0;
   public static final double kIz = 0;
-  public static final double kFF = 0;
+  public static final double kFF = 0.009;
   public static final double kMaxOutput = 1;
   public static final double kMinOutput = -1;
 
@@ -319,8 +324,8 @@ public static final class ClimberConstants{
 }
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
-  public static final double INDEXER_INTAKE_SPEED = 0.5;
-  public static final double INDEXER_SHOOTING_SPEED = 0.5;
+  public static final double INDEXER_INTAKE_SPEED = -0.5;//should be 0.5 TODO change to positive
+  public static final double INDEXER_SHOOTING_SPEED = 1;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
@@ -405,12 +410,12 @@ public static final class CTREConfigs {
   public final class Field{
     public static final double BLUE_SPEAKER_X = 0.23;
     public static final double RED_SPEAKER_X = 16.49;
-    public static final double SPEAKER_Y = 5.612;//16.412;
-    public static final double SPEAKER_Z = 2.045; //height of opening
+    public static final double SPEAKER_Y = 5.3;//16.412;
+    public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
 
-    public static final double AMPLIFIER_ANGLE = 110;
-
+    public static final double AMPLIFIER_ANGLE = 70;
+    //angle at 60 for bounce techinque, didn't work
   }
 
 public final class Vision{

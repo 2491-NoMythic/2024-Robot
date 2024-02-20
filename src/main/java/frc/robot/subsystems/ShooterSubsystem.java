@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
@@ -27,12 +28,14 @@ import  frc.robot.settings.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.settings.Constants.ShooterConstants.*;
+import static frc.robot.settings.Constants.*;
  
  public class ShooterSubsystem extends SubsystemBase {
    TalonFX shooterR;
    TalonFX shooterL;
    double runSpeed;
-   TalonFXConfigurator configurator;
+   TalonFXConfigurator configuratorR;
+   TalonFXConfigurator configuratorL;
 
   double differenceAngle;
 	 double currentHeading;
@@ -55,9 +58,11 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
 	RotateRobot rotateRobot;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
- 
-     /** Creates a new Shooter. */
+  int runsValid;
+  
+  /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
+    runsValid = 0;
     shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
     shooterL = new TalonFX(ShooterConstants.SHOOTER_L_MOTORID);
     shooterL.setInverted(true);
@@ -66,14 +71,15 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
     shooterL.setNeutralMode(NeutralModeValue.Coast);
     shooterR.setNeutralMode(NeutralModeValue.Coast);
     PIDconfigs = new Slot0Configs();
-
-    configurator = shooterR.getConfigurator();
-        
+    
+    configuratorR = shooterR.getConfigurator();
+    configuratorL = shooterL.getConfigurator();
+    
     PIDconfigs.kP = kP;
     PIDconfigs.kI = kI;
     PIDconfigs.kD = kD;
-    PIDconfigs.kS = kFF;
- 
+    PIDconfigs.kV = kFF;
+    
      SmartDashboard.putNumber("P Gain", Constants.ShooterConstants.kP);
      SmartDashboard.putNumber("I Gain", Constants.ShooterConstants.kI);
      SmartDashboard.putNumber("D Gain",Constants.ShooterConstants.kD);
@@ -91,27 +97,35 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
      double max = SmartDashboard.getNumber("Max Output", 0);
      double min = SmartDashboard.getNumber("Min Output", 0);   
      double ve = SmartDashboard.getNumber("Set Velocity", 0);
- 
- 
+     
+     
      if((p != kP)) {PIDconfigs.kP = p; kP = p; }
      if((i != kI)) {PIDconfigs.kI = i; kI = i; }
      if((d != kD)) {PIDconfigs.kD = d; kD = d; }
- 
+     
      if((ff != kFF)) {PIDconfigs.kS = ff; kFF = ff;}
-     configurator.apply(PIDconfigs);
-   }
+     configuratorR.apply(PIDconfigs);
+     configuratorL.apply(PIDconfigs);
+    }
    
-
-  public void shootThing(double runSpeed) {
-     shooterR.set(runSpeed);
-     shooterL.set(runSpeed);
-   }
-  public double getError() {
-    return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
-  }
+    
+    public void shootThing(double runSpeed) {
+      shooterR.set(runSpeed);
+      shooterL.set(runSpeed);
+    }
+    public void shootRPS(double RPS) {
+      shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
+      shooterL.setControl(new VelocityDutyCycle(RPS).withSlot(0));
+    }
+    private double getError() {
+      return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
+    }
+    public boolean validShot() {
+      return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
+    }
   public void turnOff(){
-     shooterR.set(0);
-     shooterL.set(0);
+    shooterR.set(0);
+    shooterL.set(0);
   }
   // public double getSpeedRPS() {
   //   return shooterR.getVelocity().asSupplier().get();
@@ -119,6 +133,11 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
 @Override
   public void periodic() {
     SmartDashboard.putNumber("TESTING shooter speed error", getError());
+    if(getError()<ShooterConstants.ALLOWED_SPEED_ERROR) {
+      runsValid++;
+    } else {
+      runsValid = 0;
+    }
   }
 }
  
