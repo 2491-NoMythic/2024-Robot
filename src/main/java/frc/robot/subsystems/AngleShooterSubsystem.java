@@ -95,7 +95,8 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double speakerDist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2));
 		// SmartDashboard.putNumber("dist to speakre", speakerDist);
 		Rotation2d unadjustedAngle = Rotation2d.fromRadians(Math.asin(deltaX/speakerDist));
-		double shootingTime = speakerDist / shootingSpeed; // calculates how long the note will take to reach the target
+		double totalDistToSpeaker = Math.sqrt(Math.pow(Field.SPEAKER_Z-ShooterConstants.SHOOTER_HEIGHT, 2) + Math.pow(speakerDist, 2));
+		double shootingTime = totalDistToSpeaker / shootingSpeed; // calculates how long the note will take to reach the target
 		double currentXSpeed = DTChassisSpeeds.vxMetersPerSecond;
 		double currentYSpeed = DTChassisSpeeds.vyMetersPerSecond;
 		Translation2d targetOffset = new Translation2d(currentXSpeed * shootingTime*OFFSET_MULTIPLIER * unadjustedAngle.getRadians(), currentYSpeed * shootingTime*OFFSET_MULTIPLIER * unadjustedAngle.getRadians());
@@ -106,7 +107,6 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		// will have based on our speed
 		double offsetSpeakerY = Field.SPEAKER_Y - targetOffset.getY();
 		double offsetSpeakerX;
-		
 		if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
 			offsetSpeakerX = Field.RED_SPEAKER_X - targetOffset.getX();
 		} else {
@@ -119,10 +119,10 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		SmartDashboard.putString("offset speaker location",
 		new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		// getting desired robot angle
-		double totalDistToSpeaker = Math
+		double totalOffsetDistToSpeaker = Math
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
 		double desiredShooterAngle = Math
-				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalDistToSpeaker));
+				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalOffsetDistToSpeaker));
 		desiredShooterAngle = desiredShooterAngle+(Math.pow(offsetSpeakerdist, 2)*DISTANCE_MULTIPLIER);
 		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
 			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;
