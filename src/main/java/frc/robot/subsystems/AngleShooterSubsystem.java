@@ -56,6 +56,8 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	}
 	
 	public void setDesiredShooterAngle(double degrees) {
+		if(degrees>MAXIMUM_SHOOTER_ANGLE) {degrees = MAXIMUM_SHOOTER_ANGLE;}
+		if(degrees<MINIMUM_SHOOTER_ANGLE) {degrees = MINIMUM_SHOOTER_ANGLE;}
 		pitchPID.setFF(Math.cos(Math.toRadians(degrees))*ShooterConstants.pitchFeedForward);
 		pitchPID.setReference(
 			degrees,
