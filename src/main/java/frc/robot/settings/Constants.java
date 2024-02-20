@@ -36,7 +36,7 @@ public final class Constants {
   public static final int LED_COUNT = 24;
 
   public static final class DriveConstants {
-    public static final double ALLOWED_ERROR = 1;
+    public static final double ALLOWED_ERROR = 2;
     public enum Positions{
       FL(0),
       FR(0.25),
@@ -261,10 +261,10 @@ public static final class ShooterConstants{
   public static final double SHOOTER_MOTOR_POWER = 1;
   public static final double SHOOTER_AMP_POWER = 0.3;
   //power at 0.3 for bounce techinque, didnt work
-  public static final double SHOOTING_SPEED_MPS = 10;
+  public static final double SHOOTING_SPEED_MPS = 19.665; //calculated with slo mo videos
   public static final double RUNNING_VELOCITY_RPS = 2491;
-  public static final double ALLOWED_ERROR = 1;
-  public static final double ALLOWED_SPEED_ERROR = 1;
+  public static final double ALLOWED_ANGLE_ERROR = 1.5;
+  public static final double ALLOWED_SPEED_ERROR = 4;
 
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
@@ -323,7 +323,7 @@ public static final class ClimberConstants{
 }
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
-  public static final double INDEXER_INTAKE_SPEED = 0.5;//TODO change to positive
+  public static final double INDEXER_INTAKE_SPEED = -0.5;//TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
 }
 public static final class IntakeConstants{
