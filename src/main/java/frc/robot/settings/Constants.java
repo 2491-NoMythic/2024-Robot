@@ -311,9 +311,9 @@ public static final class ShooterConstants{
 public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR_RIGHT = 23;
   public static final int CLIMBER_MOTOR_LEFT = 22;
-  public static final double CLIMBER_SPEED_DOWN = 0.3;
-  public static final double CLIMBER_SPEED_UP = -0.5;
-  public static final double MAX_MOTOR_ROTATIONS = 2491;
+  public static final double CLIMBER_SPEED_DOWN = 0.6;
+  public static final double CLIMBER_SPEED_UP = -1;
+  public static final double MAX_MOTOR_ROTATIONS = 235;
 
   //TODO: refine these values
   public static final double CLIMBER_VOLTAGE_ALIGN = 0.25;
