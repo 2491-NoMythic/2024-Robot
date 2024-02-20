@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.settings.Constants.ShooterConstants.*;
+import static frc.robot.settings.Constants.LOOPS_VALID_FOR_SHOT;
+
 public class AngleShooterSubsystem extends SubsystemBase {
 	CANSparkMax pitchMotor;
 	SparkPIDController pitchPID;
@@ -35,8 +37,10 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	public static Pose2d dtvalues;
 	public static ChassisSpeeds DTChassisSpeeds;
 	public double desiredZeroOffset;
+	int runsValid;
 
 	public AngleShooterSubsystem() {
+		runsValid = 0;
 		pitchMotor = new CANSparkMax(PITCH_MOTOR_ID, MotorType.kBrushless);
 		pitchMotor.restoreFactoryDefaults();
 		pitchMotor.setInverted(true);
@@ -145,7 +149,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	}
 
 	public boolean validShot() {
-		return calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ANGLE_ERROR;
+		return runsValid >= LOOPS_VALID_FOR_SHOT;
 	}
 	
 	@Override
@@ -156,5 +160,10 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("ANGLE SHOOTER encoder zero offset", absoluteEncoder.getZeroOffset());
 
 		SmartDashboard.putNumber("ANGLE SHOOTER speaker angle error", calculateSpeakerAngleDifference());
+		if(calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ANGLE_ERROR) {
+			runsValid++;
+		} else {
+			runsValid = 0;
+		}
 	}
 }

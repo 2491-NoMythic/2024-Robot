@@ -28,6 +28,7 @@ import  frc.robot.settings.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.settings.Constants.ShooterConstants.*;
+import static frc.robot.settings.Constants.*;
  
  public class ShooterSubsystem extends SubsystemBase {
    TalonFX shooterR;
@@ -57,9 +58,11 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
 	RotateRobot rotateRobot;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
+  int runsValid;
   
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
+    runsValid = 0;
     shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
     shooterL = new TalonFX(ShooterConstants.SHOOTER_L_MOTORID);
     shooterL.setInverted(true);
@@ -118,7 +121,7 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
       return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
     }
     public boolean validShot() {
-      return getError()<ShooterConstants.ALLOWED_SPEED_ERROR;
+      return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
     }
   public void turnOff(){
     shooterR.set(0);
@@ -130,6 +133,11 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
 @Override
   public void periodic() {
     SmartDashboard.putNumber("TESTING shooter speed error", getError());
+    if(getError()<ShooterConstants.ALLOWED_SPEED_ERROR) {
+      runsValid++;
+    } else {
+      runsValid = 0;
+    }
   }
 }
  

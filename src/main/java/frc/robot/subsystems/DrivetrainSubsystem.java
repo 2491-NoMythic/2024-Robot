@@ -20,6 +20,7 @@ import static frc.robot.settings.Constants.DriveConstants.FR_DRIVE_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
 import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
+import static frc.robot.settings.Constants.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -106,11 +107,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	double offsetSpeakerdist;
 	public double speakerDist;
 	Limelight limelight;
+	int runsValid;
 
 	double MathRanNumber;
 
 	public DrivetrainSubsystem() {
 		MathRanNumber = 0;
+		runsValid = 0;
 		this.limelight=Limelight.getInstance();
 
 		Preferences.initDouble("FL offset", 0);
@@ -385,7 +388,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return calculateSpeakerAngleMoving()-(getGyroscopeRotation().getDegrees()%360);
 	}
 	public boolean validShot() {
-		return getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR;
+		return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
 	}
 	public Pose2d getAverageBotPose(LimelightValues ll2, LimelightValues ll3) {
 		double ll2X = ll2.getBotPoseBlue().getX();
@@ -450,5 +453,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngle());
 		SmartDashboard.putNumber("TESTING robot angle difference", getSpeakerAngleDifference());
+		if (getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR) {
+			runsValid++;
+		} else {
+			runsValid = 0;
+		}
 	}
 }
