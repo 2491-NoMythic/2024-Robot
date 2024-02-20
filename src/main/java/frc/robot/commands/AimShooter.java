@@ -27,7 +27,7 @@ public class AimShooter extends Command {
 	@Override
 	public void execute() {
 		if (aimAtAmpSupplier.getAsDouble() == 90) {
-			angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_ANGLE);
+			angleShooterSubsystem.setDesiredShooterAngle(SmartDashboard.getNumber("amp angle", Field.AMPLIFIER_ANGLE)/*Field.AMPLIFIER_ANGLE*/);
 		} else {
 			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 		}
