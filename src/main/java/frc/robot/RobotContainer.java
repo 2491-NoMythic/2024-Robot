@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.PS4Operator.*;
+import static frc.robot.settings.Constants.ShooterConstants.SHOOTING_RPS;
 
 import java.nio.file.Path;
 import java.time.Instant;
@@ -262,7 +263,7 @@ public class RobotContainer {
       new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
-      new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER), shooter));
+      new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
     }
     SmartDashboard.putData("set offsets", new InstantCommand(driveTrain::setEncoderOffsets));
     SmartDashboard.putData(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
@@ -285,8 +286,8 @@ public class RobotContainer {
       SmartDashboard.putData("intake off", new InstantCommand(intake::intakeOff, intake));
     }
     if(shooterExists) {
-      SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootThing(ShooterConstants.SHOOTER_MOTOR_POWER), shooter));
-      SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER), shooter));
+      SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootRPS(ShooterConstants.SHOOTING_RPS), shooter));
+      SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
       SmartDashboard.putData("shooter off", new InstantCommand(shooter::turnOff, shooter));
     }
     if(angleShooterExists) {
@@ -367,7 +368,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
     NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
 
-    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootThing(1), shooter));
+    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(SHOOTING_RPS), shooter));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
     if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(indexer::on, indexer));}
     if(intakeExists) {
@@ -409,6 +410,8 @@ public class RobotContainer {
   }
 
   public void disabledInit() {
-    new InstantCommand(angleShooterSubsystem::stop, angleShooterSubsystem);
+    if(angleShooterExists) {
+      new InstantCommand(angleShooterSubsystem::stop, angleShooterSubsystem);
+    }
   }
 }

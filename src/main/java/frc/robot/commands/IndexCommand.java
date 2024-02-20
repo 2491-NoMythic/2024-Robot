@@ -70,9 +70,9 @@ public class IndexCommand extends Command {
     } else {
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()) {
-        shooter.shootThing(ShooterConstants.SHOOTER_MOTOR_POWER);
+        shooter.shootRPS(ShooterConstants.SHOOTING_RPS);
       } else {
-        shooter.shootThing(ShooterConstants.SHOOTER_AMP_POWER);
+        shooter.shootRPS(ShooterConstants.AMP_RPS);
       }
     boolean indexer = false;
     if((angleShooterSubsytem.calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ERROR)
