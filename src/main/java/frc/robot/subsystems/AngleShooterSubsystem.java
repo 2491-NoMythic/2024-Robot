@@ -138,8 +138,12 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		return desiredShooterAngle;
 	}
 
-	public double calculateSpeakerAngleDifference() {
+	private double calculateSpeakerAngleDifference() {
 		return Math.abs(calculateSpeakerAngle() - this.getShooterAngle());
+	}
+
+	public boolean validShot() {
+		return calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ANGLE_ERROR;
 	}
 	
 	@Override

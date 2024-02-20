@@ -75,10 +75,7 @@ public class IndexCommand extends Command {
         shooter.shootRPS(ShooterConstants.AMP_RPS);
       }
     boolean indexer = false;
-    if((angleShooterSubsytem.calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ERROR)
-      && drivetrain.getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR
-      && Math.abs(shooter.getError())<ShooterConstants.ALLOWED_SPEED_ERROR)
-    {
+    if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot()) {
       RobotState.getInstance().ShooterReady = true;
       if (shootIfReadySupplier.getAsBoolean()) {
         indexer = true;

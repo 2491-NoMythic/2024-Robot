@@ -380,8 +380,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putString("adjusted target", adjustedTarget.toString());
 		return m_desiredRobotAngle;
 	}
-	public double getSpeakerAngleDifference() {
+	private double getSpeakerAngleDifference() {
 		return calculateSpeakerAngleMoving()-(getGyroscopeRotation().getDegrees()%360);
+	}
+	public boolean validShot() {
+		return getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR;
 	}
 	public Pose2d getAverageBotPose(LimelightValues ll2, LimelightValues ll3) {
 		double ll2X = ll2.getBotPoseBlue().getX();

@@ -114,8 +114,11 @@ import static frc.robot.settings.Constants.ShooterConstants.*;
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
       shooterL.setControl(new VelocityDutyCycle(RPS).withSlot(0));
     }
-    public double getError() {
+    private double getError() {
       return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
+    }
+    public boolean validShot() {
+      return getError()<ShooterConstants.ALLOWED_SPEED_ERROR;
     }
   public void turnOff(){
     shooterR.set(0);
