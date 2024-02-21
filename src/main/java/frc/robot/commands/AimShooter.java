@@ -31,7 +31,7 @@ public class AimShooter extends Command {
 		if (POVSupplier.getAsDouble() == 90 || POVSupplier.getAsDouble() == 45 || POVSupplier.getAsDouble() == 135) {
 			angleShooterSubsystem.setDesiredShooterAngle(SmartDashboard.getNumber("amp angle", Field.AMPLIFIER_ANGLE)/*Field.AMPLIFIER_ANGLE*/);
 		} else {
-			if(POVSupplier.getAsDouble() == 270 || POVSupplier.getAsDouble() == 315 || POVSupplier.getAsDouble() == 225) {
+			if(humanPlayerSupplier.getAsBoolean()) {
 				angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 			} else {
 				angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
