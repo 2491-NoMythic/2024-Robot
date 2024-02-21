@@ -31,7 +31,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.CollectNote;
 import frc.robot.commands.Drive;
 import frc.robot.commands.DriveTimeCommand;
-
+import frc.robot.commands.ConditionalIndexer;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.commands.IndexCommand;
@@ -367,7 +367,7 @@ public class RobotContainer {
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
     NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
-
+    
     if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(SHOOTING_RPS), shooter));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
     if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(indexer::on, indexer));}
@@ -377,6 +377,9 @@ public class RobotContainer {
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 0.75, 0.5));
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 0.5));
+    }
+    if (indexerExists&&intakeExists) {
+      NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
