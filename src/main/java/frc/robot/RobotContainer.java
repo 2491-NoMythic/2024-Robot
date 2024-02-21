@@ -266,9 +266,11 @@ public class RobotContainer {
       new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
-      new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE)));
-      new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS)));
-      new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED)));
+      // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE)));
+      // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS)));
+      // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED)));
+      new Trigger(driverController::getCircleButton).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS)));
+
     }
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {
@@ -282,7 +284,7 @@ public class RobotContainer {
  *    L1: manually feed shooter (hold)
  *    R2: shoot if everything is lined up (hold)
  *    R1: automatically pick up note (press)
- *    Circle: lineup with the amp (hold)
+ *    Circle: lineup with the amp +shoot at amp speed (hold)
  *    D-Pad down: move shooter up manually (hold)
  *    D-pad right: aim shooter at amp (hold)
  *    D-pad left: collect note from human player
@@ -387,7 +389,10 @@ public class RobotContainer {
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 0.75, 0.5));
-      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 0.5));
+      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
+      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
+      NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
+      NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }

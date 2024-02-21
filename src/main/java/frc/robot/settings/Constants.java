@@ -418,7 +418,7 @@ public static final class CTREConfigs {
     public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
 
-    public static final double AMPLIFIER_ANGLE = 70;
+    public static final double AMPLIFIER_ANGLE = 97;
     //angle at 60 for bounce techinque, didn't work
   }
 

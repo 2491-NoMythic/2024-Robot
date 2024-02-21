@@ -39,6 +39,7 @@ public class IndexCommand extends Command {
   DrivetrainSubsystem drivetrain;
   AngleShooterSubsystem angleShooterSubsytem;
   boolean auto;
+  double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
   public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier) {
@@ -59,7 +60,7 @@ public class IndexCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    runsEmpty = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -72,16 +73,20 @@ public class IndexCommand extends Command {
     }
     if (!intake.isNoteIn()) {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED);
-      if(POVSupplier.getAsDouble() == 270||POVSupplier.getAsDouble() == 225||POVSupplier.getAsDouble() == 315) {
-        m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
-        shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS);
-        intake.intakeOff();
-      }
-      else {
-        m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-        shooter.turnOff();
+      if(runsEmpty<21) {runsEmpty++;}
+      if(runsEmpty>20) {
+        if(POVSupplier.getAsDouble() == 270||POVSupplier.getAsDouble() == 225||POVSupplier.getAsDouble() == 315) {
+          m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
+          shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS);
+          intake.intakeOff();
+        }
+        else {
+          m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
+          shooter.turnOff();
+        }
       }
     } else {
+      runsEmpty = 0;
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()) {
         shooter.shootRPS(ShooterConstants.SHOOTING_RPS);
@@ -96,6 +101,9 @@ public class IndexCommand extends Command {
       }
     } else {
       RobotState.getInstance().ShooterReady = false;
+    }
+    if(SmartDashboard.getBoolean("feedMotor", false)) {
+      indexer = true;
     }
     if (indexer) {
       m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);

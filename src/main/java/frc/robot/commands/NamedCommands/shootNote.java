@@ -6,6 +6,7 @@ package frc.robot.commands.NamedCommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 
 public class shootNote extends Command {
@@ -25,7 +26,7 @@ public class shootNote extends Command {
   @Override
   public void initialize() {
     timer.start();
-    indexer.on();
+    indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
