@@ -191,7 +191,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -243,7 +243,7 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getL2Button));
 
-    new Trigger(driverController::getR1Button).onTrue(new SequentialCommandGroup(
+    new Trigger(driverController::getSquareButton).onTrue(new SequentialCommandGroup(
       new CollectNote(driveTrain, limelight),
       new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
       ));
@@ -286,7 +286,7 @@ public class RobotContainer {
  *    R1: automatically pick up note (press)
  *    Circle: lineup with the amp +shoot at amp speed (hold)
  *    D-Pad down: move shooter up manually (hold)
- *    D-pad right: aim shooter at amp (hold)
+ *    R1: aim shooter at amp (hold)
  *    D-pad left: collect note from human player
  *    Triangle: move climber up (hold)
  *    Cross: auto-climb down (hold)

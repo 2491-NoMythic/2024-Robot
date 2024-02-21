@@ -12,11 +12,13 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 public class AimShooter extends Command {
 	AngleShooterSubsystem angleShooterSubsystem;
 	DoubleSupplier POVSupplier;
+	BooleanSupplier humanPlayerSupplier;
 
-	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier) {
+	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier) {
 		addRequirements(angleShooterSubsystem); 
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
+		this.humanPlayerSupplier = humanPlayerSupplier;
 	}
 
 	@Override
