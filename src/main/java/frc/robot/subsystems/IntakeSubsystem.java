@@ -49,7 +49,8 @@ public class IntakeSubsystem extends SubsystemBase {
       brush3.setIdleMode(IdleMode.kCoast);
     }
     intake2.follow(intake1);
-    intake2.setInverted(true);
+    intake2.setInverted(false);
+    intake1.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
     intake1.setSmartCurrentLimit(25, 40, 1000);
