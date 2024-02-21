@@ -46,7 +46,7 @@ public class Climber extends SubsystemBase {
     climbMotorR.setInverted(true);
     climbMotorL.setInverted(true);
     hallEffectL = climbMotorL.getForwardLimitSwitch(Type.kNormallyOpen);
-    hallEffectR = climbMotorL.getForwardLimitSwitch(Type.kNormallyOpen);
+    hallEffectR = climbMotorR.getForwardLimitSwitch(Type.kNormallyOpen);
     climbEncoderR = climbMotorR.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
     climbEncoderL = climbMotorL.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
     climbMotorL.setIdleMode(IdleMode.kBrake);
@@ -58,25 +58,25 @@ public class Climber extends SubsystemBase {
   }
  public void climberGo(double speed){
     runSpeed = speed;
-  if (speed>0) {
-    if(!hallEffectL.isPressed()) {
-      climbMotorL.set(speed);
-    } 
-    if(!hallEffectR.isPressed()) {
-      climbMotorR.set(speed);
-    }
-  } else {
-    if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
-      climbMotorL.set(speed);
-    } else {
-        climbMotorL.stopMotor();
-      }
-    if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
-      climbMotorR.set(speed);
-    } else {
-      climbMotorR.stopMotor();
-    }
-  }
+  // if (speed>0) {
+  //   if(!hallEffectL.isPressed()) {
+  //     climbMotorL.set(speed);
+  //   } 
+  //   if(!hallEffectR.isPressed()) {
+  //     climbMotorR.set(speed);
+  //   }
+  // } else {
+  //   if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
+  //     climbMotorL.set(speed);
+  //   } else {
+  //       climbMotorL.stopMotor();
+  //     }
+  //   if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
+  //     climbMotorR.set(speed);
+  //   } else {
+  //     climbMotorR.stopMotor();
+  //   }
+  // }
     // climbMotorL.set(speed);
     // climbMotorR.set(speed);
  }
@@ -101,6 +101,11 @@ public class Climber extends SubsystemBase {
 
  public boolean isClimberIn(){
   return (hallEffectL.isPressed() && hallEffectR.isPressed());
+}
+
+public void resetInitial(){
+  initialEncoderRotationsL = 0;
+  initialEncoderRotationsR = 0;
 }
 @Override
 public void periodic() {
