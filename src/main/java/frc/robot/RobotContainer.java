@@ -265,6 +265,9 @@ public class RobotContainer {
     if(shooterExists) {
       new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
     }
+    if(intakeExists) {
+      new Trigger(driverController::getTouchpad).onTrue(new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED))).onFalse(new InstantCommand(intake::intakeOff));
+    }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE)));
       // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS)));
@@ -291,6 +294,7 @@ public class RobotContainer {
  *    Triangle: move climber up (hold)
  *    Cross: auto-climb down (hold)
  *    Square: manually pull down with climber (hold)
+ *    Touchpad: manually turn on Intake (hold) [only works if intake code doesn't exist in IndexCommand]
  *    
  */
 //FOR TESTING PURPOSES:

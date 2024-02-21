@@ -72,7 +72,7 @@ public class IndexCommand extends Command {
       auto = false;
     }
     if (!intake.isNoteIn()) {
-      // intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+      // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
       if(runsEmpty>20) {
         if(POVSupplier.getAsDouble() == 270||POVSupplier.getAsDouble() == 225||POVSupplier.getAsDouble() == 315) {
