@@ -107,7 +107,7 @@ public final class Constants {
     /**
      * The diameter of the module's wheel in meters.
      */
-    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.093;
+    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.097;
 
     /**
      * The overall drive reduction of the module. Multiplying motor rotations by

@@ -265,7 +265,12 @@ public class RobotContainer {
     if(shooterExists) {
       new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
     }
-    SmartDashboard.putData("set offsets", new InstantCommand(driveTrain::setEncoderOffsets));
+    InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
+      public boolean runsWhenDisabled() {
+        return true;
+      };
+    };
+    SmartDashboard.putData("set offsets", setOffsets);
     SmartDashboard.putData(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
 /* bindings:
  *    L2: aim at speaker and rev up shooter to max (hold)
@@ -368,9 +373,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
     NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
 
-    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(SHOOTING_RPS), shooter));
+    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(SHOOTING_RPS), shooter));}
+    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(indexer::on, indexer));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
-    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(indexer::on, indexer));}
     if(intakeExists) {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
     }
