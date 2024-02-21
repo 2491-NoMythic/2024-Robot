@@ -258,8 +258,8 @@ public class RobotContainer {
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
+      new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
       new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
@@ -399,11 +399,13 @@ public class RobotContainer {
   public void teleopInit() {
     driveTrain.forceUpdateOdometryWithVision();
     if(climberExists) {
-      new SequentialCommandGroup(
+      SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
         new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),
         new WaitCommand(2),
-        new InstantCommand(()->climber.climberStop(), climber)
+        new InstantCommand(()->climber.climberStop(), climber),
+        new InstantCommand(climber::resetInitial)
         );
+      resetClimbers.schedule();
       }
       if(angleShooterExists) {
         angleShooterSubsystem.pitchShooter(0);
