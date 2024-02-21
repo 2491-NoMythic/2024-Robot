@@ -68,7 +68,7 @@ public class IndexCommand extends Command {
       auto = false;
     }
     if (!intake.isNoteIn()) {
-      intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+      // intake.intakeYes(IntakeConstants.INTAKE_SPEED);
       m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
       if(!auto) {
         shooter.turnOff();
