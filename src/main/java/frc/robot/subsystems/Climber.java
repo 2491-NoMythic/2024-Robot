@@ -35,8 +35,12 @@ public class Climber extends SubsystemBase {
   double initialEncoderRotationsR;
   SparkLimitSwitch hallEffectR;
   SparkLimitSwitch hallEffectL;
-  /** Creates a new Climber. */
+  Boolean leftClimberOn;
+  Boolean rightClimberOn;
+  double runSpeed;
+    /** Creates a new Climber. */
   public Climber() {
+    runSpeed = 0;
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
     climbMotorL = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_LEFT, MotorType.kBrushless);
     climbMotorR.setInverted(true);
@@ -53,6 +57,7 @@ public class Climber extends SubsystemBase {
     climbMotorR.burnFlash();
   }
  public void climberGo(double speed){
+    runSpeed = speed;
   if (speed>0) {
     if(!hallEffectL.isPressed()) {
       climbMotorL.set(speed);
@@ -62,9 +67,15 @@ public class Climber extends SubsystemBase {
     }
   } else {
     if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
-      climbMotorL.set(speed);}
+      climbMotorL.set(speed);
+    } else {
+        climbMotorL.stopMotor();
+      }
     if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
-      climbMotorR.set(speed);}
+      climbMotorR.set(speed);
+    } else {
+      climbMotorR.stopMotor();
+    }
   }
     // climbMotorL.set(speed);
     // climbMotorR.set(speed);
@@ -95,7 +106,28 @@ public class Climber extends SubsystemBase {
 public void periodic() {
   currentEncoderRotationsL = Math.abs(Math.abs(climbEncoderL.getPosition()) - initialEncoderRotationsL);
   currentEncoderRotationsR = Math.abs(Math.abs(climbEncoderR.getPosition()) - initialEncoderRotationsR);
+  SmartDashboard.putNumber("LEFT rotations since start", currentEncoderRotationsL);
+  SmartDashboard.putNumber("RIGHT rotations since start", currentEncoderRotationsR);
   SmartDashboard.putBoolean("left hall effect value", hallEffectL.isPressed());
   SmartDashboard.putBoolean("right hall effect value", hallEffectR.isPressed());
+  double rSpeed = 0;
+  double lSpeed = 0;
+   if (runSpeed>0) {
+    if(!hallEffectL.isPressed()) {
+      lSpeed = runSpeed;
+    } 
+    if(!hallEffectR.isPressed()) {
+      rSpeed = runSpeed;
+    }
+  } else {
+    if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
+      lSpeed = runSpeed;
+    }
+    if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
+      rSpeed = runSpeed;
+    } 
+  }
+  climbMotorL.set(lSpeed);
+  climbMotorR.set(rSpeed);
 }
 }
