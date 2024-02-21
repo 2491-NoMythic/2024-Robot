@@ -7,6 +7,7 @@ package frc.robot.commands;
 import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -30,6 +31,7 @@ public class IndexCommand extends Command {
   Boolean revUp;
   BooleanSupplier shootIfReadySupplier;
   Boolean shootIfReady;
+  DoubleSupplier POVSupplier;
 
   IndexerSubsystem m_Indexer;
   ShooterSubsystem shooter;
@@ -39,7 +41,7 @@ public class IndexCommand extends Command {
   boolean auto;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;
     this.revUpSupplier = revUpSupplier;
@@ -47,6 +49,7 @@ public class IndexCommand extends Command {
     this.intake = intake;
     this.drivetrain = drivetrain;
     this.angleShooterSubsytem = angleShooterSubsystem;
+    this.POVSupplier = POVSupplier;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -69,8 +72,13 @@ public class IndexCommand extends Command {
     }
     if (!intake.isNoteIn()) {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED);
-      m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-      if(!auto) {
+      if(POVSupplier.getAsDouble() == 270||POVSupplier.getAsDouble() == 225||POVSupplier.getAsDouble() == 315) {
+        m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
+        shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS);
+        intake.intakeOff();
+      }
+      else {
+        m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
         shooter.turnOff();
       }
     } else {

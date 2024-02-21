@@ -291,7 +291,10 @@ public static final class ShooterConstants{
   public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
   public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
-  public static final double MAXIMUM_SHOOTER_ANGLE = 73;//still has to be found
+  public static final double MAXIMUM_SHOOTER_ANGLE = 98;//still has to be found
+  public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
+  public static final double HUMAN_PLAYER_RPS = -3;//still has to be found
+
 
  
 
@@ -325,6 +328,7 @@ public static final class ClimberConstants{
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
   public static final double INDEXER_INTAKE_SPEED = -0.5;//should be 0.5 TODO change to positive
+  public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
 }
 public static final class IntakeConstants{
