@@ -24,6 +24,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Blue3PickupUnderStageSource"
@@ -39,6 +45,12 @@
           "type": "named",
           "data": {
             "name": "shootNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
           }
         },
         {
@@ -60,6 +72,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Blue5PickupSourceSide"
@@ -75,6 +93,12 @@
           "type": "named",
           "data": {
             "name": "shootNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
           }
         }
       ]
