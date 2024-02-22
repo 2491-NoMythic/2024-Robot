@@ -99,7 +99,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		}
 		double deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		double speakerDist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2));
-		// SmartDashboard.putNumber("dist to speakre", speakerDist);
+		// SmartDashboard.putNumber("dist to speaker", speakerDist);
 		Rotation2d unadjustedAngle = Rotation2d.fromRadians(Math.asin(deltaX/speakerDist));
 		double totalDistToSpeaker = Math.sqrt(Math.pow(Field.SPEAKER_Z-ShooterConstants.SHOOTER_HEIGHT, 2) + Math.pow(speakerDist, 2));
 		double shootingTime = totalDistToSpeaker / shootingSpeed; // calculates how long the note will take to reach the target
