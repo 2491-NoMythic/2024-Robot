@@ -192,7 +192,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button, driverController::getR1Button, driverController::getR2Button, driverController::getL1Button, driverController::getL2Button);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button, driverController::getR1Button, driverController::getR2Button, driverController::getL2Button);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -206,7 +206,7 @@ public class RobotContainer {
   }
   private void indexCommandInst() {
     defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button,
-                                                 driverController::getR1Button, driverController::getR2Button, driverController::getL1Button, driverController::getL2Button);
+                                                 driverController::getR1Button, driverController::getR2Button, driverController::getL2Button);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -243,7 +243,8 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      driverController::getL2Button));
+      driverController::getL2Button,
+      driverController::getR1Button));
     new Trigger(driverController::getOptionsButton).whileTrue(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
     new Trigger(driverController::getSquareButton).onTrue(new SequentialCommandGroup(
       new CollectNote(driveTrain, limelight),
@@ -262,7 +263,7 @@ public class RobotContainer {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
       new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
-      new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
+      // new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
       new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
@@ -288,14 +289,13 @@ public class RobotContainer {
  *    L2: aim at speaker and rev up shooter to max (hold)
  *    L1: manually feed shooter (hold)
  *    R2: shoot if everything is lined up (hold)
- *    R1: automatically pick up note (press)
  *    Circle: lineup with the amp +shoot at amp speed (hold)
  *    D-Pad down: move shooter up manually (hold)
  *    R1: aim shooter at amp (hold)
  *    Options button: collect note from human player
  *    Triangle: move climber up (hold)
- *    Cross: auto-climb down (hold)
- *    Square: manually pull down with climber (hold)
+ *    Square: auto-pick up note
+ *    Cross: manually pull down with climber (hold)
  *    Touchpad: manually turn on Intake (hold) [only works if intake code doesn't exist in IndexCommand]
  *    L1,L2,R1,R2 held: aim shooter at speaker and set shooter to shooter speed
  *    

@@ -43,11 +43,10 @@ public class IndexCommand extends Command {
   BooleanSupplier SubwooferSupplier1;
   BooleanSupplier SubwooferSupplier2;
   BooleanSupplier SubwooferSupplier3;
-  BooleanSupplier SubwooferSupplier4;
 
   /** Creates a new IndexCommand. */
   public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier,
-                      BooleanSupplier SubwooferSupplier1, BooleanSupplier SubwooferSupplier2, BooleanSupplier SubwooferSupplier3, BooleanSupplier SubwooferSupplier4) {
+                      BooleanSupplier SubwooferSupplier1, BooleanSupplier SubwooferSupplier2, BooleanSupplier SubwooferSupplier3) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;
     this.revUpSupplier = revUpSupplier;
@@ -59,7 +58,6 @@ public class IndexCommand extends Command {
     this.SubwooferSupplier1 = SubwooferSupplier1;
     this.SubwooferSupplier2 = SubwooferSupplier2;
     this.SubwooferSupplier3 = SubwooferSupplier3;
-    this.SubwooferSupplier4 = SubwooferSupplier4;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -97,7 +95,7 @@ public class IndexCommand extends Command {
     } else {
       runsEmpty = 0;
       intake.intakeOff();
-      if(SubwooferSupplier1.getAsBoolean()&&SubwooferSupplier2.getAsBoolean()&&SubwooferSupplier3.getAsBoolean()&&SubwooferSupplier4.getAsBoolean()) {
+      if(SubwooferSupplier1.getAsBoolean()&&SubwooferSupplier2.getAsBoolean()&&SubwooferSupplier3.getAsBoolean()) {
         shooter.shootRPS(ShooterConstants.SUBWOOFER_RPS);
       } else {
         if(revUpSupplier.getAsBoolean()) {
