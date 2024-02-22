@@ -24,15 +24,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "CloseLeftPickup"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "CloseMiddlePickupFromLeft"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
           }
         },
         {

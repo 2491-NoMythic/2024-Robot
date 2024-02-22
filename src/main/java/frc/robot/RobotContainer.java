@@ -31,7 +31,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.CollectNote;
 import frc.robot.commands.Drive;
 import frc.robot.commands.DriveTimeCommand;
-
+import frc.robot.commands.ConditionalIndexer;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.commands.IndexCommand;
@@ -397,6 +397,9 @@ public class RobotContainer {
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
+    }
+    if (indexerExists&&intakeExists) {
+      NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
