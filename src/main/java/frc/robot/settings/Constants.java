@@ -426,7 +426,9 @@ public final class Vision{
   public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-aprill";
   public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-aprilr";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
-
+  
+  public static final double APRILTAG_CLOSENESS = 0.5;
+  public static final double MAX_TAG_DISTANCE = 4;
 
   public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
 

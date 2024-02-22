@@ -24,6 +24,7 @@ public class LimelightValues {
         double[] ta = new double[5];
         Pose2d botPoseRed;
         Pose2d botPoseBlue;
+        double tagDistance;
 
         private final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
 
@@ -39,6 +40,10 @@ public class LimelightValues {
                 }
                 this.botPoseRed = llresults.getBotPose2d_wpiRed();
                 this.botPoseBlue = llresults.getBotPose2d_wpiBlue();
+                this.tagDistance = llresults.targets_Fiducials[0].getTargetPose_RobotSpace2D().getTranslation().getNorm();
+                SmartDashboard.putNumber("VISION dist to apriltag [0]", tagDistance)
+                SmartDashboard.putNumber("VISION dist to apriltag [1]", llresults.targets_Fiducials[1].getTargetPose_RobotSpace2D().getTranslation().getNorm();)
+                SmartDashboard.putNumber("VISION dist to apriltag [2]", llresults.targets_Fiducials[2].getTargetPose_RobotSpace2D().getTranslation().getNorm();)
             }
         }
         public double gettx(int index){return tx[index];}
@@ -56,9 +61,10 @@ public class LimelightValues {
             return botPoseBlue;
         }
         public boolean isPoseTrustworthy(Pose2d robotPose){
-            Pose2d poseEstimate = this.getbotPose();
+            Pose2d poseEstimate = this.botPoseBlue;
             if ((poseEstimate.getX()<fieldCorner.getX() && poseEstimate.getY()<fieldCorner.getY()) //Don't trust estimations that are outside the field perimeter.
-                && robotPose.getTranslation().getDistance(poseEstimate.getTranslation()) < 0.5) //Dont trust pose estimations that are more than half a meter from current pose.
+                && robotPose.getTranslation().getDistance(poseEstimate.getTranslation()) < Vision.APRILTAG_CLOSENESS//Dont trust pose estimations that are more than half a meter from current pose.
+                && tagDistance<=Vision.MAX_TAG_DISTANCE) //Dont trust pose estimations if the april tag is more than X meters away
                 return true;
             else return false;
         }
