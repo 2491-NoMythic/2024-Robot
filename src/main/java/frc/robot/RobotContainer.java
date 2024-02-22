@@ -242,7 +242,7 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getL2Button));
-
+    new Trigger(driverController::getOptionsButton).whileTrue(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
     new Trigger(driverController::getSquareButton).onTrue(new SequentialCommandGroup(
       new CollectNote(driveTrain, limelight),
       new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
