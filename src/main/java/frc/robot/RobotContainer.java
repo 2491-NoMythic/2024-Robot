@@ -75,6 +75,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.commands.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -83,6 +84,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.IntakeCommand;
@@ -126,6 +128,8 @@ public class RobotContainer {
   private SendableChooser<String> climbSpotChooser;
   private SendableChooser<Command> autoChooser;
   private DoubleSupplier angleSup;
+  private PowerDistribution PDP;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -150,6 +154,7 @@ public class RobotContainer {
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
+    PDP = new PowerDistribution(0, ModuleType.kRev);
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -417,7 +422,15 @@ public class RobotContainer {
 		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);
 		SmartDashboard.putBoolean("shooter ready", RobotState.getInstance().ShooterReady);
   }
-
+ 
+  public void logPower(){
+    for(int i = 0; i < 16; i++) { 
+      SmartDashboard.putNumber("PDP Current " + i, PDP.getCurrent(i));
+    }
+  }
+  public void robotPeriodic() {
+    logPower();
+  }
   public void disabledPeriodic() {
   
   }
