@@ -31,8 +31,8 @@ public class IndexCommand extends Command {
   Boolean revUp;
   BooleanSupplier shootIfReadySupplier;
   Boolean shootIfReady;
-  DoubleSupplier POVSupplier;
-
+  // DoubleSupplier POVSupplier;
+  BooleanSupplier humanPlayerSupplier;
   IndexerSubsystem m_Indexer;
   ShooterSubsystem shooter;
   IntakeSubsystem intake;
@@ -42,7 +42,7 @@ public class IndexCommand extends Command {
   double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;
     this.revUpSupplier = revUpSupplier;
@@ -50,7 +50,7 @@ public class IndexCommand extends Command {
     this.intake = intake;
     this.drivetrain = drivetrain;
     this.angleShooterSubsytem = angleShooterSubsystem;
-    this.POVSupplier = POVSupplier;
+    this.humanPlayerSupplier = humanPlaySupplier;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -75,7 +75,7 @@ public class IndexCommand extends Command {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
       if(runsEmpty>20) {
-        if(POVSupplier.getAsDouble() == 270||POVSupplier.getAsDouble() == 225||POVSupplier.getAsDouble() == 315) {
+        if(humanPlayerSupplier.getAsBoolean()) {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
           shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS);
           intake.intakeOff();

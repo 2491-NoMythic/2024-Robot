@@ -204,7 +204,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getPOV);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -290,7 +290,7 @@ public class RobotContainer {
  *    Circle: lineup with the amp +shoot at amp speed (hold)
  *    D-Pad down: move shooter up manually (hold)
  *    R1: aim shooter at amp (hold)
- *    D-pad left: collect note from human player
+ *    Options button: collect note from human player
  *    Triangle: move climber up (hold)
  *    Cross: auto-climb down (hold)
  *    Square: manually pull down with climber (hold)
