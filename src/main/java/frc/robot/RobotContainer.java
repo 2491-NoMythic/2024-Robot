@@ -17,6 +17,7 @@ import org.littletonrobotics.urcl.URCL;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -144,6 +145,8 @@ public class RobotContainer {
 
     DataLogManager.start();
     URCL.start();
+    SignalLogger.setPath("/media/sda1/ctre-logs/");
+    SignalLogger.start();
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
