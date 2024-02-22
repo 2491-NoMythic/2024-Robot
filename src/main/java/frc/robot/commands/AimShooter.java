@@ -24,7 +24,6 @@ public class AimShooter extends Command {
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;
-		this.humanPlayerSupplier = humanPlaySupplier;
 		this.SubwooferSupplier1 = SubwooferSupplier1;
 		this.SubwooferSupplier2 = SubwooferSupplier2;
 		this.SubwooferSupplier3 = SubwooferSupplier3;
@@ -44,8 +43,8 @@ public class AimShooter extends Command {
 			if(humanPlayerSupplier.getAsBoolean()) {
 				angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 			} else {
-				if(SubwooferSupplier1&&SubwooferSupplier2&&SubwooferSupplier3&&SubwooferSupplier4) {
-					angleShooterSubsystem.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE)
+				if(SubwooferSupplier1.getAsBoolean()&&SubwooferSupplier2.getAsBoolean()&&SubwooferSupplier3.getAsBoolean()&&SubwooferSupplier4.getAsBoolean()) {
+					angleShooterSubsystem.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
 				} else {
 					angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 				}

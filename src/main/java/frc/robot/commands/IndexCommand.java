@@ -97,37 +97,37 @@ public class IndexCommand extends Command {
     } else {
       runsEmpty = 0;
       intake.intakeOff();
-      if(SubwooferSupplier1&&SubwooferSupplier2&&SubwooferSupplier3&&SubwooferSupplier4) {
+      if(SubwooferSupplier1.getAsBoolean()&&SubwooferSupplier2.getAsBoolean()&&SubwooferSupplier3.getAsBoolean()&&SubwooferSupplier4.getAsBoolean()) {
         shooter.shootRPS(ShooterConstants.SUBWOOFER_RPS);
       } else {
-      if(revUpSupplier.getAsBoolean()) {
-        if(angleShooterSubsystem.shortSpeakerDist()) {
-          shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS)
+        if(revUpSupplier.getAsBoolean()) {
+          if(angleShooterSubsytem.shortSpeakerDist()) {
+            shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
+          } else {
+            shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
+          }
         } else {
-          shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
+          shooter.shootRPS(SmartDashboard.getNumber("amp RPS", ShooterConstants.AMP_RPS)/*ShooterConstants.AMP_RPS*/);
         }
-      }
-      } else {
-        shooter.shootRPS(SmartDashboard.getNumber("amp RPS", ShooterConstants.AMP_RPS)/*ShooterConstants.AMP_RPS*/);
-      }
-    boolean indexer = false;
-    if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot()) {
-      RobotState.getInstance().ShooterReady = true;
-      if (shootIfReadySupplier.getAsBoolean()) {
-        indexer = true;
-      }
-    } else {
-      RobotState.getInstance().ShooterReady = false;
+        boolean indexer = false;
+        if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot()) {
+          RobotState.getInstance().ShooterReady = true;
+          if (shootIfReadySupplier.getAsBoolean()) {
+            indexer = true;
+          }
+        } else {
+          RobotState.getInstance().ShooterReady = false;
+        }
+        if(SmartDashboard.getBoolean("feedMotor", false)) {
+          indexer = true;
+        }
+        if (indexer) {
+          m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+        } else {
+          m_Indexer.off();
+        }
+     }
     }
-    if(SmartDashboard.getBoolean("feedMotor", false)) {
-      indexer = true;
-    }
-    if (indexer) {
-      m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-    } else {
-      m_Indexer.off();
-    }
-  }
   }
 
   // Called once the command ends or is interrupted.

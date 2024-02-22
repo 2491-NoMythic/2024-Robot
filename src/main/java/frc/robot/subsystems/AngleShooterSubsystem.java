@@ -147,7 +147,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	}
 
 	public boolean shortSpeakerDist() {
-		speakerDistGlobal<=Field.SHORT_RANGE_SHOOTING_DIST;
+		return speakerDistGlobal<=Field.SHORT_RANGE_SHOOTING_DIST;
 	}
 
 	private double calculateSpeakerAngleDifference() {

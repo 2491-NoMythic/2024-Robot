@@ -274,7 +274,7 @@ public static final class ShooterConstants{
   public static final double LONG_SHOOTING_RPS = 90;
   public static final double SHORT_SHOOTING_RPS = 75;
   public static final double AMP_RPS = 9.5;
-  public static final double SUBWOOFER_RPS;
+  public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
   public static final double ANGLE_SHOOTER_POWER_KP = 0.026;

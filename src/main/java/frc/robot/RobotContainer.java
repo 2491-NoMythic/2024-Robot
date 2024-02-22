@@ -192,7 +192,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button, driverController::getR1Button, driverController::getR2Button, driverController::getL1Button, driverController::getL2Button);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
