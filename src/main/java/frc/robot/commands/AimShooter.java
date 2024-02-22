@@ -13,12 +13,22 @@ public class AimShooter extends Command {
 	AngleShooterSubsystem angleShooterSubsystem;
 	DoubleSupplier POVSupplier;
 	BooleanSupplier humanPlayerSupplier;
+	BooleanSupplier SubwooferSupplier1;
+	BooleanSupplier SubwooferSupplier2;
+	BooleanSupplier SubwooferSupplier3;
+	BooleanSupplier SubwooferSupplier4;
 
-	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier) {
+	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier SubwooferSupplier2, BooleanSupplier SubwooferSupplier3, BooleanSupplier SubwooferSupplier4) {
 		addRequirements(angleShooterSubsystem); 
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;
+		this.humanPlayerSupplier = humanPlaySupplier;
+		this.SubwooferSupplier1 = SubwooferSupplier1;
+		this.SubwooferSupplier2 = SubwooferSupplier2;
+		this.SubwooferSupplier3 = SubwooferSupplier3;
+		this.SubwooferSupplier4 = SubwooferSupplier4;
 	}
 
 	@Override
@@ -34,7 +44,11 @@ public class AimShooter extends Command {
 			if(humanPlayerSupplier.getAsBoolean()) {
 				angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 			} else {
-				angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
+				if(SubwooferSupplier1&&SubwooferSupplier2&&SubwooferSupplier3&&SubwooferSupplier4) {
+					angleShooterSubsystem.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE)
+				} else {
+					angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
+				}
 			}
 		}
 	}

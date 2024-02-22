@@ -6,7 +6,8 @@ package frc.robot;
 
 import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.PS4Operator.*;
-import static frc.robot.settings.Constants.ShooterConstants.SHOOTING_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.SHORT_SHOOTING_RPS;
 
 import java.nio.file.Path;
 import java.time.Instant;
@@ -204,7 +205,8 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button,
+                                                 driverController::getR1Button, driverController::getR2Button, driverController::getL1Button, driverController::getL2Button);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -295,6 +297,7 @@ public class RobotContainer {
  *    Cross: auto-climb down (hold)
  *    Square: manually pull down with climber (hold)
  *    Touchpad: manually turn on Intake (hold) [only works if intake code doesn't exist in IndexCommand]
+ *    L1,L2,R1,R2 held: aim shooter at speaker and set shooter to shooter speed
  *    
  */
 //FOR TESTING PURPOSES:
@@ -303,7 +306,7 @@ public class RobotContainer {
       SmartDashboard.putData("intake off", new InstantCommand(intake::intakeOff, intake));
     }
     if(shooterExists) {
-      SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootRPS(ShooterConstants.SHOOTING_RPS), shooter));
+      SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS), shooter));
       SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
       SmartDashboard.putData("shooter off", new InstantCommand(shooter::turnOff, shooter));
     }
@@ -385,7 +388,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
     NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
 
-    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(SHOOTING_RPS), shooter));}
+    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(LONG_SHOOTING_RPS), shooter));}
     if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
     if(intakeExists) {

@@ -40,9 +40,14 @@ public class IndexCommand extends Command {
   AngleShooterSubsystem angleShooterSubsytem;
   boolean auto;
   double runsEmpty = 0;
+  BooleanSupplier SubwooferSupplier1;
+  BooleanSupplier SubwooferSupplier2;
+  BooleanSupplier SubwooferSupplier3;
+  BooleanSupplier SubwooferSupplier4;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier,
+                      BooleanSupplier SubwooferSupplier1, BooleanSupplier SubwooferSupplier2, BooleanSupplier SubwooferSupplier3, BooleanSupplier SubwooferSupplier4) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;
     this.revUpSupplier = revUpSupplier;
@@ -51,6 +56,10 @@ public class IndexCommand extends Command {
     this.drivetrain = drivetrain;
     this.angleShooterSubsytem = angleShooterSubsystem;
     this.humanPlayerSupplier = humanPlaySupplier;
+    this.SubwooferSupplier1 = SubwooferSupplier1;
+    this.SubwooferSupplier2 = SubwooferSupplier2;
+    this.SubwooferSupplier3 = SubwooferSupplier3;
+    this.SubwooferSupplier4 = SubwooferSupplier4;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -88,8 +97,16 @@ public class IndexCommand extends Command {
     } else {
       runsEmpty = 0;
       intake.intakeOff();
+      if(SubwooferSupplier1&&SubwooferSupplier2&&SubwooferSupplier3&&SubwooferSupplier4) {
+        shooter.shootRPS(ShooterConstants.SUBWOOFER_RPS);
+      } else {
       if(revUpSupplier.getAsBoolean()) {
-        shooter.shootRPS(ShooterConstants.SHOOTING_RPS);
+        if(angleShooterSubsystem.shortSpeakerDist()) {
+          shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS)
+        } else {
+          shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
+        }
+      }
       } else {
         shooter.shootRPS(SmartDashboard.getNumber("amp RPS", ShooterConstants.AMP_RPS)/*ShooterConstants.AMP_RPS*/);
       }
