@@ -1,6 +1,6 @@
 {
   "robotWidth": 0.81,
-  "robotLength": 0.813,
+  "robotLength": 0.81,
   "holonomicMode": true,
   "pathFolders": [
     "Collect Notes",
