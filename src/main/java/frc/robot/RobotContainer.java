@@ -13,8 +13,11 @@ import java.time.Instant;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.urcl.URCL;
+
 import static frc.robot.settings.Constants.DriveConstants.*;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -77,9 +80,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
-import frc.robot.commands.ManualShoot;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.settings.IntakeDirection;
@@ -138,7 +141,11 @@ public class RobotContainer {
     Preferences.initBoolean("Use Limelight", false);
     Preferences.initBoolean("Use 2 Limelights", false);
     Preferences.initDouble("wait # of seconds", 0);
-    
+
+    // DataLogManager.start();
+    // URCL.start();
+    // SignalLogger.setPath("/media/sda1/ctre-logs/");
+    // SignalLogger.start();
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
@@ -204,7 +211,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button, driverController::getPOV);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -242,7 +249,7 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getL2Button));
-    new Trigger(driverController::getOptionsButton).whileTrue(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
+    new Trigger(driverController::getOptionsButton).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
     new Trigger(driverController::getSquareButton).onTrue(new SequentialCommandGroup(
       new CollectNote(driveTrain, limelight),
       new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
@@ -254,7 +261,7 @@ public class RobotContainer {
       SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.MAXIMUM_SHOOTER_ANGLE));
     }
     if(indexerExists) {
-      new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer));
+      new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer, driverController::getPOV));
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
