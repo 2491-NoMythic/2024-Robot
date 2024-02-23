@@ -132,6 +132,7 @@ public class IndexCommand extends Command {
          }
     }
   }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
