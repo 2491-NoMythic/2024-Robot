@@ -267,6 +267,8 @@ public static final class ShooterConstants{
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
   public static final double ALLOWED_SPEED_ERROR = 4;
 
+  public static final double CURRENT_LIMIT = 200; //amps the motor is limited to
+
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
@@ -324,6 +326,7 @@ public static final class ClimberConstants{
 }
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
+  public static final int CURRENT_LIMIT = 200;
   public static final double INDEXER_INTAKE_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
 }

@@ -4,6 +4,7 @@
  
  package frc.robot.subsystems;
  import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -41,6 +42,7 @@ import static frc.robot.settings.Constants.*;
 	 double currentHeading;
 	 double m_DesiredShooterAngle;
  
+  CurrentLimitsConfigs currentLimitConfigs;
    Slot0Configs PIDconfigs = new Slot0Configs();
       double kP = Constants.ShooterConstants.kP;         
    double kI = Constants.ShooterConstants.kI;         
@@ -75,6 +77,12 @@ import static frc.robot.settings.Constants.*;
     configuratorR = shooterR.getConfigurator();
     configuratorL = shooterL.getConfigurator();
     
+    currentLimitConfigs = new CurrentLimitsConfigs();
+    currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.CURRENT_LIMIT;
+    currentLimitConfigs.SupplyCurrentLimitEnable = true;
+    configuratorL.apply(currentLimitConfigs);
+    configuratorR.apply(currentLimitConfigs);
+
     PIDconfigs.kP = kP;
     PIDconfigs.kI = kI;
     PIDconfigs.kD = kD;

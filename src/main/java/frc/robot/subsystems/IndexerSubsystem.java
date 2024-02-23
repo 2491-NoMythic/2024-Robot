@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAnalogSensor;
@@ -10,14 +12,22 @@ import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.IndexerConstants;
+import frc.robot.settings.Constants.ShooterConstants;
 
 public class IndexerSubsystem extends SubsystemBase {
     TalonFX m_IndexerMotor;
     SparkAnalogSensor m_DistanceSensor;
+    CurrentLimitsConfigs currentLimitsConfigs;
+    TalonFXConfigurator configurator;
 
     public IndexerSubsystem() {
         m_IndexerMotor = new TalonFX(IndexerConstants.INDEXER_MOTOR);
         m_IndexerMotor.setInverted(false);
+
+        currentLimitsConfigs = new CurrentLimitsConfigs();
+        currentLimitsConfigs.SupplyCurrentLimit = IndexerConstants.CURRENT_LIMIT;
+        currentLimitsConfigs.SupplyCurrentLimitEnable = true;
+        configurator.apply(currentLimitsConfigs);
     }
 
     public void on() {
