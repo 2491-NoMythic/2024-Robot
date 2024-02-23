@@ -209,6 +209,8 @@ public final class Constants {
     public static final double k_DRIVE_FF_V = 0;
     public static final double DRIVE_DEADBAND_MPS = 0.01;
     public static final double DRIVE_MOTOR_RAMP = 0.1;
+    public static final double DRIVE_CURRENT_LIMIT = 200;
+
     // Steer Motor
     /**
      * The maximum velocity of the steer motor. <p> 
@@ -266,6 +268,8 @@ public static final class ShooterConstants{
   public static final double RUNNING_VELOCITY_RPS = 2491;
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
   public static final double ALLOWED_SPEED_ERROR = 4;
+
+  public static final double CURRENT_LIMIT = 200; //amps the motor is limited to
 
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
@@ -328,6 +332,7 @@ public static final class ClimberConstants{
 }
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
+  public static final int CURRENT_LIMIT = 50;
   public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
@@ -380,6 +385,8 @@ public static final class CTREConfigs {
       driveMotorConfig.Voltage.PeakForwardVoltage = 12;
       driveMotorConfig.Voltage.PeakReverseVoltage = -12;
       driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      driveMotorConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.DRIVE_CURRENT_LIMIT;
+      driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
       //  Steer encoder.
       steerEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;

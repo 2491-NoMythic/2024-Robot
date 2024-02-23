@@ -4,10 +4,12 @@
  
  package frc.robot.subsystems;
  import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -41,6 +43,7 @@ import static frc.robot.settings.Constants.*;
 	 double currentHeading;
 	 double m_DesiredShooterAngle;
  
+  CurrentLimitsConfigs currentLimitConfigs;
    Slot0Configs PIDconfigs = new Slot0Configs();
       double kP = Constants.ShooterConstants.kP;         
    double kI = Constants.ShooterConstants.kI;         
@@ -75,6 +78,12 @@ import static frc.robot.settings.Constants.*;
     configuratorR = shooterR.getConfigurator();
     configuratorL = shooterL.getConfigurator();
     
+    currentLimitConfigs = new CurrentLimitsConfigs();
+    currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.CURRENT_LIMIT;
+    currentLimitConfigs.SupplyCurrentLimitEnable = true;
+    configuratorL.apply(currentLimitConfigs);
+    configuratorR.apply(currentLimitConfigs);
+
     PIDconfigs.kP = kP;
     PIDconfigs.kI = kI;
     PIDconfigs.kD = kD;
@@ -124,8 +133,8 @@ import static frc.robot.settings.Constants.*;
       return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
     }
   public void turnOff(){
-    shooterR.set(0);
-    shooterL.set(0);
+    shooterR.setControl(new DutyCycleOut(0));
+    shooterL.setControl(new DutyCycleOut(0));
   }
   // public double getSpeedRPS() {
   //   return shooterR.getVelocity().asSupplier().get();
@@ -133,6 +142,8 @@ import static frc.robot.settings.Constants.*;
 @Override
   public void periodic() {
     SmartDashboard.putNumber("TESTING shooter speed error", getError());
+    SmartDashboard.putNumber("shooter current right", shooterR.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("shooter current left", shooterL.getSupplyCurrent().getValueAsDouble());
     if(getError()<ShooterConstants.ALLOWED_SPEED_ERROR) {
       runsValid++;
     } else {
