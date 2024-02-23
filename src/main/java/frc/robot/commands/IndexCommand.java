@@ -45,16 +45,15 @@ public class IndexCommand extends Command {
   BooleanSupplier SubwooferSupplier3;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier,
-                      BooleanSupplier SubwooferSupplier1, BooleanSupplier SubwooferSupplier2, BooleanSupplier SubwooferSupplier3) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier) {
     this.m_Indexer = m_IndexerSubsystem;
-    this.shootIfReadySupplier = shootIfReadySupplier;
-    this.revUpSupplier = revUpSupplier;
+    this.shootIfReadySupplier = shootIfReadySupplier;//R2
+    this.revUpSupplier = revUpSupplier;//L2
     this.shooter = shooter;
     this.intake = intake;
     this.drivetrain = drivetrain;
     this.angleShooterSubsytem = angleShooterSubsystem;
-    this.humanPlayerSupplier = humanPlaySupplier;
+    this.humanPlayerSupplier = humanPlaySupplier;//R1
     this.SubwooferSupplier1 = SubwooferSupplier1;
     this.SubwooferSupplier2 = SubwooferSupplier2;
     this.SubwooferSupplier3 = SubwooferSupplier3;
@@ -95,7 +94,7 @@ public class IndexCommand extends Command {
     } else {
       runsEmpty = 0;
       intake.intakeOff();
-      if(SubwooferSupplier1.getAsBoolean()&&SubwooferSupplier2.getAsBoolean()&&SubwooferSupplier3.getAsBoolean()) {
+      if(shootIfReadySupplier.getAsBoolean()&&revUpSupplier.getAsBoolean()&&humanPlayerSupplier.getAsBoolean()) {
         shooter.shootRPS(ShooterConstants.SUBWOOFER_RPS);
       } else {
         if(revUpSupplier.getAsBoolean()) {
