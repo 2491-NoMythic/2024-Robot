@@ -43,7 +43,7 @@ public class LimelightValues {
                 }
                 this.botPoseRed = llresults.getBotPose2d_wpiRed();
                 this.botPoseBlue = llresults.getBotPose2d_wpiBlue();
-                this.tagDistance = llresults.targets_Fiducials[0].getTargetPose_RobotSpace2D().getTranslation().getNorm();
+                // this.tagDistance = llresults.targets_Fiducials[0].getTargetPose_RobotSpace2D().getTranslation().getNorm();
                 // SmartDashboard.putNumber("VISION dist to apriltag [0]", tagDistance);
                 // SmartDashboard.putNumber("VISION dist to apriltag [1]", llresults.targets_Fiducials[1].getTargetPose_RobotSpace2D().getTranslation().getNorm());
                 // SmartDashboard.putNumber("VISION dist to apriltag [2]", llresults.targets_Fiducials[2].getTargetPose_RobotSpace2D().getTranslation().getNorm());

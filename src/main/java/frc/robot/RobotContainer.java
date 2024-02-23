@@ -143,10 +143,10 @@ public class RobotContainer {
     Preferences.initBoolean("Use 2 Limelights", false);
     Preferences.initDouble("wait # of seconds", 0);
 
-    DataLogManager.start();
-    URCL.start();
-    SignalLogger.setPath("/media/sda1/ctre-logs/");
-    SignalLogger.start();
+    // DataLogManager.start();
+    // URCL.start();
+    // SignalLogger.setPath("/media/sda1/ctre-logs/");
+    // SignalLogger.start();
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
@@ -212,7 +212,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button, driverController::getPOV);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
