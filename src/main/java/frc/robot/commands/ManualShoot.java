@@ -6,15 +6,21 @@ package frc.robot.commands;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.IndexerSubsystem;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ManualShoot extends Command {
   private IndexerSubsystem indexer;
+  DoubleSupplier ampSupplier;
   /** Creates a new ManualShoot. */
-  public ManualShoot(IndexerSubsystem indexer) {
+  public ManualShoot(IndexerSubsystem indexer, DoubleSupplier ampSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(indexer);
     this.indexer = indexer;
+    this.ampSupplier = ampSupplier;
   }
 
   // Called when the command is initially scheduled.
@@ -24,7 +30,11 @@ public class ManualShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+    if(ampSupplier.getAsDouble() == 90 || ampSupplier.getAsDouble() == 45|| ampSupplier.getAsDouble() == 135) {
+      indexer.set(IndexerConstants.INDEXER_AMP_SPEED);
+    } else {
+      indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+    }
   }
 
   // Called once the command ends or is interrupted.

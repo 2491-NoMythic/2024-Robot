@@ -108,7 +108,7 @@ public final class Constants {
     /**
      * The diameter of the module's wheel in meters.
      */
-    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.097;
+    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.098;
 
     /**
      * The overall drive reduction of the module. Multiplying motor rotations by
@@ -209,6 +209,8 @@ public final class Constants {
     public static final double k_DRIVE_FF_V = 0;
     public static final double DRIVE_DEADBAND_MPS = 0.01;
     public static final double DRIVE_MOTOR_RAMP = 0.1;
+    public static final double DRIVE_CURRENT_LIMIT = 200;
+
     // Steer Motor
     /**
      * The maximum velocity of the steer motor. <p> 
@@ -267,13 +269,15 @@ public static final class ShooterConstants{
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
   public static final double ALLOWED_SPEED_ERROR = 4;
 
+  public static final double CURRENT_LIMIT = 200; //amps the motor is limited to
+
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
   public static final double LONG_SHOOTING_RPS = 90;
-  public static final double SHORT_SHOOTING_RPS = 75;
-  public static final double AMP_RPS = 9.5;
+  public static final double SHORT_SHOOTING_RPS = 80;
+  public static final double AMP_RPS = 7.5;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
@@ -293,7 +297,7 @@ public static final class ShooterConstants{
   public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
   public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
-  public static final double MAXIMUM_SHOOTER_ANGLE = 98;//still has to be found
+  public static final double MAXIMUM_SHOOTER_ANGLE = 104;//still has to be found
   public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
 
@@ -329,9 +333,11 @@ public static final class ClimberConstants{
 }
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
-  public static final double INDEXER_INTAKE_SPEED = -0.25;//should be 0.5 TODO change to positive
+  public static final int CURRENT_LIMIT = 50;
+  public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
+  public static final double INDEXER_AMP_SPEED = 0.4;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
@@ -380,6 +386,8 @@ public static final class CTREConfigs {
       driveMotorConfig.Voltage.PeakForwardVoltage = 12;
       driveMotorConfig.Voltage.PeakReverseVoltage = -12;
       driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      driveMotorConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.DRIVE_CURRENT_LIMIT;
+      driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
       //  Steer encoder.
       steerEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
@@ -421,7 +429,7 @@ public static final class CTREConfigs {
     public static final double MAX_SHOOTING_DISTANCE = 2491;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
-    public static final double AMPLIFIER_ANGLE = 97;
+    public static final double AMPLIFIER_ANGLE = 101;
     public static final double SUBWOOFER_ANGLE = 80;
     //angle at 60 for bounce techinque, didn't work
   }
@@ -430,7 +438,9 @@ public final class Vision{
   public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-aprill";
   public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-aprilr";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
-
+  
+  public static final double APRILTAG_CLOSENESS = 0.5;
+  public static final double MAX_TAG_DISTANCE = 3.05;
 
   public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
 

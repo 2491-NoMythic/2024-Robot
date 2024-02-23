@@ -30,6 +30,7 @@ public class IndexCommand extends Command {
   BooleanSupplier revUpSupplier;
   Boolean revUp;
   BooleanSupplier shootIfReadySupplier;
+  DoubleSupplier ampSupplier;;
   Boolean shootIfReady;
   // DoubleSupplier POVSupplier;
   BooleanSupplier humanPlayerSupplier;
@@ -45,19 +46,21 @@ public class IndexCommand extends Command {
   BooleanSupplier SubwooferSupplier3;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, DoubleSupplier ampSupplier) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
     this.shooter = shooter;
     this.intake = intake;
     this.drivetrain = drivetrain;
+    this.ampSupplier = ampSupplier;
     this.angleShooterSubsytem = angleShooterSubsystem;
     this.humanPlayerSupplier = humanPlaySupplier;//R1
     this.SubwooferSupplier1 = SubwooferSupplier1;
     this.SubwooferSupplier2 = SubwooferSupplier2;
     this.SubwooferSupplier3 = SubwooferSupplier3;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
+    SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IndexerSubsystem, shooter, intake);
@@ -119,11 +122,14 @@ public class IndexCommand extends Command {
           indexer = true;
         }
         if (indexer) {
-          m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-        } else {
-          m_Indexer.off();
-        }
-     }
+          if(ampSupplier.getAsDouble() == 90) {
+            m_Indexer.set(SmartDashboard.getNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED));
+          } else {
+            m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+          }
+         } else {
+            m_Indexer.off();
+         }
     }
   }
 
