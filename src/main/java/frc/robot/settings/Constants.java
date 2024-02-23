@@ -270,9 +270,10 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
-  
+
   public static final double SHOOTING_RPS = 90;
   public static final double AMP_RPS = 7.5;
+
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
   public static final double ANGLE_SHOOTER_POWER_KP = 0.026;
