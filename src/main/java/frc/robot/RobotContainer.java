@@ -83,7 +83,6 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
-import frc.robot.commands.ManualShoot;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.settings.IntakeDirection;
@@ -262,7 +261,7 @@ public class RobotContainer {
       SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.MAXIMUM_SHOOTER_ANGLE));
     }
     if(indexerExists) {
-      new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer));
+      new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer, driverController::getPOV));
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
