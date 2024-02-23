@@ -24,6 +24,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Blue1Pickup"
@@ -42,6 +48,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Blue2Pickup"
@@ -57,6 +69,12 @@
           "type": "named",
           "data": {
             "name": "shootNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
           }
         },
         {

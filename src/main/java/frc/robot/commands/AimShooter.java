@@ -11,12 +11,14 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 
 public class AimShooter extends Command {
 	AngleShooterSubsystem angleShooterSubsystem;
-	DoubleSupplier aimAtAmpSupplier;
+	DoubleSupplier POVSupplier;
+	BooleanSupplier humanPlayerSupplier;
 
-	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier aimAtAmp) {
+	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier) {
 		addRequirements(angleShooterSubsystem); 
 		this.angleShooterSubsystem = angleShooterSubsystem;
-		this.aimAtAmpSupplier = aimAtAmp;
+		this.POVSupplier = POVSupplier;
+		this.humanPlayerSupplier = humanPlayerSupplier;
 	}
 
 	@Override
@@ -26,10 +28,14 @@ public class AimShooter extends Command {
 
 	@Override
 	public void execute() {
-		if (aimAtAmpSupplier.getAsDouble() == 90) {
+		if (POVSupplier.getAsDouble() == 90 || POVSupplier.getAsDouble() == 45 || POVSupplier.getAsDouble() == 135) {
 			angleShooterSubsystem.setDesiredShooterAngle(SmartDashboard.getNumber("amp angle", Field.AMPLIFIER_ANGLE)/*Field.AMPLIFIER_ANGLE*/);
 		} else {
-			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
+			if(humanPlayerSupplier.getAsBoolean()) {
+				angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
+			} else {
+				angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
+			}
 		}
 	}
 

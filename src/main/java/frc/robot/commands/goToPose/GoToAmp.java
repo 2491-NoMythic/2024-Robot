@@ -29,7 +29,8 @@ public class GoToAmp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    PathPlannerPath ampPath = PathPlannerPath.fromPathFile("goToAmp");
+    // PathPlannerPath ampPath = PathPlannerPath.fromPathFile("goToAmp");
+    PathPlannerPath ampPath = PathPlannerPath.fromPathFile("ScoreAmp");
     actualCommand = AutoBuilder.pathfindThenFollowPath(ampPath, DEFAUL_PATH_CONSTRAINTS);
     actualCommand.initialize();
   }

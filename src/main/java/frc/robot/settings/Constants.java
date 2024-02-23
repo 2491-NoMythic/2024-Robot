@@ -270,9 +270,9 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
-  
+
   public static final double SHOOTING_RPS = 90;
-  public static final double AMP_RPS = 9.5;
+  public static final double AMP_RPS = 6.5;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
   public static final double ANGLE_SHOOTER_POWER_KP = 0.026;
@@ -291,7 +291,10 @@ public static final class ShooterConstants{
   public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
   public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
-  public static final double MAXIMUM_SHOOTER_ANGLE = 73;//still has to be found
+  public static final double MAXIMUM_SHOOTER_ANGLE = 98;//still has to be found
+  public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
+  public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
+
 
  
 
@@ -324,7 +327,8 @@ public static final class ClimberConstants{
 }
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
-  public static final double INDEXER_INTAKE_SPEED = -0.5;//should be 0.5 TODO change to positive
+  public static final double INDEXER_INTAKE_SPEED = -0.25;//should be 0.5 TODO change to positive
+  public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
 }
 public static final class IntakeConstants{
@@ -333,7 +337,7 @@ public static final class IntakeConstants{
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
-  public static final double INTAKE_SPEED = 1;
+  public static final double INTAKE_SPEED = 0.8;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
@@ -414,7 +418,7 @@ public static final class CTREConfigs {
     public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
 
-    public static final double AMPLIFIER_ANGLE = 70;
+    public static final double AMPLIFIER_ANGLE = 97;
     //angle at 60 for bounce techinque, didn't work
   }
 

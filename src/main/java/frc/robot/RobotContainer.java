@@ -31,7 +31,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.CollectNote;
 import frc.robot.commands.Drive;
 import frc.robot.commands.DriveTimeCommand;
-
+import frc.robot.commands.ConditionalIndexer;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.commands.IndexCommand;
@@ -191,7 +191,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -204,7 +204,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -242,8 +242,8 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getL2Button));
-
-    new Trigger(driverController::getR1Button).onTrue(new SequentialCommandGroup(
+    new Trigger(driverController::getOptionsButton).whileTrue(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
+    new Trigger(driverController::getSquareButton).onTrue(new SequentialCommandGroup(
       new CollectNote(driveTrain, limelight),
       new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
       ));
@@ -258,12 +258,22 @@ public class RobotContainer {
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberStop()));
+      new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
+      new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
       new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
       new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
+    }
+    if(intakeExists) {
+      new Trigger(driverController::getTouchpad).onTrue(new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED))).onFalse(new InstantCommand(intake::intakeOff));
+    }
+    if(indexerExists&&shooterExists&&angleShooterExists) {
+      // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE)));
+      // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS)));
+      // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED)));
+      new Trigger(driverController::getCircleButton).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS)));
+
     }
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {
@@ -277,12 +287,14 @@ public class RobotContainer {
  *    L1: manually feed shooter (hold)
  *    R2: shoot if everything is lined up (hold)
  *    R1: automatically pick up note (press)
- *    Circle: lineup with the amp (hold)
+ *    Circle: lineup with the amp +shoot at amp speed (hold)
  *    D-Pad down: move shooter up manually (hold)
- *    D-pad right: aim shooter at amp (hold)
+ *    R1: aim shooter at amp (hold)
+ *    Options button: collect note from human player
  *    Triangle: move climber up (hold)
  *    Cross: auto-climb down (hold)
  *    Square: manually pull down with climber (hold)
+ *    Touchpad: manually turn on Intake (hold) [only works if intake code doesn't exist in IndexCommand]
  *    
  */
 //FOR TESTING PURPOSES:
@@ -374,25 +386,33 @@ public class RobotContainer {
     NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
 
     if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(SHOOTING_RPS), shooter));}
-    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(indexer::on, indexer));
+    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
     if(intakeExists) {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 0.75, 0.5));
-      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 0.5));
+      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
+      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
+      NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
+      NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
+    }
+    if (indexerExists&&intakeExists) {
+      NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
   public void teleopInit() {
     driveTrain.forceUpdateOdometryWithVision();
     if(climberExists) {
-      new SequentialCommandGroup(
+      SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
         new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),
         new WaitCommand(2),
-        new InstantCommand(()->climber.climberStop(), climber)
+        new InstantCommand(()->climber.climberStop(), climber),
+        new InstantCommand(climber::resetInitial)
         );
+      resetClimbers.schedule();
       }
       if(angleShooterExists) {
         angleShooterSubsystem.pitchShooter(0);
