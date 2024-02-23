@@ -330,7 +330,7 @@ public static final class IndexerConstants{
   public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
-  public static final double AMP_SPEED = 0.1;
+  public static final double INDEXER_AMP_SPEED = 0.4;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
@@ -419,7 +419,7 @@ public static final class CTREConfigs {
     public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
 
-    public static final double AMPLIFIER_ANGLE = 103;
+    public static final double AMPLIFIER_ANGLE = 101;
     //angle at 60 for bounce techinque, didn't work
   }
 

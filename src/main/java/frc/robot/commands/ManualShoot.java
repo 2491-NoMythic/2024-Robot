@@ -24,7 +24,7 @@ public class ManualShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+    indexer.set(IndexerConstants.INDEXER_AMP_SPEED);
   }
 
   // Called once the command ends or is interrupted.
