@@ -105,6 +105,6 @@ public class AimRobotMoving extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !run.getAsBoolean();
+    return (!run.getAsBoolean() || cancel.getAsBoolean());
   }
 }
