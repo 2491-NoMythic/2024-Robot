@@ -43,16 +43,12 @@ public class AimShooter extends Command {
 			} else {
 				if(humanPlayerSupplier.getAsBoolean()) {
 					angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
-				} else {
-			if(SubwooferSupplier1.getAsBoolean()&&SubwooferSupplier2.getAsBoolean()&&SubwooferSupplier3.getAsBoolean()) {
-						angleShooterSubsystem.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
-					} else {		
+				} else {	
 						angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 					}
 				}
 			}
 		}
-	}
 
 	@Override
 	public boolean isFinished() {
