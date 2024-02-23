@@ -46,5 +46,6 @@ public class IndexerSubsystem extends SubsystemBase {
     }
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("indexer current", m_IndexerMotor.getSupplyCurrent().getValueAsDouble());
     }
 }
