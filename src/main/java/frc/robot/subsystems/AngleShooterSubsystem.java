@@ -129,7 +129,8 @@ public class AngleShooterSubsystem extends SubsystemBase {
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
 		double desiredShooterAngle = Math
 				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalOffsetDistToSpeaker));
-		desiredShooterAngle = desiredShooterAngle+(Math.pow(offsetSpeakerdist, 2)*DISTANCE_MULTIPLIER);
+		// desiredShooterAngle = desiredShooterAngle+(Math.pow(offsetSpeakerdist, 2)*DISTANCE_MULTIPLIER);
+		desiredShooterAngle = this.adjustAngleForDistance(desiredShooterAngle, offsetSpeakerdist);
 		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
 			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;
 		}
@@ -144,6 +145,14 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		return desiredShooterAngle;
 	}
 
+	private double adjustAngleForDistance(double angle, double distance) {
+		double errorMeters = 
+			Math.pow(distance, 3) * ADJUSTING_EQUATION_A +
+			Math.pow(distance, 2) * ADJUSTING_EQUATION_B +
+			distance * ADJUSTING_EQUATION_C +
+			ADJUSTING_EQUATION_D;
+		return Math.toDegrees(Math.atan(errorMeters/distance));
+	}
 	private double calculateSpeakerAngleDifference() {
 		return Math.abs(calculateSpeakerAngle() - this.getShooterAngle());
 	}

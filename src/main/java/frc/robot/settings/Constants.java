@@ -4,6 +4,7 @@
 
 package frc.robot.settings;
 
+import javax.management.ConstructorParameters;
 import javax.sound.midi.Patch;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -295,8 +296,17 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
 
-
- 
+  /*
+   * these are the variables used in the equation that fixes are shooters error according to our distance
+   * A is multiplied by distance^3 (hopefully not used)
+   * B is multiplied by distance^2
+   * C is multiplied by distance^1
+   * D is added at the end
+   *    */
+  public static final double ADJUSTING_EQUATION_A = 0;
+  public static final double ADJUSTING_EQUATION_B = 0;
+  public static final double ADJUSTING_EQUATION_C = 0;
+  public static final double ADJUSTING_EQUATION_D = 0;
 
   //PID coefficients for shooter:
   public static final double kP = 0.128;
