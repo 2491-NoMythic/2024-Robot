@@ -154,7 +154,7 @@ public class RobotContainer {
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
-    PDP = new PowerDistribution(0, ModuleType.kRev);
+    PDP = new PowerDistribution(1, ModuleType.kRev);
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -256,10 +256,12 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getL2Button));
 
-    new Trigger(driverController::getR1Button).onTrue(new SequentialCommandGroup(
-      new CollectNote(driveTrain, limelight),
-      new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
+    if(Preferences.getBoolean("Detector Limelight", false)) {
+      new Trigger(driverController::getR1Button).onTrue(new SequentialCommandGroup(
+        new CollectNote(driveTrain, limelight),
+        new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
       ));
+    }
     new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
     SmartDashboard.putData("force update limelight position", new InstantCommand(()->driveTrain.forceUpdateOdometryWithVision(), driveTrain));
     if(angleShooterExists) {

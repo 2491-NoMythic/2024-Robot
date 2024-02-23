@@ -27,6 +27,7 @@ public class IndexerSubsystem extends SubsystemBase {
         currentLimitsConfigs = new CurrentLimitsConfigs();
         currentLimitsConfigs.SupplyCurrentLimit = IndexerConstants.CURRENT_LIMIT;
         currentLimitsConfigs.SupplyCurrentLimitEnable = true;
+        configurator = m_IndexerMotor.getConfigurator();
         configurator.apply(currentLimitsConfigs);
     }
 
