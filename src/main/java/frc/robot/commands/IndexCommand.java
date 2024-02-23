@@ -7,6 +7,7 @@ package frc.robot.commands;
 import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -29,25 +30,31 @@ public class IndexCommand extends Command {
   BooleanSupplier revUpSupplier;
   Boolean revUp;
   BooleanSupplier shootIfReadySupplier;
+  DoubleSupplier ampSupplier;;
   Boolean shootIfReady;
-
+  // DoubleSupplier POVSupplier;
+  BooleanSupplier humanPlayerSupplier;
   IndexerSubsystem m_Indexer;
   ShooterSubsystem shooter;
   IntakeSubsystem intake;
   DrivetrainSubsystem drivetrain;
   AngleShooterSubsystem angleShooterSubsytem;
   boolean auto;
+  double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, DoubleSupplier ampSupplier) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;
     this.revUpSupplier = revUpSupplier;
     this.shooter = shooter;
     this.intake = intake;
     this.drivetrain = drivetrain;
+    this.ampSupplier = ampSupplier;
     this.angleShooterSubsytem = angleShooterSubsystem;
+    this.humanPlayerSupplier = humanPlaySupplier;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
+    SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IndexerSubsystem, shooter, intake);
@@ -56,7 +63,7 @@ public class IndexCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    runsEmpty = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -68,12 +75,21 @@ public class IndexCommand extends Command {
       auto = false;
     }
     if (!intake.isNoteIn()) {
-      // intake.intakeYes(IntakeConstants.INTAKE_SPEED);
-      m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-      if(!auto) {
-        shooter.turnOff();
+      // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
+      if(runsEmpty<21) {runsEmpty++;}
+      if(runsEmpty>20) {
+        if(humanPlayerSupplier.getAsBoolean()) {
+          m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
+          shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS);
+          intake.intakeOff();
+        }
+        else {
+          m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
+          shooter.turnOff();
+        }
       }
     } else {
+      runsEmpty = 0;
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()) {
         shooter.shootRPS(ShooterConstants.SHOOTING_RPS);
@@ -89,8 +105,15 @@ public class IndexCommand extends Command {
     } else {
       RobotState.getInstance().ShooterReady = false;
     }
+    if(SmartDashboard.getBoolean("feedMotor", false)) {
+      indexer = true;
+    }
     if (indexer) {
-      m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+      if(ampSupplier.getAsDouble() == 90) {
+        m_Indexer.set(SmartDashboard.getNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED));
+      } else {
+        m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+      }
     } else {
       m_Indexer.off();
     }

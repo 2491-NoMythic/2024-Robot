@@ -2,36 +2,38 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.NamedCommands;
+package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.subsystems.IndexerSubsystem;
-
-public class shootNote extends Command {
+import frc.robot.subsystems.IntakeSubsystem;
+public class ConditionalIndexer extends Command {
+  /** Creates a new ConditionalIndexer. */
   IndexerSubsystem indexer;
-  Timer timer;
-  double shootTime;
-  /** Creates a new shootNote. */
-  public shootNote(IndexerSubsystem indexer, double shootTime) {
+  IntakeSubsystem intake;
+  public ConditionalIndexer(IndexerSubsystem indexer, IntakeSubsystem intake) {
+    // Use addRequirements() here to declare subsystem dependencies.\
+   addRequirements(indexer,intake);
     this.indexer = indexer;
-    this.shootTime = shootTime;
-    timer = new Timer();
-    addRequirements(indexer);
-    // Use addRequirements() here to declare subsystem dependencies.
+    this.intake = intake;
   }
-
+  
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    timer.start();
-    indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (intake.isNoteIn()) {
+      indexer.off();
+    } else {
+      indexer.on();
+    }
+
+  
+    
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -40,6 +42,6 @@ public class shootNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get()>shootTime;
+    return false;
   }
 }

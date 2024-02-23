@@ -35,7 +35,7 @@ public class LimelightFiducialData {
          * @return true if the most recent vision pose estimation is inside the field and is close enough to the provided pose.
          */
         public boolean isPoseTrustworthy(Pose2d robotPose){
-            Pose2d poseEstimate = this.getbotPose();
+            Pose2d poseEstimate = this.botPoseBlue;
             if ((poseEstimate.getX()<Vision.fieldCorner.getX() && poseEstimate.getY()<Vision.fieldCorner.getY()) //Don't trust estimations that are outside the field perimeter.
                 && robotPose.getTranslation().getDistance(poseEstimate.getTranslation()) < 0.5) //Dont trust pose estimations that are more than half a meter from current pose.
                 return true;

@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.Results;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import static frc.robot.settings.Constants.Vision.MAX_TAG_DISTANCE;
+import static frc.robot.settings.Constants.Vision.APRILTAG_CLOSENESS;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 
@@ -24,6 +27,7 @@ public class LimelightValues {
         double[] ta = new double[5];
         Pose2d botPoseRed;
         Pose2d botPoseBlue;
+        double tagDistance;
 
         private final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
 
@@ -36,9 +40,13 @@ public class LimelightValues {
                     this.tx[i] = llresults.targets_Fiducials[i].tx;
                     this.ty[i] = llresults.targets_Fiducials[i].ty;
                     this.ta[i] = llresults.targets_Fiducials[i].ta;
+                    this.tagDistance = llresults.targets_Fiducials[0].getTargetPose_RobotSpace2D().getTranslation().getNorm();
                 }
                 this.botPoseRed = llresults.getBotPose2d_wpiRed();
                 this.botPoseBlue = llresults.getBotPose2d_wpiBlue();
+                // SmartDashboard.putNumber("VISION dist to apriltag [0]", tagDistance);
+                // SmartDashboard.putNumber("VISION dist to apriltag [1]", llresults.targets_Fiducials[1].getTargetPose_RobotSpace2D().getTranslation().getNorm());
+                // SmartDashboard.putNumber("VISION dist to apriltag [2]", llresults.targets_Fiducials[2].getTargetPose_RobotSpace2D().getTranslation().getNorm());
             }
         }
         public double gettx(int index){return tx[index];}
@@ -55,12 +63,18 @@ public class LimelightValues {
         public Pose2d getBotPoseBlue() {
             return botPoseBlue;
         }
+        public double getTagDistance() {
+            return tagDistance;
+        }
         public boolean isPoseTrustworthy(Pose2d robotPose){
-            Pose2d poseEstimate = this.getbotPose();
+            Pose2d poseEstimate = this.botPoseBlue;
             if ((poseEstimate.getX()<fieldCorner.getX() && poseEstimate.getY()<fieldCorner.getY()) //Don't trust estimations that are outside the field perimeter.
-                && robotPose.getTranslation().getDistance(poseEstimate.getTranslation()) < 0.5) //Dont trust pose estimations that are more than half a meter from current pose.
+                && robotPose.getTranslation().getDistance(poseEstimate.getTranslation()) < APRILTAG_CLOSENESS//Dont trust pose estimations that are more than half a meter from current pose.
+                && tagDistance<=MAX_TAG_DISTANCE) { //Dont trust pose estimations if the april tag is more than X meters away
                 return true;
-            else return false;
+            } else {
+                return false;
+            }
         }
         public double gettimestamp(){
             return (Timer.getFPGATimestamp()
