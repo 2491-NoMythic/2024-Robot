@@ -147,10 +147,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 
 	private double adjustAngleForDistance(double angle, double distance) {
 		double errorMeters = 
-			Math.pow(distance, 3) * ADJUSTING_EQUATION_A +
-			Math.pow(distance, 2) * /*ADJUSTING_EQUATION_B*/0 +
-			distance * ADJUSTING_EQUATION_C +
-			/*ADJUSTING_EQUATION_D*/0;
+			Math.pow(distance, ADJUSTING_EQUATION_B) + ADJUSTING_EQUATION_D
 		if(errorMeters>0) {
 			return angle + Math.toDegrees(Math.atan(errorMeters/distance));
 		} else {
