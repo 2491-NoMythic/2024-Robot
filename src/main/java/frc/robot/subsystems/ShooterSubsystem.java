@@ -87,11 +87,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
      double p = SmartDashboard.getNumber("P Gain", 0);
      double i = SmartDashboard.getNumber("I Gain", 0);
      double d = SmartDashboard.getNumber("D Gain", 0);
-     double iz = SmartDashboard.getNumber("I Zone", 0);
+     //double iz = SmartDashboard.getNumber("I Zone", 0);
      double ff = SmartDashboard.getNumber("Feed Forward", 0);
-     double max = SmartDashboard.getNumber("Max Output", 0);
-     double min = SmartDashboard.getNumber("Min Output", 0);   
-     double ve = SmartDashboard.getNumber("Set Velocity", 0);
+     //double max = SmartDashboard.getNumber("Max Output", 0);
+     //double min = SmartDashboard.getNumber("Min Output", 0);   
+     //double ve = SmartDashboard.getNumber("Set Velocity", 0);
      
      
      if((p != kP)) {PIDconfigs.kP = p; kP = p; }

@@ -6,10 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -41,8 +39,6 @@ public class SwerveModule {
 
   private VelocityDutyCycle m_driveControl = new VelocityDutyCycle(0);
   private PositionDutyCycle m_steerControl = new PositionDutyCycle(0);
-  private CoastOut m_coastControl = new CoastOut();
-  private StaticBrake m_brakeControl = new StaticBrake();
   private NeutralOut m_neutralControl = new NeutralOut();
   
   /**

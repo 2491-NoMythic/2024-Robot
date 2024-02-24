@@ -133,8 +133,9 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		}
 		SmartDashboard.putNumber("desired shooter angle", desiredShooterAngle);
 		
-		double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
+		
 		speakerDistGlobal = offsetSpeakerdist;
+		// double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
 		// SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
 		
 		return desiredShooterAngle;

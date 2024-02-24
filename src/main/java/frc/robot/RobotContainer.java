@@ -5,13 +5,9 @@
 package frc.robot;
 
 import static frc.robot.settings.Constants.PS4Driver.*;
-import static frc.robot.settings.Constants.PS4Operator.*;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
-import java.util.function.DoubleSupplier;
-
 import static frc.robot.settings.Constants.DriveConstants.*;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -61,7 +57,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.commands.AngleShooter;
-import frc.robot.settings.IntakeDirection;
 
 
 /**
@@ -80,7 +75,7 @@ public class RobotContainer {
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
   private final boolean lightsExist = Preferences.getBoolean("Lights", true);
   private final boolean indexerExists = Preferences.getBoolean("Indexer", true);
-  private final boolean autosExist = Preferences.getBoolean("Autos", true);
+  //private final boolean autosExist = Preferences.getBoolean("Autos", true);
   private final boolean useDetectorLimelight = Preferences.getBoolean("Detector Limelight", true);
 
   private DrivetrainSubsystem driveTrain;
@@ -91,16 +86,13 @@ public class RobotContainer {
   private Climber climber;
   private Lights lights;
   private PS4Controller driverController;
-  private PS4Controller operatorController;
+  //private PS4Controller operatorController;
   private Limelight limelight;
-  private IntakeDirection iDirection;
-  private Pigeon2 pigeon;
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
   private AimShooter defaultShooterAngleCommand;
   private SendableChooser<String> climbSpotChooser;
   private SendableChooser<Command> autoChooser;
-  private DoubleSupplier angleSup;
   private PowerDistribution PDP;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -125,8 +117,7 @@ public class RobotContainer {
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
     // SignalLogger.start();
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
-    operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
-    pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
+    //operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     PDP = new PowerDistribution(1, ModuleType.kRev);
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
@@ -342,9 +333,6 @@ public class RobotContainer {
     return value;
   }
 
-  private double getAmpAngle() {
-    return Constants.Field.AMPLIFIER_ANGLE;
-  }
   private void configureDriveTrain() {
     AutoBuilder.configureHolonomic(
                 driveTrain::getPose, // Pose2d supplier
