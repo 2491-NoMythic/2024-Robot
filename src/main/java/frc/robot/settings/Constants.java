@@ -424,13 +424,13 @@ public static final class CTREConfigs {
   public final class Field{
     public static final double BLUE_SPEAKER_X = 0.23;
     public static final double RED_SPEAKER_X = 16.49;
-    public static final double SPEAKER_Y = 5.3;//16.412;
+    public static final double SPEAKER_Y = 5.62;//16.412;
     public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
     public static final double AMPLIFIER_ANGLE = 101;
-    public static final double SUBWOOFER_ANGLE = 80;
+    public static final double SUBWOOFER_ANGLE = 55;
     //angle at 60 for bounce techinque, didn't work
   }
 
@@ -439,7 +439,7 @@ public final class Vision{
   public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-aprilr";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
   
-  public static final double APRILTAG_CLOSENESS = 0.5;
+  public static final double APRILTAG_ERROR = 0.3;
   public static final double MAX_TAG_DISTANCE = 3.05;
 
   public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
