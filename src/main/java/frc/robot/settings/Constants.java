@@ -4,8 +4,6 @@
 
 package frc.robot.settings;
 
-import javax.sound.midi.Patch;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;

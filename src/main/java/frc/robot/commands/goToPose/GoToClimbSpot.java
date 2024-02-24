@@ -6,15 +6,11 @@ package frc.robot.commands.goToPose;
 
 import static frc.robot.settings.Constants.DriveConstants.DEFAUL_PATH_CONSTRAINTS;
 
-import java.util.function.BooleanSupplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.settings.Constants.PathConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class GoToClimbSpot extends Command {

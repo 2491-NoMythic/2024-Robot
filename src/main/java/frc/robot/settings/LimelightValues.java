@@ -11,11 +11,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.Results;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.settings.Constants.Vision.MAX_TAG_DISTANCE;
 import static frc.robot.settings.Constants.Vision.APRILTAG_CLOSENESS;
-
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 /** Add your docs here. */
 public class LimelightValues {

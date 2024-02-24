@@ -10,14 +10,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.ShooterConstants;
-import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
