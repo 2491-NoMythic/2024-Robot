@@ -407,7 +407,7 @@ public class RobotContainer {
     if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
     if(intakeExists) {
-      NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
+      NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(IntakeConstants.INTAKE_SPEED)));
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 0.75, 0.5));

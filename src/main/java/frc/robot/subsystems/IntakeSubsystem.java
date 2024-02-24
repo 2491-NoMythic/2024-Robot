@@ -33,7 +33,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2 = new CANSparkMax(IntakeConstants.INTAKE_2_MOTOR, MotorType.kBrushless);
     intake1.restoreFactoryDefaults();
     intake2.restoreFactoryDefaults();
-    m_DistanceSensor = intake2.getAnalog(Mode.kAbsolute);
+    m_DistanceSensor = intake1.getAnalog(Mode.kAbsolute);
     if(Preferences.getBoolean("Brushes", false)) {
       brush1 = new CANSparkMax(IntakeConstants.BRUSH_1_MOTOR, MotorType.kBrushless);
       brush2 = new CANSparkMax(IntakeConstants.BRUSH_2_MOTOR, MotorType.kBrushless);

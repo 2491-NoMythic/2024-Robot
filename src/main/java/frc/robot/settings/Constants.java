@@ -257,7 +257,7 @@ public final class Constants {
     public static final double k_PICKUP_NOTE_tx_D = 0;
   }
 public static final class ShooterConstants{
-  public static final double ANGLE_ENCODER_ZERO_OFFSET = 328;//should be 328 but changed for trying to aim at the speaker
+  public static final double ANGLE_ENCODER_ZERO_OFFSET = 336;//should be 328 for practice bot but changed for trying to aim at the speaker
   public static final int SHOOTER_R_MOTORID = 10;
   public static final int SHOOTER_L_MOTORID = 9;
   public static final int PITCH_MOTOR_ID = 24;
@@ -334,7 +334,7 @@ public static final class ClimberConstants{
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
   public static final int CURRENT_LIMIT = 50;
-  public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
+  public static final double INDEXER_INTAKE_SPEED = 0.8;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
   public static final double INDEXER_AMP_SPEED = 0.4;
@@ -345,7 +345,7 @@ public static final class IntakeConstants{
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
-  public static final double INTAKE_SPEED = 0.8;
+  public static final double INTAKE_SPEED = 0.5;//0.8;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
