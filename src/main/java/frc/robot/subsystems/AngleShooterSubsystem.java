@@ -38,6 +38,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	public static ChassisSpeeds DTChassisSpeeds;
 	public double desiredZeroOffset;
 	int runsValid;
+	double speakerDistGlobal;
 
 	public AngleShooterSubsystem() {
 		runsValid = 0;
@@ -139,9 +140,14 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("desired shooter angle", desiredShooterAngle);
 		
 		double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
+		speakerDistGlobal = offsetSpeakerdist;
 		// SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
 		
 		return desiredShooterAngle;
+	}
+
+	public boolean shortSpeakerDist() {
+		return speakerDistGlobal<=Field.SHORT_RANGE_SHOOTING_DIST;
 	}
 
 	private double calculateSpeakerAngleDifference() {

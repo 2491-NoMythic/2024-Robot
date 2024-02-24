@@ -32,11 +32,12 @@ public class AimRobotMoving extends Command {
     DoubleSupplier translationXSupplier;
     DoubleSupplier translationYSupplier;
     BooleanSupplier run;
+    BooleanSupplier cancel;
     DoubleSupplier rotationSupplier;
     double rotationSpeed;
     double allianceOffset;
     
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier cancel){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -47,6 +48,7 @@ public class AimRobotMoving extends Command {
           this.translationXSupplier = translationXSupplier;
           this.translationYSupplier = translationYSupplier;
           this.rotationSupplier = rotationSupplier;
+          this.cancel = cancel;
           this.run = run;
           addRequirements(drivetrain);
         }
@@ -75,11 +77,13 @@ public class AimRobotMoving extends Command {
         } else {
           allianceOffset = 0;
         }
-        m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-          translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-          translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-          rotationSpeed,
-          new Rotation2d(m_drivetrain.getGyroscopeRotation().getRadians()+allianceOffset)));
+        if(!cancel.getAsBoolean()) {
+          m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+            translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+            translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+            rotationSpeed,
+            new Rotation2d(m_drivetrain.getGyroscopeRotation().getRadians()+allianceOffset)));
+        }
         // m_drivetrain.drive(new ChassisSpeeds(
         //   translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
         //   translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
@@ -101,6 +105,6 @@ public class AimRobotMoving extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !run.getAsBoolean();
+    return (!run.getAsBoolean() || cancel.getAsBoolean());
   }
 }

@@ -41,18 +41,24 @@ public class IndexCommand extends Command {
   AngleShooterSubsystem angleShooterSubsytem;
   boolean auto;
   double runsEmpty = 0;
+  BooleanSupplier SubwooferSupplier1;
+  BooleanSupplier SubwooferSupplier2;
+  BooleanSupplier SubwooferSupplier3;
 
   /** Creates a new IndexCommand. */
   public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, DoubleSupplier ampSupplier) {
     this.m_Indexer = m_IndexerSubsystem;
-    this.shootIfReadySupplier = shootIfReadySupplier;
-    this.revUpSupplier = revUpSupplier;
+    this.shootIfReadySupplier = shootIfReadySupplier;//R2
+    this.revUpSupplier = revUpSupplier;//L2
     this.shooter = shooter;
     this.intake = intake;
     this.drivetrain = drivetrain;
     this.ampSupplier = ampSupplier;
     this.angleShooterSubsytem = angleShooterSubsystem;
-    this.humanPlayerSupplier = humanPlaySupplier;
+    this.humanPlayerSupplier = humanPlaySupplier;//R1
+    this.SubwooferSupplier1 = SubwooferSupplier1;
+    this.SubwooferSupplier2 = SubwooferSupplier2;
+    this.SubwooferSupplier3 = SubwooferSupplier3;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
@@ -91,31 +97,39 @@ public class IndexCommand extends Command {
     } else {
       runsEmpty = 0;
       intake.intakeOff();
-      if(revUpSupplier.getAsBoolean()) {
-        shooter.shootRPS(ShooterConstants.SHOOTING_RPS);
+      if(shootIfReadySupplier.getAsBoolean()&&revUpSupplier.getAsBoolean()&&humanPlayerSupplier.getAsBoolean()) {
+        shooter.shootRPS(ShooterConstants.SUBWOOFER_RPS);
       } else {
-        shooter.shootRPS(SmartDashboard.getNumber("amp RPS", ShooterConstants.AMP_RPS)/*ShooterConstants.AMP_RPS*/);
-      }
-    boolean indexer = false;
-    if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot()) {
-      RobotState.getInstance().ShooterReady = true;
-      if (shootIfReadySupplier.getAsBoolean()) {
-        indexer = true;
-      }
-    } else {
-      RobotState.getInstance().ShooterReady = false;
-    }
-    if(SmartDashboard.getBoolean("feedMotor", false)) {
-      indexer = true;
-    }
-    if (indexer) {
-      if(ampSupplier.getAsDouble() == 90) {
-        m_Indexer.set(SmartDashboard.getNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED));
-      } else {
-        m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-      }
-    } else {
-      m_Indexer.off();
+        if(revUpSupplier.getAsBoolean()) {
+          if(angleShooterSubsytem.shortSpeakerDist()) {
+            shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
+          } else {
+            shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
+          }
+        } else {
+          shooter.shootRPS(SmartDashboard.getNumber("amp RPS", ShooterConstants.AMP_RPS)/*ShooterConstants.AMP_RPS*/);
+        }
+        boolean indexer = false;
+        if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot()) {
+          RobotState.getInstance().ShooterReady = true;
+          if (shootIfReadySupplier.getAsBoolean()) {
+            indexer = true;
+          }
+        } else {
+          RobotState.getInstance().ShooterReady = false;
+        }
+        if(SmartDashboard.getBoolean("feedMotor", false)) {
+          indexer = true;
+        }
+        if (indexer) {
+          if(ampSupplier.getAsDouble() == 90) {
+            m_Indexer.set(SmartDashboard.getNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED));
+          } else {
+            m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+          }
+         } else {
+            m_Indexer.off();
+         }
     }
   }
   }

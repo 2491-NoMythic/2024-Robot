@@ -274,10 +274,11 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
-
-  public static final double SHOOTING_RPS = 90;
+  
+  public static final double LONG_SHOOTING_RPS = 90;
+  public static final double SHORT_SHOOTING_RPS = 80;
   public static final double AMP_RPS = 7.5;
-
+  public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
   public static final double ANGLE_SHOOTER_POWER_KP = 0.026;
@@ -426,8 +427,10 @@ public static final class CTREConfigs {
     public static final double SPEAKER_Y = 5.3;//16.412;
     public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
+    public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
     public static final double AMPLIFIER_ANGLE = 101;
+    public static final double SUBWOOFER_ANGLE = 80;
     //angle at 60 for bounce techinque, didn't work
   }
 

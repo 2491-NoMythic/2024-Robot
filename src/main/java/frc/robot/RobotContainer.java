@@ -6,7 +6,8 @@ package frc.robot;
 
 import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.PS4Operator.*;
-import static frc.robot.settings.Constants.ShooterConstants.SHOOTING_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.SHORT_SHOOTING_RPS;
 
 import java.nio.file.Path;
 import java.time.Instant;
@@ -204,7 +205,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button, driverController::getR1Button, driverController::getR2Button, driverController::getL2Button);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -254,7 +255,8 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      driverController::getL2Button));
+      driverController::getL2Button,
+      driverController::getR1Button));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
       new Trigger(driverController::getR1Button).onTrue(new SequentialCommandGroup(
@@ -276,7 +278,7 @@ public class RobotContainer {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
       new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
-      new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
+      // new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
       new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
@@ -302,15 +304,15 @@ public class RobotContainer {
  *    L2: aim at speaker and rev up shooter to max (hold)
  *    L1: manually feed shooter (hold)
  *    R2: shoot if everything is lined up (hold)
- *    R1: automatically pick up note (press)
  *    Circle: lineup with the amp +shoot at amp speed (hold)
  *    D-Pad down: move shooter up manually (hold)
  *    R1: aim shooter at amp (hold)
  *    Options button: collect note from human player
  *    Triangle: move climber up (hold)
- *    Cross: auto-climb down (hold)
- *    Square: manually pull down with climber (hold)
+ *    Square: auto-pick up note
+ *    Cross: manually pull down with climber (hold)
  *    Touchpad: manually turn on Intake (hold) [only works if intake code doesn't exist in IndexCommand]
+ *    L1,L2,R1,R2 held: aim shooter at speaker and set shooter to shooter speed
  *    
  */
 //FOR TESTING PURPOSES:
@@ -319,7 +321,7 @@ public class RobotContainer {
       SmartDashboard.putData("intake off", new InstantCommand(intake::intakeOff, intake));
     }
     if(shooterExists) {
-      SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootRPS(ShooterConstants.SHOOTING_RPS), shooter));
+      SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS), shooter));
       SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
       SmartDashboard.putData("shooter off", new InstantCommand(shooter::turnOff, shooter));
     }
@@ -401,7 +403,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
     NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
 
-    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(SHOOTING_RPS), shooter));}
+    if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(LONG_SHOOTING_RPS), shooter));}
     if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
     if(intakeExists) {
