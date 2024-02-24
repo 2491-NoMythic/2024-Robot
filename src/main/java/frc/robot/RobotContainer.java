@@ -136,7 +136,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
-    Preferences.initBoolean("Brushes", false);
+    Preferences.setBoolean("Brushes", false);
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
@@ -410,7 +410,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
     }
     if(indexerExists&&shooterExists) {
-      NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 0.75, 0.5));
+      NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 1.0, 2.0));
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
