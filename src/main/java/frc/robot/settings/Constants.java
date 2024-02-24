@@ -430,7 +430,7 @@ public static final class CTREConfigs {
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
     public static final double AMPLIFIER_ANGLE = 101;
-    public static final double SUBWOOFER_ANGLE = 50;
+    public static final double SUBWOOFER_ANGLE = 55;
     //angle at 60 for bounce techinque, didn't work
   }
 
