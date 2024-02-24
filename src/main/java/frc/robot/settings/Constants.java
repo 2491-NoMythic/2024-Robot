@@ -345,7 +345,7 @@ public static final class IntakeConstants{
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
-  public static final double INTAKE_SPEED = 0.5;//0.8;
+  public static final double INTAKE_SPEED = 0.8;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
