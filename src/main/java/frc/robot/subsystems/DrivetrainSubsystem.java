@@ -432,10 +432,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					Boolean isLL2VisionValid = ll2.isResultValid;
 					Boolean isLL3VisionValid = ll3.isResultValid;
 					if(isLL2VisionValid) {
-						SmartDashboard.putNumber("VISION left LL tag [0] distance", ll2.getTagDistance());
+						SmartDashboard.putNumber("VISION left LL tag [0] distance", ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT2_NAME));
 					}
 					if(isLL3VisionValid) {
-						SmartDashboard.putNumber("VISION right LL tag [0] distance", ll3.getTagDistance());
+						SmartDashboard.putNumber("VISION right LL tag [0] distance", ll3.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
 					}
 					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
 					Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(odometer.getEstimatedPosition());
