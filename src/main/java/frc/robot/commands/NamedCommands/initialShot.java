@@ -14,13 +14,13 @@ public class initialShot extends Command {
   ShooterSubsystem shooter;
   IndexerSubsystem indexer;
   Timer timer;
-  double revtime;
+  double revTime;
   double shootTime;
   /** Creates a new shootThing. */
   public initialShot(ShooterSubsystem shooter, IndexerSubsystem indexer, double revTime, double shootTime) {
     this.indexer = indexer;
     this.shooter = shooter;
-    this.revtime = revtime;
+    this.revTime = revTime;
     this.shootTime = shootTime;
     timer = new Timer();
     addRequirements(shooter, indexer);
@@ -37,7 +37,7 @@ public class initialShot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(timer.get()>revtime) {
+    if(timer.get()>revTime) {
       indexer.on();
     }
   }

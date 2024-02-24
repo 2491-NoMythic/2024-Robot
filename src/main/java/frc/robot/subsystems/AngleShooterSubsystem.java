@@ -4,10 +4,6 @@ import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
@@ -16,7 +12,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -24,7 +19,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.settings.Constants.ShooterConstants.*;
 import static frc.robot.settings.Constants.LOOPS_VALID_FOR_SHOT;
@@ -139,8 +133,9 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		}
 		SmartDashboard.putNumber("desired shooter angle", desiredShooterAngle);
 		
-		double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
+		
 		speakerDistGlobal = offsetSpeakerdist;
+		// double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
 		// SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
 		
 		return desiredShooterAngle;
