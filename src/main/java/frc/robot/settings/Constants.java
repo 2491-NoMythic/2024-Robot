@@ -304,9 +304,9 @@ public static final class ShooterConstants{
    * D is added at the end
    *    */
   public static final double ADJUSTING_EQUATION_A = 0;
-  public static final double ADJUSTING_EQUATION_B = 0;
+  public static final double ADJUSTING_EQUATION_B = 1.14168;
   public static final double ADJUSTING_EQUATION_C = 0;
-  public static final double ADJUSTING_EQUATION_D = 0;
+  public static final double ADJUSTING_EQUATION_D = -1.22979;
 
   //PID coefficients for shooter:
   public static final double kP = 0.128;

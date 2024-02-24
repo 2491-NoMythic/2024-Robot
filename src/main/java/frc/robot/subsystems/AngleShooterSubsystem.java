@@ -148,10 +148,14 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	private double adjustAngleForDistance(double angle, double distance) {
 		double errorMeters = 
 			Math.pow(distance, 3) * ADJUSTING_EQUATION_A +
-			Math.pow(distance, 2) * ADJUSTING_EQUATION_B +
+			Math.pow(distance, 2) * /*ADJUSTING_EQUATION_B*/0 +
 			distance * ADJUSTING_EQUATION_C +
-			ADJUSTING_EQUATION_D;
-		return Math.toDegrees(Math.atan(errorMeters/distance));
+			/*ADJUSTING_EQUATION_D*/0;
+		if(errorMeters>0) {
+			return angle + Math.toDegrees(Math.atan(errorMeters/distance));
+		} else {
+			return angle;
+		}
 	}
 	private double calculateSpeakerAngleDifference() {
 		return Math.abs(calculateSpeakerAngle() - this.getShooterAngle());

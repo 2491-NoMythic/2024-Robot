@@ -35,6 +35,7 @@ public class AimShooter extends Command {
 				angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 			} else {
 				angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
+				SmartDashboard.putBoolean("shooter updated with math", true);
 			}
 		}
 	}
