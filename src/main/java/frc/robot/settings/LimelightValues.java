@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.Results;
+import frc.robot.settings.Constants.Vision;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.settings.Constants.Vision.MAX_TAG_DISTANCE;
 import static frc.robot.settings.Constants.Vision.APRILTAG_CLOSENESS;
@@ -67,9 +68,9 @@ public class LimelightValues {
             return botPoseBlue;
         }
         public double calculateTagDistance(String limelightName) {
-            double targetOffsetAngle_Vertical = NetworkTableInstance.getDefault().getTable(limelightName).getEntry("ty").getDouble(0.0);
+            double targetOffsetAngle_Vertical = NetworkTableInstance.getDefault().getTable(limelightName).getEntry("ty").getDouble(20);
 
-            double angleToGoalRadians = Math.fromDegrees(limelightMountAngleDegrees + targetOffsetAngle_Vertical);
+            double angleToGoalRadians = Math.toRadians(limelightMountAngleDegrees + targetOffsetAngle_Vertical);
             //calculate distance
             double distanceFromLimelightToGoalInches = (Vision.AprilTagHeight - Vision.limelightLensHeightInches) / Math.tan(angleToGoalRadians);
             return distanceFromLimelightToGoalInches;
