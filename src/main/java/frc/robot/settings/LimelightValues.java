@@ -81,7 +81,6 @@ public class LimelightValues {
         public boolean isPoseTrustworthy(Pose2d robotPose){
             Pose2d poseEstimate = this.botPoseBlue;
             if ((poseEstimate.getX()<fieldCorner.getX() && poseEstimate.getY()<fieldCorner.getY()) //Don't trust estimations that are outside the field perimeter.
-                && robotPose.getTranslation().getDistance(poseEstimate.getTranslation()) < APRILTAG_CLOSENESS//Dont trust pose estimations that are more than half a meter from current pose.
                 && tagDistance<=MAX_TAG_DISTANCE) { //Dont trust pose estimations if the april tag is more than X meters away
                 return true;
             } else {
