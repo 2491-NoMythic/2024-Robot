@@ -255,7 +255,6 @@ public final class Constants {
     public static final double k_PICKUP_NOTE_tx_D = 0;
   }
 public static final class ShooterConstants{
-  public static final double ANGLE_ENCODER_ZERO_OFFSET = 328;//should be 328 but changed for trying to aim at the speaker
   public static final int SHOOTER_R_MOTORID = 10;
   public static final int SHOOTER_L_MOTORID = 9;
   public static final int PITCH_MOTOR_ID = 24;
