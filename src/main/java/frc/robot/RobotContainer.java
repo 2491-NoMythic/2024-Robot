@@ -101,6 +101,7 @@ public class RobotContainer {
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
     Preferences.initBoolean("Brushes", false);
+    Preferences.initDouble("ZeroOffsetShooterAngle", 0.0);
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
