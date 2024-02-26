@@ -49,7 +49,6 @@ public class LimelightValues {
                 }
                 this.botPoseRed = llresults.getBotPose2d_wpiRed();
                 this.botPoseBlue = llresults.getBotPose2d_wpiBlue();
-                this.tagDistance = calculateTagDistance();
                 // SmartDashboard.putNumber("VISION dist to apriltag [0]", tagDistance);
                 // SmartDashboard.putNumber("VISION dist to apriltag [1]", llresults.targets_Fiducials[1].getTargetPose_RobotSpace2D().getTranslation().getNorm());
                 // SmartDashboard.putNumber("VISION dist to apriltag [2]", llresults.targets_Fiducials[2].getTargetPose_RobotSpace2D().getTranslation().getNorm());
@@ -69,9 +68,9 @@ public class LimelightValues {
         public Pose2d getBotPoseBlue() {
             return botPoseBlue;
         }
-        public double calculateTagDistance() {
+        public double calculateTagDistance(String limelightName) {
             if(isResultValid) {
-                double targetOffsetAngle_Vertical = getty(0);
+                double targetOffsetAngle_Vertical = NetworkTableInstance.getDefault().getTable(limelightName).getEntry("ty").getDouble(0.0);
 
                 double angleToGoalRadians = Math.toRadians(limelightMountAngleDegrees + targetOffsetAngle_Vertical);
                 //calculate distance
@@ -84,10 +83,10 @@ public class LimelightValues {
         // public double getTagDistance() {
         //     return tagDistance;
         // }
-        public boolean isPoseTrustworthy(){
+        public boolean isPoseTrustworthy(double tagDist){
             Pose2d poseEstimate = this.botPoseBlue;
             if ((poseEstimate.getX()<fieldCorner.getX() && poseEstimate.getY()<fieldCorner.getY()) //Don't trust estimations that are outside the field perimeter.
-                && calculateTagDistance()<=MAX_TAG_DISTANCE) { //Dont trust pose estimations if the april tag is more than X meters away
+                && tagDist<=MAX_TAG_DISTANCE) { //Dont trust pose estimations if the april tag is more than X meters away
                 return true;
             } else {
                 return false;
