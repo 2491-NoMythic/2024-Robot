@@ -86,6 +86,7 @@ public class RobotContainer {
   private Climber climber;
   private Lights lights;
   private PS4Controller driverController;
+  private PS4Controller operatorController;
   //private PS4Controller operatorController;
   private Limelight limelight;
   private IndexCommand defaulNoteHandlingCommand;
@@ -117,7 +118,8 @@ public class RobotContainer {
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
     // SignalLogger.start();
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
-    //operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
+    operatorController = new PS4Controller(OPERATOR_CONTROLLER_IDds);
+    //operatorController = new PS4Controller(OPERATOs_CONTROLLER_ID);
     PDP = new PowerDistribution(1, ModuleType.kRev);
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
@@ -168,7 +170,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button, driverController::getR1Button, driverController::getR2Button, driverController::getL2Button);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button, driverController::getCrossButton);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -181,7 +183,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button, driverController::getPOV);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -212,17 +214,18 @@ public class RobotContainer {
   private void configureBindings() {
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
-    new Trigger(driverController::getCircleButton).whileTrue(new GoToAmp(driveTrain));
+    // new Trigger(driverController::getCircleButton).whileTrue(new GoToAmp(driveTrain)); unused becuase we dont pickup from amp with a path anymore
     new Trigger(driverController::getL2Button).whileTrue(new AimRobotMoving(
       driveTrain,
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getL2Button,
-      driverController::getR1Button));
+      driverController::getCrossButton
+      driverController::getTriangleButton));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
-      new Trigger(driverController::getR1Button).onTrue(new SequentialCommandGroup(
+      new Trigger(operatorController::getR1Button).onTrue(new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
         new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
       ));
@@ -239,8 +242,8 @@ public class RobotContainer {
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
-      new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
+      new Trigger(operatorController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
+      new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
       // new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
@@ -249,13 +252,7 @@ public class RobotContainer {
     if(intakeExists) {
       new Trigger(driverController::getTouchpad).onTrue(new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED))).onFalse(new InstantCommand(intake::intakeOff));
     }
-    if(indexerExists&&shooterExists&&angleShooterExists) {
-      // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE)));
-      // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS)));
-      // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED)));
-      new Trigger(driverController::getCircleButton).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS)));
-
-    }
+    if(indexerExists&&shooterExists&&angleShooterExists) {}
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {
         return true;
@@ -271,11 +268,14 @@ public class RobotContainer {
  *    D-Pad down: move shooter up manually (hold)
  *    R1: aim shooter at amp (hold)
  *    Options button: collect note from human player
- *    Triangle: move climber up (hold)
  *    Square: auto-pick up note
- *    Cross: manually pull down with climber (hold)
  *    Touchpad: manually turn on Intake (hold) [only works if intake code doesn't exist in IndexCommand]
  *    L1,L2,R1,R2 held: aim shooter at speaker and set shooter to shooter speed
+ * 
+ *  operator:
+ *    Triangle: climber up (hold)
+ *    Cross: climber down (hold)
+ *    R1: auto pickup note from ground (hold)
  *    
  */
 //FOR TESTING PURPOSES:

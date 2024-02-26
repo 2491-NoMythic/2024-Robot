@@ -27,12 +27,13 @@ public class AimRobotMoving extends Command {
     DoubleSupplier translationXSupplier;
     DoubleSupplier translationYSupplier;
     BooleanSupplier run;
-    BooleanSupplier cancel;
+    BooleanSupplier cancel1;
+    BooleanSupplier cancel2;
     DoubleSupplier rotationSupplier;
     double rotationSpeed;
     double allianceOffset;
     
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier cancel){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier cancel1, BooleanSupplier cancel2){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -43,7 +44,8 @@ public class AimRobotMoving extends Command {
           this.translationXSupplier = translationXSupplier;
           this.translationYSupplier = translationYSupplier;
           this.rotationSupplier = rotationSupplier;
-          this.cancel = cancel;
+          this.cancel1 = cancel1;
+          this.cancel2 = cancel2;
           this.run = run;
           addRequirements(drivetrain);
         }
@@ -100,6 +102,6 @@ public class AimRobotMoving extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!run.getAsBoolean() || cancel.getAsBoolean());
+    return (!run.getAsBoolean() || cancel1.getAsBoolean() || cancel2.getAsBoolean());
   }
 }

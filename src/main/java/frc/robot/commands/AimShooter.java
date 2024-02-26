@@ -14,18 +14,15 @@ public class AimShooter extends Command {
 	DoubleSupplier POVSupplier;
 	BooleanSupplier humanPlayerSupplier;
 	BooleanSupplier SubwooferSupplier1;
-	BooleanSupplier SubwooferSupplier2;
-	BooleanSupplier SubwooferSupplier3;
+	BooleanSupplier StageAngleSupplier;
 
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier SubwooferSupplier2, BooleanSupplier SubwooferSupplier3) {
-		addRequirements(angleShooterSubsystem); 
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier)
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;
 		this.SubwooferSupplier1 = SubwooferSupplier1;
-		this.SubwooferSupplier2 = SubwooferSupplier2;
-		this.SubwooferSupplier3 = SubwooferSupplier3;
+		this.StageAngleSupplier = StageAngleSupplier;
 	}
 
 	@Override
@@ -35,9 +32,12 @@ public class AimShooter extends Command {
 
 	@Override
 	public void execute() {
-		if(SubwooferSupplier1.getAsBoolean()&&SubwooferSupplier2.getAsBoolean()&&SubwooferSupplier3.getAsBoolean()) {
+		if(SubwooferSupplier1.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
 		} else {
+			if (StageAngleSupplier.getAsBoolean()) {
+				angleShooterSubsystem.setDesiredShooterAngle(Field.STAGE_ANGLE);
+			}
 			if (POVSupplier.getAsDouble() == 90 || POVSupplier.getAsDouble() == 45 || POVSupplier.getAsDouble() == 135) {
 				angleShooterSubsystem.setDesiredShooterAngle(SmartDashboard.getNumber("amp angle", Field.AMPLIFIER_ANGLE)/*Field.AMPLIFIER_ANGLE*/);
 			} else {
