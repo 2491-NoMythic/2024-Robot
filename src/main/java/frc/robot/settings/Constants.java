@@ -269,7 +269,7 @@ public static final class ShooterConstants{
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
   public static final double ALLOWED_SPEED_ERROR = 4;
 
-  public static final double CURRENT_LIMIT = 200; //amps the motor is limited to
+  public static final double CURRENT_LIMIT = 100; //amps the motor is limited to
 
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
