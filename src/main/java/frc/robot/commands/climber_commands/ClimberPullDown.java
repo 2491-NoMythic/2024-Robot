@@ -5,7 +5,6 @@
 package frc.robot.commands.climber_commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.subsystems.Climber;
 
 public class ClimberPullDown extends Command {

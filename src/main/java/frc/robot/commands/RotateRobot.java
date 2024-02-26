@@ -1,19 +1,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import static frc.robot.settings.Constants.DriveConstants.*;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kD;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kI;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kP;
-import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_SHOOTER_kP;
-
 import java.util.function.DoubleSupplier;
 
 public class RotateRobot extends Command {

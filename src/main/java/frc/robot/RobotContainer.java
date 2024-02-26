@@ -5,58 +5,34 @@
 package frc.robot;
 
 import static frc.robot.settings.Constants.PS4Driver.*;
-import static frc.robot.settings.Constants.PS4Operator.*;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
-import static frc.robot.settings.Constants.ShooterConstants.SHORT_SHOOTING_RPS;
-
-import java.nio.file.Path;
-import java.time.Instant;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import org.littletonrobotics.urcl.URCL;
-
 import static frc.robot.settings.Constants.DriveConstants.*;
 
-import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.hardware.Pigeon2;
-import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import frc.robot.commands.AimShooter;
 import frc.robot.commands.AimRobotMoving;
-import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.CollectNote;
 import frc.robot.commands.Drive;
 import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.ConditionalIndexer;
-import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.commands.IndexCommand;
 import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
-import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.IntakeConstants;
-import frc.robot.settings.Constants.PathConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
-import frc.robot.commands.RotateRobot;
-import frc.robot.commands.autoAimParallel;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
 import frc.robot.commands.goToPose.GoToAmp;
-import frc.robot.commands.goToPose.GoToClimbSpot;
-import frc.robot.commands.climber_commands.AutoClimb;
-import frc.robot.commands.climber_commands.ClimberPullDown;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -68,8 +44,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -77,19 +51,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import frc.robot.commands.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import frc.robot.commands.ManualShoot;
 import frc.robot.commands.AngleShooter;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.settings.IntakeDirection;
 
 
 /**
@@ -108,7 +75,7 @@ public class RobotContainer {
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
   private final boolean lightsExist = Preferences.getBoolean("Lights", true);
   private final boolean indexerExists = Preferences.getBoolean("Indexer", true);
-  private final boolean autosExist = Preferences.getBoolean("Autos", true);
+  //private final boolean autosExist = Preferences.getBoolean("Autos", true);
   private final boolean useDetectorLimelight = Preferences.getBoolean("Detector Limelight", true);
 
   private DrivetrainSubsystem driveTrain;
@@ -119,16 +86,13 @@ public class RobotContainer {
   private Climber climber;
   private Lights lights;
   private PS4Controller driverController;
-  private PS4Controller operatorController;
+  //private PS4Controller operatorController;
   private Limelight limelight;
-  private IntakeDirection iDirection;
-  private Pigeon2 pigeon;
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
   private AimShooter defaultShooterAngleCommand;
   private SendableChooser<String> climbSpotChooser;
   private SendableChooser<Command> autoChooser;
-  private DoubleSupplier angleSup;
   private PowerDistribution PDP;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -153,8 +117,7 @@ public class RobotContainer {
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
     // SignalLogger.start();
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
-    operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
-    pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
+    //operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     PDP = new PowerDistribution(1, ModuleType.kRev);
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
@@ -370,9 +333,6 @@ public class RobotContainer {
     return value;
   }
 
-  private double getAmpAngle() {
-    return Constants.Field.AMPLIFIER_ANGLE;
-  }
   private void configureDriveTrain() {
     AutoBuilder.configureHolonomic(
                 driveTrain::getPose, // Pose2d supplier
