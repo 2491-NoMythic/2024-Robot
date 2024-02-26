@@ -38,6 +38,7 @@ public class LimelightValues {
         public LimelightValues(Results llresults, boolean valid){
             this.llresults = llresults;
             this.isResultValid = valid;
+            this.tagDistance = 30;
             if (isResultValid) {
                 this.numTags = llresults.targets_Fiducials.length;
                 for (int i = 0; i < numTags; i++) {
@@ -48,6 +49,7 @@ public class LimelightValues {
                 }
                 this.botPoseRed = llresults.getBotPose2d_wpiRed();
                 this.botPoseBlue = llresults.getBotPose2d_wpiBlue();
+                this.tagDistance = calculateTagDistance();
                 // SmartDashboard.putNumber("VISION dist to apriltag [0]", tagDistance);
                 // SmartDashboard.putNumber("VISION dist to apriltag [1]", llresults.targets_Fiducials[1].getTargetPose_RobotSpace2D().getTranslation().getNorm());
                 // SmartDashboard.putNumber("VISION dist to apriltag [2]", llresults.targets_Fiducials[2].getTargetPose_RobotSpace2D().getTranslation().getNorm());
@@ -67,21 +69,25 @@ public class LimelightValues {
         public Pose2d getBotPoseBlue() {
             return botPoseBlue;
         }
-        public double calculateTagDistance(String limelightName) {
-            double targetOffsetAngle_Vertical = NetworkTableInstance.getDefault().getTable(limelightName).getEntry("ty").getDouble(20);
+        public double calculateTagDistance() {
+            if(isResultValid) {
+                double targetOffsetAngle_Vertical = getty(0);
 
-            double angleToGoalRadians = Math.toRadians(limelightMountAngleDegrees + targetOffsetAngle_Vertical);
-            //calculate distance
-            double distanceFromLimelightToGoalInches = (Vision.AprilTagHeight - Vision.limelightLensHeightInches) / Math.tan(angleToGoalRadians);
-            return distanceFromLimelightToGoalInches;
+                double angleToGoalRadians = Math.toRadians(limelightMountAngleDegrees + targetOffsetAngle_Vertical);
+                //calculate distance
+                double distanceFromLimelightToGoalInches = (Vision.AprilTagHeight - Vision.limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+                return distanceFromLimelightToGoalInches;
+            } else {
+                return 30;
+            }
         }
         // public double getTagDistance() {
         //     return tagDistance;
         // }
-        public boolean isPoseTrustworthy(Pose2d robotPose){
+        public boolean isPoseTrustworthy(){
             Pose2d poseEstimate = this.botPoseBlue;
             if ((poseEstimate.getX()<fieldCorner.getX() && poseEstimate.getY()<fieldCorner.getY()) //Don't trust estimations that are outside the field perimeter.
-                && tagDistance<=MAX_TAG_DISTANCE) { //Dont trust pose estimations if the april tag is more than X meters away
+                && calculateTagDistance()<=MAX_TAG_DISTANCE) { //Dont trust pose estimations if the april tag is more than X meters away
                 return true;
             } else {
                 return false;
