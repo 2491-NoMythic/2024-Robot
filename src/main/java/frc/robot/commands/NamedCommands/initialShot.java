@@ -20,7 +20,7 @@ public class initialShot extends Command {
   public initialShot(ShooterSubsystem shooter, IndexerSubsystem indexer, double revTime, double shootTime) {
     this.indexer = indexer;
     this.shooter = shooter;
-    this.revtime = revtime;
+    this.revtime = revTime;
     this.shootTime = shootTime;
     timer = new Timer();
     addRequirements(shooter, indexer);
@@ -30,7 +30,9 @@ public class initialShot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
     timer.start();
+    indexer.off();
     shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
   }
 
