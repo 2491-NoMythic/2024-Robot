@@ -240,7 +240,7 @@ public static final class ShooterConstants{
   
   public static final double LONG_SHOOTING_RPS = 90;
   public static final double SHORT_SHOOTING_RPS = 80;
-  public static final double AMP_RPS = 7.5;
+  public static final double AMP_RPS = 8.5;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
@@ -260,7 +260,7 @@ public static final class ShooterConstants{
   public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
   public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
-  public static final double MAXIMUM_SHOOTER_ANGLE = 104;//still has to be found
+  public static final double MAXIMUM_SHOOTER_ANGLE = 108;//still has to be found
   public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
 
@@ -309,7 +309,7 @@ public static final class IndexerConstants{
   public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
-  public static final double INDEXER_AMP_SPEED = 0.4;
+  public static final double INDEXER_AMP_SPEED = 0.8;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
@@ -401,7 +401,7 @@ public static final class CTREConfigs {
     public static final double MAX_SHOOTING_DISTANCE = 2491;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
-    public static final double AMPLIFIER_ANGLE = 101;
+    public static final double AMPLIFIER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 55;
     //angle at 60 for bounce techinque, didn't work
   }
