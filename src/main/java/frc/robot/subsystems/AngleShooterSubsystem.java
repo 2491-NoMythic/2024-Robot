@@ -4,6 +4,7 @@ import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 
 import java.util.Optional;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,7 +45,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		absoluteEncoder = pitchMotor.getAbsoluteEncoder(Type.kDutyCycle);
 		absoluteEncoder.setPositionConversionFactor(360);
 		absoluteEncoder.setInverted(true);
-		absoluteEncoder.setZeroOffset(ANGLE_ENCODER_ZERO_OFFSET);
+		absoluteEncoder.setZeroOffset(Preferences.getDouble("ZeroOffsetShooterAngle", 0.0));
 
 		pitchPID = pitchMotor.getPIDController();
 		pitchPID.setFeedbackDevice(absoluteEncoder);
@@ -124,7 +126,8 @@ public class AngleShooterSubsystem extends SubsystemBase {
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
 		double desiredShooterAngle = Math
 				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalOffsetDistToSpeaker));
-		desiredShooterAngle = desiredShooterAngle+(Math.pow(offsetSpeakerdist, 2)*DISTANCE_MULTIPLIER);
+		// desiredShooterAngle = desiredShooterAngle+(Math.pow(offsetSpeakerdist, 2)*DISTANCE_MULTIPLIER);
+		desiredShooterAngle = adjustAngleForDistance(desiredShooterAngle, offsetSpeakerdist);
 		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
 			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;
 		}
@@ -141,6 +144,14 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		return desiredShooterAngle;
 	}
 
+	private double adjustAngleForDistance(double initialAngle, double distance) {
+		double errorMeters = Math.pow(distance, ADJUST_EQUATION_A) + ADJUST_EQUATION_B;
+		if (errorMeters>0) {
+			return initialAngle + Math.toDegrees(Math.atan(errorMeters/distance));
+		} else {
+			return initialAngle;
+		}
+	}
 	public boolean shortSpeakerDist() {
 		return speakerDistGlobal<=Field.SHORT_RANGE_SHOOTING_DIST;
 	}

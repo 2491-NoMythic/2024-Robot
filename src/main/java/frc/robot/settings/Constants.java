@@ -299,6 +299,10 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
 
+  public static final double ADJUST_EQUATION_A = 1.14168;
+  public static final double ADJUST_EQUATION_B = -1.22979;
+
+
 
  
 
