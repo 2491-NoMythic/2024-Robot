@@ -20,16 +20,11 @@ import static frc.robot.settings.Constants.DriveConstants.FR_DRIVE_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
 import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
-import static frc.robot.settings.Constants.*;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
-import javax.swing.text.html.Option;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -48,17 +43,13 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
 import frc.robot.commands.AngleShooter;
-import frc.robot.commands.Drive;
 import frc.robot.commands.RotateRobot;
 import frc.robot.settings.Constants;
 import frc.robot.settings.LimelightValues;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Vision;
-import frc.robot.settings.Constants.DriveConstants.Offsets;
-import frc.robot.settings.Constants.DriveConstants.Positions;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 

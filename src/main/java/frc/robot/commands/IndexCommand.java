@@ -10,14 +10,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.ShooterConstants;
-import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -41,9 +38,6 @@ public class IndexCommand extends Command {
   AngleShooterSubsystem angleShooterSubsytem;
   boolean auto;
   double runsEmpty = 0;
-  BooleanSupplier SubwooferSupplier1;
-  BooleanSupplier SubwooferSupplier2;
-  BooleanSupplier SubwooferSupplier3;
 
   /** Creates a new IndexCommand. */
   public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, DoubleSupplier ampSupplier) {
@@ -56,9 +50,6 @@ public class IndexCommand extends Command {
     this.ampSupplier = ampSupplier;
     this.angleShooterSubsytem = angleShooterSubsystem;
     this.humanPlayerSupplier = humanPlaySupplier;//R1
-    this.SubwooferSupplier1 = SubwooferSupplier1;
-    this.SubwooferSupplier2 = SubwooferSupplier2;
-    this.SubwooferSupplier3 = SubwooferSupplier3;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);

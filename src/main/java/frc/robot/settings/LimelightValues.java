@@ -11,15 +11,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.Results;
+
 import frc.robot.settings.Constants.Vision;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.settings.Constants.Vision.MAX_TAG_DISTANCE;
 import static frc.robot.settings.Constants.Vision.APRILTAG_CLOSENESS;
 import static frc.robot.settings.Constants.Vision.limelightLensHeightInches;
 import static frc.robot.settings.Constants.Vision.limelightMountAngleDegrees;
 import static frc.robot.settings.Constants.Vision.AprilTagHeight;
-
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 /** Add your docs here. */
 public class LimelightValues {

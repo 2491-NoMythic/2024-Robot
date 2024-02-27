@@ -5,12 +5,8 @@
 package frc.robot.subsystems;
 
  import com.revrobotics.CANSparkMax;
- import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkAnalogSensor;
+ import com.revrobotics.SparkAnalogSensor;
 import com.revrobotics.SparkAnalogSensor.Mode;
-import com.revrobotics.SparkPIDController;
- import com.revrobotics.SparkRelativeEncoder;
- import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
