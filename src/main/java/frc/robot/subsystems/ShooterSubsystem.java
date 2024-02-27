@@ -3,12 +3,17 @@
  // the WPILib BSD license file in the root directory of this project.
  
  package frc.robot.subsystems;
- import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+ import static frc.robot.settings.Constants.ShooterConstants.RightkP;
+
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.RelativeEncoder;
  import frc.robot.commands.AngleShooter;
@@ -30,14 +35,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 	 double m_DesiredShooterAngle;
  
   CurrentLimitsConfigs currentLimitConfigs;
-   Slot0Configs PIDconfigs = new Slot0Configs();
-      double kP = Constants.ShooterConstants.kP;         
-   double kI = Constants.ShooterConstants.kI;         
-   double kD = Constants.ShooterConstants.kD;         
-   double kIz = Constants.ShooterConstants.kIz;         
-   double kFF = Constants.ShooterConstants.kFF;         
-   double kMaxOutput = Constants.ShooterConstants.kMaxOutput;         
-   double kMinOutput = Constants.ShooterConstants.kMinOutput; 
+   Slot0Configs PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.RightkP).withKV(ShooterConstants.RightkFF);
+   Slot0Configs PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.LeftkP).withKV(ShooterConstants.LeftkFF);
  
    RelativeEncoder encoder1;
 
@@ -54,53 +53,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     runsValid = 0;
     shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
     shooterL = new TalonFX(ShooterConstants.SHOOTER_L_MOTORID);
+    shooterL.getConfigurator().apply(new TalonFXConfiguration());
+    shooterR.getConfigurator().apply(new TalonFXConfiguration());
     shooterL.setInverted(true);
     shooterR.setInverted(false);
     shooterL.setControl(shooterR.getAppliedControl());
     shooterL.setNeutralMode(NeutralModeValue.Coast);
     shooterR.setNeutralMode(NeutralModeValue.Coast);
-    PIDconfigs = new Slot0Configs();
     
     configuratorR = shooterR.getConfigurator();
     configuratorL = shooterL.getConfigurator();
+    configuratorL.apply(new FeedbackConfigs().withSensorToMechanismRatio(1).withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor).withRotorToSensorRatio(1));
+    configuratorR.apply(new FeedbackConfigs().withSensorToMechanismRatio(0.5).withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor).withRotorToSensorRatio(1));
     
     currentLimitConfigs = new CurrentLimitsConfigs();
     currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.CURRENT_LIMIT;
     currentLimitConfigs.SupplyCurrentLimitEnable = true;
     configuratorL.apply(currentLimitConfigs);
     configuratorR.apply(currentLimitConfigs);
-
-    PIDconfigs.kP = kP;
-    PIDconfigs.kI = kI;
-    PIDconfigs.kD = kD;
-    PIDconfigs.kV = kFF;
     
-     SmartDashboard.putNumber("P Gain", Constants.ShooterConstants.kP);
-     SmartDashboard.putNumber("I Gain", Constants.ShooterConstants.kI);
-     SmartDashboard.putNumber("D Gain",Constants.ShooterConstants.kD);
-     SmartDashboard.putNumber("I Zone",Constants.ShooterConstants.kIz);
-     SmartDashboard.putNumber("Feed Forward",Constants.ShooterConstants.kFF);
-     SmartDashboard.putNumber("Max Output",Constants.ShooterConstants.kMaxOutput);
-     SmartDashboard.putNumber("Min Output",Constants.ShooterConstants.kMinOutput);
-     SmartDashboard.putNumber("Set Velocity", runSpeed);
- 
-     double p = SmartDashboard.getNumber("P Gain", 0);
-     double i = SmartDashboard.getNumber("I Gain", 0);
-     double d = SmartDashboard.getNumber("D Gain", 0);
-     //double iz = SmartDashboard.getNumber("I Zone", 0);
-     double ff = SmartDashboard.getNumber("Feed Forward", 0);
-     //double max = SmartDashboard.getNumber("Max Output", 0);
-     //double min = SmartDashboard.getNumber("Min Output", 0);   
-     //double ve = SmartDashboard.getNumber("Set Velocity", 0);
-     
-     
-     if((p != kP)) {PIDconfigs.kP = p; kP = p; }
-     if((i != kI)) {PIDconfigs.kI = i; kI = i; }
-     if((d != kD)) {PIDconfigs.kD = d; kD = d; }
-     
-     if((ff != kFF)) {PIDconfigs.kS = ff; kFF = ff;}
-     configuratorR.apply(PIDconfigs);
-     configuratorL.apply(PIDconfigs);
+     configuratorR.apply(PIDRightconfigs);
+     configuratorL.apply(PIDLeftconfigs);
     }
    
     

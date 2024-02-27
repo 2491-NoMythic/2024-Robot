@@ -265,18 +265,23 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
 
   public static final double ADJUST_EQUATION_A = 1.14168;
-  public static final double ADJUST_EQUATION_B = -1.22979;
+  public static final double COMP_ADJUST_EQUATION_B = -1.3;
+  public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
 
 
 
  
 
   //PID coefficients for shooter:
-  public static final double kP = 0.128;
-  public static final double kI = 0;
-  public static final double kD = 0;
+  public static final double PrackP = 0.128;
+  public static final double PrackFF  = 0.009;
+  // public static final double kI = 0;
+  // public static final double kD = 0;
   public static final double kIz = 0;
-  public static final double kFF = 0.009;
+  public static final double CompRightkFF = 0.0073;
+  public static final double CompLeftkFF = 0.012;
+  public static final double CompRightkP = 0.012;
+  public static final double CompLeftkP = 0.012;
   public static final double kMaxOutput = 1;
   public static final double kMinOutput = -1;
 
