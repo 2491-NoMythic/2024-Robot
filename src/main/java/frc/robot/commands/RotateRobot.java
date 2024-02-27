@@ -45,12 +45,12 @@ public class RotateRobot extends Command {
       @Override
       public void execute() {
         //move robot to desired angle
-        this.currentHeading = m_drivetrain.getHeadingDegrees();
+        this.currentHeading = m_drivetrain.getPose().getRotation().getDegrees();
 
         differenceAngle = (desiredRobotAngle - this.currentHeading);
         m_drivetrain.drive(new ChassisSpeeds(0, 0, speedController.calculate(differenceAngle)));
 
-        SmartDashboard.putNumber("current Heading", m_drivetrain.getHeadingDegrees()%360);
+        SmartDashboard.putNumber("current Heading", m_drivetrain.getPose().getRotation().getDegrees()%360);
         SmartDashboard.putNumber("difference", differenceAngle);
         SmartDashboard.putNumber("desired angle", desiredRobotAngle);
         SmartDashboard.putNumber("PID calculated output", speedController.calculate(differenceAngle));

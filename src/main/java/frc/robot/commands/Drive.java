@@ -50,7 +50,7 @@ public class Drive extends Command {
                     translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
                     translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
                     rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-                    drivetrain.getGyroscopeRotation()
+                    drivetrain.getPose().getRotation()
                 )
             );
         }
