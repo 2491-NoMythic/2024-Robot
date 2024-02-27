@@ -420,7 +420,7 @@ public class RobotContainer {
     logPower();
   }
   public void disabledPeriodic() {
-  
+  SmartDashboard.putBoolean("Test Mode", DriverStation.isTest());
   }
 
   public void disabledInit() {
