@@ -111,7 +111,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Preferences.initDouble("BR offset", 0);
 		PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
 		SmartDashboard.putData("Field", field);
-		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
+		SmartDashboard.putData("resetOdometry", new InstantCommand(this::resetOdometry));
 		SmartDashboard.putBoolean("force use limelight", false);
 		modules = new SwerveModule[4];
 
