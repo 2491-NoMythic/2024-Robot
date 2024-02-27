@@ -30,7 +30,9 @@ public class initialShot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
     timer.start();
+    indexer.off();
     shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
   }
 

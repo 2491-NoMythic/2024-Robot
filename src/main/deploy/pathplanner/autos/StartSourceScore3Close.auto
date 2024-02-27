@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3070140425995143,
-      "y": 5.673210203563265
+      "x": 0.6766573533147072,
+      "y": 4.41249682499365
     },
-    "rotation": -120.96375653207352
+    "rotation": 121.42956561483847
   },
   "command": {
     "type": "sequential",
@@ -32,31 +32,31 @@
         {
           "type": "path",
           "data": {
+            "pathName": "CloseSourcePickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CloseMiddlePickupFromSource"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "conditionlIndexer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "CloseAmpPickup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "conditionlIndexer"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CloseMiddlePickupFromAmp"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "conditionlIndexer"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CloseSourcePickupFromMiddle"
           }
         }
       ]
