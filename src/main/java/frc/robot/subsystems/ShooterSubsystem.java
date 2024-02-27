@@ -3,7 +3,7 @@
  // the WPILib BSD license file in the root directory of this project.
  
  package frc.robot.subsystems;
- 
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -19,6 +19,7 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.commands.RotateRobot;
 import frc.robot.settings.Constants;
 import  frc.robot.settings.Constants.ShooterConstants;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
  
@@ -34,9 +35,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 	 double m_DesiredShooterAngle;
  
   CurrentLimitsConfigs currentLimitConfigs;
-   Slot0Configs PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF);
-   Slot0Configs PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF);
- 
+   Slot0Configs PIDLeftconfigs; 
+   Slot0Configs PIDRightconfigs; 
    RelativeEncoder encoder1;
 
    //speaker angle calculating variables:
@@ -49,6 +49,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
   
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
+    if(Preferences.getBoolean("CompBot", true)) {
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF);
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF);
+  } else {
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PrackP).withKV(ShooterConstants.PrackFF);
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PrackP).withKV(ShooterConstants.PrackFF);
+    }
     runsValid = 0;
     shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
     shooterL = new TalonFX(ShooterConstants.SHOOTER_L_MOTORID);

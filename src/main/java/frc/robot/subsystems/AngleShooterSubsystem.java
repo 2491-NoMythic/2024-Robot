@@ -45,7 +45,11 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		absoluteEncoder = pitchMotor.getAbsoluteEncoder(Type.kDutyCycle);
 		absoluteEncoder.setPositionConversionFactor(360);
 		absoluteEncoder.setInverted(true);
-		absoluteEncoder.setZeroOffset(Preferences.getDouble("ZeroOffsetShooterAngle", 0.0));
+		if(Preferences.getBoolean("CompBot", false)) {
+			absoluteEncoder.setZeroOffset(CompBotZeroOffset);
+		} else {
+			absoluteEncoder.setZeroOffset(PracBotZeroOffset);
+		}
 
 		pitchPID = pitchMotor.getPIDController();
 		pitchPID.setFeedbackDevice(absoluteEncoder);
