@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
+import pabeles.concurrency.IntOperatorTask.Max;
 
 import java.util.Optional;
 
@@ -62,7 +63,11 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	}
 	
 	public void setDesiredShooterAngle(double degrees) {
-		if(degrees>MAXIMUM_SHOOTER_ANGLE) {degrees = MAXIMUM_SHOOTER_ANGLE;}
+		double MaxAngle = COMP_MAXIMUM_SHOOTER_ANGLE;
+		if(!Preferences.getBoolean("CompBot", true)) {
+			MaxAngle = PRAC_MAXIMUM_SHOOTER_ANGLE;
+		}
+		if(degrees>MaxAngle) {degrees = COMP_MAXIMUM_SHOOTER_ANGLE;}
 		if(degrees<MINIMUM_SHOOTER_ANGLE) {degrees = MINIMUM_SHOOTER_ANGLE;}
 		pitchPID.setFF(Math.cos(Math.toRadians(degrees))*ShooterConstants.pitchFeedForward);
 		pitchPID.setReference(
@@ -136,8 +141,8 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
 			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;
 		}
-		if(desiredShooterAngle>ShooterConstants.MAXIMUM_SHOOTER_ANGLE) {
-			desiredShooterAngle = ShooterConstants.MAXIMUM_SHOOTER_ANGLE;
+		if(desiredShooterAngle>ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE) {
+			desiredShooterAngle = ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE;
 		}
 		SmartDashboard.putNumber("desired shooter angle", desiredShooterAngle);
 		
