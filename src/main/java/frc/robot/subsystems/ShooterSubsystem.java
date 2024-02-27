@@ -3,8 +3,7 @@
  // the WPILib BSD license file in the root directory of this project.
  
  package frc.robot.subsystems;
- import static frc.robot.settings.Constants.ShooterConstants.RightkP;
-
+ 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -35,8 +34,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 	 double m_DesiredShooterAngle;
  
   CurrentLimitsConfigs currentLimitConfigs;
-   Slot0Configs PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.RightkP).withKV(ShooterConstants.RightkFF);
-   Slot0Configs PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.LeftkP).withKV(ShooterConstants.LeftkFF);
+   Slot0Configs PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF);
+   Slot0Configs PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF);
  
    RelativeEncoder encoder1;
 
