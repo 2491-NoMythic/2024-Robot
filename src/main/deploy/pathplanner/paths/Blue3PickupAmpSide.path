@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.665673221827673,
-        "y": 7.19589929449488
+        "x": 8.240937624732393,
+        "y": 5.731848035124642
       },
       "isLocked": false,
       "linkedName": "SourceSideShoot"
     },
     {
       "anchor": {
-        "x": 8.006386298486884,
-        "y": 4.485794114445372
+        "x": 8.29957545629377,
+        "y": 4.089988751406074
       },
       "prevControl": {
-        "x": 7.4979276239118775,
-        "y": 5.280838587417197
+        "x": 7.449326898653798,
+        "y": 4.764323814361915
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
+      "waypointRelativePos": 0.95,
       "rotationDegrees": 127.97,
       "rotateFast": true
     }

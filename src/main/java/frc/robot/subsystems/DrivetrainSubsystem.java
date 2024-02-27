@@ -423,13 +423,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					Boolean isLL2VisionValid = ll2.isResultValid;
 					Boolean isLL3VisionValid = ll3.isResultValid;
 					if(isLL2VisionValid) {
-						SmartDashboard.putNumber("VISION left LL tag [0] distance", ll2.getTagDistance());
+						SmartDashboard.putNumber("VISION left LL tag [0] distance", ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT2_NAME));
 					}
 					if(isLL3VisionValid) {
-						SmartDashboard.putNumber("VISION right LL tag [0] distance", ll3.getTagDistance());
+						SmartDashboard.putNumber("VISION right LL tag [0] distance", ll3.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
 					}
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
-					Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(odometer.getEstimatedPosition());
+					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT2_NAME));
+					Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(ll3.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
 					SmartDashboard.putBoolean("LL2visionValid", isLL2VisionTrustworthy);
 					SmartDashboard.putBoolean("LL3visionValid", isLL3VisionTrustworthy);
 					if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
@@ -438,7 +438,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				} else {
 					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
 					Boolean isLL2VisionValid = ll2.isResultValid;
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
+					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
 					if (isLL2VisionTrustworthy) {
 						updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());
 					}

@@ -232,7 +232,7 @@ public static final class ShooterConstants{
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
   public static final double ALLOWED_SPEED_ERROR = 4;
 
-  public static final double CURRENT_LIMIT = 200; //amps the motor is limited to
+  public static final double CURRENT_LIMIT = 100; //amps the motor is limited to
 
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
@@ -403,7 +403,7 @@ public final class Vision{
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
   
   public static final double APRILTAG_CLOSENESS = 0.5;
-  public static final double MAX_TAG_DISTANCE = 3.05;
+  public static final double MAX_TAG_DISTANCE = 2.3;
 
   public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
 
@@ -414,6 +414,13 @@ public final class Vision{
   public static final double K_DETECTOR_TY_P = 0.1;
   public static final double K_DETECTOR_TY_I = 0;
   public static final double K_DETECTOR_TY_D = 0;
+
+  // how many degrees back is your limelight rotated from perfectly vertical?
+  public static final double limelightMountAngleDegrees = 22.0;
+  // distance from the center of the Limelight lens to the floor
+  public static final double limelightLensHeightInches = 0.233; 
+  //height of april tags from the floor
+  public static final double AprilTagHeight = 1.335;
 }
 public final class PathConstants{
   //Welcome, to  Pathconstantic Park

@@ -11,8 +11,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.Results;
+
+import frc.robot.settings.Constants.Vision;
 import static frc.robot.settings.Constants.Vision.MAX_TAG_DISTANCE;
 import static frc.robot.settings.Constants.Vision.APRILTAG_CLOSENESS;
+import static frc.robot.settings.Constants.Vision.limelightLensHeightInches;
+import static frc.robot.settings.Constants.Vision.limelightMountAngleDegrees;
+import static frc.robot.settings.Constants.Vision.AprilTagHeight;
 
 /** Add your docs here. */
 public class LimelightValues {
@@ -31,13 +36,14 @@ public class LimelightValues {
         public LimelightValues(Results llresults, boolean valid){
             this.llresults = llresults;
             this.isResultValid = valid;
+            this.tagDistance = 30;
             if (isResultValid) {
                 this.numTags = llresults.targets_Fiducials.length;
                 for (int i = 0; i < numTags; i++) {
                     this.tx[i] = llresults.targets_Fiducials[i].tx;
                     this.ty[i] = llresults.targets_Fiducials[i].ty;
                     this.ta[i] = llresults.targets_Fiducials[i].ta;
-                    this.tagDistance = llresults.targets_Fiducials[0].getTargetPose_RobotSpace2D().getTranslation().getNorm();
+                    // this.tagDistance = llresults.targets_Fiducials[0].getTargetPose_RobotSpace2D().getTranslation().getNorm();
                 }
                 this.botPoseRed = llresults.getBotPose2d_wpiRed();
                 this.botPoseBlue = llresults.getBotPose2d_wpiBlue();
@@ -60,14 +66,25 @@ public class LimelightValues {
         public Pose2d getBotPoseBlue() {
             return botPoseBlue;
         }
-        public double getTagDistance() {
-            return tagDistance;
+        public double calculateTagDistance(String limelightName) {
+            if(isResultValid) {
+                double targetOffsetAngle_Vertical = NetworkTableInstance.getDefault().getTable(limelightName).getEntry("ty").getDouble(0.0);
+
+                double angleToGoalRadians = Math.toRadians(limelightMountAngleDegrees + targetOffsetAngle_Vertical);
+                //calculate distance
+                double distanceFromLimelightToGoalInches = (Vision.AprilTagHeight - Vision.limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+                return distanceFromLimelightToGoalInches;
+            } else {
+                return 30;
+            }
         }
-        public boolean isPoseTrustworthy(Pose2d robotPose){
+        // public double getTagDistance() {
+        //     return tagDistance;
+        // }
+        public boolean isPoseTrustworthy(double tagDist){
             Pose2d poseEstimate = this.botPoseBlue;
             if ((poseEstimate.getX()<fieldCorner.getX() && poseEstimate.getY()<fieldCorner.getY()) //Don't trust estimations that are outside the field perimeter.
-                && robotPose.getTranslation().getDistance(poseEstimate.getTranslation()) < APRILTAG_CLOSENESS//Dont trust pose estimations that are more than half a meter from current pose.
-                && tagDistance<=MAX_TAG_DISTANCE) { //Dont trust pose estimations if the april tag is more than X meters away
+                && tagDist<=MAX_TAG_DISTANCE) { //Dont trust pose estimations if the april tag is more than X meters away
                 return true;
             } else {
                 return false;
