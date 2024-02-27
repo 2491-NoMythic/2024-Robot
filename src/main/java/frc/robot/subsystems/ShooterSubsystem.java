@@ -50,10 +50,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
     if(Preferences.getBoolean("CompBot", true)) {
-      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF);
+      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF);
       PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF);
   } else {
-      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PrackP).withKV(ShooterConstants.PrackFF);
+      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PrackP).withKV(ShooterConstants.PrackFF);
       PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PrackP).withKV(ShooterConstants.PrackFF);
     }
     runsValid = 0;
