@@ -6,6 +6,9 @@ package frc.robot;
 
 import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
+
+import java.util.function.BooleanSupplier;
+
 import static frc.robot.settings.Constants.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -96,6 +99,20 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
   private PowerDistribution PDP;
 
+  BooleanSupplier ZeroGyroSup;
+  BooleanSupplier AimWhileMovingSup;
+  BooleanSupplier ShootIfReadySup;
+  BooleanSupplier SubwooferAngleSup;
+  BooleanSupplier StageAngleSup;
+  BooleanSupplier HumanPlaySup;
+  BooleanSupplier AmpAngleSup;
+  BooleanSupplier SourcePickupSup;
+  BooleanSupplier ClimberDownSup;
+  BooleanSupplier ClimberUpSup;
+  BooleanSupplier ShooterUpManualSup;
+  BooleanSupplier ManualShootSup;
+  BooleanSupplier ForceVisionSup;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -121,6 +138,19 @@ public class RobotContainer {
     operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
     //operatorController = new PS4Controller(OPERATOs_CONTROLLER_ID);
     PDP = new PowerDistribution(1, ModuleType.kRev);
+
+    ZeroGyroSup = driverController::getOptionsButton;
+    AimWhileMovingSup = driverController::getL2Button;
+    ShootIfReadySup = driverController::getR2Button;
+    SubwooferAngleSup = driverController::getCrossButton;
+    StageAngleSup = driverController::getTriangleButton;
+    HumanPlaySup = driverController::getR1Button;
+    AmpAngleSup = ()->driverController.getPOV() == 90;
+    ClimberDownSup = operatorController::getCrossButton;
+    ClimberUpSup = operatorController::getTriangleButton;
+    ShooterUpManualSup = ()->driverController.getPOV() == 0;
+    ManualShootSup = driverController::getL1Button;
+    ForceVisionSup = driverController::getOptionsButton;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -170,7 +200,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button, driverController::getCrossButton, driverController::getTriangleButton);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -183,7 +213,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -212,10 +242,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
-    new Trigger(driverController::getPSButton).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
+    new Trigger(ZeroGyroSup).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     // new Trigger(driverController::getCircleButton).whileTrue(new GoToAmp(driveTrain)); unused becuase we dont pickup from amp with a path anymore
-    new Trigger(driverController::getL2Button).whileTrue(new AimRobotMoving(
+    new Trigger(AimWhileMovingSup).whileTrue(new AimRobotMoving(
       driveTrain,
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
@@ -230,24 +261,23 @@ public class RobotContainer {
         new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
       ));
     }
-    new Trigger(driverController::getOptionsButton).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
-    new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
+    new Trigger(ForceVisionSup).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
     SmartDashboard.putData("force update limelight position", new InstantCommand(()->driveTrain.forceUpdateOdometryWithVision(), driveTrain));
     if(angleShooterExists) {
-      new Trigger(()->driverController.getPOV() == 180).whileTrue(new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.MAXIMUM_SHOOTER_ANGLE));
+      new Trigger(ShooterUpManualSup).whileTrue(new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.MAXIMUM_SHOOTER_ANGLE));
       SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.MAXIMUM_SHOOTER_ANGLE));
     }
     if(indexerExists) {
-      new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer, driverController::getPOV));
+      new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV));
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(operatorController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
-      new Trigger(operatorController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
+      new Trigger(ClimberDownSup).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
+      new Trigger(ClimberUpSup).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
       // new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
-      new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
+      new Trigger(AmpAngleSup).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
     }
     if(intakeExists) {
       new Trigger(driverController::getTouchpad).onTrue(new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED))).onFalse(new InstantCommand(intake::intakeOff));
