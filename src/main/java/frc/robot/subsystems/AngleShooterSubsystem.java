@@ -51,6 +51,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 			absoluteEncoder.setZeroOffset(PracBotZeroOffset);
 		}
 
+
 		pitchPID = pitchMotor.getPIDController();
 		pitchPID.setFeedbackDevice(absoluteEncoder);
 		pitchPID.setP(ANGLE_SHOOTER_POWER_KP);
