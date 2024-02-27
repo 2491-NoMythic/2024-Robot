@@ -98,7 +98,7 @@ public class IndexCommand extends Command {
             shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
           }
         } else {
-          shooter.shootRPS(SmartDashboard.getNumber("amp RPS", ShooterConstants.AMP_RPS)/*ShooterConstants.AMP_RPS*/);
+          shooter.turnOff();
         }
         boolean indexer = false;
         if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot()) {
