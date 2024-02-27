@@ -10,6 +10,7 @@ import com.revrobotics.SparkAnalogSensor.Mode;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -59,31 +60,32 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.burnFlash();
   }
 
-  public void intakeYes(double intakeRunSpeed) {
+  public void set(double intakeRunSpeed) {
+    if(DriverStation.isTest()){
+      intakeRunSpeed = intakeRunSpeed/4;
+    }
     intake1.set(intakeRunSpeed);
-    if(Preferences.getBoolean("Brushes", false)) {
+    if (Preferences.getBoolean("Brushes", false)) {
       brush1.set(intakeRunSpeed);
       brush2.set(intakeRunSpeed);
       brush3.set(intakeRunSpeed);
     }
-   
+
   }
+
   public void intakeNo(double intakeRunSpeed) {
-    intake1.set(-intakeRunSpeed);
-    if(Preferences.getBoolean("Brushes", false)) {
-      brush1.set(-intakeRunSpeed);
-      brush2.set(-intakeRunSpeed);
-      brush3.set(-intakeRunSpeed);
-    }
+    set(-intakeRunSpeed);
   }
+
   public void intakeOff() {
     intake1.set(0);
-    if(Preferences.getBoolean("Brushes", false)) {
-      brush2.set(0);
-      brush1.set(0);
-      brush3.set(0);
-    }
+
   }
+
+  public void intakeYes(double intakeRunSpeed) {
+    set(intakeRunSpeed);
+  }
+    
   public boolean isNoteIn() {
     return m_DistanceSensor.getVoltage()<2;
   }

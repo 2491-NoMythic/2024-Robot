@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch.Type;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.ClimberConstants;
@@ -53,7 +54,16 @@ public class Climber extends SubsystemBase {
     climbMotorR.burnFlash();
   }
  public void climberGo(double speed){
+  if(DriverStation.isTest())
+  {
+    runSpeed = speed/4;
+  }
+  else{
     runSpeed = speed;
+      }
+ 
+      
+
   // if (speed>0) {
   //   if(!hallEffectL.isPressed()) {
   //     climbMotorL.set(speed);

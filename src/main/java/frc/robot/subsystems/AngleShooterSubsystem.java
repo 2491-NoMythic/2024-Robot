@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.settings.Constants.Vision;
 import pabeles.concurrency.IntOperatorTask.Max;
 
 import java.util.Optional;
@@ -76,7 +77,12 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		);
 	}
 	public void pitchShooter(double pitchSpeed) {
-		pitchMotor.set(pitchSpeed);
+	    if(DriverStation.isTest()){
+			pitchMotor.set(pitchSpeed/4);
+		}
+		else{
+			pitchMotor.set(pitchSpeed);
+		}
 	}
 	
 	public void stop() {

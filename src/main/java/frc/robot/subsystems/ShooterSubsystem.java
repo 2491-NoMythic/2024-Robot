@@ -19,6 +19,7 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.commands.RotateRobot;
 import frc.robot.settings.Constants;
 import  frc.robot.settings.Constants.ShooterConstants;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -84,10 +85,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
    
     
     public void shootThing(double runSpeed) {
+    if (DriverStation.isTest()) {
+      shooterR.set(runSpeed/8);
+      shooterL.set(runSpeed/8);
+    }
+    else {
       shooterR.set(runSpeed);
       shooterL.set(runSpeed);
+     }
     }
     public void shootRPS(double RPS) {
+    if (DriverStation.isTest()) {
+      RPS = RPS/8;
+    }
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
       shooterL.setControl(new VelocityDutyCycle(RPS).withSlot(0));
     }

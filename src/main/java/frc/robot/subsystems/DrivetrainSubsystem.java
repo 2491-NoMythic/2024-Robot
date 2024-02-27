@@ -252,8 +252,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 	}
 	private void setModule(int i, SwerveModuleState desiredState) {
-		modules[i].setDesiredState(desiredState);
+		if (DriverStation.isTest()) {
+			desiredState.speedMetersPerSecond /= 4;
+			modules[i].setDesiredState(desiredState);
+
+		} else {
+			modules[i].setDesiredState(desiredState);
+		}
 		lastAngles[i] = desiredState.angle;
+
 	}
 	public void updateOdometry() {
 		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
