@@ -167,7 +167,7 @@ public class RobotContainer {
       driveTrain.setDefaultCommand(defaultDriveCommand);
   }
   private void shooterInst() {
-    shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
+    shooter = new ShooterSubsystem();
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
@@ -288,7 +288,7 @@ public class RobotContainer {
     if(shooterExists) {
       SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS), shooter));
       SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
-      SmartDashboard.putData("shooter off", new InstantCommand(shooter::turnOff, shooter));
+      SmartDashboard.putData("shooter off", new InstantCommand(shooter::stop, shooter));
     }
     if(angleShooterExists) {
       double testAngle = 45;
