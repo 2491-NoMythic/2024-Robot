@@ -82,7 +82,7 @@ public class IndexCommand extends Command {
         }
         else {
           m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-          shooter.turnOff();
+          shooter.stop();
         }
       }
     } else {
@@ -98,7 +98,7 @@ public class IndexCommand extends Command {
             shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
           }
         } else {
-          shooter.turnOff();
+          shooter.stop();
         }
         boolean indexer = false;
         if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot()) {
