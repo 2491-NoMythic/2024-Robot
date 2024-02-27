@@ -240,7 +240,7 @@ public static final class ShooterConstants{
   
   public static final double LONG_SHOOTING_RPS = 90;
   public static final double SHORT_SHOOTING_RPS = 80;
-  public static final double AMP_RPS = 7.5;
+  public static final double AMP_RPS = 8.5;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
@@ -259,20 +259,31 @@ public static final class ShooterConstants{
   public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
-  public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
-  public static final double MAXIMUM_SHOOTER_ANGLE = 104;//still has to be found
+  public static final double MINIMUM_SHOOTER_ANGLE = 11.64;//still has to be found
+  public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 101;//still has to be found
+  public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 108;//still has to be found
   public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
 
+  public static final double ADJUST_EQUATION_A = 1.14168;
+  public static final double COMP_ADJUST_EQUATION_B = -1.3;
+  public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
+
+  public static final double CompBotZeroOffset = 336;
+  public static final double PracBotZeroOffset = 328;
 
  
 
   //PID coefficients for shooter:
-  public static final double kP = 0.128;
-  public static final double kI = 0;
-  public static final double kD = 0;
+  public static final double PrackP = 0.128;
+  public static final double PrackFF  = 0.009;
+  // public static final double kI = 0;
+  // public static final double kD = 0;
   public static final double kIz = 0;
-  public static final double kFF = 0.009;
+  public static final double CompRightkFF = 0.0073;
+  public static final double CompLeftkFF = 0.012;
+  public static final double CompRightkP = 0.012;
+  public static final double CompLeftkP = 0.012;
   public static final double kMaxOutput = 1;
   public static final double kMinOutput = -1;
 
@@ -300,7 +311,7 @@ public static final class IndexerConstants{
   public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
-  public static final double INDEXER_AMP_SPEED = 0.4;
+  public static final double INDEXER_AMP_SPEED = 0.8;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
@@ -392,7 +403,7 @@ public static final class CTREConfigs {
     public static final double MAX_SHOOTING_DISTANCE = 2491;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
-    public static final double AMPLIFIER_ANGLE = 101;
+    public static final double AMPLIFIER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 55;
     //angle at 60 for bounce techinque, didn't work
   }

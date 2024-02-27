@@ -2,8 +2,10 @@ package frc.robot.subsystems;
 
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
+import pabeles.concurrency.IntOperatorTask.Max;
 
 import java.util.Optional;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
@@ -44,7 +46,12 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		absoluteEncoder = pitchMotor.getAbsoluteEncoder(Type.kDutyCycle);
 		absoluteEncoder.setPositionConversionFactor(360);
 		absoluteEncoder.setInverted(true);
-		absoluteEncoder.setZeroOffset(Preferences.getDouble("ZeroOffsetShooterAngle", 0.0));
+		if(Preferences.getBoolean("CompBot", false)) {
+			absoluteEncoder.setZeroOffset(CompBotZeroOffset);
+		} else {
+			absoluteEncoder.setZeroOffset(PracBotZeroOffset);
+		}
+
 
 		pitchPID = pitchMotor.getPIDController();
 		pitchPID.setFeedbackDevice(absoluteEncoder);
@@ -56,7 +63,11 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	}
 	
 	public void setDesiredShooterAngle(double degrees) {
-		if(degrees>MAXIMUM_SHOOTER_ANGLE) {degrees = MAXIMUM_SHOOTER_ANGLE;}
+		double MaxAngle = COMP_MAXIMUM_SHOOTER_ANGLE;
+		if(!Preferences.getBoolean("CompBot", true)) {
+			MaxAngle = PRAC_MAXIMUM_SHOOTER_ANGLE;
+		}
+		if(degrees>MaxAngle) {degrees = COMP_MAXIMUM_SHOOTER_ANGLE;}
 		if(degrees<MINIMUM_SHOOTER_ANGLE) {degrees = MINIMUM_SHOOTER_ANGLE;}
 		pitchPID.setFF(Math.cos(Math.toRadians(degrees))*ShooterConstants.pitchFeedForward);
 		pitchPID.setReference(
@@ -125,12 +136,13 @@ public class AngleShooterSubsystem extends SubsystemBase {
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
 		double desiredShooterAngle = Math
 				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalOffsetDistToSpeaker));
-		desiredShooterAngle = desiredShooterAngle+(Math.pow(offsetSpeakerdist, 2)*DISTANCE_MULTIPLIER);
+		// desiredShooterAngle = desiredShooterAngle+(Math.pow(offsetSpeakerdist, 2)*DISTANCE_MULTIPLIER);
+		desiredShooterAngle = adjustAngleForDistance(desiredShooterAngle, offsetSpeakerdist);
 		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
 			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;
 		}
-		if(desiredShooterAngle>ShooterConstants.MAXIMUM_SHOOTER_ANGLE) {
-			desiredShooterAngle = ShooterConstants.MAXIMUM_SHOOTER_ANGLE;
+		if(desiredShooterAngle>ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE) {
+			desiredShooterAngle = ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE;
 		}
 		SmartDashboard.putNumber("desired shooter angle", desiredShooterAngle);
 		
@@ -142,6 +154,18 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		return desiredShooterAngle;
 	}
 
+	private double adjustAngleForDistance(double initialAngle, double distance) {
+		double AdjustEquationB = PRAC_ADJUST_EQUATION_B;
+		if(Preferences.getBoolean("CompBot", true)) {
+			AdjustEquationB = COMP_ADJUST_EQUATION_B;
+		}
+		double errorMeters = Math.pow(ADJUST_EQUATION_A, distance) + AdjustEquationB;
+		if (errorMeters>0) {
+			return initialAngle + Math.toDegrees(Math.atan(errorMeters/distance));
+		} else {
+			return initialAngle;
+		}
+	}
 	public boolean shortSpeakerDist() {
 		return speakerDistGlobal<=Field.SHORT_RANGE_SHOOTING_DIST;
 	}

@@ -30,6 +30,7 @@ import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.shootAmp;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
 import frc.robot.commands.goToPose.GoToAmp;
@@ -101,6 +102,7 @@ public class RobotContainer {
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
     Preferences.initBoolean("Brushes", false);
+    Preferences.initBoolean("CompBot", false);
     Preferences.initDouble("ZeroOffsetShooterAngle", 0.0);
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
@@ -232,8 +234,8 @@ public class RobotContainer {
     new Trigger(driverController::getTouchpadPressed).onTrue(new InstantCommand(driveTrain::stop, driveTrain));
     SmartDashboard.putData("force update limelight position", new InstantCommand(()->driveTrain.forceUpdateOdometryWithVision(), driveTrain));
     if(angleShooterExists) {
-      new Trigger(()->driverController.getPOV() == 180).whileTrue(new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.MAXIMUM_SHOOTER_ANGLE));
-      SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.MAXIMUM_SHOOTER_ANGLE));
+      new Trigger(()->driverController.getPOV() == 180).whileTrue(new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
+      SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
     }
     if(indexerExists) {
       new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer, driverController::getPOV));
@@ -254,8 +256,7 @@ public class RobotContainer {
       // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE)));
       // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS)));
       // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED)));
-      new Trigger(driverController::getCircleButton).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS)));
-
+      new Trigger(()->driverController.getPOV() == 90).whileTrue(new shootAmp(indexer, shooter));
     }
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {
