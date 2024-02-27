@@ -400,6 +400,7 @@ public static final class CTREConfigs {
     private PS4Driver() {
     }
     public static final int DRIVE_CONTROLLER_ID = 0;
+    public static final int OPERATOR_CONTROLLER_ID = 1;
     /**Left stick Y-axis. <p> Left = -1 || Right = 1*/
     public static final int X_AXIS = 0; 
     /**Left stick X-axis. <p> Forwards = -1 || Backwards = 1*/
@@ -415,7 +416,6 @@ public static final class CTREConfigs {
 }
 
   public final class PS4Operator{
-    public static final int OPERATOR_CONTROLLER_ID = 1;
 
   }
 
@@ -429,7 +429,7 @@ public static final class CTREConfigs {
 
     public static final double AMPLIFIER_ANGLE = 101;
     public static final double SUBWOOFER_ANGLE = 55;
-    public static final double Stage = 40;
+    public static final double STAGE_ANGLE = 40;
     //angle at 60 for bounce techinque, didn't work
   }
 

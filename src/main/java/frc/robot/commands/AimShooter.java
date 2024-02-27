@@ -17,7 +17,7 @@ public class AimShooter extends Command {
 	BooleanSupplier StageAngleSupplier;
 
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier)
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;

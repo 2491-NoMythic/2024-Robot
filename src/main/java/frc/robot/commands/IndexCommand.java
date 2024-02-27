@@ -40,14 +40,13 @@ public class IndexCommand extends Command {
   double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, DoubleSupplier ampSupplier) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
     this.shooter = shooter;
     this.intake = intake;
     this.drivetrain = drivetrain;
-    this.ampSupplier = ampSupplier;
     this.angleShooterSubsytem = angleShooterSubsystem;
     this.humanPlayerSupplier = humanPlaySupplier;//R1
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
@@ -113,11 +112,7 @@ public class IndexCommand extends Command {
           indexer = true;
         }
         if (indexer) {
-          if(ampSupplier.getAsDouble() == 90) {
-            m_Indexer.set(SmartDashboard.getNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED));
-          } else {
             m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-          }
          } else {
             m_Indexer.off();
          }

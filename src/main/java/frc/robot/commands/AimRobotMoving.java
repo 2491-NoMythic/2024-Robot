@@ -74,7 +74,7 @@ public class AimRobotMoving extends Command {
         } else {
           allianceOffset = 0;
         }
-        if(!cancel.getAsBoolean()) {
+        if(!cancel1.getAsBoolean()) {
           m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
             translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
             translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
