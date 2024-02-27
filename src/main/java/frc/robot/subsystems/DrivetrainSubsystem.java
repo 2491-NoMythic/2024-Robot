@@ -439,6 +439,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
 					Boolean isLL2VisionValid = ll2.isResultValid;
 					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
+					SmartDashboard.putBoolean("LL2visionValid", isLL2VisionTrustworthy);
 					if (isLL2VisionTrustworthy) {
 						updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());
 					}
