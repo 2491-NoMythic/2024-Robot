@@ -55,7 +55,7 @@ import frc.robot.settings.Constants.ShooterConstants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();
-	public SwerveDriveKinematics kinematics = DriveConstants.kinematics;
+	private SwerveDriveKinematics kinematics = DriveConstants.kinematics;
 
 	private final Pigeon2 pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID, CANIVORE_DRIVETRAIN);
 
@@ -67,19 +67,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * 3 = Back Right
 	 */
 	private final SwerveModule[] modules;
-	private final Rotation2d[] lastAngles;
-	private int accumulativeLoops;
 
 	private final SwerveDrivePoseEstimator odometer;
-	private final Field2d m_field = new Field2d();
+	private final Field2d field = new Field2d();
 
 	//speaker angle calculating variables:
-	double m_desiredRobotAngle;
+	double desiredRobotAngle;
 	double differenceAngle;
 	double currentHeading;
 	double deltaX;
 	double deltaY;
-	double m_DesiredShooterAngle;
+	double desiredShooterAngle;
 	double turningSpeed;
 	RotateRobot rotateRobot;
 	AngleShooter angleShooter;
@@ -96,14 +94,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	double offsetDeltaY;
 	Translation2d adjustedTarget;
 	double offsetSpeakerdist;
-	public double speakerDist;
+	private double speakerDist;
 	Limelight limelight;
 	int runsValid;
 
-	double MathRanNumber;
+	double mathRanNumber;
 
 	public DrivetrainSubsystem() {
-		MathRanNumber = 0;
+		mathRanNumber = 0;
 		runsValid = 0;
 		this.limelight=Limelight.getInstance();
 
@@ -111,12 +109,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Preferences.initDouble("FR offset", 0);
 		Preferences.initDouble("BL offset", 0);
 		Preferences.initDouble("BR offset", 0);
-		PathPlannerLogging.setLogActivePathCallback((poses) -> m_field.getObject("path").setPoses(poses));
-		SmartDashboard.putData("Field", m_field);
+		PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+		SmartDashboard.putData("Field", field);
 		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
 		SmartDashboard.putBoolean("force use limelight", false);
 		modules = new SwerveModule[4];
-		lastAngles = new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()}; // manually make empty angles to avoid null errors.
 
 		modules[0] = new SwerveModule(
 			"FL",
@@ -158,30 +155,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * 'forwards' direction.
 	 */
 	public void zeroGyroscope() {
-		if(DriverStation.getAlliance().get() == Alliance.Red) {
-			pigeon.setYaw(180);
-		} else {
-		pigeon.setYaw(0); //TODO make sure this is right for both alliances
-		}
-		odometer.resetPosition(new Rotation2d(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+		//TODO make sure this is right for both alliances
+		if(DriverStation.getAlliance().get() == Alliance.Red) zeroGyroscope(180);
+		zeroGyroscope(0);
 	}
+
 	public void zeroGyroscope(double angleDeg) {
-		pigeon.setYaw(angleDeg);
-		new Rotation2d();
-		new Rotation2d();
-		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
+		//There should be no need to setYaw, this is handeled by the pose estimator
+		resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
-	public double getHeadingLooped() {
-		//returns the heading of the robot, but only out of 360, not accumulative
-		accumulativeLoops = (int) (getHeadingDegrees()/180); //finding the amount of times that 360 goes into the heading, as an int
-		return getHeadingDegrees()-180*(accumulativeLoops); 
-	}
-	public Rotation2d getGyroscopeRotation() {
+
+	private Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
 	}
-	public double getHeadingDegrees() {
-		return pigeon.getAngle();
-	}
+
 	public ChassisSpeeds getChassisSpeeds() {
 		return kinematics.toChassisSpeeds(getModuleStates());
 	}
@@ -204,12 +191,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public Pose2d getPose() {
 		return odometer.getEstimatedPosition();
 	}
+	
     public void resetOdometry(Pose2d pose) {
-		zeroGyroscope(pose.getRotation().getDegrees());
-        odometer.resetPosition(pose.getRotation(), getModulePositions(), pose);
+        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     }
+
     public void resetOdometry() {
-        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), DRIVE_ODOMETRY_ORIGIN);
+		resetOdometry(DRIVE_ODOMETRY_ORIGIN);
     }
 	/**
 	 *  Sets the modules speed and rotation to zero.
@@ -242,7 +230,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public void stop() {
 		for (int i = 0; i < 4; i++) {
-			modules[i].setDesiredState(new SwerveModuleState(0, lastAngles[i]));
+			setModule(i, new SwerveModuleState(0, modules[i].getRotation()));
 		}
 	}
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -253,7 +241,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 	private void setModule(int i, SwerveModuleState desiredState) {
 		modules[i].setDesiredState(desiredState);
-		lastAngles[i] = desiredState.angle;
 	}
 	public void updateOdometry() {
 		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
@@ -262,19 +249,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		odometer.addVisionMeasurement(estematedPose, timestampSeconds);
 	}
 	public double calculateSpeakerAngle(){
-		Pose2d dtvalues = this.getPose();
+		Pose2d currPose = this.getPose();
 		// triangle for robot angle
 		Optional<Alliance> alliance = DriverStation.getAlliance();
 		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-			deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
+			deltaY = Math.abs(currPose.getY() - Field.SPEAKER_Y);
 		} else {
-			deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
+			deltaY = Math.abs(currPose.getY() - Field.SPEAKER_Y);
 
 		}
 		if(DriverStation.getAlliance().get() == Alliance.Red) {
-			deltaX = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+			deltaX = Math.abs(currPose.getX() - Field.BLUE_SPEAKER_X);
 		} else {
-			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+			deltaX = Math.abs(currPose.getX() - Field.RED_SPEAKER_X);
 		}
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 		// SmartDashboard.putNumber("dist to speakre", speakerDist);
@@ -283,17 +270,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		
 		//getting desired robot angle
 		// if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
-			if (dtvalues.getY() >= Field.SPEAKER_Y) {
+			if (currPose.getY() >= Field.SPEAKER_Y) {
 				//the robot is to the left of the speaker
 				double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
-				m_desiredRobotAngle = thetaAbove;
+				desiredRobotAngle = thetaAbove;
 			}
 			else{
 				double thetaBelow = Math.toDegrees(Math.asin(deltaX / speakerDist))+90;
-				m_desiredRobotAngle = thetaBelow;
+				desiredRobotAngle = thetaBelow;
 			} 
 		// } else {
-		// if (dtvalues.getY() >= Field.RED_SPEAKER_Y) {
+		// if (currPose.getY() >= Field.RED_SPEAKER_Y) {
 		// 	//the robot is to the left of the speaker
 		// 	double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
 		// 	m_desiredRobotAngle = thetaAbove;
@@ -305,8 +292,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		// m_desiredRobotAngle = m_desiredRobotAngle + 180;
 		// }
 		SmartDashboard.putNumber("just angle", Math.toDegrees(Math.asin(deltaX / speakerDist)));
-		SmartDashboard.putNumber("desired angle", m_desiredRobotAngle);
-		return m_desiredRobotAngle;
+		SmartDashboard.putNumber("desired angle", desiredRobotAngle);
+		return desiredRobotAngle;
 	}
 	
 	public double calculateSpeakerAngleMoving(){
@@ -356,24 +343,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		if (alliance.get() == Alliance.Blue) {
 			if (dtvalues.getY() >= adjustedTarget.getY()) {
 				double thetaAbove = -Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))-90;
-				m_desiredRobotAngle = thetaAbove;
+				desiredRobotAngle = thetaAbove;
 			}
 			else{
 				double thetaBelow = Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))+90;
-				m_desiredRobotAngle = thetaBelow;
+				desiredRobotAngle = thetaBelow;
 		} } else {
 			if (dtvalues.getY() >= adjustedTarget.getY()) {
 				double thetaAbove = Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))-90;
-				m_desiredRobotAngle = thetaAbove;
+				desiredRobotAngle = thetaAbove;
 			}
 			else{
 				double thetaBelow = -Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))+90;
-				m_desiredRobotAngle = thetaBelow;
+				desiredRobotAngle = thetaBelow;
 			}
 		}
-		MathRanNumber++;
+		mathRanNumber++;
 		SmartDashboard.putString("adjusted target", adjustedTarget.toString());
-		return m_desiredRobotAngle;
+		return desiredRobotAngle;
 	}
 	private double getSpeakerAngleDifference() {
 		return calculateSpeakerAngleMoving()-(getGyroscopeRotation().getDegrees()%360);
@@ -420,16 +407,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				if(Preferences.getBoolean("Use 2 Limelights", false)) {
 					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
 					LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
-					Boolean isLL2VisionValid = ll2.isResultValid;
-					Boolean isLL3VisionValid = ll3.isResultValid;
+					boolean isLL2VisionValid = ll2.isResultValid;
+					boolean isLL3VisionValid = ll3.isResultValid;
 					if(isLL2VisionValid) {
 						SmartDashboard.putNumber("VISION left LL tag [0] distance", ll2.getTagDistance());
 					}
 					if(isLL3VisionValid) {
 						SmartDashboard.putNumber("VISION right LL tag [0] distance", ll3.getTagDistance());
 					}
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
-					Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(odometer.getEstimatedPosition());
+					boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
+					boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(odometer.getEstimatedPosition());
 					SmartDashboard.putBoolean("LL2visionValid", isLL2VisionTrustworthy);
 					SmartDashboard.putBoolean("LL3visionValid", isLL3VisionTrustworthy);
 					if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
@@ -437,15 +424,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					if (isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
 				} else {
 					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-					Boolean isLL2VisionValid = ll2.isResultValid;
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
+					boolean isLL2VisionValid = ll2.isResultValid;
+					boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
 					if (isLL2VisionTrustworthy) {
 						updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());
 					}
 				}
 			}
 		}
-		m_field.setRobotPose(odometer.getEstimatedPosition());
+		field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngle());
