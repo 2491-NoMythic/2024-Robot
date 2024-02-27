@@ -30,6 +30,7 @@ import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.OrbitAmpShot;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
 import frc.robot.commands.goToPose.GoToAmp;
@@ -264,6 +265,7 @@ public class RobotContainer {
     };
     SmartDashboard.putData("set offsets", setOffsets);
     SmartDashboard.putData(new InstantCommand(driveTrain::forceUpdateOdometryWithVision));
+    SmartDashboard.putData("Orbit Amp Shot", new OrbitAmpShot(angleShooterSubsystem, indexer, shooter));
 /* bindings:
  *    L2: aim at speaker and rev up shooter to max (hold)
  *    L1: manually feed shooter (hold)

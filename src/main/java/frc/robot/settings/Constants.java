@@ -4,6 +4,8 @@
 
 package frc.robot.settings;
 
+import javax.sound.midi.Patch;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -267,7 +269,7 @@ public static final class ShooterConstants{
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
   public static final double ALLOWED_SPEED_ERROR = 4;
 
-  public static final double CURRENT_LIMIT = 100; //amps the motor is limited to
+  public static final double CURRENT_LIMIT = 200; //amps the motor is limited to
 
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
@@ -438,7 +440,7 @@ public final class Vision{
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
   
   public static final double APRILTAG_CLOSENESS = 0.5;
-  public static final double MAX_TAG_DISTANCE = 2.3;
+  public static final double MAX_TAG_DISTANCE = 3.05;
 
   public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
 

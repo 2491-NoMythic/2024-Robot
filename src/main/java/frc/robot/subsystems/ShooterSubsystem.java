@@ -112,6 +112,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
       shooterL.setControl(new VelocityDutyCycle(RPS).withSlot(0));
     }
+
+    public void shootRPS(double RPSL, double RPSR) {
+      shooterR.setControl(new VelocityDutyCycle(RPSR).withSlot(0));
+      shooterL.setControl(new VelocityDutyCycle(RPSL).withSlot(0));
+    }
+
     private double getError() {
       return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
     }
