@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,7 +44,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		absoluteEncoder = pitchMotor.getAbsoluteEncoder(Type.kDutyCycle);
 		absoluteEncoder.setPositionConversionFactor(360);
 		absoluteEncoder.setInverted(true);
-		absoluteEncoder.setZeroOffset(ANGLE_ENCODER_ZERO_OFFSET);
+		absoluteEncoder.setZeroOffset(Preferences.getDouble("ZeroOffsetShooterAngle", 0.0));
 
 		pitchPID = pitchMotor.getPIDController();
 		pitchPID.setFeedbackDevice(absoluteEncoder);
