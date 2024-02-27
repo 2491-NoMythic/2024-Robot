@@ -257,6 +257,7 @@ public class RobotContainer {
       // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS)));
       // new Trigger(()->driverController.getPOV() == 270).whileTrue(new InstantCommand(()->indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED)));
       new Trigger(()->driverController.getPOV() == 90).whileTrue(new shootAmp(indexer, shooter));
+      SmartDashboard.putData("amp shot", new shootAmp(indexer, shooter));
     }
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {

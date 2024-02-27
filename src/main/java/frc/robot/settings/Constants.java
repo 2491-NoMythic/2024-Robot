@@ -269,12 +269,12 @@ public static final class ShooterConstants{
   public static final double COMP_ADJUST_EQUATION_B = -1.3;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
 
-  public static final double CompBotZeroOffset = 336;
+  public static final double CompBotZeroOffset = 334.7;
   public static final double PracBotZeroOffset = 328;
 
  
 
-  //PID coefficients for shooter:
+  //PID coefficients for shooter
   public static final double PrackP = 0.128;
   public static final double PrackFF  = 0.009;
   // public static final double kI = 0;
