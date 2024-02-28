@@ -128,6 +128,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		double offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
 		double offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaX, 2) + Math.pow(offsetDeltaY, 2));
+		offsetSpeakerdist = offsetSpeakerdist+0.15; //to compensate for the pivot point of the shooter bieng offset from the center of the robot
 		SmartDashboard.putString("offset amount", targetOffset.toString());
 		SmartDashboard.putString("offset speaker location",
 		new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
@@ -136,7 +137,6 @@ public class AngleShooterSubsystem extends SubsystemBase {
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
 		double desiredShooterAngle = Math
 				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalOffsetDistToSpeaker));
-		// desiredShooterAngle = desiredShooterAngle+(Math.pow(offsetSpeakerdist, 2)*DISTANCE_MULTIPLIER);
 		desiredShooterAngle = adjustAngleForDistance(desiredShooterAngle, offsetSpeakerdist);
 		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
 			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;
@@ -156,10 +156,12 @@ public class AngleShooterSubsystem extends SubsystemBase {
 
 	private double adjustAngleForDistance(double initialAngle, double distance) {
 		double AdjustEquationB = PRAC_ADJUST_EQUATION_B;
+		double AdjustEquationA = PRAC_ADJUST_EQUATION_A;
 		if(Preferences.getBoolean("CompBot", true)) {
 			AdjustEquationB = COMP_ADJUST_EQUATION_B;
+			AdjustEquationA = COMP_ADJUST_EQUATION_A;
 		}
-		double errorMeters = Math.pow(ADJUST_EQUATION_A, distance) + AdjustEquationB;
+		double errorMeters = Math.pow(AdjustEquationA, distance) + AdjustEquationB;
 		if (errorMeters>0) {
 			return initialAngle + Math.toDegrees(Math.atan(errorMeters/distance));
 		} else {

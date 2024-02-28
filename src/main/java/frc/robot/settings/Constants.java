@@ -230,7 +230,7 @@ public static final class ShooterConstants{
   public static final double SHOOTING_SPEED_MPS = 19.665; //calculated with slo mo videos
   public static final double RUNNING_VELOCITY_RPS = 2491;
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
-  public static final double ALLOWED_SPEED_ERROR = 4;
+  public static final double ALLOWED_SPEED_ERROR = 5;
 
   public static final double CURRENT_LIMIT = 100; //amps the motor is limited to
 
@@ -265,9 +265,10 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
 
-  public static final double ADJUST_EQUATION_A = 1.14168;
-  public static final double COMP_ADJUST_EQUATION_B = -1.3;
+  public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
+  public static final double COMP_ADJUST_EQUATION_A = 1.15218;
+  public static final double COMP_ADJUST_EQUATION_B = -1.5238;
 
   public static final double CompBotZeroOffset = 334.7;
   public static final double PracBotZeroOffset = 328;
