@@ -230,7 +230,7 @@ public static final class ShooterConstants{
   public static final double SHOOTING_SPEED_MPS = 19.665; //calculated with slo mo videos
   public static final double RUNNING_VELOCITY_RPS = 2491;
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
-  public static final double ALLOWED_SPEED_ERROR = 5;
+  public static final double ALLOWED_SPEED_ERROR = 2;
 
   public static final double CURRENT_LIMIT = 100; //amps the motor is limited to
 
@@ -238,7 +238,7 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
-  public static final double LONG_SHOOTING_RPS = 90;
+  public static final double LONG_SHOOTING_RPS = 120;
   public static final double SHORT_SHOOTING_RPS = 80;
   public static final double AMP_RPS = 8.5;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
@@ -267,8 +267,10 @@ public static final class ShooterConstants{
 
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
-  public static final double COMP_ADJUST_EQUATION_A = 1.15218;
-  public static final double COMP_ADJUST_EQUATION_B = -1.5238;
+  public static final double COMP_ADJUST_EQUATION_A = -0.00441959;//0.0381123;
+  public static final double COMP_ADJUST_EQUATION_B = 0.0972128;//-0.232111;
+  public static final double COMP_ADJUST_EQUATION_C = -0.461855;//0.938668;
+  public static final double COMP_ADJUST_EQUATION_D = 1;//1.20694;//0.938668;
 
   public static final double CompBotZeroOffset = 334.7;
   public static final double PracBotZeroOffset = 328;
@@ -281,8 +283,8 @@ public static final class ShooterConstants{
   // public static final double kI = 0;
   // public static final double kD = 0;
   public static final double kIz = 0;
-  public static final double CompRightkFF = 0.0073;
-  public static final double CompLeftkFF = 0.012;
+  public static final double CompRightkFF = 0.0053;
+  public static final double CompLeftkFF = 0.0098;
   public static final double CompRightkP = 0.012;
   public static final double CompLeftkP = 0.012;
   public static final double kMaxOutput = 1;
@@ -398,7 +400,7 @@ public static final class CTREConfigs {
 
   public final class Field{
     public static final double BLUE_SPEAKER_X = 0.23;
-    public static final double RED_SPEAKER_X = 16.49;
+    public static final double RED_SPEAKER_X = 16.87;
     public static final double SPEAKER_Y = 5.3;//16.412;
     public static final double BLUE_SPEAKER_Y = 5.7;//16.412;
     public static final double SPEAKER_Z = 2.08; //height of opening
