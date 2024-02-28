@@ -36,11 +36,13 @@ public class IndexCommand extends Command {
   IntakeSubsystem intake;
   DrivetrainSubsystem drivetrain;
   AngleShooterSubsystem angleShooterSubsytem;
+  BooleanSupplier stageAngleSup;
+  BooleanSupplier subwooferAngleSup;
   boolean auto;
   double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
@@ -49,6 +51,8 @@ public class IndexCommand extends Command {
     this.drivetrain = drivetrain;
     this.angleShooterSubsytem = angleShooterSubsystem;
     this.humanPlayerSupplier = humanPlaySupplier;//R1
+    this.subwooferAngleSup = SubwooferSup;
+    this.stageAngleSup = stageAngleSup;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
@@ -90,7 +94,7 @@ public class IndexCommand extends Command {
       if(shootIfReadySupplier.getAsBoolean()&&revUpSupplier.getAsBoolean()&&humanPlayerSupplier.getAsBoolean()) {
         shooter.shootRPS(ShooterConstants.SUBWOOFER_RPS);
       } else {
-        if(revUpSupplier.getAsBoolean()) {
+        if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()) {
           if(angleShooterSubsytem.shortSpeakerDist()) {
             shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
           } else {
