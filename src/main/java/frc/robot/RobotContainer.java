@@ -156,7 +156,7 @@ public class RobotContainer {
     ShooterUpManualSup = ()->driverController.getPOV() == 0;
     ManualShootSup = driverController::getL1Button;
     ForceVisionSup = driverController::getOptionsButton;
-    GroundIntakeSup = driverController::getShareButton;//operatorController::getTouchpad;
+    GroundIntakeSup = operatorController::getTouchpad;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
