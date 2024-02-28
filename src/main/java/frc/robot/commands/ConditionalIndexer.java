@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 public class ConditionalIndexer extends Command {
@@ -28,7 +29,7 @@ public class ConditionalIndexer extends Command {
     if (intake.isNoteIn()) {
       indexer.off();
     } else {
-      indexer.on();
+      indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
     }
 
   
