@@ -160,8 +160,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void zeroGyroscope() {
 		if(DriverStation.getAlliance().get() == Alliance.Red) {
 			zeroGyroscope(180);
-		} 
-		zeroGyroscope(0);
+		} else {
+			zeroGyroscope(0);
+		}
 	}
 	public void zeroGyroscope(double angleDeg) {
 		resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));

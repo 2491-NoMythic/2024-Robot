@@ -144,7 +144,7 @@ public class RobotContainer {
     //operatorController = new PS4Controller(OPERATOs_CONTROLLER_ID);
     PDP = new PowerDistribution(1, ModuleType.kRev);
 
-    ZeroGyroSup = driverController::getOptionsButton;
+    ZeroGyroSup = driverController::getPSButton;
     AimWhileMovingSup = driverController::getL2Button;
     ShootIfReadySup = driverController::getR2Button;
     SubwooferAngleSup = driverController::getCrossButton;

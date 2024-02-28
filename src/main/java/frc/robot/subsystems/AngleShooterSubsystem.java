@@ -169,7 +169,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 			AdjustEquationC = COMP_ADJUST_EQUATION_C;
 		}
 		if(Preferences.getBoolean("CompBot", false)) {
-			double errorMeters = /*AdjustEquationA*Math.pow(distance, 3)+*/AdjustEquationA*Math.pow(distance, 2) + AdjustEquationB*distance + AdjustEquationC;
+			double errorMeters = AdjustEquationA*Math.pow(distance, 2) + AdjustEquationB*distance + AdjustEquationC;
 			return initialAngle + Math.toDegrees(Math.atan(errorMeters/distance));
 		} else {
 			double errorMeters = Math.pow(AdjustEquationA, distance) + AdjustEquationB;

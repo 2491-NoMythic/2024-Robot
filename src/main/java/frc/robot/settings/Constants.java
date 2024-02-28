@@ -259,20 +259,20 @@ public static final class ShooterConstants{
   public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
-  public static final double MINIMUM_SHOOTER_ANGLE = 11.64;//still has to be found
-  public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 108;//still has to be found
-  public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;//still has to be found
-  public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
-  public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
+  public static final double MINIMUM_SHOOTER_ANGLE = 11.64;
+  public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 108;
+  public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;
+  public static final double HUMAN_PLAYER_ANGLE = 97;
+  public static final double HUMAN_PLAYER_RPS = -10;
   public static final double SAFE_SHOOTER_ANGLE = 15;
   public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
 
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
-  public static final double COMP_ADJUST_EQUATION_A = 0.0469456;//0.0381123;
-  public static final double COMP_ADJUST_EQUATION_B = -0.237047;//-0.232111;
-  public static final double COMP_ADJUST_EQUATION_C = 0.699325;//0.938668;//dont lower too far or else it misses low
-  public static final double COMP_ADJUST_EQUATION_D = 1;//1.20694;//0.938668;
+  public static final double COMP_ADJUST_EQUATION_A = 0.0469456;
+  public static final double COMP_ADJUST_EQUATION_B = -0.237047;
+  public static final double COMP_ADJUST_EQUATION_C = 0.699325;
+  // public static final double COMP_ADJUST_EQUATION_D = 1; unused becuase we aren't using a cubic equation
 
   public static final double CompBotZeroOffset = 334.7;
   public static final double PracBotZeroOffset = 328;
