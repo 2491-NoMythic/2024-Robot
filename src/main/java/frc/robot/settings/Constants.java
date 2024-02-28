@@ -267,9 +267,9 @@ public static final class ShooterConstants{
 
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
-  public static final double COMP_ADJUST_EQUATION_A = -0.00441959;//0.0381123;
-  public static final double COMP_ADJUST_EQUATION_B = 0.0972128;//-0.232111;
-  public static final double COMP_ADJUST_EQUATION_C = -0.461855;//0.938668;
+  public static final double COMP_ADJUST_EQUATION_A = 0.0469456;//0.0381123;
+  public static final double COMP_ADJUST_EQUATION_B = -0.237047;//-0.232111;
+  public static final double COMP_ADJUST_EQUATION_C = 0.699325;//0.938668;//dont lower too far or else it misses low
   public static final double COMP_ADJUST_EQUATION_D = 1;//1.20694;//0.938668;
 
   public static final double CompBotZeroOffset = 334.7;
