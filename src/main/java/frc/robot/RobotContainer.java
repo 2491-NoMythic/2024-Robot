@@ -428,4 +428,21 @@ public class RobotContainer {
       new InstantCommand(angleShooterSubsystem::stop, angleShooterSubsystem);
     }
   }
+
+public void EnableDefaultCommands(){
+  indexer.setDefaultCommand(defaulNoteHandlingCommand);
+  angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
+  driveTrain.setDefaultCommand(defaultDriveCommand);
+} 
+ public void DisableDefaultCommands(){
+ intake.setDefaultCommand(null); 
+ angleShooterSubsystem.setDefaultCommand(null); 
+ indexer.setDefaultCommand(null);
+ shooter.setDefaultCommand(null);
+ climber.setDefaultCommand(null);
+}
+
+
+
+
 }
