@@ -37,7 +37,7 @@ public class AimShooter extends Command {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
 		} else {
 			if (StageAngleSupplier.getAsBoolean()) {
-				angleShooterSubsystem.setDesiredShooterAngle(Field.STAGE_ANGLE);
+				angleShooterSubsystem.setDesiredShooterAngle(Field.PODIUM_ANGLE);
 			} else {
 				if (POVSupplier.getAsDouble() == 90 || POVSupplier.getAsDouble() == 45 || POVSupplier.getAsDouble() == 135) {
 					angleShooterSubsystem.setDesiredShooterAngle(SmartDashboard.getNumber("amp angle", Field.AMPLIFIER_ANGLE)/*Field.AMPLIFIER_ANGLE*/);
