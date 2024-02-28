@@ -289,7 +289,7 @@ public static final class ShooterConstants{
 
   //PID values for pitch motor (changes angle of shooter):
   public static final double shooterup = 45;
-
+  
 }
 public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR_RIGHT = 23;

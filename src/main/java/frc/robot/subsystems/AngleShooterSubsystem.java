@@ -36,7 +36,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	public double desiredZeroOffset;
 	int runsValid;
 	double speakerDistGlobal;
-
+	double grabbableDSA; 
 	public AngleShooterSubsystem() {
 		runsValid = 0;
 		pitchMotor = new CANSparkMax(PITCH_MOTOR_ID, MotorType.kBrushless);
@@ -74,6 +74,10 @@ public class AngleShooterSubsystem extends SubsystemBase {
 			degrees,
 			CANSparkMax.ControlType.kPosition
 		);
+		grabbableDSA = degrees;
+	}
+	public double getDesiredShooterAngle(){
+		return grabbableDSA;
 	}
 	public void pitchShooter(double pitchSpeed) {
 		pitchMotor.set(pitchSpeed);

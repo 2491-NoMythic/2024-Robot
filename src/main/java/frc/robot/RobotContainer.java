@@ -29,7 +29,7 @@ import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
-import frc.robot.commands.ManualShoot;
+import frc.robot.commands.ManualShoot;import frc.robot.commands.OperatorAngler;
 import frc.robot.commands.shootAmp;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
@@ -45,6 +45,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -58,7 +59,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.commands.AngleShooter;
-
+import frc.robot.commands.OperatorAngler;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -87,7 +88,7 @@ public class RobotContainer {
   private Climber climber;
   private Lights lights;
   private PS4Controller driverController;
-  //private PS4Controller operatorController;
+  private PS4Controller operatorController;
   private Limelight limelight;
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
@@ -120,7 +121,7 @@ public class RobotContainer {
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
     // SignalLogger.start();
     driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
-    //operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
+    operatorController = new PS4Controller(Constants.PS4Operator.OPERATOR_CONTROLLER_ID);
     PDP = new PowerDistribution(1, ModuleType.kRev);
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
@@ -236,18 +237,24 @@ public class RobotContainer {
     if(angleShooterExists) {
       new Trigger(()->driverController.getPOV() == 180).whileTrue(new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
       SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
+      new Trigger(operatorController::getL2Button).whileTrue(new OperatorAngler(angleShooterSubsystem, operatorController));
     }
     if(indexerExists) {
       new Trigger(driverController::getL1Button).whileTrue(new ManualShoot(indexer, driverController::getPOV));
+      new Trigger(operatorController::getR1Button).whileTrue(new RunCommand(() -> indexer.set(operatorController.getRightY()), indexer));
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
       new Trigger(driverController::getCrossButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
       new Trigger(driverController::getTriangleButton).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
       // new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
+      new Trigger(operatorController::getTouchpad).whileTrue(new RunCommand(() -> climber.climberSeperate(operatorController.getLeftY(), operatorController.getRightY()), climber));
+      
     }
     if(shooterExists) {
       new Trigger(()->driverController.getPOV() == 90).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
+      new Trigger(operatorController::getR1Button).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS), shooter));
+      new Trigger(operatorController::getL1Button).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS), shooter));
     }
     if(intakeExists) {
       new Trigger(driverController::getTouchpad).onTrue(new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED))).onFalse(new InstantCommand(intake::intakeOff));
