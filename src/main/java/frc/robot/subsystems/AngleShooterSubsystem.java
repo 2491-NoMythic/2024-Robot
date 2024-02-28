@@ -118,12 +118,14 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		
 		// next 3 lines set where we actually want to aim, given the offset our shooting
 		// will have based on our speed
-		double offsetSpeakerY = Field.SPEAKER_Y - targetOffset.getY();
 		double offsetSpeakerX;
+		double offsetSpeakerY;
 		if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
 			offsetSpeakerX = Field.RED_SPEAKER_X - targetOffset.getX();
+			offsetSpeakerY = Field.SPEAKER_Y - targetOffset.getY();
 		} else {
 			offsetSpeakerX = Field.BLUE_SPEAKER_X - targetOffset.getX();
+			offsetSpeakerY = Field.SPEAKER_Y - targetOffset.getY();
 		}
 		double offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		double offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);

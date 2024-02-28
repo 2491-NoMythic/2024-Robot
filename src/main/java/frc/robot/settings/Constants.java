@@ -295,7 +295,7 @@ public static final class ShooterConstants{
 public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR_RIGHT = 23;
   public static final int CLIMBER_MOTOR_LEFT = 22;
-  public static final double CLIMBER_SPEED_DOWN = 0.6;
+  public static final double CLIMBER_SPEED_DOWN = 0.8;
   public static final double CLIMBER_SPEED_UP = -1;
   public static final double MAX_MOTOR_ROTATIONS = 235;
 
@@ -400,6 +400,7 @@ public static final class CTREConfigs {
     public static final double BLUE_SPEAKER_X = 0.23;
     public static final double RED_SPEAKER_X = 16.49;
     public static final double SPEAKER_Y = 5.3;//16.412;
+    public static final double BLUE_SPEAKER_Y = 5.7;//16.412;
     public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;

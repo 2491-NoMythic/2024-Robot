@@ -39,8 +39,8 @@ public class Climber extends SubsystemBase {
     runSpeed = 0;
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
     climbMotorL = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_LEFT, MotorType.kBrushless);
-    climbMotorR.setInverted(true);
-    climbMotorL.setInverted(true);
+    climbMotorR.setInverted(false);
+    climbMotorL.setInverted(false);
     hallEffectL = climbMotorL.getForwardLimitSwitch(Type.kNormallyOpen);
     hallEffectR = climbMotorR.getForwardLimitSwitch(Type.kNormallyOpen);
     climbEncoderR = climbMotorR.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
