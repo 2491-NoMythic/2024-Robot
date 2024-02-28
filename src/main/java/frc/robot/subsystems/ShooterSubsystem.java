@@ -7,6 +7,7 @@
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -37,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
   CurrentLimitsConfigs currentLimitConfigs;
    Slot0Configs PIDLeftconfigs; 
    Slot0Configs PIDRightconfigs; 
+   Slot1Configs RevUpConfigs; 
    RelativeEncoder encoder1;
 
    //speaker angle calculating variables:
@@ -52,10 +54,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     if(Preferences.getBoolean("CompBot", true)) {
       PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF);
       PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF);
-  } else {
+    } else {
       PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PrackP).withKV(ShooterConstants.PrackFF);
       PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PrackP).withKV(ShooterConstants.PrackFF);
     }
+    RevUpConfigs = new Slot1Configs().withKP(0).withKV(ShooterConstants.REV_UP_FF);
     runsValid = 0;
     shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
     shooterL = new TalonFX(ShooterConstants.SHOOTER_L_MOTORID);
@@ -90,6 +93,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     public void shootRPS(double RPS) {
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
       shooterL.setControl(new VelocityDutyCycle(RPS/2).withSlot(0));
+    }
+    public void revUpNoKP(double RPS) {
+      shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(1));
+      shooterL.setControl(new VelocityDutyCycle(RPS/2).withSlot(1));
     }
     public void shootSameRPS(double RPS) {
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));

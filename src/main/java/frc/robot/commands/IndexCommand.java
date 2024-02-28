@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.SHORT_SHOOTING_RPS;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -99,37 +100,37 @@ public class IndexCommand extends Command {
     } else {
       runsEmpty = 0;
       intake.intakeOff();
-      if(shootIfReadySupplier.getAsBoolean()&&revUpSupplier.getAsBoolean()&&humanPlayerSupplier.getAsBoolean()) {
-        shooter.shootRPS(ShooterConstants.SUBWOOFER_RPS);
-      } else {
-        if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()) {
+      if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()) {
+        if(shootIfReadySupplier.getAsBoolean()) {
           if(angleShooterSubsytem.shortSpeakerDist()) {
             shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
           } else {
             shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
-          }
+          } 
         } else {
-          shooter.turnOff();
+          shooter.revUpNoKP(SHORT_SHOOTING_RPS);
         }
-        boolean indexer = false;
-        if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot()) {
-          RobotState.getInstance().ShooterReady = true;
-          if (shootIfReadySupplier.getAsBoolean()) {
-            indexer = true;
-          }
-        } else {
-          RobotState.getInstance().ShooterReady = false;
-        }
-        if(SmartDashboard.getBoolean("feedMotor", false)) {
+      } else {
+        shooter.turnOff();
+      }
+      boolean indexer = false;
+      if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot() && revUpSupplier.getAsBoolean()) {
+        RobotState.getInstance().ShooterReady = true;
+        if (shootIfReadySupplier.getAsBoolean()) {
           indexer = true;
         }
-        if (indexer) {
-            m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-         } else {
-            m_Indexer.off();
-         }
+      } else {
+        RobotState.getInstance().ShooterReady = false;
+      }
+      if(SmartDashboard.getBoolean("feedMotor", false)) {
+        indexer = true;
+      }
+      if (indexer) {
+          m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+       } else {
+          m_Indexer.off();
+       }
     }
-  }
   }
 
   // Called once the command ends or is interrupted.
