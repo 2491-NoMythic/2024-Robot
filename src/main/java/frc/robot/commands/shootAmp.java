@@ -29,7 +29,7 @@ public class shootAmp extends Command {
   public void initialize() {
     timer.reset();
     timer.start();
-    shooter.shootRPS(ShooterConstants.AMP_RPS);
+    shooter.shootSameRPS(ShooterConstants.AMP_RPS);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

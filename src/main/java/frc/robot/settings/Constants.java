@@ -260,8 +260,8 @@ public static final class ShooterConstants{
   public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
   public static final double MINIMUM_SHOOTER_ANGLE = 11.64;//still has to be found
-  public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 101;//still has to be found
-  public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 108;//still has to be found
+  public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 108;//still has to be found
+  public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;//still has to be found
   public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
 
@@ -408,7 +408,7 @@ public static final class CTREConfigs {
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
     public static final double AMPLIFIER_ANGLE = 108;
-    public static final double SUBWOOFER_ANGLE = 55;
+    public static final double SUBWOOFER_ANGLE = 60;
     //angle at 60 for bounce techinque, didn't work
   }
 
