@@ -100,8 +100,8 @@ public class Climber extends SubsystemBase {
 }
 
 public void resetInitial(){
-  initialEncoderRotationsL = 0;
-  initialEncoderRotationsR = 0;
+  initialEncoderRotationsL = climbEncoderL.getPosition();
+  initialEncoderRotationsR = climbEncoderR.getPosition();
 }
 @Override
 public void periodic() {
