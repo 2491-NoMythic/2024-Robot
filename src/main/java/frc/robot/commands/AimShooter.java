@@ -15,14 +15,16 @@ public class AimShooter extends Command {
 	BooleanSupplier humanPlayerSupplier;
 	BooleanSupplier SubwooferSupplier1;
 	BooleanSupplier StageAngleSupplier;
+	BooleanSupplier intakeSupplier;
 
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier) {
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier intakeSup) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;
 		this.SubwooferSupplier1 = SubwooferSupplier1;
 		this.StageAngleSupplier = StageAngleSupplier;
+		this.intakeSupplier = intakeSup;
 		addRequirements(angleShooterSubsystem);
 	}
 
@@ -45,9 +47,13 @@ public class AimShooter extends Command {
 					if(humanPlayerSupplier.getAsBoolean()) {
 						angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 					} else {	
+						if(intakeSupplier.getAsBoolean()) {
+							angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
+						} else {
 							angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 						}
 					}
+				}
 			}
 		}
 		}

@@ -264,6 +264,8 @@ public static final class ShooterConstants{
   public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;//still has to be found
   public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
+  public static final double SAFE_SHOOTER_ANGLE = 15;
+  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
 
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
@@ -404,7 +406,7 @@ public static final class CTREConfigs {
     public static final double SPEAKER_Y = 5.3;//16.412;
     public static final double BLUE_SPEAKER_Y = 5.7;//16.412;
     public static final double SPEAKER_Z = 2.08; //height of opening
-    public static final double MAX_SHOOTING_DISTANCE = 2491;
+    public static final double MAX_SHOOTING_DISTANCE = 9;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
     public static final double AMPLIFIER_ANGLE = 108;

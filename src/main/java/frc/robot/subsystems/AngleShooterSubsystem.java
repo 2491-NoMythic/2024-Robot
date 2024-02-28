@@ -146,6 +146,9 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		if(desiredShooterAngle>ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE) {
 			desiredShooterAngle = ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE;
 		}
+		if(offsetSpeakerdist>Field.MAX_SHOOTING_DISTANCE) {
+			desiredShooterAngle = SAFE_SHOOTER_ANGLE;
+		}
 		SmartDashboard.putNumber("desired shooter angle", desiredShooterAngle);
 		
 		

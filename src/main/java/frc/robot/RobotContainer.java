@@ -22,6 +22,7 @@ import frc.robot.commands.AimRobotMoving;
 import frc.robot.commands.CollectNote;
 import frc.robot.commands.Drive;
 import frc.robot.commands.DriveTimeCommand;
+import frc.robot.commands.GroundIntake;
 import frc.robot.commands.ConditionalIndexer;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.commands.IndexCommand;
@@ -113,6 +114,7 @@ public class RobotContainer {
   BooleanSupplier ShooterUpManualSup;
   BooleanSupplier ManualShootSup;
   BooleanSupplier ForceVisionSup;
+  BooleanSupplier GroundIntakeSup;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -154,6 +156,7 @@ public class RobotContainer {
     ShooterUpManualSup = ()->driverController.getPOV() == 0;
     ManualShootSup = driverController::getL1Button;
     ForceVisionSup = driverController::getOptionsButton;
+    GroundIntakeSup = driverController::getShareButton;//operatorController::getTouchpad;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -203,7 +206,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -283,7 +286,7 @@ public class RobotContainer {
       new Trigger(AmpAngleSup).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
     }
     if(intakeExists) {
-      new Trigger(driverController::getTouchpad).onTrue(new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED))).onFalse(new InstantCommand(intake::intakeOff));
+      new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       new Trigger(AmpAngleSup).whileTrue(new shootAmp(indexer, shooter));
