@@ -373,7 +373,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
     }
     if(indexerExists&&shooterExists) {
-      NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25));
+      NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));

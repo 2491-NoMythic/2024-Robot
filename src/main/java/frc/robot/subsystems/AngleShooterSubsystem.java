@@ -130,7 +130,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		double offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
 		double offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaX, 2) + Math.pow(offsetDeltaY, 2));
-		offsetSpeakerdist = offsetSpeakerdist+0.15; //to compensate for the pivot point of the shooter bieng offset from the center of the robot
+		offsetSpeakerdist = offsetSpeakerdist+0.127; //to compensate for the pivot point of the shooter bieng offset from the center of the robot
 		SmartDashboard.putString("offset amount", targetOffset.toString());
 		SmartDashboard.putString("offset speaker location",
 		new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
@@ -157,17 +157,24 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	}
 
 	private double adjustAngleForDistance(double initialAngle, double distance) {
-		double AdjustEquationB = PRAC_ADJUST_EQUATION_B;
 		double AdjustEquationA = PRAC_ADJUST_EQUATION_A;
+		double AdjustEquationB = PRAC_ADJUST_EQUATION_B;
+		double AdjustEquationC = 0;
 		if(Preferences.getBoolean("CompBot", true)) {
 			AdjustEquationB = COMP_ADJUST_EQUATION_B;
 			AdjustEquationA = COMP_ADJUST_EQUATION_A;
+			AdjustEquationC = COMP_ADJUST_EQUATION_C;
 		}
-		double errorMeters = Math.pow(AdjustEquationA, distance) + AdjustEquationB;
-		if (errorMeters>0) {
+		if(Preferences.getBoolean("CompBot", false)) {
+			double errorMeters = AdjustEquationA*Math.pow(distance, 3)+AdjustEquationB*Math.pow(distance, 2) + AdjustEquationC*distance + COMP_ADJUST_EQUATION_D;
 			return initialAngle + Math.toDegrees(Math.atan(errorMeters/distance));
 		} else {
-			return initialAngle;
+			double errorMeters = Math.pow(AdjustEquationA, distance) + AdjustEquationB;
+			if (errorMeters>0) {
+				return initialAngle + Math.toDegrees(Math.atan(errorMeters/distance));
+			} else {
+				return initialAngle;
+			}
 		}
 	}
 	public boolean shortSpeakerDist() {
