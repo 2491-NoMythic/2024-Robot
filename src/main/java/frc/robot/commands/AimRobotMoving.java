@@ -61,7 +61,7 @@ public class AimRobotMoving extends Command {
           desiredRobotAngle = m_drivetrain.calculateSpeakerAngleMoving();
           speedController.setSetpoint(desiredRobotAngle);
         //move robot to desired angle
-        this.currentHeading = m_drivetrain.getGyroscopeRotation().getDegrees();
+        this.currentHeading = m_drivetrain.getPose().getRotation().getDegrees();
         if(Math.abs(rotationSupplier.getAsDouble()) > 0.3) {
           rotationSpeed = rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
         } else {
@@ -77,14 +77,14 @@ public class AimRobotMoving extends Command {
             translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
             translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
             rotationSpeed,
-            new Rotation2d(m_drivetrain.getGyroscopeRotation().getRadians()+allianceOffset)));
+            new Rotation2d(m_drivetrain.getPose().getRotation().getRadians()+allianceOffset)));
         }
         // m_drivetrain.drive(new ChassisSpeeds(
         //   translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
         //   translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
         //   speedController.calculate(differenceAngle)));
 
-        SmartDashboard.putNumber("current Heading", m_drivetrain.getGyroscopeRotation().getDegrees()%360);
+        SmartDashboard.putNumber("current Heading", m_drivetrain.getPose().getRotation().getDegrees()%360);
         SmartDashboard.putNumber("difference", differenceAngle);
         SmartDashboard.putNumber("desired angle", desiredRobotAngle);
         SmartDashboard.putNumber("PID calculated output", speedController.calculate(differenceAngle));
