@@ -78,6 +78,7 @@ public class IndexCommand extends Command {
       auto = false;
     }
     if (!intake.isNoteIn()) {
+      RobotState.getInstance().IsNoteIn = false;
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
       if(runsEmpty>20) {
@@ -98,6 +99,7 @@ public class IndexCommand extends Command {
       }
     } else {
       runsEmpty = 0;
+      RobotState.getInstance().IsNoteIn = true;
       intake.intakeOff();
       if(shootIfReadySupplier.getAsBoolean()&&revUpSupplier.getAsBoolean()&&humanPlayerSupplier.getAsBoolean()) {
         shooter.shootRPS(ShooterConstants.SUBWOOFER_RPS);

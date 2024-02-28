@@ -22,17 +22,24 @@ public class IndicatorLights extends Command {
 
   @Override
   public void execute() {
-    if (RobotState.getInstance().IsNoteSeen) {
-    lights.setSectionOne(50,40,0);
+    // if (RobotState.getInstance().IsNoteSeen) {
+    // lights.setSectionOne(50,40,0);
+    // } else {
+    //   lights.setSectionOne(50, 0, 50);
+    // }
+    // if (RobotState.getInstance().ShooterInRange && RobotState.getInstance().ShooterReady){
+    //   lights.setSectionTwo(0,50,0);
+    // } else if (RobotState.getInstance().ShooterInRange){
+    //   lights.setSectionTwo(50, 50, 0);
+    // } else {
+    //   lights.setSectionTwo(50, 0, 50);
+    // }
+    if(RobotState.getInstance().IsNoteIn) {
+      lights.setSectionOne(255, 50, 0);
+      lights.setSectionTwo(255, 50, 0);
     } else {
-      lights.setSectionOne(50, 0, 50);
-    }
-    if (RobotState.getInstance().ShooterInRange && RobotState.getInstance().ShooterReady){
-      lights.setSectionTwo(0,50,0);
-    } else if (RobotState.getInstance().ShooterInRange){
-      lights.setSectionTwo(50, 50, 0);
-    } else {
-      lights.setSectionTwo(50, 0, 50);
+      lights.setSectionOne(255, 0, 255);
+      lights.setSectionTwo(255, 0, 255);
     }
     lights.dataSetter();
   }

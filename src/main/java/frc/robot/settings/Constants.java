@@ -31,7 +31,7 @@ public final class Constants {
 
   private Constants () {}
 
-  public static final int LED_COUNT = 24;
+  public static final int LED_COUNT = 50;
   public static final int LOOPS_VALID_FOR_SHOT = 20;
   
   public static final class DriveConstants {
