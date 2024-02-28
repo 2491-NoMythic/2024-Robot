@@ -2,32 +2,25 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.NamedCommands;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.settings.Constants.Field;
+import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.ShooterConstants;
-import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class initialShot extends Command {
-  ShooterSubsystem shooter;
+public class shootAmp extends Command {
   IndexerSubsystem indexer;
+  ShooterSubsystem shooter;
   Timer timer;
-  double revTime;
-  double shootTime;
-  AngleShooterSubsystem angleShooter;
-  /** Creates a new shootThing. */
-  public initialShot(ShooterSubsystem shooter, IndexerSubsystem indexer, double revTime, double shootTime, AngleShooterSubsystem angleShooter) {
+  /** Creates a new shootAmp. */
+  public shootAmp(IndexerSubsystem indexer, ShooterSubsystem shooter) {
+    addRequirements(shooter, indexer);
     this.indexer = indexer;
     this.shooter = shooter;
-    this.revTime = revTime;
-    this.shootTime = shootTime;
-    this.angleShooter = angleShooter;
     timer = new Timer();
-    addRequirements(shooter, indexer, angleShooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -36,28 +29,28 @@ public class initialShot extends Command {
   public void initialize() {
     timer.reset();
     timer.start();
-    indexer.off();
-    shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
-    angleShooter.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
+    shooter.shootSameRPS(ShooterConstants.AMP_RPS);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(timer.get()>revTime) {
-      indexer.on();
+    if(timer.get()>1) {
+      indexer.set(IndexerConstants.INDEXER_AMP_SPEED);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    shooter.turnOff();
+    indexer.off();
     timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get()>shootTime;
+    return timer.get()>1.5;
   }
 }

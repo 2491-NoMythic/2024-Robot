@@ -765,7 +765,7 @@ public class LimelightHelpers {
         try {
             results = mapper.readValue(getJSONDump(limelightName), LimelightResults.class);
         } catch (JsonProcessingException e) {
-            System.err.println("lljson error: " + e.getMessage());
+            // System.err.println("lljson error: " + e.getMessage());
         }
 
         long end = System.nanoTime();

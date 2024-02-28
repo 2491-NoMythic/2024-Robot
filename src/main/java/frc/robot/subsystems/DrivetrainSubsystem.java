@@ -159,17 +159,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public void zeroGyroscope() {
 		if(DriverStation.getAlliance().get() == Alliance.Red) {
-			pigeon.setYaw(180);
-		} else {
-		pigeon.setYaw(0); //TODO make sure this is right for both alliances
-		}
-		odometer.resetPosition(new Rotation2d(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+			zeroGyroscope(180);
+		} 
+		zeroGyroscope(0);
 	}
 	public void zeroGyroscope(double angleDeg) {
-		pigeon.setYaw(angleDeg);
-		new Rotation2d();
-		new Rotation2d();
-		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
+		resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
 	public double getHeadingLooped() {
 		//returns the heading of the robot, but only out of 360, not accumulative
@@ -205,11 +200,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return odometer.getEstimatedPosition();
 	}
     public void resetOdometry(Pose2d pose) {
-		zeroGyroscope(pose.getRotation().getDegrees());
-        odometer.resetPosition(pose.getRotation(), getModulePositions(), pose);
+        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     }
     public void resetOdometry() {
-        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), DRIVE_ODOMETRY_ORIGIN);
+		resetOdometry(DRIVE_ODOMETRY_ORIGIN);
     }
 	/**
 	 *  Sets the modules speed and rotation to zero.
@@ -423,13 +417,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 					Boolean isLL2VisionValid = ll2.isResultValid;
 					Boolean isLL3VisionValid = ll3.isResultValid;
 					if(isLL2VisionValid) {
-						SmartDashboard.putNumber("VISION left LL tag [0] distance", ll2.getTagDistance());
+						SmartDashboard.putNumber("VISION left LL tag [0] distance", ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT2_NAME));
 					}
 					if(isLL3VisionValid) {
-						SmartDashboard.putNumber("VISION right LL tag [0] distance", ll3.getTagDistance());
+						SmartDashboard.putNumber("VISION right LL tag [0] distance", ll3.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
 					}
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
-					Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(odometer.getEstimatedPosition());
+					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT2_NAME));
+					Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(ll3.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
 					SmartDashboard.putBoolean("LL2visionValid", isLL2VisionTrustworthy);
 					SmartDashboard.putBoolean("LL3visionValid", isLL3VisionTrustworthy);
 					if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
@@ -438,7 +432,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				} else {
 					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
 					Boolean isLL2VisionValid = ll2.isResultValid;
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(odometer.getEstimatedPosition());
+					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
 					if (isLL2VisionTrustworthy) {
 						updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());
 					}

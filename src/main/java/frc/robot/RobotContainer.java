@@ -33,6 +33,7 @@ import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.shootAmp;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
 import frc.robot.commands.goToPose.GoToAmp;
@@ -119,6 +120,8 @@ public class RobotContainer {
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
     Preferences.initBoolean("Brushes", false);
+    Preferences.initBoolean("CompBot", false);
+    Preferences.initDouble("ZeroOffsetShooterAngle", 0.0);
     Preferences.initBoolean("Intake", false);
     Preferences.initBoolean("Climber", false);
     Preferences.initBoolean("Shooter", false);
@@ -264,8 +267,8 @@ public class RobotContainer {
     new Trigger(ForceVisionSup).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
     SmartDashboard.putData("force update limelight position", new InstantCommand(()->driveTrain.forceUpdateOdometryWithVision(), driveTrain));
     if(angleShooterExists) {
-      new Trigger(ShooterUpManualSup).whileTrue(new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.MAXIMUM_SHOOTER_ANGLE));
-      SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.MAXIMUM_SHOOTER_ANGLE));
+      new Trigger(ShooterUpManualSup).whileTrue(new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
+      SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
     }
     if(indexerExists) {
       new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV));
@@ -282,7 +285,10 @@ public class RobotContainer {
     if(intakeExists) {
       new Trigger(driverController::getTouchpad).onTrue(new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED))).onFalse(new InstantCommand(intake::intakeOff));
     }
-    if(indexerExists&&shooterExists&&angleShooterExists) {}
+    if(indexerExists&&shooterExists&&angleShooterExists) {
+      new Trigger(AmpAngleSup).whileTrue(new shootAmp(indexer, shooter));
+      SmartDashboard.putData("amp shot", new shootAmp(indexer, shooter));
+    }
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {
         return true;
@@ -400,7 +406,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
     }
     if(indexerExists&&shooterExists) {
-      NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 0.75, 0.5));
+      NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));

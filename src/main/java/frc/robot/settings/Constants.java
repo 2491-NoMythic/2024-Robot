@@ -52,41 +52,7 @@ public final class Constants {
         return rotation;
       }
     }
-    public enum Offsets{
-      AUGIE(0.153818),
-      BENH(0.153564),
-      EVELYN(-0.111084),
-      OMARIAHN(0.266846),
-     // PHOEBE(-0.2458), //Moira FL
-     // ROYCE(-0.0031), // Moira FR
-     // ROWAN(0.3916), // Moira BL
-      //QUINN(0.3557), //Moira BR
-      // PHOEBE(0.253174), //Moira FL
-      // ROYCE(-0.254639), // Moira FR
-      // ROWAN(-0.113525), // Moira BL
-      // QUINN(0.108154), //Moira BR
-      LIAM(0),
-      LEVI(-0.38501),
-      WILLA(-0.152832), //Moira inverted FL
-      OPAL(0.211419-0.25), //Moira inverted FR
-      CLOVER(0.239746), //Moira inverted BL
-      NICHOLAS(-0.164551), //Moira inverted BR
-      QUINN(-0.394287), //FL
-      ROYCE(0.248291), //FR
-      PHOEBE(-0.486572), //BL
-      ROWAN(-0.360840); //BR
 
-
-      private double offset;
-      Offsets(double value) {
-        offset = value;
-      }
-      public Rotation2d getValue(Positions pos) {
-        return Rotation2d.fromRotations(MathUtil.inputModulus(offset+pos.getValue(), -0.5, 0.5));
-      }
-    }
-    private DriveConstants() {
-    }
     public static final Pose2d DRIVE_ODOMETRY_ORIGIN = new Pose2d(5.0, 5.0, new Rotation2d());
     /**
      * The bumper-to-bumper width of the robot.
@@ -255,7 +221,6 @@ public final class Constants {
     public static final double k_PICKUP_NOTE_tx_D = 0;
   }
 public static final class ShooterConstants{
-  public static final double ANGLE_ENCODER_ZERO_OFFSET = 328;//should be 328 but changed for trying to aim at the speaker
   public static final int SHOOTER_R_MOTORID = 10;
   public static final int SHOOTER_L_MOTORID = 9;
   public static final int PITCH_MOTOR_ID = 24;
@@ -265,17 +230,17 @@ public static final class ShooterConstants{
   public static final double SHOOTING_SPEED_MPS = 19.665; //calculated with slo mo videos
   public static final double RUNNING_VELOCITY_RPS = 2491;
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
-  public static final double ALLOWED_SPEED_ERROR = 4;
+  public static final double ALLOWED_SPEED_ERROR = 2;
 
-  public static final double CURRENT_LIMIT = 200; //amps the motor is limited to
+  public static final double CURRENT_LIMIT = 100; //amps the motor is limited to
 
   public static final double AUTO_AIM_ROBOT_kP = 0.125;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
-  public static final double LONG_SHOOTING_RPS = 90;
+  public static final double LONG_SHOOTING_RPS = 120;
   public static final double SHORT_SHOOTING_RPS = 80;
-  public static final double AMP_RPS = 7.5;
+  public static final double AMP_RPS = 8.5;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
@@ -294,20 +259,34 @@ public static final class ShooterConstants{
   public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
-  public static final double MINIMUM_SHOOTER_ANGLE = 10;//still has to be found
-  public static final double MAXIMUM_SHOOTER_ANGLE = 104;//still has to be found
+  public static final double MINIMUM_SHOOTER_ANGLE = 11.64;//still has to be found
+  public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 108;//still has to be found
+  public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;//still has to be found
   public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
   public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
 
+  public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
+  public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
+  public static final double COMP_ADJUST_EQUATION_A = 0.0469456;//0.0381123;
+  public static final double COMP_ADJUST_EQUATION_B = -0.237047;//-0.232111;
+  public static final double COMP_ADJUST_EQUATION_C = 0.699325;//0.938668;//dont lower too far or else it misses low
+  public static final double COMP_ADJUST_EQUATION_D = 1;//1.20694;//0.938668;
+
+  public static final double CompBotZeroOffset = 334.7;
+  public static final double PracBotZeroOffset = 328;
 
  
 
-  //PID coefficients for shooter:
-  public static final double kP = 0.128;
-  public static final double kI = 0;
-  public static final double kD = 0;
+  //PID coefficients for shooter
+  public static final double PrackP = 0.128;
+  public static final double PrackFF  = 0.009;
+  // public static final double kI = 0;
+  // public static final double kD = 0;
   public static final double kIz = 0;
-  public static final double kFF = 0.009;
+  public static final double CompRightkFF = 0.0053;
+  public static final double CompLeftkFF = 0.0098;
+  public static final double CompRightkP = 0.012;
+  public static final double CompLeftkP = 0.012;
   public static final double kMaxOutput = 1;
   public static final double kMinOutput = -1;
 
@@ -318,7 +297,7 @@ public static final class ShooterConstants{
 public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR_RIGHT = 23;
   public static final int CLIMBER_MOTOR_LEFT = 22;
-  public static final double CLIMBER_SPEED_DOWN = 0.6;
+  public static final double CLIMBER_SPEED_DOWN = 0.8;
   public static final double CLIMBER_SPEED_UP = -1;
   public static final double MAX_MOTOR_ROTATIONS = 235;
 
@@ -335,7 +314,7 @@ public static final class IndexerConstants{
   public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
-  public static final double INDEXER_AMP_SPEED = 0.4;
+  public static final double INDEXER_AMP_SPEED = 0.8;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
@@ -421,14 +400,15 @@ public static final class CTREConfigs {
 
   public final class Field{
     public static final double BLUE_SPEAKER_X = 0.23;
-    public static final double RED_SPEAKER_X = 16.49;
+    public static final double RED_SPEAKER_X = 16.87;
     public static final double SPEAKER_Y = 5.3;//16.412;
+    public static final double BLUE_SPEAKER_Y = 5.7;//16.412;
     public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 2491;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
-    public static final double AMPLIFIER_ANGLE = 101;
-    public static final double SUBWOOFER_ANGLE = 55;
+    public static final double AMPLIFIER_ANGLE = 108;
+    public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_ANGLE = 37.5;
     //angle at 60 for bounce techinque, didn't work
   }
@@ -439,7 +419,7 @@ public final class Vision{
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
   
   public static final double APRILTAG_CLOSENESS = 0.5;
-  public static final double MAX_TAG_DISTANCE = 3.05;
+  public static final double MAX_TAG_DISTANCE = 2.3;
 
   public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
 
@@ -450,6 +430,13 @@ public final class Vision{
   public static final double K_DETECTOR_TY_P = 0.1;
   public static final double K_DETECTOR_TY_I = 0;
   public static final double K_DETECTOR_TY_D = 0;
+
+  // how many degrees back is your limelight rotated from perfectly vertical?
+  public static final double limelightMountAngleDegrees = 22.0;
+  // distance from the center of the Limelight lens to the floor
+  public static final double limelightLensHeightInches = 0.233; 
+  //height of april tags from the floor
+  public static final double AprilTagHeight = 1.335;
 }
 public final class PathConstants{
   //Welcome, to  Pathconstantic Park
