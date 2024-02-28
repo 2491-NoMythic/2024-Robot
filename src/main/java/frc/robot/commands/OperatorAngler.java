@@ -34,7 +34,7 @@ public class OperatorAngler extends Command {
 		} else if (opController.getPOV() == 270) {
 			angler.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 		} else if (opController.getCircleButton()) {
-			angler.setDesiredShooterAngle(0);
+			angler.setDesiredShooterAngle(45);
 		
 		} else {
 			angler.setDesiredShooterAngle(angler.getDesiredShooterAngle() + opController.getLeftY()*0.2);
