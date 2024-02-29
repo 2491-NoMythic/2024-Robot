@@ -27,12 +27,13 @@ public class AimRobotMoving extends Command {
     DoubleSupplier translationXSupplier;
     DoubleSupplier translationYSupplier;
     BooleanSupplier run;
-    BooleanSupplier cancel;
+    BooleanSupplier cancel1;
+    BooleanSupplier cancel2;
     DoubleSupplier rotationSupplier;
     double rotationSpeed;
     double allianceOffset;
     
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier cancel){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier cancel1, BooleanSupplier cancel2){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -43,7 +44,8 @@ public class AimRobotMoving extends Command {
           this.translationXSupplier = translationXSupplier;
           this.translationYSupplier = translationYSupplier;
           this.rotationSupplier = rotationSupplier;
-          this.cancel = cancel;
+          this.cancel1 = cancel1;
+          this.cancel2 = cancel2;
           this.run = run;
           addRequirements(drivetrain);
         }
@@ -61,7 +63,7 @@ public class AimRobotMoving extends Command {
           desiredRobotAngle = m_drivetrain.calculateSpeakerAngleMoving();
           speedController.setSetpoint(desiredRobotAngle);
         //move robot to desired angle
-        this.currentHeading = m_drivetrain.getGyroscopeRotation().getDegrees();
+        this.currentHeading = m_drivetrain.getPose().getRotation().getDegrees();
         if(Math.abs(rotationSupplier.getAsDouble()) > 0.3) {
           rotationSpeed = rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
         } else {
@@ -72,19 +74,19 @@ public class AimRobotMoving extends Command {
         } else {
           allianceOffset = 0;
         }
-        if(!cancel.getAsBoolean()) {
+        if(!cancel1.getAsBoolean()) {
           m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
             translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
             translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
             rotationSpeed,
-            new Rotation2d(m_drivetrain.getGyroscopeRotation().getRadians()+allianceOffset)));
+            new Rotation2d(m_drivetrain.getPose().getRotation().getRadians()+allianceOffset)));
         }
         // m_drivetrain.drive(new ChassisSpeeds(
         //   translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
         //   translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
         //   speedController.calculate(differenceAngle)));
 
-        SmartDashboard.putNumber("current Heading", m_drivetrain.getGyroscopeRotation().getDegrees()%360);
+        SmartDashboard.putNumber("current Heading", m_drivetrain.getPose().getRotation().getDegrees()%360);
         SmartDashboard.putNumber("difference", differenceAngle);
         SmartDashboard.putNumber("desired angle", desiredRobotAngle);
         SmartDashboard.putNumber("PID calculated output", speedController.calculate(differenceAngle));
@@ -100,6 +102,6 @@ public class AimRobotMoving extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!run.getAsBoolean() || cancel.getAsBoolean());
+    return (!run.getAsBoolean() || cancel1.getAsBoolean() || cancel2.getAsBoolean());
   }
 }

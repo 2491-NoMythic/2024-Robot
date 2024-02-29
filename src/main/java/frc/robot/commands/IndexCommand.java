@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
+import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -28,6 +29,7 @@ public class IndexCommand extends Command {
   Boolean revUp;
   BooleanSupplier shootIfReadySupplier;
   DoubleSupplier ampSupplier;;
+  BooleanSupplier groundIntakeSup;
   Boolean shootIfReady;
   // DoubleSupplier POVSupplier;
   BooleanSupplier humanPlayerSupplier;
@@ -36,20 +38,24 @@ public class IndexCommand extends Command {
   IntakeSubsystem intake;
   DrivetrainSubsystem drivetrain;
   AngleShooterSubsystem angleShooterSubsytem;
+  BooleanSupplier stageAngleSup;
+  BooleanSupplier subwooferAngleSup;
   boolean auto;
   double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, DoubleSupplier ampSupplier) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
     this.shooter = shooter;
     this.intake = intake;
     this.drivetrain = drivetrain;
-    this.ampSupplier = ampSupplier;
     this.angleShooterSubsytem = angleShooterSubsystem;
     this.humanPlayerSupplier = humanPlaySupplier;//R1
+    this.subwooferAngleSup = SubwooferSup;
+    this.stageAngleSup = stageAngleSup;
+    this.groundIntakeSup = groundIntakeSup;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
@@ -81,7 +87,12 @@ public class IndexCommand extends Command {
           intake.intakeOff();
         }
         else {
-          m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
+          if(groundIntakeSup.getAsBoolean()) {
+            m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
+            intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+          } else {
+            m_Indexer.off();
+          }
           shooter.turnOff();
         }
       }
@@ -91,7 +102,7 @@ public class IndexCommand extends Command {
       if(shootIfReadySupplier.getAsBoolean()&&revUpSupplier.getAsBoolean()&&humanPlayerSupplier.getAsBoolean()) {
         shooter.shootRPS(ShooterConstants.SUBWOOFER_RPS);
       } else {
-        if(revUpSupplier.getAsBoolean()) {
+        if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()) {
           if(angleShooterSubsytem.shortSpeakerDist()) {
             shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
           } else {
@@ -113,11 +124,7 @@ public class IndexCommand extends Command {
           indexer = true;
         }
         if (indexer) {
-          if(ampSupplier.getAsDouble() == 90) {
-            m_Indexer.set(SmartDashboard.getNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED));
-          } else {
             m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-          }
          } else {
             m_Indexer.off();
          }

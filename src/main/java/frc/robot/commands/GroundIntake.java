@@ -4,53 +4,44 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.IndexerConstants;
-import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
-public class shootAmp extends Command {
+public class GroundIntake extends Command {
+  /** Creates a new GroundIntake. */
+  IntakeSubsystem intake;
   IndexerSubsystem indexer;
-  ShooterSubsystem shooter;
-  Timer timer;
-  /** Creates a new shootAmp. */
-  public shootAmp(IndexerSubsystem indexer, ShooterSubsystem shooter) {
-    addRequirements(shooter, indexer);
+  public GroundIntake(IntakeSubsystem intake, IndexerSubsystem indexer) {
+    this.intake = intake;
     this.indexer = indexer;
-    this.shooter = shooter;
-    timer = new Timer();
+    addRequirements(intake, indexer);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.reset();
-    timer.start();
-    shooter.shootSameRPS(ShooterConstants.AMP_RPS);
+    intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+    indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if(timer.get()>1) {
-      indexer.set(IndexerConstants.INDEXER_AMP_SPEED);
-    }
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.turnOff();
+    intake.intakeOff();
     indexer.off();
-    timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get()>1.5;
+    return false;
   }
 }

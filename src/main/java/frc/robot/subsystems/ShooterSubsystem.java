@@ -89,6 +89,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     }
     public void shootRPS(double RPS) {
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
+      shooterL.setControl(new VelocityDutyCycle(RPS/2).withSlot(0));
+    }
+    public void shootSameRPS(double RPS) {
+      shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
       shooterL.setControl(new VelocityDutyCycle(RPS).withSlot(0));
     }
     private double getError() {

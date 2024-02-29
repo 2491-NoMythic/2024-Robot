@@ -159,17 +159,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public void zeroGyroscope() {
 		if(DriverStation.getAlliance().get() == Alliance.Red) {
-			pigeon.setYaw(180);
+			zeroGyroscope(180);
 		} else {
-		pigeon.setYaw(0); //TODO make sure this is right for both alliances
+			zeroGyroscope(0);
 		}
-		odometer.resetPosition(new Rotation2d(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
 	}
 	public void zeroGyroscope(double angleDeg) {
-		pigeon.setYaw(angleDeg);
-		new Rotation2d();
-		new Rotation2d();
-		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
+		resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
 	public double getHeadingLooped() {
 		//returns the heading of the robot, but only out of 360, not accumulative
@@ -205,11 +201,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return odometer.getEstimatedPosition();
 	}
     public void resetOdometry(Pose2d pose) {
-		zeroGyroscope(pose.getRotation().getDegrees());
-        odometer.resetPosition(pose.getRotation(), getModulePositions(), pose);
+        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     }
     public void resetOdometry() {
-        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), DRIVE_ODOMETRY_ORIGIN);
+		resetOdometry(DRIVE_ODOMETRY_ORIGIN);
     }
 	/**
 	 *  Sets the modules speed and rotation to zero.

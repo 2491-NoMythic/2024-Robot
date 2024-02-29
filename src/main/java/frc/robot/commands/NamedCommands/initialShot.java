@@ -6,7 +6,9 @@ package frc.robot.commands.NamedCommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -16,14 +18,16 @@ public class initialShot extends Command {
   Timer timer;
   double revTime;
   double shootTime;
+  AngleShooterSubsystem angleShooter;
   /** Creates a new shootThing. */
-  public initialShot(ShooterSubsystem shooter, IndexerSubsystem indexer, double revTime, double shootTime) {
+  public initialShot(ShooterSubsystem shooter, IndexerSubsystem indexer, double revTime, double shootTime, AngleShooterSubsystem angleShooter) {
     this.indexer = indexer;
     this.shooter = shooter;
     this.revTime = revTime;
     this.shootTime = shootTime;
+    this.angleShooter = angleShooter;
     timer = new Timer();
-    addRequirements(shooter, indexer);
+    addRequirements(shooter, indexer, angleShooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -34,6 +38,7 @@ public class initialShot extends Command {
     timer.start();
     indexer.off();
     shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
+    angleShooter.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
