@@ -75,6 +75,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     currentLimitConfigs = new CurrentLimitsConfigs();
     currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.CURRENT_LIMIT;
     currentLimitConfigs.SupplyCurrentLimitEnable = true;
+    currentLimitConfigs.StatorCurrentLimit = 100;
+    currentLimitConfigs.StatorCurrentLimitEnable = true;
     configuratorL.apply(currentLimitConfigs);
     configuratorR.apply(currentLimitConfigs);
     
@@ -114,6 +116,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @Override
   public void periodic() {
     SmartDashboard.putNumber("TESTING shooter speed error", getError());
+    SmartDashboard.getBoolean("shooter speed rev'ed", validShot());
     SmartDashboard.putNumber("shooter current right", shooterR.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("shooter current left", shooterL.getSupplyCurrent().getValueAsDouble());
     if(getError()<ShooterConstants.ALLOWED_SPEED_ERROR) {
