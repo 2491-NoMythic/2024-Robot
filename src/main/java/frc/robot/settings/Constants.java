@@ -265,7 +265,7 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_ANGLE = 97;
   public static final double HUMAN_PLAYER_RPS = -10;
   public static final double SAFE_SHOOTER_ANGLE = 15;
-  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
+  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 45;
 
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
