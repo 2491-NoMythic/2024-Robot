@@ -172,7 +172,6 @@ public class RobotContainer {
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
     defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, driverController::getR1Button, driverController::getR1Button, driverController::getR2Button, driverController::getL2Button);
-    angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
@@ -185,7 +184,6 @@ public class RobotContainer {
   }
   private void indexCommandInst() {
     defaulNoteHandlingCommand = new IndexCommand(indexer, driverController::getR2Button, driverController::getL2Button, shooter, intake, driveTrain, angleShooterSubsystem, driverController::getR1Button, driverController::getPOV);
-    indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
   private void autoInit() {
@@ -362,6 +360,22 @@ public class RobotContainer {
     );
   }
 
+  private void enableDefaultCommands() {
+    if(angleShooterExists) {
+      angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
+    }
+    if(indexerExists&&shooterExists) {
+      indexer.setDefaultCommand(defaulNoteHandlingCommand);
+    }
+  }
+  private void disableDefaultCommands() {
+    if(angleShooterExists) {
+      angleShooterSubsystem.setDefaultCommand(null);
+    }
+    if(indexerExists&&shooterExists) {
+      indexer.setDefaultCommand(null);
+    }
+  }
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
     NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
@@ -385,6 +399,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
   public void teleopInit() {
+    enableDefaultCommands();
     driveTrain.forceUpdateOdometryWithVision();
     if(climberExists) {
       SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
@@ -398,6 +413,10 @@ public class RobotContainer {
       if(angleShooterExists) {
         angleShooterSubsystem.pitchShooter(0);
       }
+  }
+
+  public void testInit() {
+    disableDefaultCommands();
   }
   public void teleopPeriodic() {
     SmartDashboard.putData(driveTrain.getCurrentCommand());
