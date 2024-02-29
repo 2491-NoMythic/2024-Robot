@@ -411,7 +411,7 @@ public static final class CTREConfigs {
     public static final double AMPLIFIER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_ANGLE = 37.5;
-    public static final double AUTO_CLOSE__SIDE_ANGLE = 40;
+    public static final double AUTO_CLOSE_SIDE_ANGLE = 40;
     public static final double AUTO_CLOSE_MID_ANGLE = 40;
     //angle at 60 for bounce techinque, didn't work
   }

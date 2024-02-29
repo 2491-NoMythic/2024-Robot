@@ -206,7 +206,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, AimWhileMovingSup, ()->SmartDashboard.getBoolean("auto angle for sides", false), ()->SmartDashboard.getBoolean("auto angle for mid", false));
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -418,10 +418,19 @@ public class RobotContainer {
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));
     }
+    if (angleShooterExists) {
+      NamedCommands.registerCommand("autoAngleCloseSideOn", new InstantCommand(()->SmartDashboard.putBoolean("auto angle for sides", true)));
+      NamedCommands.registerCommand("autoAngleCloseSideOn", new InstantCommand(()->SmartDashboard.putBoolean("auto angle for mid", true)));
+      NamedCommands.registerCommand("autoAngleCloseSideOff", new InstantCommand(()->SmartDashboard.putBoolean("auto angle for sides", true)));
+      NamedCommands.registerCommand("autoAngleCloseSideOff", new InstantCommand(()->SmartDashboard.putBoolean("auto angle for mid", true)));
+      NamedCommands.registerCommand("autoAngleCloseMid", defaulNoteHandlingCommand);
+    }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
   public void teleopInit() {
     driveTrain.forceUpdateOdometryWithVision();
+    SmartDashboard.putBoolean("auto angle for sides", false);
+    SmartDashboard.putBoolean("auto angle for mid", false);
     if(climberExists) {
       SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
         new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),

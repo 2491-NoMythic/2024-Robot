@@ -16,15 +16,20 @@ public class AimShooter extends Command {
 	BooleanSupplier SubwooferSupplier1;
 	BooleanSupplier StageAngleSupplier;
 	BooleanSupplier intakeSupplier;
+	BooleanSupplier aimAtSpeaker;
+	BooleanSupplier autoScoreCloseSide;
+	BooleanSupplier autoScoreCloseMid;
 
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier intakeSup) {
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier aimAtSpeaker, BooleanSupplier autoScoreCloseSide, BooleanSupplier autoScoreCloseMid) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;
 		this.SubwooferSupplier1 = SubwooferSupplier1;
 		this.StageAngleSupplier = StageAngleSupplier;
-		this.intakeSupplier = intakeSup;
+		this.aimAtSpeaker = aimAtSpeaker;
+		this.autoScoreCloseMid = autoScoreCloseMid;
+		this.autoScoreCloseSide = autoScoreCloseSide;
 		addRequirements(angleShooterSubsystem);
 	}
 
@@ -46,9 +51,9 @@ public class AimShooter extends Command {
 		} else if (aimAtSpeaker.getAsBoolean()){
 			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 		} else if(autoScoreCloseSide.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(0); 
+			angleShooterSubsystem.setDesiredShooterAngle(Field.AUTO_CLOSE_SIDE_ANGLE); 
 		} else if(autoScoreCloseMid.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(0); 		
+			angleShooterSubsystem.setDesiredShooterAngle(Field.AUTO_CLOSE_MID_ANGLE); 		
 		} else {
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
 		} 
