@@ -122,17 +122,16 @@ public class RobotContainer {
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
     Preferences.initBoolean("Brushes", false);
-    Preferences.initBoolean("CompBot", false);
-    Preferences.initDouble("ZeroOffsetShooterAngle", 0.0);
-    Preferences.initBoolean("Intake", false);
-    Preferences.initBoolean("Climber", false);
-    Preferences.initBoolean("Shooter", false);
-    Preferences.initBoolean("AngleShooter", false);
-    Preferences.initBoolean("Lights", false);
-    Preferences.initBoolean("Indexer", false);
+    Preferences.initBoolean("CompBot", true);
+    Preferences.initBoolean("Intake", true);
+    Preferences.initBoolean("Climber", true);
+    Preferences.initBoolean("Shooter", true);
+    Preferences.initBoolean("AngleShooter", true);
+    Preferences.initBoolean("Lights", true);
+    Preferences.initBoolean("Indexer", true);
     Preferences.initBoolean("Detector Limelight", false);
-    Preferences.initBoolean("Use Limelight", false);
-    Preferences.initBoolean("Use 2 Limelights", false);
+    Preferences.initBoolean("Use Limelight", true);
+    Preferences.initBoolean("Use 2 Limelights", true);
     Preferences.initDouble("wait # of seconds", 0);
 
     // DataLogManager.start();
