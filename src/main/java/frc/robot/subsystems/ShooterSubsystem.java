@@ -98,6 +98,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     private double getError() {
       return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
     }
+    public boolean isReving() {
+      return shooterR.getVelocity().getValueAsDouble()>15;
+    }
     public boolean validShot() {
       return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
     }
