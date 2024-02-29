@@ -113,7 +113,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Preferences.initDouble("BR offset", 0);
 		PathPlannerLogging.setLogActivePathCallback((poses) -> m_field.getObject("path").setPoses(poses));
 		SmartDashboard.putData("Field", m_field);
-		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
+		// SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
 		SmartDashboard.putBoolean("force use limelight", false);
 		modules = new SwerveModule[4];
 		lastAngles = new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()}; // manually make empty angles to avoid null errors.
@@ -203,9 +203,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     }
-    public void resetOdometry() {
-		resetOdometry(DRIVE_ODOMETRY_ORIGIN);
-    }
+    // public void resetOdometry() {
+	// 	resetOdometry(DRIVE_ODOMETRY_ORIGIN);
+    // }
 	/**
 	 *  Sets the modules speed and rotation to zero.
 	 */
