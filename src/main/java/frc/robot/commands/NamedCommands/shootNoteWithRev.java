@@ -1,0 +1,59 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands.NamedCommands;
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.IndexerConstants;
+import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+
+public class shootNoteWithRev extends Command {
+  IndexerSubsystem indexer;
+  ShooterSubsystem shooter;
+  Timer timer;
+  double shootTime;
+  double revTime;
+  /** Creates a new shootNote. */
+  public shootNoteWithRev(IndexerSubsystem indexer, ShooterSubsystem shooter, double shootTime, double revTime) {
+    this.indexer = indexer;
+    this.shootTime = shootTime;
+    this.revTime = revTime;
+    this.shooter = shooter;
+    timer = new Timer();
+    addRequirements(indexer);
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    timer.reset();
+    timer.start();
+    shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    if(timer.get()>revTime) {
+      indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+    }
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    timer.stop();
+    timer.reset();
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return timer.get()>shootTime;
+  }
+}

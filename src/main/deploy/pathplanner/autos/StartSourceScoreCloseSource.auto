@@ -34,6 +34,12 @@
           "data": {
             "pathName": "CloseAmpPickup"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootWithRevTime"
+          }
         }
       ]
     }
