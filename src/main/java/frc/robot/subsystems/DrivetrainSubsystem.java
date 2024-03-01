@@ -12,7 +12,8 @@ import static frc.robot.settings.Constants.DriveConstants.BR_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.BR_STEER_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.CANIVORE_DRIVETRAIN;
 import static frc.robot.settings.Constants.DriveConstants.DRIVETRAIN_PIGEON_ID;
-import static frc.robot.settings.Constants.DriveConstants.DRIVE_ODOMETRY_ORIGIN;
+import static frc.robot.settings.Constants.DriveConstants.DRIVE_ODOMETRY_ORIGIN_BLUE;
+import static frc.robot.settings.Constants.DriveConstants.DRIVE_ODOMETRY_ORIGIN_RED;
 import static frc.robot.settings.Constants.DriveConstants.FL_DRIVE_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FL_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.FL_STEER_MOTOR_ID;
@@ -147,11 +148,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			Rotation2d.fromRotations(Preferences.getDouble("BR offset", 0)),
 			CANIVORE_DRIVETRAIN);
 		
+		Pose2d allianceRelativeOrigin;
+		if(DriverStation.getAlliance().get() == Alliance.Red) {
+			allianceRelativeOrigin = DRIVE_ODOMETRY_ORIGIN_RED;
+		} else {
+			allianceRelativeOrigin = DRIVE_ODOMETRY_ORIGIN_BLUE;
+		}
 		odometer = new SwerveDrivePoseEstimator(
 			kinematics, 
 			getGyroscopeRotation(),
 			getModulePositions(),
-			DRIVE_ODOMETRY_ORIGIN);
+			allianceRelativeOrigin);
 		}
 	/**
 	 * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the

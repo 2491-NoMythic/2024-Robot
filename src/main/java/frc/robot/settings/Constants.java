@@ -53,7 +53,8 @@ public final class Constants {
       }
     }
 
-    public static final Pose2d DRIVE_ODOMETRY_ORIGIN = new Pose2d(5.0, 5.0, new Rotation2d());
+    public static final Pose2d DRIVE_ODOMETRY_ORIGIN_RED = new Pose2d(5.0, 5.0, new Rotation2d());
+    public static final Pose2d DRIVE_ODOMETRY_ORIGIN_BLUE = new Pose2d(5.0, 5.0, new Rotation2d(Math.PI));
     /**
      * The bumper-to-bumper width of the robot.
      */
