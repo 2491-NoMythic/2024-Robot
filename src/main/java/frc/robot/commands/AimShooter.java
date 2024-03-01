@@ -51,7 +51,7 @@ public class AimShooter extends Command {
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
 		} else {
 			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
-		}
+		} 
 	}
 
 	@Override
