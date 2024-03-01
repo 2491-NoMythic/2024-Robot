@@ -263,7 +263,7 @@ public static final class ShooterConstants{
   public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 108;
   public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;
   public static final double HUMAN_PLAYER_ANGLE = 97;
-  public static final double HUMAN_PLAYER_RPS = -10;
+  public static final double HUMAN_PLAYER_RPS = -15;
   public static final double SAFE_SHOOTER_ANGLE = 15;
   public static final double GROUND_INTAKE_SHOOTER_ANGLE = 30;
 
@@ -411,10 +411,10 @@ public static final class CTREConfigs {
     public static final double AMPLIFIER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_ANGLE = 37.5;
-    public static final double FAR_PODIUM_ANGLE = 18.692;
+    public static final double FAR_PODIUM_ANGLE = 24.5;
     
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
-    public static final double RED_PODIUM_ROBOT_ANGLE = -31;
+    public static final double RED_PODIUM_ROBOT_ANGLE = 31;
     public static final double BLUE_FAR_PODIUM_ROBOT_ANGLE = 183.6;
     public static final double RED_FAR_PODIUM_ROBOT_ANGLE = -3.6;
 
