@@ -28,7 +28,7 @@ public class IndexCommand extends Command {
   BooleanSupplier revUpSupplier;
   Boolean revUp;
   BooleanSupplier shootIfReadySupplier;
-  DoubleSupplier ampSupplier;;
+  DoubleSupplier ampSupplier;
   BooleanSupplier groundIntakeSup;
   Boolean shootIfReady;
   // DoubleSupplier POVSupplier;
@@ -40,11 +40,12 @@ public class IndexCommand extends Command {
   AngleShooterSubsystem angleShooterSubsytem;
   BooleanSupplier stageAngleSup;
   BooleanSupplier subwooferAngleSup;
+  BooleanSupplier farStageAngleSup;
   boolean auto;
   double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
@@ -55,6 +56,7 @@ public class IndexCommand extends Command {
     this.humanPlayerSupplier = humanPlaySupplier;//R1
     this.subwooferAngleSup = SubwooferSup;
     this.stageAngleSup = stageAngleSup;
+    this.farStageAngleSup = farStageAngleSup;
     this.groundIntakeSup = groundIntakeSup;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
@@ -118,6 +120,9 @@ public class IndexCommand extends Command {
         RobotState.getInstance().ShooterReady = false;
       }
       if(SmartDashboard.getBoolean("feedMotor", false)) {
+        indexer = true;
+      }
+      if((stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||farStageAngleSup.getAsBoolean())&&revUpSupplier.getAsBoolean()&& shooter.validShot()) {
         indexer = true;
       }
       if (indexer) {
