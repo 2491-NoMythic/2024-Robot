@@ -115,6 +115,7 @@ public class RobotContainer {
   BooleanSupplier ManualShootSup;
   BooleanSupplier ForceVisionSup;
   BooleanSupplier GroundIntakeSup;
+  BooleanSupplier FarStageAngleSup;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -156,6 +157,7 @@ public class RobotContainer {
     ManualShootSup = driverController::getL1Button;
     ForceVisionSup = driverController::getOptionsButton;
     GroundIntakeSup = operatorController::getTouchpad;
+    FarStageAngleSup = driverController::getTouchpad;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -205,7 +207,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, AimWhileMovingSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, AimWhileMovingSup, FarStageAngleSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -257,8 +259,10 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getL2Button,
-      driverController::getCrossButton,
-      driverController::getTriangleButton));
+      StageAngleSup,
+      FarStageAngleSup,
+      SubwooferAngleSup
+      ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
       new Trigger(operatorController::getR1Button).onTrue(new SequentialCommandGroup(

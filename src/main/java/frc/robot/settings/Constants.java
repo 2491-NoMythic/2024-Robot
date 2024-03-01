@@ -85,7 +85,7 @@ public final class Constants {
      * Whether the drive motor should be counterclockwise or clockwise positive. 
      * If there is an odd number of gear reductions this is typically clockwise-positive.
      */
-    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.Clockwise_Positive;
 
     /**
      * The overall steer reduction of the module. Multiplying motor rotations by
@@ -402,7 +402,7 @@ public static final class CTREConfigs {
 
   public final class Field{
     public static final double BLUE_SPEAKER_X = 0.23;
-    public static final double RED_SPEAKER_X = 16.5;
+    public static final double RED_SPEAKER_X = 16.87;
     public static final double SPEAKER_Y = 5.6;//16.412;
     public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 9;
@@ -411,6 +411,13 @@ public static final class CTREConfigs {
     public static final double AMPLIFIER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_ANGLE = 37.5;
+    public static final double FAR_PODIUM_ANGLE = 18.692;
+    
+    public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
+    public static final double RED_PODIUM_ROBOT_ANGLE = -31;
+    public static final double BLUE_FAR_PODIUM_ROBOT_ANGLE = 183.6;
+    public static final double RED_FAR_PODIUM_ROBOT_ANGLE = -3.6;
+
     //angle at 60 for bounce techinque, didn't work
   }
 
