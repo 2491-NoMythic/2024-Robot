@@ -180,7 +180,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return getHeadingDegrees()-180*(accumulativeLoops); 
 	}
 	public Rotation2d getGyroscopeRotation() {
-		return pigeon.getRotation2d();
+		double radians = pigeon.getRotation2d().getRadians();
+		return new Rotation2d(-radians);
 	}
 	public double getHeadingDegrees() {
 		return pigeon.getAngle();

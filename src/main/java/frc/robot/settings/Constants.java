@@ -86,7 +86,7 @@ public final class Constants {
      * Whether the drive motor should be counterclockwise or clockwise positive. 
      * If there is an odd number of gear reductions this is typically clockwise-positive.
      */
-    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.Clockwise_Positive;
 
     /**
      * The overall steer reduction of the module. Multiplying motor rotations by
