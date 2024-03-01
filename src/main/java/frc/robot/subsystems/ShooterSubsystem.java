@@ -73,29 +73,36 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     configuratorR.apply(new FeedbackConfigs().withSensorToMechanismRatio(0.5).withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor).withRotorToSensorRatio(1));
     
     currentLimitConfigs = new CurrentLimitsConfigs();
-    currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.CURRENT_LIMIT;
     currentLimitConfigs.SupplyCurrentLimitEnable = true;
-    currentLimitConfigs.StatorCurrentLimit = 100;
     currentLimitConfigs.StatorCurrentLimitEnable = true;
+    
+    configuratorR.apply(PIDRightconfigs);
+    configuratorL.apply(PIDLeftconfigs);
+  }
+  private void adjCurrentLimit( double supplyLimit, double statorLimit){
+    currentLimitConfigs.SupplyCurrentLimit = supplyLimit;
+    currentLimitConfigs.StatorCurrentLimit = statorLimit;
     configuratorL.apply(currentLimitConfigs);
     configuratorR.apply(currentLimitConfigs);
-    
-     configuratorR.apply(PIDRightconfigs);
-     configuratorL.apply(PIDLeftconfigs);
-    }
-   
-    
-    public void shootThing(double runSpeed) {
-      shooterR.set(runSpeed);
-      shooterL.set(runSpeed);
-    }
+  }
+  
+  //public void shootThing(double runSpeed) {
+  //  currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.CURRENT_LIMIT;
+  //  shooterR.set(runSpeed);
+  //  shooterL.set(runSpeed);
+  //}
     public void shootRPS(double RPS) {
-      shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
-      shooterL.setControl(new VelocityDutyCycle(RPS/2).withSlot(0));
+      shootRPSWithCurrent(RPS, ShooterConstants.CURRENT_LIMIT, 100);
     }
     public void shootSameRPS(double RPS) {
+      adjCurrentLimit(ShooterConstants.CURRENT_LIMIT, 100);
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
       shooterL.setControl(new VelocityDutyCycle(RPS).withSlot(0));
+    }
+    public void shootRPSWithCurrent(double RPS, double currentLimit, double statorLimit){
+      adjCurrentLimit(currentLimit, statorLimit);
+      shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
+      shooterL.setControl(new VelocityDutyCycle(RPS/2).withSlot(0));
     }
     private double getError() {
       return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());

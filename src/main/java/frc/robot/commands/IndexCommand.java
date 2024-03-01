@@ -41,11 +41,12 @@ public class IndexCommand extends Command {
   BooleanSupplier stageAngleSup;
   BooleanSupplier subwooferAngleSup;
   BooleanSupplier farStageAngleSup;
+  BooleanSupplier operatorRevSup;
   boolean auto;
   double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
@@ -58,6 +59,7 @@ public class IndexCommand extends Command {
     this.stageAngleSup = stageAngleSup;
     this.farStageAngleSup = farStageAngleSup;
     this.groundIntakeSup = groundIntakeSup;
+    this.operatorRevSup = operatorRevSup;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_ANGLE);
@@ -108,7 +110,11 @@ public class IndexCommand extends Command {
           shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
         }
       } else {
-        shooter.turnOff();
+        if (operatorRevSup.getAsBoolean()){ 
+          shooter.shootRPSWithCurrent(100, 10, 20);
+        } else {
+          shooter.turnOff();
+        }
       }
       boolean indexer = false;
       if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot() && shooter.isReving()) {
