@@ -49,6 +49,8 @@ public class shootNoteWithRev extends Command {
   public void end(boolean interrupted) {
     timer.stop();
     timer.reset();
+    indexer.off();
+    shooter.turnOff();
   }
 
   // Returns true when the command should end.
