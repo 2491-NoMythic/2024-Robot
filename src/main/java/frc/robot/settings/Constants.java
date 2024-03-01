@@ -265,7 +265,7 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_ANGLE = 97;
   public static final double HUMAN_PLAYER_RPS = -15;
   public static final double SAFE_SHOOTER_ANGLE = 15;
-  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 30;
+  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
 
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
@@ -324,7 +324,7 @@ public static final class IntakeConstants{
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
-  public static final double INTAKE_SPEED = 0.8;
+  public static final double INTAKE_SPEED = 1;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
