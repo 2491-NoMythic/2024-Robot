@@ -37,6 +37,7 @@ import frc.robot.commands.ManualShoot;
 import frc.robot.commands.shootAmp;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
+import frc.robot.commands.NamedCommands.shootNoteWithRev;
 import frc.robot.commands.goToPose.GoToAmp;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Lights;
@@ -414,6 +415,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
+      NamedCommands.registerCommand("shootWithRevTime", new shootNoteWithRev(indexer, shooter, 2.5, 1.5));
     }
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));

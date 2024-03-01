@@ -24,7 +24,7 @@ public class shootNoteWithRev extends Command {
     this.revTime = revTime;
     this.shooter = shooter;
     timer = new Timer();
-    addRequirements(indexer);
+    addRequirements(indexer, shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
