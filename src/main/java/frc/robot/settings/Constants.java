@@ -173,8 +173,8 @@ public final class Constants {
     public static final double k_DRIVE_FF_V = 0;
     public static final double DRIVE_DEADBAND_MPS = 0.01;
     public static final double DRIVE_MOTOR_RAMP = 0.1;
-    public static final double DRIVE_STATOR_CURRENT_LIMIT = 200;
-    public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 150;
+    public static final double DRIVE_STATOR_CURRENT_LIMIT = 240;
+    public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 200;
 
     // Steer Motor
     /**
