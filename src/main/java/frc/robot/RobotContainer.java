@@ -148,18 +148,19 @@ public class RobotContainer {
     ZeroGyroSup = driverController::getPSButton;
     AimWhileMovingSup = driverController::getL2Button;
     ShootIfReadySup = driverController::getR2Button;
-    SubwooferAngleSup = driverController::getCrossButton;
-    StageAngleSup = driverController::getTriangleButton;
     HumanPlaySup = driverController::getR1Button;
     AmpAngleSup = ()->driverController.getPOV() == 90;
-    ClimberDownSup = operatorController::getCrossButton;
-    ClimberUpSup = operatorController::getTriangleButton;
+    ClimberDownSup = operatorController::getL1Button;
+    ClimberUpSup = operatorController::getL2Button;
     ShooterUpManualSup = ()->driverController.getPOV() == 0;
     ManualShootSup = driverController::getL1Button;
     ForceVisionSup = driverController::getOptionsButton;
     GroundIntakeSup = operatorController::getTouchpad;
-    FarStageAngleSup = driverController::getTouchpad;
     OperatorPreRevSup = operatorController::getL2Button;
+    // these suppliers are used to rev up the shooter and angle the shooter. We want both driver and co-driver to be able to do this:
+    FarStageAngleSup = ()->driverController.getTouchpad()||operatorController.getTriangleButton();
+    StageAngleSup = ()->driverController.getTriangleButton()||operatorController.getCircleButton()||operatorController.getSquareButton();
+    SubwooferAngleSup = ()->driverController.getCrossButton()||operatorController.getCrossButton();
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
