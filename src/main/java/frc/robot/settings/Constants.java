@@ -368,7 +368,6 @@ public static final class CTREConfigs {
       driveMotorConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.DRIVE_CURRENT_LIMIT;
       driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
       driveMotorConfig.CurrentLimits.StatorCurrentLimitEnable = false;
-      driveMotorConfig.CurrentLimits.StatorCurrentLimit = 400;
 
       //  Steer encoder.
       steerEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
