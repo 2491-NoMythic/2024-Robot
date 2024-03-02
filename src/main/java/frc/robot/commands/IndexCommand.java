@@ -111,7 +111,7 @@ public class IndexCommand extends Command {
         }
       } else {
         if (operatorRevSup.getAsBoolean()){ 
-          shooter.shootRPSWithCurrent(100, 10, 20);
+          shooter.shootRPSWithCurrent(100, 20, 40);
         } else {
           shooter.turnOff();
         }
