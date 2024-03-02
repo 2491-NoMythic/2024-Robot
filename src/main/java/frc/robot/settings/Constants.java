@@ -277,8 +277,6 @@ public static final class ShooterConstants{
   public static final double CompBotZeroOffset = 334.7;
   public static final double PracBotZeroOffset = 328;
 
- 
-
   //PID coefficients for shooter
   public static final double PrackP = 0.128;
   public static final double PrackFF  = 0.009;
@@ -411,8 +409,11 @@ public static final class CTREConfigs {
     public static final double AMPLIFIER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_ANGLE = 37.5;
-    public static final double AUTO_CLOSE_SIDE_ANGLE = 40;
-    public static final double AUTO_CLOSE_MID_ANGLE = 40;
+    //angles used during autos (we need to tune these):
+    public static final double AUTO_CLOSE_SIDE_ANGLE = 45;
+    public static final double AUTO_CLOSE_MID_ANGLE = 48;
+    public static final double AUTO_FAR_SOURCE_ANGLE = 23;
+    public static final double AUTO_FAR_AMP_ANGLE = 20;
     //angle at 60 for bounce techinque, didn't work
   }
 

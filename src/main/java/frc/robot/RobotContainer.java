@@ -29,6 +29,7 @@ import frc.robot.commands.IndexCommand;
 import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
@@ -37,6 +38,7 @@ import frc.robot.commands.ManualShoot;
 import frc.robot.commands.shootAmp;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
+import frc.robot.commands.NamedCommands.shootNoteWithAngle;
 import frc.robot.commands.NamedCommands.shootNoteWithRev;
 import frc.robot.commands.goToPose.GoToAmp;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -415,16 +417,15 @@ public class RobotContainer {
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
-      NamedCommands.registerCommand("shootWithRevTime", new shootNoteWithRev(indexer, shooter, 2.5, 1.5));
+      NamedCommands.registerCommand("shootCloseSides", new shootNoteWithAngle(indexer, shooter, angleShooterSubsystem, 2.5, 1.5, Field.AUTO_CLOSE_SIDE_ANGLE));
+      NamedCommands.registerCommand("shootCloseMid", new shootNoteWithAngle(indexer, shooter, angleShooterSubsystem, 2.5, 1.5, Field.AUTO_CLOSE_MID_ANGLE));
+      NamedCommands.registerCommand("shootFarSource", new shootNoteWithAngle(indexer, shooter, angleShooterSubsystem, 2.5, 1.5, Field.AUTO_FAR_SOURCE_ANGLE));
+      NamedCommands.registerCommand("shootFarAmp", new shootNoteWithAngle(indexer, shooter, angleShooterSubsystem, 2.5, 1.5, Field.AUTO_FAR_AMP_ANGLE));
     }
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));
     }
     if (angleShooterExists) {
-      NamedCommands.registerCommand("autoAngleCloseSideOn", new InstantCommand(()->SmartDashboard.putBoolean("auto angle for sides", true)));
-      NamedCommands.registerCommand("autoAngleCloseSideOn", new InstantCommand(()->SmartDashboard.putBoolean("auto angle for mid", true)));
-      NamedCommands.registerCommand("autoAngleCloseSideOff", new InstantCommand(()->SmartDashboard.putBoolean("auto angle for sides", true)));
-      NamedCommands.registerCommand("autoAngleCloseSideOff", new InstantCommand(()->SmartDashboard.putBoolean("auto angle for mid", true)));
       NamedCommands.registerCommand("autoAngleCloseMid", defaulNoteHandlingCommand);
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
