@@ -102,7 +102,7 @@ public class RobotContainer {
   private PowerDistribution PDP;
 
   BooleanSupplier ZeroGyroSup;
-  BooleanSupplier AimWhileMovingSup;
+  BooleanSupplier AimWhileMovingSup;//also the rev-up supplier for when using preset positions
   BooleanSupplier ShootIfReadySup;
   BooleanSupplier SubwooferAngleSup;
   BooleanSupplier StageAngleSup;
@@ -147,15 +147,15 @@ public class RobotContainer {
 
     ZeroGyroSup = driverController::getPSButton;
     AimWhileMovingSup = driverController::getL2Button;
-    ShootIfReadySup = driverController::getR2Button;
+    ShootIfReadySup = driverController::getR3Button;//was R2 Button, but Xioahan wanted it as intake since we aren't using the auto-aim at Duluth
     HumanPlaySup = driverController::getR1Button;
     AmpAngleSup = ()->driverController.getPOV() == 90;
-    ClimberDownSup = operatorController::getL1Button;
-    ClimberUpSup = operatorController::getL2Button;
+    ClimberDownSup = operatorController::getR1Button;
+    ClimberUpSup = operatorController::getR2Button;
     ShooterUpManualSup = ()->driverController.getPOV() == 0;
     ManualShootSup = driverController::getL1Button;
     ForceVisionSup = driverController::getOptionsButton;
-    GroundIntakeSup = operatorController::getTouchpad;
+    GroundIntakeSup = ()->operatorController.getTouchpad()||driverController.getR2Button();
     OperatorPreRevSup = operatorController::getL2Button;
     // these suppliers are used to rev up the shooter and angle the shooter. We want both driver and co-driver to be able to do this:
     FarStageAngleSup = ()->driverController.getTouchpad()||operatorController.getTriangleButton();
