@@ -174,7 +174,7 @@ public final class Constants {
     public static final double DRIVE_DEADBAND_MPS = 0.01;
     public static final double DRIVE_MOTOR_RAMP = 0.1;
     public static final double DRIVE_STATOR_CURRENT_LIMIT = 200;
-    public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 120;
+    public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 150;
 
     // Steer Motor
     /**
