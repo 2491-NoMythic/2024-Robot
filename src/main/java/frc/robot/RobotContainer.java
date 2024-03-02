@@ -29,14 +29,17 @@ import frc.robot.commands.IndexCommand;
 import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.shootAmp;
+import frc.robot.commands.NamedCommands.GroundIntakeAuto;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
+import frc.robot.commands.NamedCommands.shootNoteWithAngle;
 import frc.robot.commands.goToPose.GoToAmp;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Lights;
@@ -412,6 +415,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
     if(intakeExists) {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
+      NamedCommands.registerCommand("GroundIntakeAuto", new GroundIntakeAuto(intake, indexer, angleShooterSubsystem));
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));
@@ -419,6 +423,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
+      NamedCommands.registerCommand("shootFarNoteSourceSide", new shootNoteWithAngle(indexer, shooter, angleShooterSubsystem, 3, 2.5, Field.FAR_PODIUM_ANGLE));
     }
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));
