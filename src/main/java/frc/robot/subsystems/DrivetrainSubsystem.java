@@ -158,7 +158,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * 'forwards' direction.
 	 */
 	public void zeroGyroscope() {
-		if(DriverStation.getAlliance().get() == Alliance.Red) {
+		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
 			zeroGyroscope(180);
 		} else {
 			zeroGyroscope(0);
@@ -266,7 +266,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 
 		}
-		if(DriverStation.getAlliance().get() == Alliance.Red) {
+		if(alliance.isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
 			deltaX = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
 		} else {
 			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
@@ -329,7 +329,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed
 		int correctionDirection;
 		double speakerX;
-		if(DriverStation.getAlliance().get() == Alliance.Blue) {
+		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
 			correctionDirection = 1;
 			speakerX = Field.BLUE_SPEAKER_X;
 		} else {
@@ -348,7 +348,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		// SmartDashboard.putString("offset amount", targetOffset.toString());
 		// SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle
-		if (alliance.get() == Alliance.Blue) {
+		if (DriverStation.getAlliance().isPresent() && alliance.get() == Alliance.Blue) {
 			if (dtvalues.getY() >= adjustedTarget.getY()) {
 				double thetaAbove = -Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))-90;
 				m_desiredRobotAngle = thetaAbove;
@@ -404,7 +404,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 	@Override
 	public void periodic() {
-		SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
+		if (DriverStation.getAlliance().isPresent()) {
+			SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
+		}
 		updateOdometry();
 		AngleShooterSubsystem.setDTPose(getPose());
 		AngleShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());

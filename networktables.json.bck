@@ -126,13 +126,5 @@
     "properties": {
       "persistent": true
     }
-  },
-  {
-    "name": "/Preferences/CompBot",
-    "type": "boolean",
-    "value": true,
-    "properties": {
-      "persistent": true
-    }
   }
 ]
