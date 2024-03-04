@@ -43,13 +43,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
 import frc.robot.settings.Constants;
-import frc.robot.settings.LimelightValues;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
-import frc.robot.settings.Constants.Vision;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 
@@ -372,32 +371,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public boolean validShot() {
 		return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
 	}
-	public Pose2d getAverageBotPose(LimelightValues ll2, LimelightValues ll3) {
-		double ll2X = ll2.getBotPoseBlue().getX();
-		double ll3X = ll3.getBotPoseBlue().getX();
-		double ll2Y = ll2.getBotPoseBlue().getY();
-		double ll3Y = ll3.getBotPoseBlue().getY();
-		double ll2rotation = ll2.getBotPoseBlue().getRotation().getRadians();
-		double ll3rotation = ll3.getBotPoseBlue().getRotation().getRadians();
-		Rotation2d averageRotation = new Rotation2d((ll2rotation+ll3rotation)/2);
-		double averageX = (ll2X+ll3X)/2;
-		double averageY = (ll2Y+ll3Y)/2;
-		return new Pose2d(new Translation2d(averageX, averageY), averageRotation);
-	}
+
+	/**
+	 * Set the odometry using the current apriltag estimate, disregarding the pose trustworthyness.
+	 * <p>
+	 * You only need to run this once for it to take effect.
+	 */
 	public void forceUpdateOdometryWithVision() {
-		if(Preferences.getBoolean("Use Limelight", false)) {
-			if(Preferences.getBoolean("Use 2 Limelights", false)) {
-				LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-				LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
-				if (ll2.isResultValid && !ll3.isResultValid) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
-				if (!ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
-				if (ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
-			} else {
-				LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-				if(ll2.isResultValid) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
-			}
+		PoseEstimate estimate = limelight.getValidPose();
+		if (estimate != null) {
+			resetOdometry(estimate.pose);
+		} else {
+			System.err.println("No valid limelight estimate to reset from. (Drivetrain.forceUpdateOdometryWithVision)");
 		}
 	}
+
 	@Override
 	public void periodic() {
 		if (DriverStation.getAlliance().isPresent()) {
@@ -410,31 +398,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			forceUpdateOdometryWithVision();
 		} else {
 			if (Preferences.getBoolean("Use Limelight", false)) {
-				if(Preferences.getBoolean("Use 2 Limelights", false)) {
-					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-					LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
-					Boolean isLL2VisionValid = ll2.isResultValid;
-					Boolean isLL3VisionValid = ll3.isResultValid;
-					if(isLL2VisionValid) {
-						SmartDashboard.putNumber("VISION left LL tag [0] distance", ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT2_NAME));
-					}
-					if(isLL3VisionValid) {
-						SmartDashboard.putNumber("VISION right LL tag [0] distance", ll3.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
-					}
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT2_NAME));
-					Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(ll3.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
-					SmartDashboard.putBoolean("LL2visionValid", isLL2VisionTrustworthy);
-					SmartDashboard.putBoolean("LL3visionValid", isLL3VisionTrustworthy);
-					if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
-					if (!isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
-					if (isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
-				} else {
-					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-					Boolean isLL2VisionValid = ll2.isResultValid;
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
-					if (isLL2VisionTrustworthy) {
-						updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());
-					}
+				PoseEstimate estimate = limelight.getTrustedPose(getPose());
+				if (estimate != null) {
+					updateOdometryWithVision(estimate.pose, estimate.timestampSeconds);
 				}
 			}
 		}

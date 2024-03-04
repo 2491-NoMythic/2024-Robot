@@ -74,7 +74,7 @@
   {
     "name": "/Preferences/Use Limelight",
     "type": "boolean",
-    "value": false,
+    "value": true,
     "properties": {
       "persistent": true
     }
@@ -123,6 +123,14 @@
     "name": "/Preferences/BR offset",
     "type": "double",
     "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/CompBot",
+    "type": "boolean",
+    "value": true,
     "properties": {
       "persistent": true
     }
