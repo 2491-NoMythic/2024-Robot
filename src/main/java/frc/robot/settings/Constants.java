@@ -428,6 +428,8 @@ public final class Vision{
   public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-aprill";
   public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-aprilr";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
+
+  public static final String LIMELIGHT_SHUFFLEBOARD_TAB = "Vision";
   
   public static final double ALLOWABLE_POSE_DIFFERENCE = 0.5;
   public static final double MAX_TAG_DISTANCE = 2.3;

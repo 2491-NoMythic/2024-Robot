@@ -6,6 +6,8 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/InstantCommand": "Command",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/Vision/Aprill/field": "Field2d",
+      "/SmartDashboard/Vision/Aprilr/field": "Field2d",
       "/SmartDashboard/force update limelight position": "Command",
       "/SmartDashboard/resetOdometry": "Command",
       "/SmartDashboard/set offsets": "Command"

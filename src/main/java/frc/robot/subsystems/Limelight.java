@@ -7,16 +7,27 @@ import frc.robot.settings.LimelightDetectorData;
 import static frc.robot.settings.Constants.Vision.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Limelight {
 
     private static Limelight limelight;
+
+    private static Field2d field1 = new Field2d();
+    private static Field2d field2 = new Field2d();
 
     public static Boolean detectorEnabled = false;
 
     public static LimelightDetectorData latestDetectorValues;
 
     private Limelight() {
+        SmartDashboard.putBoolean("Vision/Aprill/valid", false);
+        SmartDashboard.putBoolean("Vision/Aprill/trusted", false);
+        SmartDashboard.putBoolean("Vision/Aprilr/valid", false);
+        SmartDashboard.putBoolean("Vision/Aprilr/trusted", false);
+        SmartDashboard.putData("Vision/Aprill/pose", field1);
+        SmartDashboard.putData("Vision/Aprilr/pose", field2);
     }
 
     public static Limelight getInstance() {
@@ -28,51 +39,6 @@ public class Limelight {
 
     public static void useDetectorLimelight(boolean enabled) {
         detectorEnabled = enabled;
-    }
-
-    /**
-     * Gets the most recent limelight pose estimate, given that a trustworthy
-     * estimate is
-     * available.
-     * <p>
-     * Trusted poses must:
-     * <ul>
-     * <li>Be within field bounds.
-     * <li>Have an average tag distance within [MAX_TAG_DISTANCE] from the robot.
-     * </ul>
-     * 
-     * @param odometryPose The current odometry pose estimate
-     * @return A valid and trustworthy pose. Null if no valid pose. Poses are
-     *         prioritized by lowest tagDistance.
-     */
-    public PoseEstimate getTrustedPose() {
-        PoseEstimate pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT2_NAME);
-        PoseEstimate pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT3_NAME);
-        Boolean pose1Trust = false, pose2Trust = false;
-        if (pose1 != null) {
-            pose1Trust = (pose1.pose.getX() < FIELD_CORNER.getX() &&
-                    pose1.pose.getX() > 0.0 &&
-                    pose1.pose.getY() < FIELD_CORNER.getY() &&
-                    pose1.pose.getY() > 0.0 &&
-                    // pose1.tagCount >= 2 &&
-                    pose1.avgTagDist < MAX_TAG_DISTANCE);
-        }
-        if (pose2 != null) {
-            pose2Trust = (pose2.pose.getX() < FIELD_CORNER.getX() &&
-                    pose2.pose.getX() > 0.0 &&
-                    pose2.pose.getY() < FIELD_CORNER.getY() &&
-                    pose2.pose.getY() > 0.0 &&
-                    // pose2.tagCount >= 2 &&
-                    pose2.avgTagDist < MAX_TAG_DISTANCE);
-        }
-        if (pose1Trust && pose2Trust) {
-            return ((pose1.avgTagDist < pose2.avgTagDist) ? pose1 : pose2);
-        } else if (pose1Trust) {
-            return pose1;
-        } else if (pose2Trust) {
-            return pose2;
-        } else
-            return null;
     }
 
     /**
@@ -95,21 +61,8 @@ public class Limelight {
         PoseEstimate pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT2_NAME);
         PoseEstimate pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT3_NAME);
 
-        Boolean pose1Trust = (pose1.pose.getX() < FIELD_CORNER.getX() &&
-                pose1.pose.getX() > 0.0 &&
-                pose1.pose.getY() < FIELD_CORNER.getY() &&
-                pose1.pose.getY() > 0.0 &&
-                // pose1.tagCount >= 2 &&
-                pose1.pose.getTranslation().getDistance(odometryPose.getTranslation()) < ALLOWABLE_POSE_DIFFERENCE &&
-                pose1.avgTagDist < MAX_TAG_DISTANCE);
-
-        Boolean pose2Trust = (pose2.pose.getX() < FIELD_CORNER.getX() &&
-                pose2.pose.getX() > 0.0 &&
-                pose2.pose.getY() < FIELD_CORNER.getY() &&
-                pose2.pose.getY() > 0.0 &&
-                // pose2.tagCount >= 2 &&
-                pose1.pose.getTranslation().getDistance(odometryPose.getTranslation()) < ALLOWABLE_POSE_DIFFERENCE &&
-                pose2.avgTagDist < MAX_TAG_DISTANCE);
+        Boolean pose1Trust = isTrustworthy(APRILTAG_LIMELIGHT2_NAME, pose1, odometryPose);
+        Boolean pose2Trust = isTrustworthy(APRILTAG_LIMELIGHT3_NAME, pose2, odometryPose);
 
         if (pose1Trust && pose2Trust) {
             return ((pose1.avgTagDist < pose2.avgTagDist) ? pose1 : pose2); //select the limelight that has closer tags.
@@ -135,17 +88,11 @@ public class Limelight {
         PoseEstimate pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT2_NAME);
         PoseEstimate pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT3_NAME);
 
-        Boolean pose1Valid = (pose1.pose.getX() < FIELD_CORNER.getX() &&
-                pose1.pose.getX() > 0.0 &&
-                pose1.pose.getY() < FIELD_CORNER.getY() &&
-                pose1.pose.getY() > 0.0);
-        Boolean pose2Valid = (pose2.pose.getX() < FIELD_CORNER.getX() &&
-                pose2.pose.getX() > 0.0 &&
-                pose2.pose.getY() < FIELD_CORNER.getY() &&
-                pose2.pose.getY() > 0.0);
+        Boolean pose1Valid = isValid(APRILTAG_LIMELIGHT2_NAME, pose1);
+        Boolean pose2Valid = isValid(APRILTAG_LIMELIGHT3_NAME, pose2);
 
         if (pose1Valid && pose2Valid) {
-            return ((pose1.avgTagDist < pose2.avgTagDist) ? pose1 : pose2);
+            return ((pose1.avgTagDist < pose2.avgTagDist) ? pose1 : pose2); //select the limelight that has closer tags.
         } else if (pose1Valid) {
             return pose1;
         } else if (pose2Valid) {
@@ -162,4 +109,36 @@ public class Limelight {
                 LimelightHelpers.getNeuralClassID(OBJ_DETECITON_LIMELIGHT_NAME),
                 LimelightHelpers.getTV(OBJ_DETECITON_LIMELIGHT_NAME));
     }
+
+    private boolean isValid(String limelightName, PoseEstimate estimate) {
+        Boolean valid = (
+                estimate.pose.getX() < FIELD_CORNER.getX() &&
+                estimate.pose.getX() > 0.0 &&
+                estimate.pose.getY() < FIELD_CORNER.getY() &&
+                estimate.pose.getY() > 0.0);
+        if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT2_NAME)) {
+            SmartDashboard.putBoolean("Vision/Aprill/valid", valid);
+        } else if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT3_NAME)) {
+            SmartDashboard.putBoolean("Vision/Aprilr/valid", valid);
+        } else {
+            System.err.println("Limelight name is invalid. (limelight.isValid)");
+        }
+        return valid;
+    }
+    private boolean isTrustworthy(String limelightName, PoseEstimate estimate, Pose2d odometryPose) {
+        Boolean trusted = (
+                isValid(limelightName, estimate) &&
+                // estimate.tagCount >= 2 && //uncomment for additional filtering/stability
+                estimate.pose.getTranslation().getDistance(odometryPose.getTranslation()) < ALLOWABLE_POSE_DIFFERENCE &&
+                estimate.avgTagDist < MAX_TAG_DISTANCE);
+        if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT2_NAME)) {
+            SmartDashboard.putBoolean("Vision/Aprill/valid", trusted);
+        } else if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT3_NAME)) {
+            SmartDashboard.putBoolean("Vision/Aprilr/valid", trusted);
+        } else {
+            System.err.println("Limelight name is invalid. (limelight.isTrustworthy)");
+        }
+        return trusted;
+    }
+
 }
