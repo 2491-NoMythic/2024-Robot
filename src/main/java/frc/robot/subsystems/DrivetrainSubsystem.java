@@ -112,7 +112,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Preferences.initDouble("BR offset", 0);
 		PathPlannerLogging.setLogActivePathCallback((poses) -> m_field.getObject("path").setPoses(poses));
 		SmartDashboard.putData("Field", m_field);
-		SmartDashboard.putBoolean("force use limelight", false);
+		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
+		SmartDashboard.putBoolean("Vision/force use limelight", false);
 		modules = new SwerveModule[4];
 		lastAngles = new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()}; // manually make empty angles to avoid null errors.
 
@@ -199,7 +200,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return odometer.getEstimatedPosition();
 	}
     public void resetOdometry(Pose2d pose) {
-        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
+		odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     }
 	/**
 	 *  Sets the modules speed and rotation to zero.
@@ -248,9 +249,32 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void updateOdometry() {
 		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
 	}
-	public void updateOdometryWithVision(Pose2d estematedPose, double timestampSeconds) {
-		odometer.addVisionMeasurement(estematedPose, timestampSeconds);
+	/**
+	 * Provide the odometry a vision pose estimate, only if there is a trustworthy pose available.
+	 * <p>
+	 * Each time a vision pose is supplied, the odometry pose estimation will change a little, 
+	 * larger pose shifts will take multiple calls to complete.
+	 */
+	public void updateOdometryWithVision() {
+		PoseEstimate estimate = limelight.getTrustedPose(getPose());
+		if (estimate != null) {
+			odometer.addVisionMeasurement(estimate.pose, estimate.timestampSeconds);
+		}
 	}
+	/**
+	 * Set the odometry using the current apriltag estimate, disregarding the pose trustworthyness.
+	 * <p>
+	 * You only need to run this once for it to take effect.
+	 */
+	public void forceUpdateOdometryWithVision() {
+		PoseEstimate estimate = limelight.getValidPose();
+		if (estimate != null) {
+			resetOdometry(estimate.pose);
+		} else {
+			System.err.println("No valid limelight estimate to reset from. (Drivetrain.forceUpdateOdometryWithVision)");
+		}
+	}
+
 	public double calculateSpeakerAngle(){
 		Pose2d dtvalues = this.getPose();
 		// triangle for robot angle
@@ -372,19 +396,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
 	}
 
-	/**
-	 * Set the odometry using the current apriltag estimate, disregarding the pose trustworthyness.
-	 * <p>
-	 * You only need to run this once for it to take effect.
-	 */
-	public void forceUpdateOdometryWithVision() {
-		PoseEstimate estimate = limelight.getValidPose();
-		if (estimate != null) {
-			resetOdometry(estimate.pose);
-		} else {
-			System.err.println("No valid limelight estimate to reset from. (Drivetrain.forceUpdateOdometryWithVision)");
-		}
-	}
 
 	@Override
 	public void periodic() {
@@ -394,16 +405,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		updateOdometry();
 		AngleShooterSubsystem.setDTPose(getPose());
 		AngleShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());
-		if(SmartDashboard.getBoolean("force use limelight", false)) {
-			forceUpdateOdometryWithVision();
-		} else {
-			if (Preferences.getBoolean("Use Limelight", false)) {
-				PoseEstimate estimate = limelight.getTrustedPose(getPose());
-				if (estimate != null) {
-					updateOdometryWithVision(estimate.pose, estimate.timestampSeconds);
-				}
+		if (Preferences.getBoolean("Use Limelight", false)) {
+			if (SmartDashboard.getBoolean("Vision/force use limelight", false)) {
+				forceUpdateOdometryWithVision();
+			} else {
+				updateOdometryWithVision();
 			}
 		}
+	
 		m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

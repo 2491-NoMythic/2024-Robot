@@ -52,14 +52,14 @@ public class CollectNote extends Command {
     tyController.setSetpoint(0);
     txController.setTolerance(3.5, 0.25);
     tyController.setTolerance(1, 0.25);
-    detectorData = Limelight.latestDetectorValues;
+    detectorData = limelight.getNeuralDetectorValues();
     SmartDashboard.putBoolean("note seen", detectorData.isResultValid);
   }
   
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    detectorData = Limelight.latestDetectorValues;
+    detectorData = limelight.getNeuralDetectorValues();
 
     if (detectorData == null) {
       drivetrain.stop();

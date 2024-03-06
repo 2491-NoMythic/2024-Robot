@@ -19,15 +19,13 @@ public class Limelight {
 
     public static Boolean detectorEnabled = false;
 
-    public static LimelightDetectorData latestDetectorValues;
-
     private Limelight() {
-        SmartDashboard.putBoolean("Vision/Aprill/valid", false);
-        SmartDashboard.putBoolean("Vision/Aprill/trusted", false);
-        SmartDashboard.putBoolean("Vision/Aprilr/valid", false);
-        SmartDashboard.putBoolean("Vision/Aprilr/trusted", false);
-        SmartDashboard.putData("Vision/Aprill/pose", field1);
-        SmartDashboard.putData("Vision/Aprilr/pose", field2);
+        SmartDashboard.putBoolean("Vision/Left/valid", false);
+        SmartDashboard.putBoolean("Vision/Left/trusted", false);
+        SmartDashboard.putBoolean("Vision/Right/valid", false);
+        SmartDashboard.putBoolean("Vision/Right/trusted", false);
+        SmartDashboard.putData("Vision/Left/pose", field1);
+        SmartDashboard.putData("Vision/Right/pose", field2);
     }
 
     public static Limelight getInstance() {
@@ -117,14 +115,17 @@ public class Limelight {
                 estimate.pose.getY() < FIELD_CORNER.getY() &&
                 estimate.pose.getY() > 0.0);
         if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT2_NAME)) {
-            SmartDashboard.putBoolean("Vision/Aprill/valid", valid);
+            SmartDashboard.putBoolean("Vision/Left/valid", valid);
+            SmartDashboard.putNumber("Vision/Graph/L Valid", (valid ? 1 : 0));
         } else if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT3_NAME)) {
-            SmartDashboard.putBoolean("Vision/Aprilr/valid", valid);
+            SmartDashboard.putBoolean("Vision/Right/valid", valid);
+            SmartDashboard.putNumber("Vision/Graph/R Valid", (valid ? 1 : 0));
         } else {
             System.err.println("Limelight name is invalid. (limelight.isValid)");
         }
         return valid;
     }
+
     private boolean isTrustworthy(String limelightName, PoseEstimate estimate, Pose2d odometryPose) {
         Boolean trusted = (
                 isValid(limelightName, estimate) &&
@@ -132,13 +133,14 @@ public class Limelight {
                 estimate.pose.getTranslation().getDistance(odometryPose.getTranslation()) < ALLOWABLE_POSE_DIFFERENCE &&
                 estimate.avgTagDist < MAX_TAG_DISTANCE);
         if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT2_NAME)) {
-            SmartDashboard.putBoolean("Vision/Aprill/valid", trusted);
+            SmartDashboard.putBoolean("Vision/Left/trusted", trusted);
+            SmartDashboard.putNumber("Vision/Graph/L Trusted", (trusted ? 1 : 0));
         } else if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT3_NAME)) {
-            SmartDashboard.putBoolean("Vision/Aprilr/valid", trusted);
+            SmartDashboard.putBoolean("Vision/Right/trusted", trusted);
+            SmartDashboard.putNumber("Vision/Graph/R Trusted", (trusted ? 1 : 0));
         } else {
             System.err.println("Limelight name is invalid. (limelight.isTrustworthy)");
         }
         return trusted;
     }
-
 }
