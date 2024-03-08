@@ -115,6 +115,8 @@ public class RobotContainer {
   BooleanSupplier ManualShootSup;
   BooleanSupplier ForceVisionSup;
   BooleanSupplier GroundIntakeSup;
+  BooleanSupplier FarStageAngleSup;
+  BooleanSupplier OperatorPreRevSup;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -156,6 +158,8 @@ public class RobotContainer {
     ManualShootSup = driverController::getL1Button;
     ForceVisionSup = driverController::getOptionsButton;
     GroundIntakeSup = operatorController::getTouchpad;
+    FarStageAngleSup = driverController::getTouchpad;
+    OperatorPreRevSup = operatorController::getL2Button;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -205,7 +209,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -218,7 +222,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -257,8 +261,10 @@ public class RobotContainer {
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       driverController::getL2Button,
-      driverController::getCrossButton,
-      driverController::getTriangleButton));
+      StageAngleSup,
+      FarStageAngleSup,
+      SubwooferAngleSup
+      ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
       new Trigger(operatorController::getR1Button).onTrue(new SequentialCommandGroup(

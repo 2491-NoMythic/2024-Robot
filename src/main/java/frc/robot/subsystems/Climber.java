@@ -54,27 +54,6 @@ public class Climber extends SubsystemBase {
   }
  public void climberGo(double speed){
     runSpeed = speed;
-  // if (speed>0) {
-  //   if(!hallEffectL.isPressed()) {
-  //     climbMotorL.set(speed);
-  //   } 
-  //   if(!hallEffectR.isPressed()) {
-  //     climbMotorR.set(speed);
-  //   }
-  // } else {
-  //   if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
-  //     climbMotorL.set(speed);
-  //   } else {
-  //       climbMotorL.stopMotor();
-  //     }
-  //   if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
-  //     climbMotorR.set(speed);
-  //   } else {
-  //     climbMotorR.stopMotor();
-  //   }
-  // }
-    // climbMotorL.set(speed);
-    // climbMotorR.set(speed);
  }
 
  public void climberStop(){

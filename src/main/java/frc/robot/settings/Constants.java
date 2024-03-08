@@ -85,7 +85,7 @@ public final class Constants {
      * Whether the drive motor should be counterclockwise or clockwise positive. 
      * If there is an odd number of gear reductions this is typically clockwise-positive.
      */
-    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.Clockwise_Positive;
 
     /**
      * The overall steer reduction of the module. Multiplying motor rotations by
@@ -263,7 +263,7 @@ public static final class ShooterConstants{
   public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 108;
   public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;
   public static final double HUMAN_PLAYER_ANGLE = 97;
-  public static final double HUMAN_PLAYER_RPS = -10;
+  public static final double HUMAN_PLAYER_RPS = -15;
   public static final double SAFE_SHOOTER_ANGLE = 15;
   public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
 
@@ -299,7 +299,7 @@ public static final class ShooterConstants{
 public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR_RIGHT = 23;
   public static final int CLIMBER_MOTOR_LEFT = 22;
-  public static final double CLIMBER_SPEED_DOWN = 0.8;
+  public static final double CLIMBER_SPEED_DOWN = 1;
   public static final double CLIMBER_SPEED_UP = -1;
   public static final double MAX_MOTOR_ROTATIONS = 235;
 
@@ -324,7 +324,7 @@ public static final class IntakeConstants{
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
-  public static final double INTAKE_SPEED = 0.8;
+  public static final double INTAKE_SPEED = 1;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
@@ -367,6 +367,7 @@ public static final class CTREConfigs {
       driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       driveMotorConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.DRIVE_CURRENT_LIMIT;
       driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+      driveMotorConfig.CurrentLimits.StatorCurrentLimitEnable = false;
 
       //  Steer encoder.
       steerEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
@@ -403,14 +404,21 @@ public static final class CTREConfigs {
   public final class Field{
     public static final double BLUE_SPEAKER_X = 0.23;
     public static final double RED_SPEAKER_X = 16.87;
-    public static final double SPEAKER_Y = 5.3;//16.412;
+    public static final double SPEAKER_Y = 5.6;
     public static final double SPEAKER_Z = 2.08; //height of opening
     public static final double MAX_SHOOTING_DISTANCE = 9;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
-    public static final double AMPLIFIER_ANGLE = 108;
+    public static final double AMPLIFIER_SHOOTER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
-    public static final double PODIUM_ANGLE = 37.5;
+    public static final double PODIUM_SHOOTER_ANGLE = 36.3;
+    public static final double FAR_STAGE_SHOOTER_ANGLE = 24.5;
+    
+    public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
+    public static final double RED_PODIUM_ROBOT_ANGLE = 31;
+    public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
+    public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
+
     //angle at 60 for bounce techinque, didn't work
   }
 
