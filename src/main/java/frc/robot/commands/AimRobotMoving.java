@@ -73,6 +73,8 @@ public class AimRobotMoving extends Command {
             podiumRobotAngle = Field.BLUE_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.BLUE_FAR_STAGE_ROBOT_ANGLE;
           }
+// check all our buttons to see if we want to aim somewhere other than at the speaker. If no button
+// is pressed, then aim at the calculated speaker angle
           if(PodiumAngleSup.getAsBoolean()) {
             speedController.setSetpoint(podiumRobotAngle);
           } else if(FarStageAngleSup.getAsBoolean()) {
