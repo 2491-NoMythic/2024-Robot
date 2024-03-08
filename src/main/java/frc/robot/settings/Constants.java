@@ -415,14 +415,15 @@ public static final class CTREConfigs {
     public static final double FAR_STAGE_SHOOTER_ANGLE = 24.5;
     public static final double LONG_PASS_SHOOTER_ANGLE = 35;// to be found
     public static final double LONG_SHOT_SHOOTER_ANGLE = 15;// to be found
-    
+    //setpoints from duluth
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
     public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
     public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
-    public static final double RED_LONG_PASS_ROBOT_ANGLE = -20;
+    //long pass and long shot angles
+    public static final double RED_LONG_PASS_ROBOT_ANGLE = 0;
     public static final double RED_LONG_SHOT_ROBOT_ANGLE = -10;
-    public static final double BLUE_LONG_PASS_ROBOT_ANGLE = 140;
+    public static final double BLUE_LONG_PASS_ROBOT_ANGLE = 180;
     public static final double BLUE_LONG_SHOT_ROBOT_ANGLE = 185;
 
     //angle at 60 for bounce techinque, didn't work
