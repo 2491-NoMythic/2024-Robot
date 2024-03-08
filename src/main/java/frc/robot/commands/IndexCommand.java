@@ -87,7 +87,7 @@ public class IndexCommand extends Command {
       if(runsEmpty>20) {
         if(humanPlayerSupplier.getAsBoolean()) {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
-          shooter.shootRPS(ShooterConstants.HUMAN_PLAYER_RPS);
+          shooter.shootSameRPS(ShooterConstants.HUMAN_PLAYER_RPS);
           intake.intakeOff();
         }
         else {
