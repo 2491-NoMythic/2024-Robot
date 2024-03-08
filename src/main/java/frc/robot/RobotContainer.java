@@ -194,7 +194,7 @@ public class RobotContainer {
     driveTrain = new DrivetrainSubsystem();
     defaultDriveCommand = new Drive(
       driveTrain, 
-      () -> driverController.getL1Button(),
+      () -> false,
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
