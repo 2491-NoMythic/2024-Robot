@@ -117,6 +117,8 @@ public class RobotContainer {
   BooleanSupplier GroundIntakeSup;
   BooleanSupplier FarStageAngleSup;
   BooleanSupplier OperatorPreRevSup;
+  BooleanSupplier LongShotSup;
+  BooleanSupplier LongPassSup;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -160,6 +162,8 @@ public class RobotContainer {
     GroundIntakeSup = operatorController::getTouchpad;
     FarStageAngleSup = driverController::getTouchpad;
     OperatorPreRevSup = operatorController::getL2Button;
+    LongShotSup = ()->driverController.getPOV() == 270;
+    LongPassSup = ()->driverController.getPOV() == 180;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -209,7 +213,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, LongShotSup, LongPassSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -222,7 +226,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, LongShotSup);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 

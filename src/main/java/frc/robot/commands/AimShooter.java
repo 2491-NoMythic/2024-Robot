@@ -17,9 +17,11 @@ public class AimShooter extends Command {
 	BooleanSupplier StageAngleSupplier;
 	BooleanSupplier groundIntakeSup;
 	BooleanSupplier farStageAngleSup;
+	BooleanSupplier LongShotSup;
+	BooleanSupplier LongPassSup;
 
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup) {
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier longShotSup, BooleanSupplier longPassSup) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;
@@ -27,6 +29,8 @@ public class AimShooter extends Command {
 		this.StageAngleSupplier = StageAngleSupplier;
 		this.groundIntakeSup = groundIntakeSup;
 		this.farStageAngleSup = farStageAngleSup;
+		this.LongShotSup = longShotSup;
+		this.LongPassSup = longPassSup;
 		addRequirements(angleShooterSubsystem);
 	}
 
@@ -49,7 +53,12 @@ public class AimShooter extends Command {
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 		} else if (groundIntakeSup.getAsBoolean()){
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
-		} else {
+		} else if (LongShotSup.getAsBoolean()) {
+			angleShooterSubsystem.setDesiredShooterAngle(Field.LONG_SHOT_SHOOTER_ANGLE);
+		} else if (LongPassSup.getAsBoolean()) {
+			angleShooterSubsystem.setDesiredShooterAngle(Field.LONG_PASS_SHOOTER_ANGLE);
+		}
+		else {
 			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 		}
 	}
