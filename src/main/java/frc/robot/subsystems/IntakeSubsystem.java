@@ -19,9 +19,6 @@ public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax intake1;
   CANSparkMax intake2;
   SparkAnalogSensor m_DistanceSensor;
-  CANSparkMax brush1;
-  CANSparkMax brush2;
-  CANSparkMax brush3;
 
   double intakeRunSpeed;
   public IntakeSubsystem() {
@@ -33,20 +30,6 @@ public class IntakeSubsystem extends SubsystemBase {
       m_DistanceSensor = intake1.getAnalog(Mode.kAbsolute);
     } else {
       m_DistanceSensor = intake2.getAnalog(Mode.kAbsolute);
-    }
-    if(Preferences.getBoolean("Brushes", false)) {
-      brush1 = new CANSparkMax(IntakeConstants.BRUSH_1_MOTOR, MotorType.kBrushless);
-      brush2 = new CANSparkMax(IntakeConstants.BRUSH_2_MOTOR, MotorType.kBrushless);
-      brush3 = new CANSparkMax(IntakeConstants.BRUSH_3_MOTOR, MotorType.kBrushless);
-      brush1.setSmartCurrentLimit(20, 20, 60);
-      brush2.setSmartCurrentLimit(20, 20, 60);
-      brush3.setSmartCurrentLimit(20, 20, 60);
-      brush1.burnFlash();
-      brush2.burnFlash();
-      brush3.burnFlash();
-      brush1.setIdleMode(IdleMode.kCoast);
-      brush2.setIdleMode(IdleMode.kCoast);
-      brush3.setIdleMode(IdleMode.kCoast);
     }
     intake2.follow(intake1);
     intake2.setInverted(false);
@@ -61,28 +44,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void intakeYes(double intakeRunSpeed) {
     intake1.set(intakeRunSpeed);
-    if(Preferences.getBoolean("Brushes", false)) {
-      brush1.set(intakeRunSpeed);
-      brush2.set(intakeRunSpeed);
-      brush3.set(intakeRunSpeed);
-    }
-   
   }
   public void intakeNo(double intakeRunSpeed) {
     intake1.set(-intakeRunSpeed);
-    if(Preferences.getBoolean("Brushes", false)) {
-      brush1.set(-intakeRunSpeed);
-      brush2.set(-intakeRunSpeed);
-      brush3.set(-intakeRunSpeed);
-    }
   }
   public void intakeOff() {
     intake1.set(0);
-    if(Preferences.getBoolean("Brushes", false)) {
-      brush2.set(0);
-      brush1.set(0);
-      brush3.set(0);
-    }
   }
   public boolean isNoteIn() {
     return m_DistanceSensor.getVoltage()<2;
