@@ -16,17 +16,17 @@ public class AimShooter extends Command {
 	BooleanSupplier SubwooferSupplier1;
 	BooleanSupplier StageAngleSupplier;
 	BooleanSupplier groundIntakeSup;
-	BooleanSupplier farPodiumAngleSup;
+	BooleanSupplier farStageAngleSup;
 
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farPodiumAngleSup) {
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;
 		this.SubwooferSupplier1 = SubwooferSupplier1;
 		this.StageAngleSupplier = StageAngleSupplier;
 		this.groundIntakeSup = groundIntakeSup;
-		this.farPodiumAngleSup = farPodiumAngleSup;
+		this.farStageAngleSup = farStageAngleSup;
 		addRequirements(angleShooterSubsystem);
 	}
 
@@ -40,11 +40,11 @@ public class AimShooter extends Command {
 		if(SubwooferSupplier1.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
 		} else if (StageAngleSupplier.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(Field.PODIUM_ANGLE);
-		}  else if (farPodiumAngleSup.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(Field.FAR_PODIUM_ANGLE);
+			angleShooterSubsystem.setDesiredShooterAngle(Field.PODIUM_SHOOTER_ANGLE);
+		}  else if (farStageAngleSup.getAsBoolean()) {
+			angleShooterSubsystem.setDesiredShooterAngle(Field.FAR_STAGE_SHOOTER_ANGLE);
 		} else if (POVSupplier.getAsDouble() == 90 || POVSupplier.getAsDouble() == 45 || POVSupplier.getAsDouble() == 135) {
-			angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_ANGLE);
+			angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE);
 		} else if(humanPlayerSupplier.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 		} else if (groundIntakeSup.getAsBoolean()){

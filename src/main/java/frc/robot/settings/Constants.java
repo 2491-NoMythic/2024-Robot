@@ -409,15 +409,15 @@ public static final class CTREConfigs {
     public static final double MAX_SHOOTING_DISTANCE = 9;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
-    public static final double AMPLIFIER_ANGLE = 108;
+    public static final double AMPLIFIER_SHOOTER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
-    public static final double PODIUM_ANGLE = 36.3;
-    public static final double FAR_PODIUM_ANGLE = 24.5;
+    public static final double PODIUM_SHOOTER_ANGLE = 36.3;
+    public static final double FAR_STAGE_SHOOTER_ANGLE = 24.5;
     
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
-    public static final double BLUE_FAR_PODIUM_ROBOT_ANGLE = 184;
-    public static final double RED_FAR_PODIUM_ROBOT_ANGLE = -4;
+    public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
+    public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
 
     //angle at 60 for bounce techinque, didn't work
   }

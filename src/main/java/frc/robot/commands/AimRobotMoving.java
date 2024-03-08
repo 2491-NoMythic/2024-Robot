@@ -29,13 +29,13 @@ public class AimRobotMoving extends Command {
     DoubleSupplier translationYSupplier;
     BooleanSupplier run;
     BooleanSupplier PodiumAngleSup;
-    BooleanSupplier FarPodiumAngleSup;
+    BooleanSupplier FarStageAngleSup;
     DoubleSupplier rotationSupplier;
     double rotationSpeed;
     double allianceOffset;
     BooleanSupplier SubwooferAngleSup;
     
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarPodiumAngleSup, BooleanSupplier SubwooferAngleSup){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -47,7 +47,7 @@ public class AimRobotMoving extends Command {
           this.translationYSupplier = translationYSupplier;
           this.SubwooferAngleSup = SubwooferAngleSup;
           this.rotationSupplier = rotationSupplier;
-          this.FarPodiumAngleSup = FarPodiumAngleSup;
+          this.FarStageAngleSup = FarStageAngleSup;
           this.PodiumAngleSup = PodiumAngleSup;
           this.run = run;
           addRequirements(drivetrain);
@@ -65,18 +65,18 @@ public class AimRobotMoving extends Command {
         public void execute() {
           desiredRobotAngle = m_drivetrain.calculateSpeakerAngleMoving();
           double podiumRobotAngle;
-          double farPodiumRobotAngle;
+          double farStageRobotAngle;
           if(DriverStation.getAlliance().get() == Alliance.Red) {
             podiumRobotAngle = Field.RED_PODIUM_ROBOT_ANGLE;
-            farPodiumRobotAngle = Field.RED_FAR_PODIUM_ROBOT_ANGLE;
+            farStageRobotAngle = Field.RED_FAR_STAGE_ROBOT_ANGLE;
           } else {
             podiumRobotAngle = Field.BLUE_PODIUM_ROBOT_ANGLE;
-            farPodiumRobotAngle = Field.BLUE_FAR_PODIUM_ROBOT_ANGLE;
+            farStageRobotAngle = Field.BLUE_FAR_STAGE_ROBOT_ANGLE;
           }
           if(PodiumAngleSup.getAsBoolean()) {
             speedController.setSetpoint(podiumRobotAngle);
-          } else if(FarPodiumAngleSup.getAsBoolean()) {
-            speedController.setSetpoint(farPodiumRobotAngle);
+          } else if(FarStageAngleSup.getAsBoolean()) {
+            speedController.setSetpoint(farStageRobotAngle);
           } else {
             speedController.setSetpoint(desiredRobotAngle);
           }
