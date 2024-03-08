@@ -34,8 +34,10 @@ public class AimRobotMoving extends Command {
     double rotationSpeed;
     double allianceOffset;
     BooleanSupplier SubwooferAngleSup;
+    BooleanSupplier LongShotSup;
+    BooleanSupplier LongPassSup;
     
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup, BooleanSupplier LongShotSup, BooleanSupplier LongPassSup){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -49,6 +51,8 @@ public class AimRobotMoving extends Command {
           this.rotationSupplier = rotationSupplier;
           this.FarStageAngleSup = FarStageAngleSup;
           this.PodiumAngleSup = PodiumAngleSup;
+          this.LongShotSup = LongShotSup;
+          this.LongPassSup = LongPassSup;
           this.run = run;
           addRequirements(drivetrain);
         }
@@ -66,12 +70,18 @@ public class AimRobotMoving extends Command {
           desiredRobotAngle = m_drivetrain.calculateSpeakerAngleMoving();
           double podiumRobotAngle;
           double farStageRobotAngle;
+          double longPassRobotAngle;
+          double longShotRobotAngle;
           if(DriverStation.getAlliance().get() == Alliance.Red) {
             podiumRobotAngle = Field.RED_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.RED_FAR_STAGE_ROBOT_ANGLE;
+            longPassRobotAngle = Field.RED_LONG_PASS_ROBOT_ANGLE;
+            longShotRobotAngle = Field.RED_LONG_SHOT_ROBOT_ANGLE;
           } else {
             podiumRobotAngle = Field.BLUE_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.BLUE_FAR_STAGE_ROBOT_ANGLE;
+            longPassRobotAngle = Field.BLUE_LONG_PASS_ROBOT_ANGLE;
+            longShotRobotAngle = Field.BLUE_LONG_SHOT_ROBOT_ANGLE;
           }
 // check all our buttons to see if we want to aim somewhere other than at the speaker. If no button
 // is pressed, then aim at the calculated speaker angle
@@ -79,6 +89,10 @@ public class AimRobotMoving extends Command {
             speedController.setSetpoint(podiumRobotAngle);
           } else if(FarStageAngleSup.getAsBoolean()) {
             speedController.setSetpoint(farStageRobotAngle);
+          } else if(LongShotSup.getAsBoolean()) {
+            speedController.setSetpoint(longShotRobotAngle);
+          } else if(LongPassSup.getAsBoolean()) {
+            speedController.setSetpoint(longPassRobotAngle);
           } else {
             speedController.setSetpoint(desiredRobotAngle);
           }

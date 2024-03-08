@@ -267,7 +267,9 @@ public class RobotContainer {
       driverController::getL2Button,
       StageAngleSup,
       FarStageAngleSup,
-      SubwooferAngleSup
+      SubwooferAngleSup,
+      LongShotSup,
+      LongPassSup
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
