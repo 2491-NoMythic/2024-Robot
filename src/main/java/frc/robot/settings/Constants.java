@@ -85,7 +85,7 @@ public final class Constants {
      * Whether the drive motor should be counterclockwise or clockwise positive. 
      * If there is an odd number of gear reductions this is typically clockwise-positive.
      */
-    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue DRIVETRAIN_DRIVE_INVERTED = InvertedValue.Clockwise_Positive;
 
     /**
      * The overall steer reduction of the module. Multiplying motor rotations by
@@ -230,7 +230,7 @@ public static final class ShooterConstants{
   public static final double SHOOTING_SPEED_MPS = 19.665; //calculated with slo mo videos
   public static final double RUNNING_VELOCITY_RPS = 2491;
   public static final double ALLOWED_ANGLE_ERROR = 1.5;
-  public static final double ALLOWED_SPEED_ERROR = 4;
+  public static final double ALLOWED_SPEED_ERROR = 2;
 
   public static final double CURRENT_LIMIT = 100; //amps the motor is limited to
 
@@ -238,7 +238,7 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
-  public static final double LONG_SHOOTING_RPS = 90;
+  public static final double LONG_SHOOTING_RPS = 120;
   public static final double SHORT_SHOOTING_RPS = 80;
   public static final double AMP_RPS = 8.5;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
@@ -259,15 +259,20 @@ public static final class ShooterConstants{
   public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0.15;
   public static final double OFFSET_MULTIPLIER = 1;
-  public static final double MINIMUM_SHOOTER_ANGLE = 11.64;//still has to be found
-  public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 101;//still has to be found
-  public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 108;//still has to be found
-  public static final double HUMAN_PLAYER_ANGLE = 97;//still has to be found
-  public static final double HUMAN_PLAYER_RPS = -10;//still has to be found
+  public static final double MINIMUM_SHOOTER_ANGLE = 11.64;
+  public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 108;
+  public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;
+  public static final double HUMAN_PLAYER_ANGLE = 97;
+  public static final double HUMAN_PLAYER_RPS = -15;
+  public static final double SAFE_SHOOTER_ANGLE = 15;
+  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
 
-  public static final double ADJUST_EQUATION_A = 1.14168;
-  public static final double COMP_ADJUST_EQUATION_B = -1.3;
+  public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
+  public static final double COMP_ADJUST_EQUATION_A = 0.0469456;
+  public static final double COMP_ADJUST_EQUATION_B = -0.237047;
+  public static final double COMP_ADJUST_EQUATION_C = 0.699325;
+  // public static final double COMP_ADJUST_EQUATION_D = 1; unused becuase we aren't using a cubic equation
 
   public static final double CompBotZeroOffset = 334.7;
   public static final double PracBotZeroOffset = 328;
@@ -280,8 +285,8 @@ public static final class ShooterConstants{
   // public static final double kI = 0;
   // public static final double kD = 0;
   public static final double kIz = 0;
-  public static final double CompRightkFF = 0.0073;
-  public static final double CompLeftkFF = 0.012;
+  public static final double CompRightkFF = 0.0053;
+  public static final double CompLeftkFF = 0.0098;
   public static final double CompRightkP = 0.012;
   public static final double CompLeftkP = 0.012;
   public static final double kMaxOutput = 1;
@@ -294,7 +299,7 @@ public static final class ShooterConstants{
 public static final class ClimberConstants{
   public static final int CLIMBER_MOTOR_RIGHT = 23;
   public static final int CLIMBER_MOTOR_LEFT = 22;
-  public static final double CLIMBER_SPEED_DOWN = 0.6;
+  public static final double CLIMBER_SPEED_DOWN = 1;
   public static final double CLIMBER_SPEED_UP = -1;
   public static final double MAX_MOTOR_ROTATIONS = 235;
 
@@ -319,7 +324,7 @@ public static final class IntakeConstants{
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
-  public static final double INTAKE_SPEED = 0.8;
+  public static final double INTAKE_SPEED = 1;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
@@ -362,6 +367,7 @@ public static final class CTREConfigs {
       driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       driveMotorConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.DRIVE_CURRENT_LIMIT;
       driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+      driveMotorConfig.CurrentLimits.StatorCurrentLimitEnable = false;
 
       //  Steer encoder.
       steerEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
@@ -376,6 +382,7 @@ public static final class CTREConfigs {
     private PS4Driver() {
     }
     public static final int DRIVE_CONTROLLER_ID = 0;
+    public static final int OPERATOR_CONTROLLER_ID = 1;
     /**Left stick Y-axis. <p> Left = -1 || Right = 1*/
     public static final int X_AXIS = 0; 
     /**Left stick X-axis. <p> Forwards = -1 || Backwards = 1*/
@@ -391,20 +398,27 @@ public static final class CTREConfigs {
 }
 
   public final class PS4Operator{
-    public static final int OPERATOR_CONTROLLER_ID = 1;
 
   }
 
   public final class Field{
     public static final double BLUE_SPEAKER_X = 0.23;
-    public static final double RED_SPEAKER_X = 16.49;
-    public static final double SPEAKER_Y = 5.3;//16.412;
+    public static final double RED_SPEAKER_X = 16.87;
+    public static final double SPEAKER_Y = 5.6;
     public static final double SPEAKER_Z = 2.08; //height of opening
-    public static final double MAX_SHOOTING_DISTANCE = 2491;
+    public static final double MAX_SHOOTING_DISTANCE = 9;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
-    public static final double AMPLIFIER_ANGLE = 108;
-    public static final double SUBWOOFER_ANGLE = 55;
+    public static final double AMPLIFIER_SHOOTER_ANGLE = 108;
+    public static final double SUBWOOFER_ANGLE = 60;
+    public static final double PODIUM_SHOOTER_ANGLE = 36.3;
+    public static final double FAR_STAGE_SHOOTER_ANGLE = 24.5;
+    
+    public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
+    public static final double RED_PODIUM_ROBOT_ANGLE = 31;
+    public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
+    public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
+
     //angle at 60 for bounce techinque, didn't work
   }
 

@@ -14,18 +14,20 @@ public class AimShooter extends Command {
 	DoubleSupplier POVSupplier;
 	BooleanSupplier humanPlayerSupplier;
 	BooleanSupplier SubwooferSupplier1;
-	BooleanSupplier SubwooferSupplier2;
-	BooleanSupplier SubwooferSupplier3;
+	BooleanSupplier StageAngleSupplier;
+	BooleanSupplier groundIntakeSup;
+	BooleanSupplier farStageAngleSup;
 
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier SubwooferSupplier2, BooleanSupplier SubwooferSupplier3) {
-		addRequirements(angleShooterSubsystem); 
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;
 		this.SubwooferSupplier1 = SubwooferSupplier1;
-		this.SubwooferSupplier2 = SubwooferSupplier2;
-		this.SubwooferSupplier3 = SubwooferSupplier3;
+		this.StageAngleSupplier = StageAngleSupplier;
+		this.groundIntakeSup = groundIntakeSup;
+		this.farStageAngleSup = farStageAngleSup;
+		addRequirements(angleShooterSubsystem);
 	}
 
 	@Override
@@ -35,20 +37,22 @@ public class AimShooter extends Command {
 
 	@Override
 	public void execute() {
-		if(SubwooferSupplier1.getAsBoolean()&&SubwooferSupplier2.getAsBoolean()&&SubwooferSupplier3.getAsBoolean()) {
+		if(SubwooferSupplier1.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
+		} else if (StageAngleSupplier.getAsBoolean()) {
+			angleShooterSubsystem.setDesiredShooterAngle(Field.PODIUM_SHOOTER_ANGLE);
+		}  else if (farStageAngleSup.getAsBoolean()) {
+			angleShooterSubsystem.setDesiredShooterAngle(Field.FAR_STAGE_SHOOTER_ANGLE);
+		} else if (POVSupplier.getAsDouble() == 90 || POVSupplier.getAsDouble() == 45 || POVSupplier.getAsDouble() == 135) {
+			angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE);
+		} else if(humanPlayerSupplier.getAsBoolean()) {
+			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
+		} else if (groundIntakeSup.getAsBoolean()){
+			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
 		} else {
-			if (POVSupplier.getAsDouble() == 90 || POVSupplier.getAsDouble() == 45 || POVSupplier.getAsDouble() == 135) {
-				angleShooterSubsystem.setDesiredShooterAngle(SmartDashboard.getNumber("amp angle", Field.AMPLIFIER_ANGLE)/*Field.AMPLIFIER_ANGLE*/);
-			} else {
-				if(humanPlayerSupplier.getAsBoolean()) {
-					angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
-				} else {	
-						angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
-					}
-				}
-			}
+			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 		}
+	}
 
 	@Override
 	public boolean isFinished() {

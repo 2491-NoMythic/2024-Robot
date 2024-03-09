@@ -41,8 +41,8 @@ public class Climber extends SubsystemBase {
     runSpeedR = 0;
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
     climbMotorL = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_LEFT, MotorType.kBrushless);
-    climbMotorR.setInverted(true);
-    climbMotorL.setInverted(true);
+    climbMotorR.setInverted(false);
+    climbMotorL.setInverted(false);
     hallEffectL = climbMotorL.getForwardLimitSwitch(Type.kNormallyOpen);
     hallEffectR = climbMotorR.getForwardLimitSwitch(Type.kNormallyOpen);
     climbEncoderR = climbMotorR.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
@@ -57,27 +57,6 @@ public class Climber extends SubsystemBase {
  public void climberGo(double speed){
     runSpeedL = speed;
     runSpeedR = speed;
-  // if (speed>0) {
-  //   if(!hallEffectL.isPressed()) {
-  //     climbMotorL.set(speed);
-  //   } 
-  //   if(!hallEffectR.isPressed()) {
-  //     climbMotorR.set(speed);
-  //   }
-  // } else {
-  //   if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
-  //     climbMotorL.set(speed);
-  //   } else {
-  //       climbMotorL.stopMotor();
-  //     }
-  //   if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
-  //     climbMotorR.set(speed);
-  //   } else {
-  //     climbMotorR.stopMotor();
-  //   }
-  // }
-    // climbMotorL.set(speed);
-    // climbMotorR.set(speed);
  }
  public void climberSeperate(double lSpeed, double rSpeed){
       runSpeedL = lSpeed;

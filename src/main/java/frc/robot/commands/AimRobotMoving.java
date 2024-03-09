@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kD;
@@ -27,12 +28,14 @@ public class AimRobotMoving extends Command {
     DoubleSupplier translationXSupplier;
     DoubleSupplier translationYSupplier;
     BooleanSupplier run;
-    BooleanSupplier cancel;
+    BooleanSupplier PodiumAngleSup;
+    BooleanSupplier FarStageAngleSup;
     DoubleSupplier rotationSupplier;
     double rotationSpeed;
     double allianceOffset;
+    BooleanSupplier SubwooferAngleSup;
     
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier cancel){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -42,8 +45,10 @@ public class AimRobotMoving extends Command {
           speedController.enableContinuousInput(-180, 180);
           this.translationXSupplier = translationXSupplier;
           this.translationYSupplier = translationYSupplier;
+          this.SubwooferAngleSup = SubwooferAngleSup;
           this.rotationSupplier = rotationSupplier;
-          this.cancel = cancel;
+          this.FarStageAngleSup = FarStageAngleSup;
+          this.PodiumAngleSup = PodiumAngleSup;
           this.run = run;
           addRequirements(drivetrain);
         }
@@ -59,32 +64,47 @@ public class AimRobotMoving extends Command {
         @Override
         public void execute() {
           desiredRobotAngle = m_drivetrain.calculateSpeakerAngleMoving();
-          speedController.setSetpoint(desiredRobotAngle);
-        //move robot to desired angle
-        this.currentHeading = m_drivetrain.getGyroscopeRotation().getDegrees();
-        if(Math.abs(rotationSupplier.getAsDouble()) > 0.3) {
-          rotationSpeed = rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-        } else {
-          rotationSpeed = speedController.calculate(currentHeading);
-        }
-        if(DriverStation.getAlliance().get() == Alliance.Red) {
-          allianceOffset = Math.PI;
-        } else {
-          allianceOffset = 0;
-        }
-        if(!cancel.getAsBoolean()) {
-          m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-            translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-            translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-            rotationSpeed,
-            new Rotation2d(m_drivetrain.getGyroscopeRotation().getRadians()+allianceOffset)));
-        }
+          double podiumRobotAngle;
+          double farStageRobotAngle;
+          if(DriverStation.getAlliance().get() == Alliance.Red) {
+            podiumRobotAngle = Field.RED_PODIUM_ROBOT_ANGLE;
+            farStageRobotAngle = Field.RED_FAR_STAGE_ROBOT_ANGLE;
+          } else {
+            podiumRobotAngle = Field.BLUE_PODIUM_ROBOT_ANGLE;
+            farStageRobotAngle = Field.BLUE_FAR_STAGE_ROBOT_ANGLE;
+          }
+          if(PodiumAngleSup.getAsBoolean()) {
+            speedController.setSetpoint(podiumRobotAngle);
+          } else if(FarStageAngleSup.getAsBoolean()) {
+            speedController.setSetpoint(farStageRobotAngle);
+          } else {
+            speedController.setSetpoint(desiredRobotAngle);
+          }
+          //move robot to desired angle
+          this.currentHeading = m_drivetrain.getPose().getRotation().getDegrees();
+          if(Math.abs(rotationSupplier.getAsDouble()) > 0.3) {
+            rotationSpeed = rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+          } else {
+            rotationSpeed = speedController.calculate(currentHeading);
+          }
+          if(DriverStation.getAlliance().get() == Alliance.Red) {
+            allianceOffset = Math.PI;
+          } else {
+            allianceOffset = 0;
+          }
+          if(!SubwooferAngleSup.getAsBoolean()){
+              m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+              translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+              translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+              rotationSpeed,
+              new Rotation2d(m_drivetrain.getPose().getRotation().getRadians()+allianceOffset)));
+          }
         // m_drivetrain.drive(new ChassisSpeeds(
         //   translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
         //   translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
         //   speedController.calculate(differenceAngle)));
 
-        SmartDashboard.putNumber("current Heading", m_drivetrain.getGyroscopeRotation().getDegrees()%360);
+        SmartDashboard.putNumber("current Heading", m_drivetrain.getPose().getRotation().getDegrees()%360);
         SmartDashboard.putNumber("difference", differenceAngle);
         SmartDashboard.putNumber("desired angle", desiredRobotAngle);
         SmartDashboard.putNumber("PID calculated output", speedController.calculate(differenceAngle));
@@ -100,6 +120,6 @@ public class AimRobotMoving extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!run.getAsBoolean() || cancel.getAsBoolean());
+    return (!run.getAsBoolean());
   }
 }
