@@ -173,7 +173,7 @@ public final class Constants {
     public static final double k_DRIVE_FF_V = 0;
     public static final double DRIVE_DEADBAND_MPS = 0.01;
     public static final double DRIVE_MOTOR_RAMP = 0.1;
-    public static final double DRIVE_CURRENT_LIMIT = 20;
+    public static final double DRIVE_CURRENT_LIMIT = 30;
 
     // Steer Motor
     /**
@@ -369,7 +369,7 @@ public static final class CTREConfigs {
       driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
       driveMotorConfig.CurrentLimits.StatorCurrentLimitEnable = false;
       driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = 30;
-      driveMotorConfig.CurrentLimits.SupplyTimeThreshold = 0.3;
+      driveMotorConfig.CurrentLimits.SupplyTimeThreshold = 1.4;
 
       //  Steer encoder.
       steerEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
