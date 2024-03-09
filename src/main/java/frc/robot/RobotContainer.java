@@ -298,8 +298,8 @@ public class RobotContainer {
       //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
         new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
-        new DriveTimeCommand(-0.3, 0, 0, 0.2, driveTrain),
-        new WaitUntil(shooter::validShot),
+        new DriveTimeCommand(0.3, 0, 0, 0.3, driveTrain),
+        new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
         new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
         new WaitCommand(0.2)
         );
