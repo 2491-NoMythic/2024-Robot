@@ -369,7 +369,7 @@ public static final class CTREConfigs {
       driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
       driveMotorConfig.CurrentLimits.StatorCurrentLimitEnable = false;
       driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = 50;
-      driveMotorConfig.CurrentLimits.SupplyTimeThreshold = 1.4;
+      driveMotorConfig.CurrentLimits.SupplyTimeThreshold = 0.8;
 
       //  Steer encoder.
       steerEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
