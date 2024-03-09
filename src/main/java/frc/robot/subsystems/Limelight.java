@@ -114,12 +114,19 @@ public class Limelight {
                 estimate.pose.getX() > 0.0 &&
                 estimate.pose.getY() < FIELD_CORNER.getY() &&
                 estimate.pose.getY() > 0.0);
+
         if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT2_NAME)) {
             SmartDashboard.putBoolean("Vision/Left/valid", valid);
-            SmartDashboard.putNumber("Vision/Graph/L Valid", (valid ? 1 : 0));
+            SmartDashboard.putNumber("Vision/Left/Stats/valid", (valid ? 1 : 0));
+            SmartDashboard.putNumber("Vision/Left/Stats/avgTagDist", estimate.avgTagDist);
+            SmartDashboard.putNumber("Vision/Left/Stats/tagCount", estimate.tagCount);
+            SmartDashboard.putNumber("Vision/Left/Stats/latency", estimate.latency);
         } else if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT3_NAME)) {
             SmartDashboard.putBoolean("Vision/Right/valid", valid);
-            SmartDashboard.putNumber("Vision/Graph/R Valid", (valid ? 1 : 0));
+            SmartDashboard.putNumber("Vision/Right/Stats/valid", (valid ? 1 : 0));
+            SmartDashboard.putNumber("Vision/Right/Stats/avgTagDist", estimate.avgTagDist);
+            SmartDashboard.putNumber("Vision/Right/Stats/tagCount", estimate.tagCount);
+            SmartDashboard.putNumber("Vision/Right/Stats/latency", estimate.latency);
         } else {
             System.err.println("Limelight name is invalid. (limelight.isValid)");
         }
@@ -129,15 +136,15 @@ public class Limelight {
     private boolean isTrustworthy(String limelightName, PoseEstimate estimate, Pose2d odometryPose) {
         Boolean trusted = (
                 isValid(limelightName, estimate) &&
-                // estimate.tagCount >= 2 && //uncomment for additional filtering/stability
-                estimate.pose.getTranslation().getDistance(odometryPose.getTranslation()) < ALLOWABLE_POSE_DIFFERENCE &&
-                estimate.avgTagDist < MAX_TAG_DISTANCE);
+                // estimate.pose.getTranslation().getDistance(odometryPose.getTranslation()) < ALLOWABLE_POSE_DIFFERENCE && // Unused
+                ((estimate.avgTagDist < MAX_TAG_DISTANCE) || estimate.tagCount >= 2)); // Trust poses when there are two tags, or when the tags are close to the camera.
+
         if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT2_NAME)) {
             SmartDashboard.putBoolean("Vision/Left/trusted", trusted);
-            SmartDashboard.putNumber("Vision/Graph/L Trusted", (trusted ? 1 : 0));
+            SmartDashboard.putNumber("Vision/Left/Stats/trusted", (trusted ? 1 : 0));
         } else if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT3_NAME)) {
             SmartDashboard.putBoolean("Vision/Right/trusted", trusted);
-            SmartDashboard.putNumber("Vision/Graph/R Trusted", (trusted ? 1 : 0));
+            SmartDashboard.putNumber("Vision/Right/Stats/trusted", (trusted ? 1 : 0));
         } else {
             System.err.println("Limelight name is invalid. (limelight.isTrustworthy)");
         }

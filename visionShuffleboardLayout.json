@@ -590,6 +590,136 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "7,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Left/Stats/valid",
+              "_title": "Vision/Left/Stats/valid",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Left/Stats/avgTagDist",
+              "_title": "Vision/Left/Stats/avgTagDist",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "9,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Left/Stats/tagCount",
+              "_title": "Vision/Left/Stats/tagCount",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "10,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Left/Stats/latency",
+              "_title": "Vision/Left/Stats/latency",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "11,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Right/Stats/valid",
+              "_title": "Vision/Right/Stats/valid",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "12,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Right/Stats/avgTagDist",
+              "_title": "Vision/Right/Stats/avgTagDist",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "0,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Right/Stats/tagCount",
+              "_title": "Vision/Right/Stats/tagCount",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "1,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Right/Stats/latency",
+              "_title": "Vision/Right/Stats/latency",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Left/Stats/trusted",
+              "_title": "Vision/Left/Stats/trusted",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision/Right/Stats/trusted",
+              "_title": "Vision/Right/Stats/trusted",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -612,7 +742,7 @@
       "autoPopulate": true,
       "autoPopulatePrefix": "network_table:///SmartDashboard/Vision/",
       "widgetPane": {
-        "gridSize": 128.0,
+        "gridSize": 64.0,
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
@@ -620,7 +750,7 @@
         "tiles": {
           "3,0": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
@@ -635,7 +765,7 @@
           },
           "3,1": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
@@ -648,9 +778,9 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "6,0": {
+          "7,0": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
@@ -663,9 +793,9 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "6,1": {
+          "7,1": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
@@ -694,7 +824,7 @@
               "Visuals/Show Outside Circles": false
             }
           },
-          "7,0": {
+          "9,0": {
             "size": [
               3,
               2
@@ -710,7 +840,7 @@
               "Visuals/Show Outside Circles": false
             }
           },
-          "4,1": {
+          "5,1": {
             "size": [
               2,
               1
@@ -723,7 +853,7 @@
               "_showGlyph": false
             }
           },
-          "4,0": {
+          "5,0": {
             "size": [
               2,
               1
@@ -731,35 +861,93 @@
             "content": {
               "_type": "Command",
               "_source0": "network_table:///SmartDashboard/Vision/force update limelight position",
-              "_title": "force update limelight position",
+              "_title": "force update 1x",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
-          "3,3": {
+          "0,5": {
+            "size": [
+              6,
+              4
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://limelight-aprill",
+              "_title": "left camera",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Crosshair/Show crosshair": false,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": 0,
+              "imageHeight": 0
+            }
+          },
+          "6,5": {
+            "size": [
+              6,
+              4
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://limelight-aprilr",
+              "_title": "right camera",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Crosshair/Show crosshair": false,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": 0,
+              "imageHeight": 0
+            }
+          },
+          "0,2": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Network Table Tree",
+              "_source0": "network_table:///SmartDashboard/Vision/Left/Stats",
+              "_title": "SmartDashboard/Vision/Left/Stats",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "9,2": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Network Table Tree",
+              "_source0": "network_table:///SmartDashboard/Vision/Right/Stats",
+              "_title": "SmartDashboard/Vision/Right/Stats",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,2": {
             "size": [
               4,
               3
             ],
             "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/Vision/Graph/L Trusted",
-              "_source1": "network_table:///SmartDashboard/Vision/Graph/L Valid",
-              "_source2": "network_table:///SmartDashboard/Vision/Graph/R Valid",
-              "_source3": "network_table:///SmartDashboard/Vision/Graph/R Trusted",
-              "_title": "SmartDashboard/Vision/Graph",
+              "_type": "Field",
+              "_source0": "network_table:///SmartDashboard/Field",
+              "_title": "SmartDashboard/Field",
               "_glyph": 148,
               "_showGlyph": false,
-              "Graph/Visible time": 30.0,
-              "Graph/X-axis auto scrolling": true,
-              "Y-axis/Automatic bounds": false,
-              "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": 0.0,
-              "Y-axis/Unit": "boolean",
-              "Visible data/SmartDashboard/Vision/Graph/L Trusted": true,
-              "Visible data/SmartDashboard/Vision/Graph/L Valid": true,
-              "Visible data/SmartDashboard/Vision/Graph/R Trusted": true,
-              "Visible data/SmartDashboard/Vision/Graph/R Valid": true
+              "Game/Game": "A2023_Charged_Up",
+              "Visuals/Robot Icon Size": 50.0,
+              "Visuals/Show Outside Circles": false
             }
           }
         }
