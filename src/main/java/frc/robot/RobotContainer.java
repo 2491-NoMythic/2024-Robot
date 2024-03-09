@@ -34,6 +34,7 @@ import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.WaitUntil;
 import frc.robot.commands.shootAmp;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
@@ -294,8 +295,16 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
-      new Trigger(AmpAngleSup).whileTrue(new shootAmp(indexer, shooter));
-      SmartDashboard.putData("amp shot", new shootAmp(indexer, shooter));
+      //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot
+      SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
+        new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
+        new DriveTimeCommand(0.3, 0, 0, 0.3, driveTrain),
+        new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
+        new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
+        new WaitCommand(0.2)
+        );
+        new Trigger(AmpAngleSup).whileTrue(scoreAmp);
+        SmartDashboard.putData("amp shot", scoreAmp);
     }
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {
