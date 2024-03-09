@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.IndexerConstants;
+import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 public class ConditionalIndexer extends Command {
@@ -25,23 +27,20 @@ public class ConditionalIndexer extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intake.isNoteIn()) {
-      indexer.off();
-    } else {
-      indexer.on();
-    }
-
-  
-    
+    intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+    indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    intake.intakeOff();
+    indexer.off();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return intake.isNoteIn();
   }
 }

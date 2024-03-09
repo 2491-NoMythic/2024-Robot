@@ -408,20 +408,25 @@ public class RobotContainer {
     NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
 
     if(shooterExists) {NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(LONG_SHOOTING_RPS), shooter));}
-    if(indexerExists) {NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));
-    NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));}
+    if(indexerExists) {
+      // NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));
+      // NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));
+    }
     if(intakeExists) {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));
-      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
-      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
-      NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
-      NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
+      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 0.2));
+      // NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
+      // NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
+    }
+    if(angleShooterExists) {
+      //the same command that we use during teleop, but all the buttons that would aim the shooter anywhere other than the speaker are set to false.
+      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, ()->false, ()->false, ()->false, ()->false, ()->false));
     }
     if (indexerExists&&intakeExists) {
-      NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));
+      NamedCommands.registerCommand("groundIntake", new ConditionalIndexer(indexer,intake));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
