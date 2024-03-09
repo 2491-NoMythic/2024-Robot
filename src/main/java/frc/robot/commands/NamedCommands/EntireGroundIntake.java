@@ -26,6 +26,8 @@ GroundIntake groundIntake = new GroundIntake(m_Intake, m_Indexer);
   public EntireGroundIntake() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(groundIntake, new InstantCommand(()-> m_Angler.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE), m_Angler));
+    addCommands(
+      groundIntake, 
+      new InstantCommand(()-> m_Angler.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE), m_Angler));
   }
 }
