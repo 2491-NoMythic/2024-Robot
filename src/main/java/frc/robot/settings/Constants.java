@@ -368,7 +368,7 @@ public static final class CTREConfigs {
       driveMotorConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.DRIVE_CURRENT_LIMIT;
       driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
       driveMotorConfig.CurrentLimits.StatorCurrentLimitEnable = false;
-      driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = 30;
+      driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = 50;
       driveMotorConfig.CurrentLimits.SupplyTimeThreshold = 1.4;
 
       //  Steer encoder.
