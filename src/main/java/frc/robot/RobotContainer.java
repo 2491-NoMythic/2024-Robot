@@ -294,6 +294,17 @@ public class RobotContainer {
     if(intakeExists) {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
+    if(shooterExists&&shooterExists) {
+      SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
+        new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
+        new DriveTimeCommand(0.3, 0, 0, 0.3, driveTrain),
+        // new WaitCommand(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
+        new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
+        new WaitCommand(0.2)
+        );
+        new Trigger(AmpAngleSup).whileTrue(scoreAmp);
+        SmartDashboard.putData("amp shot", scoreAmp);
+    }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       new Trigger(AmpAngleSup).whileTrue(new shootAmp(indexer, shooter));
       SmartDashboard.putData("amp shot", new shootAmp(indexer, shooter));
