@@ -35,6 +35,7 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.shootAmp;
+import frc.robot.commands.NamedCommands.EntireGroundIntake;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
 import frc.robot.commands.goToPose.GoToAmp;
@@ -421,7 +422,10 @@ public class RobotContainer {
       NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
     }
     if (indexerExists&&intakeExists) {
-      NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));
+      NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake)); 
+    } if (shooterExists&&indexerExists&&intakeExists) {
+      NamedCommands.registerCommand("GroundIntake", new EntireGroundIntake());
+      
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
