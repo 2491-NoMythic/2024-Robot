@@ -33,7 +33,7 @@ import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
-import frc.robot.commands.ManualShoot;import frc.robot.commands.OperatorAngler;
+import frc.robot.commands.ManualShoot;
 import frc.robot.commands.shootAmp;
 import frc.robot.commands.NamedCommands.initialShot;
 import frc.robot.commands.NamedCommands.shootNote;
