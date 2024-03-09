@@ -426,7 +426,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, ()->false, ()->false, ()->false, ()->false, ()->false));
     }
     if (indexerExists&&intakeExists) {
-      NamedCommands.registerCommand("groundIntake", new ConditionalIndexer(indexer,intake));
+      NamedCommands.registerCommand("groundIntake", new ConditionalIndexer(indexer, intake, angleShooterSubsystem));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }

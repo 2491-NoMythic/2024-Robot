@@ -5,19 +5,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.IntakeConstants;
+import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 public class ConditionalIndexer extends Command {
   /** Creates a new ConditionalIndexer. */
   IndexerSubsystem indexer;
   IntakeSubsystem intake;
-  public ConditionalIndexer(IndexerSubsystem indexer, IntakeSubsystem intake) {
+  AngleShooterSubsystem angleShooterSubsystem;
+  public ConditionalIndexer(IndexerSubsystem indexer, IntakeSubsystem intake, AngleShooterSubsystem angleShooter) {
     // Use addRequirements() here to declare subsystem dependencies.\
-   addRequirements(indexer,intake);
+   addRequirements(indexer,intake, angleShooter);
     this.indexer = indexer;
     this.intake = intake;
+    this.angleShooterSubsystem = angleShooter;
   }
   
   // Called when the command is initially scheduled.
@@ -29,6 +34,7 @@ public class ConditionalIndexer extends Command {
   public void execute() {
     intake.intakeYes(IntakeConstants.INTAKE_SPEED);
     indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
+    angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
   }
 
   // Called once the command ends or is interrupted.
@@ -36,6 +42,7 @@ public class ConditionalIndexer extends Command {
   public void end(boolean interrupted) {
     intake.intakeOff();
     indexer.off();
+    angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
   }
 
   // Returns true when the command should end.
