@@ -299,6 +299,7 @@ public class RobotContainer {
         new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
         new DriveTimeCommand(0.3, 0, 0, 0.3, driveTrain),
         // new WaitCommand(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
+        new WaitCommand(0.5),
         new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
         new WaitCommand(0.2)
         );
@@ -432,8 +433,8 @@ public class RobotContainer {
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));
-      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 0.2));
-      SmartDashboard.putData("shootNote", new shootNote(indexer, 0.2));
+      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1, angleShooterSubsystem));
+      SmartDashboard.putData("shootNote", new shootNote(indexer, 0.4, angleShooterSubsystem));
       // NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       // NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
     }
