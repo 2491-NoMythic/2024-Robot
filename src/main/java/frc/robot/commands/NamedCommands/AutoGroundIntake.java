@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.Field;
@@ -12,12 +12,12 @@ import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-public class ConditionalIndexer extends Command {
+public class AutoGroundIntake extends Command {
   /** Creates a new ConditionalIndexer. */
   IndexerSubsystem indexer;
   IntakeSubsystem intake;
   AngleShooterSubsystem angleShooterSubsystem;
-  public ConditionalIndexer(IndexerSubsystem indexer, IntakeSubsystem intake, AngleShooterSubsystem angleShooter) {
+  public AutoGroundIntake(IndexerSubsystem indexer, IntakeSubsystem intake, AngleShooterSubsystem angleShooter) {
     // Use addRequirements() here to declare subsystem dependencies.\
    addRequirements(indexer,intake, angleShooter);
     this.indexer = indexer;
