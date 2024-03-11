@@ -444,7 +444,6 @@ public class RobotContainer {
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
         new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup),
         new shootNote(indexer, 1, angleShooterSubsystem)));
-      SmartDashboard.putData("shootNote", new shootNote(indexer, 0.4, angleShooterSubsystem));
       // NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       // NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
     }
