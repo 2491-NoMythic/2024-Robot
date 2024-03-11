@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3070140425995143,
-      "y": 5.673210203563265
+      "x": 0.7398459580634182,
+      "y": 6.6321923992448495
     },
-    "rotation": 178.58973709629694
+    "rotation": -120.0
   },
   "command": {
     "type": "sequential",
@@ -24,39 +24,117 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseAmpPickup"
+                }
+              },
+              {
+                "type": "race",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "groundIntake"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 4.0
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "conditionlIndexer"
+            "name": "autoShootNote"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "CloseAmpPickup"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseMiddlePickupFromAmp"
+                }
+              },
+              {
+                "type": "race",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "groundIntake"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 4.0
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "conditionlIndexer"
+            "name": "autoShootNote"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "CloseMiddlePickupFromAmp"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseSourcePickupFromMiddle"
+                }
+              },
+              {
+                "type": "race",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "groundIntake"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 4.0
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "conditionlIndexer"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CloseSourcePickupFromMiddle"
+            "name": "autoShootNote"
           }
         }
       ]
