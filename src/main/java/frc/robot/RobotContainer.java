@@ -8,6 +8,7 @@ import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
 
@@ -50,6 +51,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -118,6 +120,8 @@ public class RobotContainer {
   BooleanSupplier GroundIntakeSup;
   BooleanSupplier FarStageAngleSup;
   BooleanSupplier OperatorPreRevSup;
+  BooleanSupplier falseSup;
+  DoubleSupplier zeroSup;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -161,6 +165,8 @@ public class RobotContainer {
     GroundIntakeSup = operatorController::getTouchpad;
     FarStageAngleSup = driverController::getTouchpad;
     OperatorPreRevSup = operatorController::getL2Button;
+    zeroSup = ()->0;
+    falseSup = ()->false;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -433,7 +439,11 @@ public class RobotContainer {
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));
-      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1, angleShooterSubsystem));
+      //the following command will both aim the robot at the speaker (with the AimRobotMoving), and shoot a note while aiming the shooter (with shootNote). As a race group, it ends
+      //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
+      NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
+        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup),
+        new shootNote(indexer, 1, angleShooterSubsystem)));
       SmartDashboard.putData("shootNote", new shootNote(indexer, 0.4, angleShooterSubsystem));
       // NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       // NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
