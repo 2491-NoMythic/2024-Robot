@@ -446,5 +446,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		} else {
 			runsValid = 0;
 		}
+		for (SwerveModule module : modules) {
+			module.logToNT();
+		}
 	}
 }
