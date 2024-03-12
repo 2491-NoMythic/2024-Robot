@@ -133,7 +133,7 @@ public class IndexCommand extends Command {
         indexer = true;
       }
       if (intakeReverse.getAsBoolean()) {
-        
+        m_Indexer.set(-0.1);
       } else if (indexer) {
         m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
       } else {
