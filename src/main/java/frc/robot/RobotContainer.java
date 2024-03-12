@@ -419,6 +419,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
       NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
+      
     }
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("conditionalindexer", new ConditionalIndexer(indexer,intake));
