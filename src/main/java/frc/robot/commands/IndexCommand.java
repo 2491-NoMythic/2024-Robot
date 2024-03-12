@@ -42,11 +42,12 @@ public class IndexCommand extends Command {
   BooleanSupplier subwooferAngleSup;
   BooleanSupplier farStageAngleSup;
   BooleanSupplier operatorRevSup;
+  BooleanSupplier intakeReverse; 
   boolean auto;
   double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
@@ -131,11 +132,13 @@ public class IndexCommand extends Command {
       if((stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||farStageAngleSup.getAsBoolean())&&revUpSupplier.getAsBoolean()&& shooter.validShot()) {
         indexer = true;
       }
-      if (indexer) {
-          m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-       } else {
-          m_Indexer.off();
-       }
+      if (intakeReverse.getAsBoolean()) {
+        
+      } else if (indexer) {
+        m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+      } else {
+        m_Indexer.off();
+      }
     }
   }
 
