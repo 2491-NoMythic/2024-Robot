@@ -34,6 +34,7 @@ import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.MoveMeters;
 import frc.robot.commands.WaitUntil;
 import frc.robot.commands.shootAmp;
 import frc.robot.commands.NamedCommands.initialShot;
@@ -306,6 +307,7 @@ public class RobotContainer {
         new Trigger(AmpAngleSup).whileTrue(scoreAmp);
         SmartDashboard.putData("amp shot", scoreAmp);
     }
+    SmartDashboard.putData(new MoveMeters(driveTrain, 1, 0.2, 0.2, 0.2));
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {
         return true;
