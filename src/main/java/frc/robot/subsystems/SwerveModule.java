@@ -21,39 +21,18 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StringArrayPublisher;
-import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.settings.Constants.DriveConstants;
 
 public class SwerveModule {
-
+  
+  private String m_moduleName;
   private final TalonFX m_driveMotor;
   private final TalonFX m_steerMotor;
   private final CANcoder m_steerEncoder;
   private final Rotation2d m_steerEncoderOffset;
-
-  private DoublePublisher log_SteerAngleCurrent;
-  private DoublePublisher log_SteerAngleDesired;
-  private StringArrayPublisher log_SteerControl;
-  private BooleanPublisher log_SteerIsPro;
-  private DoublePublisher log_SteerMotorTemp;
-  private DoublePublisher log_SteerProcessorTemp;
-
-  private DoublePublisher log_CanCoderPosition;
-  private StringPublisher log_CanCoderMagStatus;
-  private BooleanPublisher log_CanCoderIsPro;
-
-  private DoublePublisher log_DriveVelocityCurrent;
-  private DoublePublisher log_DriveVelocityDesired;
-  private StringArrayPublisher log_DriveControl;
-  private BooleanPublisher log_DriveIsPro;
-  private DoublePublisher log_DriveMotorTemp;
-  private DoublePublisher log_DriveProcessorTemp;
 
   ShuffleboardTab debugInfo;
   /**
@@ -85,6 +64,7 @@ public class SwerveModule {
       int steerEncoderChannel,
       Rotation2d steerEncoderOffset,
       String canivoreName) {
+    m_moduleName = moduleName;
     m_driveMotor = new TalonFX(driveMotorChannel, canivoreName);
     m_steerMotor = new TalonFX(steerMotorChannel, canivoreName);
     m_steerEncoder = new CANcoder(steerEncoderChannel, canivoreName);
@@ -100,7 +80,6 @@ public class SwerveModule {
     m_steerMotor.getConfigurator().apply(steerMotorConfig);
     m_steerEncoder.getConfigurator().apply(steerEncoderConfig);
     
-    logInit(moduleName);
   }
 
   /**
@@ -194,48 +173,26 @@ public class SwerveModule {
     }
   }
 
-  public void logInit(String moduleName) {
-    String networkTableName = "Modules/" + moduleName;
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-
-    log_SteerAngleCurrent = inst.getDoubleTopic(networkTableName + "/Steer/angleCurrent").publish(/*PubSubOption.sendAll(true)*/);
-    log_SteerAngleDesired = inst.getDoubleTopic(networkTableName + "/Steer/angleDesired").publish();
-    log_SteerMotorTemp = inst.getDoubleTopic(networkTableName + "/Steer/tempMotor").publish();
-    log_SteerProcessorTemp = inst.getDoubleTopic(networkTableName + "/Steer/tempProcessor").publish();
-    log_SteerIsPro = inst.getBooleanTopic(networkTableName + "/Steer/isPro").publish();
-    log_SteerControl = inst.getStringArrayTopic(networkTableName + "/Steer/control").publish();
-
-    log_CanCoderPosition = inst.getDoubleTopic(networkTableName + "/CanCoder/position").publish();
-    log_CanCoderMagStatus = inst.getStringTopic(networkTableName + "/CanCoder/magStatus").publish();
-    log_CanCoderIsPro = inst.getBooleanTopic(networkTableName + "/CanCoder/isPro").publish();
-
-    log_DriveVelocityCurrent = inst.getDoubleTopic(networkTableName + "/Drive/velocityCurrent").publish();
-    log_DriveVelocityDesired = inst.getDoubleTopic(networkTableName + "/Drive/velocityDesired").publish();
-    log_DriveMotorTemp = inst.getDoubleTopic(networkTableName + "/Drive/tempMotor").publish();
-    log_DriveProcessorTemp = inst.getDoubleTopic(networkTableName + "/Drive/tempProcessor").publish();
-    log_DriveIsPro = inst.getBooleanTopic(networkTableName + "/Drive/isPro").publish();
-    log_DriveControl = inst.getStringArrayTopic(networkTableName + "/Drive/control").publish();
-  }
-
   public void logToNT() {
-    log_SteerAngleCurrent.set(m_steerMotor.getPosition().getValue());
-    log_SteerAngleDesired.set(m_desiredSteerAngle);
-    log_SteerMotorTemp.set(m_steerMotor.getDeviceTemp().getValue());
-    log_SteerProcessorTemp.set(m_steerMotor.getProcessorTemp().getValue());
-    log_SteerIsPro.set(m_steerMotor.getIsProLicensed().getValue());
-    log_SteerControl.set(controlToString(m_steerMotor.getAppliedControl()));
+    String networkTableName = "Modules/" + m_moduleName;
+    SmartDashboard.putNumber(networkTableName + "/Steer/angleCurrent", m_steerMotor.getPosition().getValue());
+    SmartDashboard.putNumber(networkTableName + "/Steer/angleDesired", m_desiredSteerAngle);
+    SmartDashboard.putNumber(networkTableName + "/Steer/tempMotor", m_steerMotor.getDeviceTemp().getValue());
+    SmartDashboard.putNumber(networkTableName + "/Steer/tempProcessor", m_steerMotor.getProcessorTemp().getValue());
+    SmartDashboard.putBoolean(networkTableName + "/Steer/isPro", m_steerMotor.getIsProLicensed().getValue());
+    SmartDashboard.putStringArray(networkTableName + "/Steer/control", controlToString(m_steerMotor.getAppliedControl()));
 
-    log_CanCoderPosition.set(m_steerEncoder.getPosition().getValue());
-    log_CanCoderMagStatus.set(m_steerEncoder.getMagnetHealth().getValue().toString());
-    log_CanCoderIsPro.set(m_steerEncoder.getIsProLicensed().getValue());
 
-    log_DriveVelocityCurrent.set(m_driveMotor.getVelocity().getValue());
-    log_DriveVelocityDesired.set(m_desiredDriveSpeed);
-    log_DriveMotorTemp.set(m_driveMotor.getDeviceTemp().getValue());
-    log_DriveProcessorTemp.set(m_driveMotor.getProcessorTemp().getValue());
-    log_DriveIsPro.set(m_driveMotor.getIsProLicensed().getValue());
-    log_DriveControl.set(controlToString(m_driveMotor.getAppliedControl()));
+    SmartDashboard.putNumber(networkTableName + "/CanCoder/position", m_steerEncoder.getPosition().getValue());
+    SmartDashboard.putString(networkTableName + "/CanCoder/magStatus", m_steerEncoder.getMagnetHealth().getValue().toString());
+    SmartDashboard.putBoolean(networkTableName + "/CanCoder/isPro", m_steerEncoder.getIsProLicensed().getValue());
 
+    SmartDashboard.putNumber(networkTableName + "/Drive/velocityCurrent", m_driveMotor.getVelocity().getValue());
+    SmartDashboard.putNumber(networkTableName + "/Drive/velocityDesired", m_desiredDriveSpeed);
+    SmartDashboard.putNumber(networkTableName + "/Drive/tempMotor", m_driveMotor.getDeviceTemp().getValue());
+    SmartDashboard.putNumber(networkTableName + "/Drive/tempProcessor", m_driveMotor.getProcessorTemp().getValue());
+    SmartDashboard.putBoolean(networkTableName + "/Drive/isPro", m_driveMotor.getIsProLicensed().getValue());
+    SmartDashboard.putStringArray(networkTableName + "/Drive/control", controlToString(m_driveMotor.getAppliedControl()));
   }
 
   private String[] controlToString(ControlRequest control) {
