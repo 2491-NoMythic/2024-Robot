@@ -50,6 +50,7 @@ public class shootNote extends Command {
   public void end(boolean interrupted) {
     timer.stop();
     indexer.off();
+    timer.reset();
   }
 
   // Returns true when the command should end.

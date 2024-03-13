@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7294015605842922,
-      "y": 6.611303604286598
+      "x": 1.3171869760109631,
+      "y": 5.5410316277334815
     },
-    "rotation": -120.0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -15,6 +15,100 @@
           "type": "named",
           "data": {
             "name": "initialShot"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseMidPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoShootNote"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseAmpPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoShootNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOn"
           }
         },
         {
@@ -28,115 +122,9 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "groundIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
                 "type": "path",
                 "data": {
                   "pathName": "BlueAmpShoot1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "autoAimAtSpeaker"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShootNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Blue2Pickup"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "groundIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BlueAmpShoot2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShootNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Blue3PickupAmpSide"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "groundIntake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "BlueMiddleShoot3"
                 }
               },
               {
