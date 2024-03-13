@@ -137,7 +137,7 @@ public class RobotContainer {
     Preferences.initBoolean("Use Limelight", true);
     Preferences.initBoolean("Use 2 Limelights", true);
     Preferences.initDouble("wait # of seconds", 0);
-
+    
     // DataLogManager.start();
     // URCL.start();
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
@@ -200,7 +200,7 @@ public class RobotContainer {
     driveTrain = new DrivetrainSubsystem();
     defaultDriveCommand = new Drive(
       driveTrain, 
-      () -> driverController.getL1Button(),
+      () -> false,
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
@@ -299,7 +299,7 @@ public class RobotContainer {
       //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
         new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
-        new MoveMeters(driveTrain, 0.05, -0.3, 0, 0),
+        new MoveMeters(driveTrain, 0.05, 0.3, 0, 0),
         new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
         new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
         new WaitCommand(0.2)

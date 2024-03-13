@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -28,7 +29,7 @@ public class MoveMeters extends Command {
   public MoveMeters(DrivetrainSubsystem drivetrain, double meters, double forwardSpeed, double rightSpeed, double angleSpeed) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
-    m_meters = meters;
+    m_meters = Math.abs(meters);
     m_forwardSpeed = forwardSpeed;
     addRequirements(drivetrain);
   }
@@ -36,6 +37,7 @@ public class MoveMeters extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    distance = 0;
     pose = m_drivetrain.getPose();
     startX = pose.getX();
     startY = pose.getY();
@@ -51,12 +53,17 @@ public class MoveMeters extends Command {
     distanceX = (startX - whileX);
     distanceY = (startY - whileY);
     distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+
+    SmartDashboard.putNumber("MOVE1METER/distance x", distanceX);
+    SmartDashboard.putNumber("MOVE1METER/distance y", distanceY);
+    SmartDashboard.putNumber("MOVE1METER/distance from target", distance);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
+    distance = 0;
   }
 
   // Returns true when the command should end.
