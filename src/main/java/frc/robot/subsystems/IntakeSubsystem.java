@@ -10,6 +10,9 @@ import com.revrobotics.SparkAnalogSensor.Mode;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +22,13 @@ public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax intake1;
   CANSparkMax intake2;
   SparkAnalogSensor m_DistanceSensor;
+
+
+  DoubleLogEntry percentOutputLog1;
+  DoubleLogEntry percentOutputLog2;
+
+  DoubleLogEntry currentLog1; 
+  DoubleLogEntry currentLog2; 
 
   double intakeRunSpeed;
   public IntakeSubsystem() {
@@ -40,6 +50,16 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.setSmartCurrentLimit(25, 40, 1000);
     intake1.burnFlash();
     intake2.burnFlash();
+
+    DataLog log = DataLogManager.getLog();
+    percentOutputLog1 = new DoubleLogEntry(log, "/intake/motor1/output");
+    percentOutputLog2 = new DoubleLogEntry(log, "/intake/motor2/output");
+
+    currentLog1 = new DoubleLogEntry(log, "/intake/motor1/current");      
+    currentLog2 = new DoubleLogEntry(log, "/intake/motor2/current");
+
+
+
   }
 
   public void intakeYes(double intakeRunSpeed) {
@@ -58,5 +78,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
   SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
   SmartDashboard.putBoolean("is note in", isNoteIn());
+  
+  currentLog1.append(intake1.getOutputCurrent());
+  currentLog2.append(intake2.getOutputCurrent());
+  percentOutputLog1.append(intake1.getAppliedOutput());
+  percentOutputLog2.append(intake2.getAppliedOutput());
   }
 }
