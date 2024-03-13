@@ -61,6 +61,7 @@ public class IndexCommand extends Command {
     this.farStageAngleSup = farStageAngleSup;
     this.groundIntakeSup = groundIntakeSup;
     this.operatorRevSup = operatorRevSup;
+    this.intakeReverse = intakeReverse;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_SHOOTER_ANGLE);
