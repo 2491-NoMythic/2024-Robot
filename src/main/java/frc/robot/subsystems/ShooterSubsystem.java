@@ -126,6 +126,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     SmartDashboard.getBoolean("shooter speed rev'ed", validShot());
     SmartDashboard.putNumber("shooter current right", shooterR.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("shooter current left", shooterL.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter/Right shooter speed", shooterR.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter/Left shooter speed", shooterL.getVelocity().getValueAsDouble());
     if(getError()<ShooterConstants.ALLOWED_SPEED_ERROR) {
       runsValid++;
     } else {

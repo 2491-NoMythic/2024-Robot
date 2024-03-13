@@ -35,6 +35,8 @@ import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
+import frc.robot.commands.MoveMeters;
+import frc.robot.commands.WaitUntil;
 import frc.robot.commands.shootAmp;
 import frc.robot.commands.NamedCommands.AutoGroundIntake;
 import frc.robot.commands.NamedCommands.initialShot;
@@ -123,6 +125,7 @@ public class RobotContainer {
   BooleanSupplier falseSup;
   DoubleSupplier zeroSup;
 
+  BooleanSupplier intakeReverse;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -140,7 +143,7 @@ public class RobotContainer {
     Preferences.initBoolean("Use Limelight", true);
     Preferences.initBoolean("Use 2 Limelights", true);
     Preferences.initDouble("wait # of seconds", 0);
-
+    
     // DataLogManager.start();
     // URCL.start();
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
@@ -167,6 +170,7 @@ public class RobotContainer {
     OperatorPreRevSup = operatorController::getL2Button;
     zeroSup = ()->0;
     falseSup = ()->false;
+    intakeReverse = operatorController::getL1Button;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -205,7 +209,7 @@ public class RobotContainer {
     driveTrain = new DrivetrainSubsystem();
     defaultDriveCommand = new Drive(
       driveTrain, 
-      () -> driverController.getL1Button(),
+      () -> false,
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
@@ -229,7 +233,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, intakeReverse);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -313,9 +317,18 @@ public class RobotContainer {
         SmartDashboard.putData("amp shot", scoreAmp);
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
-      new Trigger(AmpAngleSup).whileTrue(new shootAmp(indexer, shooter));
-      SmartDashboard.putData("amp shot", new shootAmp(indexer, shooter));
+      //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot
+      SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
+        new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
+        new MoveMeters(driveTrain, 0.05, 0.3, 0, 0),
+        new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
+        new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
+        new WaitCommand(0.2)
+        );
+        new Trigger(AmpAngleSup).whileTrue(scoreAmp);
+        SmartDashboard.putData("amp shot", scoreAmp);
     }
+    SmartDashboard.putData("move 1 meter", new MoveMeters(driveTrain, 1, 0.2, 0.2, 0.2));
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {
         return true;

@@ -51,6 +51,7 @@ public class DriveTimeCommand extends Command {
   public void end(boolean interrupted) {
     timer.reset();
     timer.stop();
+    drivetrain.stop();
   }
 
   // Returns true when the command should end.
