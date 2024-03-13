@@ -240,7 +240,7 @@ public static final class ShooterConstants{
   
   public static final double LONG_SHOOTING_RPS = 120;
   public static final double SHORT_SHOOTING_RPS = 80;
-  public static final double AMP_RPS = 9.5;
+  public static final double AMP_RPS = 25.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
@@ -316,7 +316,7 @@ public static final class IndexerConstants{
   public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
-  public static final double INDEXER_AMP_SPEED = 0.8;
+  public static final double INDEXER_AMP_SPEED = 0.3;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
