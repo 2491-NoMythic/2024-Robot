@@ -68,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CloseAmpPickup"
+                  "pathName": "CloseAmpPickupFromMiddle"
                 }
               },
               {
