@@ -4,8 +4,11 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.SparkAnalogSensor;
+
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.helpers.MotorLogger;
 import frc.robot.settings.Constants.IndexerConstants;
 
 public class IndexerSubsystem extends SubsystemBase {
@@ -13,6 +16,7 @@ public class IndexerSubsystem extends SubsystemBase {
     SparkAnalogSensor m_DistanceSensor;
     CurrentLimitsConfigs currentLimitsConfigs;
     TalonFXConfigurator configurator;
+    MotorLogger motorLogger;
 
     public IndexerSubsystem() {
         m_IndexerMotor = new TalonFX(IndexerConstants.INDEXER_MOTOR);
@@ -23,6 +27,8 @@ public class IndexerSubsystem extends SubsystemBase {
         currentLimitsConfigs.SupplyCurrentLimitEnable = true;
         configurator = m_IndexerMotor.getConfigurator();
         configurator.apply(currentLimitsConfigs);
+
+        motorLogger = new MotorLogger(DataLogManager.getLog(), "/indexer/motor");
     }
 
     public void on() {
@@ -41,6 +47,6 @@ public class IndexerSubsystem extends SubsystemBase {
     }
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("indexer current", m_IndexerMotor.getSupplyCurrent().getValueAsDouble());
+        motorLogger.log(m_IndexerMotor);
     }
 }
