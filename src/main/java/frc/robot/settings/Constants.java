@@ -317,6 +317,12 @@ public static final class IndexerConstants{
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_SPEED = 1;
   public static final double INDEXER_AMP_SPEED = 0.5;
+  public static final double INDEXER_KS = 0.35;
+  public static final double INDEXER_KV = 0.1205;
+  public static final double INDEXER_KA = 0;
+  public static final double INDEXER_CRUISE_VELOCITY = 0;
+  public static final double INDEXER_ACCELERATION = 0;
+  public static final double INDEXER_JERK = 0;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
