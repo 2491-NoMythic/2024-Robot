@@ -11,24 +11,20 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
- import frc.robot.settings.Constants.IntakeConstants;
+import frc.robot.helpers.MotorLogger;
+import frc.robot.settings.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
   CANSparkMax intake1;
   CANSparkMax intake2;
   SparkAnalogSensor m_DistanceSensor;
 
-
-  DoubleLogEntry percentOutputLog1;
-  DoubleLogEntry percentOutputLog2;
-
-  DoubleLogEntry currentLog1; 
-  DoubleLogEntry currentLog2; 
+  MotorLogger motorLogger1;
+  MotorLogger motorLogger2;
 
   double intakeRunSpeed;
   public IntakeSubsystem() {
@@ -52,14 +48,8 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.burnFlash();
 
     DataLog log = DataLogManager.getLog();
-    percentOutputLog1 = new DoubleLogEntry(log, "/intake/motor1/output");
-    percentOutputLog2 = new DoubleLogEntry(log, "/intake/motor2/output");
-
-    currentLog1 = new DoubleLogEntry(log, "/intake/motor1/current");      
-    currentLog2 = new DoubleLogEntry(log, "/intake/motor2/current");
-
-
-
+    motorLogger1 = new MotorLogger(log, "/intake/motor1");
+    motorLogger2 = new MotorLogger(log, "/intake/motor2");
   }
 
   public void intakeYes(double intakeRunSpeed) {
@@ -79,9 +69,7 @@ public class IntakeSubsystem extends SubsystemBase {
   SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
   SmartDashboard.putBoolean("is note in", isNoteIn());
   
-  currentLog1.append(intake1.getOutputCurrent());
-  currentLog2.append(intake2.getOutputCurrent());
-  percentOutputLog1.append(intake1.getAppliedOutput());
-  percentOutputLog2.append(intake2.getAppliedOutput());
+  motorLogger1.log(intake1);
+  motorLogger2.log(intake2);
   }
 }
