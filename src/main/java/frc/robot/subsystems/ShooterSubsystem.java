@@ -21,7 +21,10 @@ import frc.robot.settings.Constants;
 import  frc.robot.settings.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase; 
+
+import java.util.function.DoubleSupplier;
+
  
  public class ShooterSubsystem extends SubsystemBase {
    TalonFX shooterR;
@@ -98,6 +101,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
       adjCurrentLimit(ShooterConstants.CURRENT_LIMIT, 100);
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
       shooterL.setControl(new VelocityDutyCycle(RPS).withSlot(0));
+    }
+    /**
+     * allows you to set the shooter's speed using a supplier. this way you can use a value on SmartDashboard to tune
+     * the shooter's speed. 
+     * <p> if sameSpeed is true, than the wheels will run at the same RPS. Otherwise, the left wheel will run at half the speed.
+     * @param RPSSup
+     * @param sameSpeed
+     */
+    public void shootWithSupplier(DoubleSupplier RPSSup, boolean sameSpeed) {
+      DoubleSupplier speedSupplier = RPSSup;
+      if(sameSpeed) {
+        shootSameRPS(speedSupplier.getAsDouble());
+      } else {
+        shootRPS(speedSupplier.getAsDouble());
+      }
     }
     public void shootRPSWithCurrent(double RPS, double currentLimit, double statorLimit){
       adjCurrentLimit(currentLimit, statorLimit);

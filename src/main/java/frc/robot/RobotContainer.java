@@ -125,6 +125,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
+    SmartDashboard.putNumber("amp RPS", ShooterConstants.AMP_RPS);
+
     Preferences.initBoolean("Brushes", false);
     Preferences.initBoolean("CompBot", true);
     Preferences.initBoolean("Intake", true);
@@ -298,8 +300,9 @@ public class RobotContainer {
     if(indexerExists&&shooterExists&&angleShooterExists) {
       //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
-        new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
-        new MoveMeters(driveTrain, 0.05, 0.3, 0, 0),
+        // new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
+        new InstantCommand(()->shooter.shootWithSupplier(()->SmartDashboard.getNumber("amp RPS", 0), true), shooter),
+        new MoveMeters(driveTrain, 0.03, 0.3, 0, 0),
         new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
         new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
         new WaitCommand(0.2)
