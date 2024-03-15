@@ -27,6 +27,7 @@ import frc.robot.commands.GroundIntake;
 import frc.robot.commands.NamedCommands.AutoGroundIntake;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.commands.IndexCommand;
+import frc.robot.commands.IndexerNoteAlign;
 import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
@@ -56,6 +57,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
@@ -131,6 +133,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
+    SmartDashboard.putNumber("amp RPS", ShooterConstants.AMP_RPS);
+
     Preferences.initBoolean("Brushes", false);
     Preferences.initBoolean("CompBot", true);
     Preferences.initBoolean("Intake", true);
@@ -290,7 +294,7 @@ public class RobotContainer {
       SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
     }
     if(indexerExists) {
-      new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV));
+      new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV, intake));
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
@@ -304,26 +308,20 @@ public class RobotContainer {
     if(intakeExists) {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
-    if(shooterExists&&shooterExists) {
-      SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
-        new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
-        new DriveTimeCommand(0.3, 0, 0, 0.3, driveTrain),
-        // new WaitCommand(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
-        new WaitCommand(0.5),
-        new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
-        new WaitCommand(0.2)
-        );
-        new Trigger(AmpAngleSup).whileTrue(scoreAmp);
-        SmartDashboard.putData("amp shot", scoreAmp);
+    if(intakeExists&&indexerExists) {
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
-        new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
-        new MoveMeters(driveTrain, 0.05, 0.3, 0, 0),
+        // new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
+        new InstantCommand(()->shooter.shootWithSupplier(()->10.2, true), shooter),
+        new MoveMeters(driveTrain, 0.04, 0.06, 0, 0),
         new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
-        new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
-        new WaitCommand(0.2)
+        // new InstantCommand(()->indexer.forwardInches(IndexerConstants.AMP_SHOT_INCHES), indexer),
+        new InstantCommand(()->indexer.magicRPS(90), indexer),//45 worked but a bit too high
+        new WaitCommand(0.5),
+        new InstantCommand(()->intake.setNoteHeld(false))
         );
         new Trigger(AmpAngleSup).whileTrue(scoreAmp);
         SmartDashboard.putData("amp shot", scoreAmp);
