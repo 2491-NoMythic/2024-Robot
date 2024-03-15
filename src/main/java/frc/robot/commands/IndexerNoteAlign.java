@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -21,13 +22,17 @@ public class IndexerNoteAlign extends SequentialCommandGroup {
    * it runs the note backwards in the indexer until the sensor no longer detects a note and then runs the note forward //use with toggleOnTrue to stop when we detect the note again
    * this will hopefully make our note placement within the indexer more consistant.
    * */
-  public IndexerNoteAlign() {
+  public IndexerNoteAlign(IndexerSubsystem indexer, IntakeSubsystem intake) {
+    this.intake = intake;
+    this.indexer = indexer;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(()->indexer.set(-4), indexer),
-      new WaitUntil(()->!intake.isNoteIn()),
-      new InstantCommand(()->indexer.set(4), indexer)
+      new InstantCommand(()->indexer.magicRPS(-5), indexer),
+      new WaitUntil(()->!intake.isNoteSeen()),
+      new InstantCommand(()->indexer.magicRPS(5), indexer),
+      new WaitUntil(()->intake.isNoteSeen()),
+      new InstantCommand(()->intake.setNoteHeld(true))
     );
   }
 }

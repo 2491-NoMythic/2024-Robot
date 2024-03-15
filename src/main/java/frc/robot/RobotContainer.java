@@ -54,6 +54,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
@@ -284,7 +285,7 @@ public class RobotContainer {
       SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
     }
     if(indexerExists) {
-      new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV));
+      new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV, intake));
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
@@ -299,7 +300,7 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteIn).toggleOnTrue(new IndexerNoteAlign());
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot
@@ -308,8 +309,10 @@ public class RobotContainer {
         new InstantCommand(()->shooter.shootWithSupplier(()->SmartDashboard.getNumber("amp RPS", 0), true), shooter),
         new MoveMeters(driveTrain, 0.03, 0.3, 0, 0),
         new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
-        new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_AMP_SPEED), indexer),
-        new WaitCommand(0.2)
+        // new InstantCommand(()->indexer.forwardInches(IndexerConstants.AMP_SHOT_INCHES), indexer),
+        new InstantCommand(()->indexer.magicRPS(45), indexer),
+        new WaitCommand(2),
+        new InstantCommand(()->intake.setNoteHeld(false))
         );
         new Trigger(AmpAngleSup).whileTrue(scoreAmp);
         SmartDashboard.putData("amp shot", scoreAmp);
