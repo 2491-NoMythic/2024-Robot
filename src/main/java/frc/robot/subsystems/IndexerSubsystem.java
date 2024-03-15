@@ -59,14 +59,20 @@ public class IndexerSubsystem extends SubsystemBase {
     public void set(double speed) {
         indexerMotor.set(speed);
     }
-
+    /**
+     * uses the indexer motor's onboard Motion Magic control to move the indexer forward. To move backwards, use negative inches.
+     * @param inches the inches to move forward.
+     */
     public void forwardInches(double inches) {
         double rotationsRequested = inches/IndexerConstants.MOTOR_ROTATIONS_TO_INCHES;
         double position = indexerMotor.getPosition().getValueAsDouble()+rotationsRequested;
         MotionMagicVoltage distanceRequest = new MotionMagicVoltage(position);
         indexerMotor.setControl(distanceRequest);
     }
-
+    /**
+     * uses the indexer motor's onboard Motion Magic control to set the motor to a desired RPS
+     * @param RPS the desired speed, in rotations per second
+     */
     public void magicRPS(double RPS) {
         MotionMagicVelocityVoltage speedRequest = new MotionMagicVelocityVoltage(RPS);
         indexerMotor.setControl(speedRequest);
