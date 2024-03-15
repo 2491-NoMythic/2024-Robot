@@ -121,7 +121,7 @@ public class RobotContainer {
   BooleanSupplier GroundIntakeSup;
   BooleanSupplier FarStageAngleSup;
   BooleanSupplier OperatorPreRevSup;
-
+  BooleanSupplier intakeReverse;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -166,6 +166,7 @@ public class RobotContainer {
     GroundIntakeSup = operatorController::getTouchpad;
     FarStageAngleSup = driverController::getTouchpad;
     OperatorPreRevSup = operatorController::getL2Button;
+    intakeReverse = operatorController::getL1Button;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -228,7 +229,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, intakeReverse);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 

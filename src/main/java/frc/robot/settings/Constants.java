@@ -444,11 +444,13 @@ public final class Vision{
   public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-aprill";
   public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-aprilr";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
-  
-  public static final double APRILTAG_CLOSENESS = 0.5;
-  public static final double MAX_TAG_DISTANCE = 2.3;
 
-  public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
+  public static final String LIMELIGHT_SHUFFLEBOARD_TAB = "Vision";
+  
+  public static final double ALLOWABLE_POSE_DIFFERENCE = 0.5;
+  public static final double MAX_TAG_DISTANCE = 2.5;
+
+  public static final Translation2d FIELD_CORNER = new Translation2d(16.54, 8.02);
 
   public static final double K_DETECTOR_TX_P = 0.1;
   public static final double K_DETECTOR_TX_I = 0;

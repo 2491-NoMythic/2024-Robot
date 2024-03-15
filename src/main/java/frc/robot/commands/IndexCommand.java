@@ -42,11 +42,12 @@ public class IndexCommand extends Command {
   BooleanSupplier subwooferAngleSup;
   BooleanSupplier farStageAngleSup;
   BooleanSupplier operatorRevSup;
+  BooleanSupplier intakeReverse; 
   boolean auto;
   double runsEmpty = 0;
 
   /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
@@ -60,6 +61,7 @@ public class IndexCommand extends Command {
     this.farStageAngleSup = farStageAngleSup;
     this.groundIntakeSup = groundIntakeSup;
     this.operatorRevSup = operatorRevSup;
+    this.intakeReverse = intakeReverse;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_SHOOTER_ANGLE);
@@ -104,7 +106,7 @@ public class IndexCommand extends Command {
       runsEmpty = 0;
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()) {
-        if(angleShooterSubsytem.shortSpeakerDist()) {
+        if(angleShooterSubsytem.shortSpeakerDist()||subwooferAngleSup.getAsBoolean()) {
           shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
         } else {
           shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
