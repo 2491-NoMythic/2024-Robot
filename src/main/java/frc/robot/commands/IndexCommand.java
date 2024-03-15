@@ -81,7 +81,7 @@ public class IndexCommand extends Command {
     } else {
       auto = false;
     }
-    if (!intake.isNoteIn()) {
+    if (!intake.isNoteSeen()) {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
       if(runsEmpty>20) {
