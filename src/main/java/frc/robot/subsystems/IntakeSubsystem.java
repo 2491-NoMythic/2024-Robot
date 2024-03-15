@@ -10,7 +10,9 @@ import com.revrobotics.SparkAnalogSensor.Mode;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +27,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   MotorLogger motorLogger1;
   MotorLogger motorLogger2;
+  DoubleLogEntry logDistance;
+  BooleanLogEntry logNoteIn;
 
   double intakeRunSpeed;
   public IntakeSubsystem() {
@@ -50,6 +54,8 @@ public class IntakeSubsystem extends SubsystemBase {
     DataLog log = DataLogManager.getLog();
     motorLogger1 = new MotorLogger(log, "/intake/motor1");
     motorLogger2 = new MotorLogger(log, "/intake/motor2");
+    logDistance = new DoubleLogEntry(log, "/intake/noteDistance");
+    logNoteIn = new BooleanLogEntry(log, "/intake/noteIn");
   }
 
   public void intakeYes(double intakeRunSpeed) {
@@ -71,5 +77,7 @@ public class IntakeSubsystem extends SubsystemBase {
   
   motorLogger1.log(intake1);
   motorLogger2.log(intake2);
+  logDistance.append(m_DistanceSensor.getVoltage());
+  logNoteIn.append(isNoteIn());
   }
 }
