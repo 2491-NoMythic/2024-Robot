@@ -81,7 +81,7 @@ public class IndexCommand extends Command {
     } else {
       auto = false;
     }
-    if (!intake.isNoteSeen()) {
+    if (!intake.isNoteHeld()) {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
       if(runsEmpty>20) {
@@ -133,8 +133,8 @@ public class IndexCommand extends Command {
       }
       if (indexer) {
           m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-          if(!intake.isNoteSeen() {
-            intake.setNoteHeld(false)
+          if(!intake.isNoteSeen()) {
+            intake.setNoteHeld(false);
           }
        } else {
           m_Indexer.off();
