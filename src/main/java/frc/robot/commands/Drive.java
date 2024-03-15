@@ -17,7 +17,14 @@ public class Drive extends Command {
     private final DoubleSupplier translationYSupplier;
     private final DoubleSupplier rotationSupplier;
     private int invert;
-    
+    /**
+     * drives the robot at a specific forward velocity, sideways velocity, and rotational velocity.
+     * @param drivetrainSubsystem Swerve drive subsytem
+     * @param robotCentricMode while this is pressed, the robot will drive in RobotCentric mode. Otherwise, it will default to field centric
+     * @param translationXSupplier forward throttle (from -1 to 1). 1 will drive at full speed forward
+     * @param translationYSupplier sideways throttle (from -1 to 1). 1 will drive at full speed to the right
+     * @param rotationSupplier rotational throttle (from -1 to 1). 1 will drive at full speed clockwise
+     */
     public Drive(DrivetrainSubsystem drivetrainSubsystem,
     BooleanSupplier robotCentricMode,
     DoubleSupplier translationXSupplier,

@@ -46,7 +46,27 @@ public class IndexCommand extends Command {
   boolean auto;
   double runsEmpty = 0;
 
-  /** Creates a new IndexCommand. */
+  /**
+   * A command to manage the control of notes throughout the robot. This command controls the Intake, Shooter, and Indexer. If any of these preferences are turned off, the command should not be initialized. If 
+   * any of these subsytems are required in a different command, this command will not run during that command. This command controls: ground intake, rev'ing up the shooter if we are at a setpoint or auto-aiming, shooting if the shoot-if-ready button is pressed
+   * and all the subsytems think we have a good shot, and collecting notes from the source.
+   * <p>
+   * the buttons fed into this command that match the names of buttons fed into the AimRobotMoving command and the AimShooter command should match.
+   * @param m_IndexerSubsystem indexer subsystem
+   * @param shootIfReadySupplier button to press to shoot if all subsystems think we have a good shot
+   * @param revUpSupplier same as the auto-aim supplier that starts the aimRobotMoving command
+   * @param shooter shooter subsystem
+   * @param intake intake subsystem
+   * @param drivetrain drivetrian subsystem
+   * @param angleShooterSubsystem angle shooter subsytem
+   * @param humanPlaySupplier button to press when intaking from source
+   * @param stageAngleSup button to press to aim at the speaker from the podium
+   * @param SubwooferSup button to press to aim at the speaker from the subwoofer
+   * @param groundIntakeSup button to press to do ground intake
+   * @param farStageAngleSup button to press to aim at the speaker from the far stage leg
+   * @param operatorRevSup button to press to rev up the shooter slowly while driving
+   * @param intakeReverse button to press to run the indexer backwards manually
+   */
   public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2

@@ -13,7 +13,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class ManualShoot extends Command {
   private IndexerSubsystem indexer;
   DoubleSupplier ampSupplier;
-  /** Creates a new ManualShoot. */
+  /**
+   * this command forces out a note. All it does is set the indexer to shooting speed. 
+   * @param indexer indexer subsystem
+   * @param ampSupplier unused, becuase we shouldnt force out a note if we are shooting at the amp
+   */
   public ManualShoot(IndexerSubsystem indexer, DoubleSupplier ampSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(indexer);
