@@ -5,7 +5,10 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.SparkAnalogSensor;
@@ -31,7 +34,8 @@ public class IndexerSubsystem extends SubsystemBase {
                 .withSlot0(new Slot0Configs().
                     withKS(IndexerConstants.INDEXER_KS).
                     withKV(IndexerConstants.INDEXER_KV).
-                    withKA(IndexerConstants.INDEXER_KA))
+                    withKA(IndexerConstants.INDEXER_KA).
+                    withKP(IndexerConstants.INDEXER_KP))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(IndexerConstants.INDEXER_CRUISE_VELOCITY)
                         .withMotionMagicAcceleration(IndexerConstants.INDEXER_ACCELERATION)
@@ -53,9 +57,19 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     public void set(double speed) {
-        // indexerMotor.set(speed);
-        MotionMagicVelocityDutyCycle velocityRequest = new MotionMagicVelocityDutyCycle(speed);
-        indexerMotor.setControl(velocityRequest);
+        indexerMotor.set(speed);
+    }
+
+    public void forwardInches(double inches) {
+        double rotationsRequested = inches/IndexerConstants.MOTOR_ROTATIONS_TO_INCHES;
+        double position = indexerMotor.getPosition().getValueAsDouble()+rotationsRequested;
+        MotionMagicVoltage distanceRequest = new MotionMagicVoltage(position);
+        indexerMotor.setControl(distanceRequest);
+    }
+
+    public void magicRPS(double RPS) {
+        MotionMagicVelocityVoltage speedRequest = new MotionMagicVelocityVoltage(RPS);
+        indexerMotor.setControl(speedRequest);
     }
 
     @Override

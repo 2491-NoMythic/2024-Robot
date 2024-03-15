@@ -318,11 +318,16 @@ public static final class IndexerConstants{
   public static final double INDEXER_SHOOTING_SPEED = 1;
   public static final double INDEXER_AMP_SPEED = 0.5;
   public static final double INDEXER_KS = 0.35;
-  public static final double INDEXER_KV = 0.1205;
-  public static final double INDEXER_KA = 0;
-  public static final double INDEXER_CRUISE_VELOCITY = 0;
-  public static final double INDEXER_ACCELERATION = 0;
-  public static final double INDEXER_JERK = 0;
+  public static final double INDEXER_KV = 0.103;
+  public static final double INDEXER_KA = 0.01;
+  public static final double INDEXER_KP = 0.15;
+  public static final double INDEXER_CRUISE_VELOCITY = 40; //r/s
+  public static final double INDEXER_ACCELERATION = 400;//r/s^2
+  public static final double INDEXER_JERK = 1000;//r/s^3
+  /**
+   * multiply motor rotations by this value to get inches. Divide inches by this value to get motor rotations.
+   */
+  public static final double MOTOR_ROTATIONS_TO_INCHES = 0.71;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
