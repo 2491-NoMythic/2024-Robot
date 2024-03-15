@@ -173,7 +173,7 @@ public class RobotContainer {
     driveTrainInst();
     
 
-    if(intakeExists) {intakeInst();}
+    if(intakeExists) {intakeInst(); /* Must happen before indexInit */}
     if(shooterExists) {shooterInst();}
     if(angleShooterExists) {angleShooterInst();}
     if(climberExists) {climberInst();}
@@ -226,7 +226,7 @@ public class RobotContainer {
     climber = new Climber();
   }
   private void indexInit() {
-    indexer = new IndexerSubsystem();
+    indexer = new IndexerSubsystem(intakeExists ? intake::isNoteIn : () -> false);
   }
   private void indexCommandInst() {
     defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, intakeReverse);
