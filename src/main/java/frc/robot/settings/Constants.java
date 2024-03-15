@@ -315,7 +315,7 @@ public static final class IndexerConstants{
   public static final int CURRENT_LIMIT = 50;
   public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
-  public static final double INDEXER_SHOOTING_SPEED = 1;
+  public static final double INDEXER_SHOOTING_SPEED = 90;
   public static final double INDEXER_AMP_SPEED = 0.5;
   public static final double INDEXER_KS = 0.35;
   public static final double INDEXER_KV = 0.103;
@@ -328,6 +328,8 @@ public static final class IndexerConstants{
    * multiply motor rotations by this value to get inches. Divide inches by this value to get motor rotations.
    */
   public static final double MOTOR_ROTATIONS_TO_INCHES = 0.71;
+
+  public static final double AMP_SHOT_INCHES = 16;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
