@@ -26,6 +26,7 @@ import frc.robot.commands.GroundIntake;
 import frc.robot.commands.ConditionalIndexer;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.commands.IndexCommand;
+import frc.robot.commands.IndexerNoteAlign;
 import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
@@ -296,6 +297,9 @@ public class RobotContainer {
     }
     if(intakeExists) {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
+    }
+    if(intakeExists&&indexerExists) {
+      new Trigger(intake::isNoteIn).toggleOnTrue(new IndexerNoteAlign());
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot

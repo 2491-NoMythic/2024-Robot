@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.SparkAnalogSensor;
@@ -52,7 +53,9 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     public void set(double speed) {
-        indexerMotor.set(speed);
+        // indexerMotor.set(speed);
+        MotionMagicVelocityDutyCycle velocityRequest = new MotionMagicVelocityDutyCycle(speed);
+        indexerMotor.setControl(velocityRequest);
     }
 
     @Override
