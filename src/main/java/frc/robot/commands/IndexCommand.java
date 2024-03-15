@@ -84,7 +84,7 @@ public class IndexCommand extends Command {
     if (!intake.isNoteHeld()) {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
-      if(runsEmpty>20) {
+      if(runsEmpty>=20) {
         if(humanPlayerSupplier.getAsBoolean()) {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
           shooter.shootSameRPS(ShooterConstants.HUMAN_PLAYER_RPS);
