@@ -41,16 +41,32 @@ public class IntakeSubsystem extends SubsystemBase {
     intake1.burnFlash();
     intake2.burnFlash();
   }
-
+  /**
+   * sets the intakes speed
+   * <p> uses percentage of full power
+   * @param intakeRunSpeed percentage of full power, from -1 to 1
+   */
   public void intakeYes(double intakeRunSpeed) {
     intake1.set(intakeRunSpeed);
   }
+  /**
+   * sets the intakes speed
+   * <p> uses percentage of full power
+   * @param intakeRunSpeed NEGATIVE percentage of full power
+   */
   public void intakeNo(double intakeRunSpeed) {
     intake1.set(-intakeRunSpeed);
   }
+  /**
+   * sets the intake's power to 0
+   */
   public void intakeOff() {
     intake1.set(0);
   }
+  /**
+   * uses the distance sensor inside the indexer to tell if there is a note fully inside the indexer
+   * @return if the sensor sees something within it's range in front of it
+   */
   public boolean isNoteIn() {
     return m_DistanceSensor.getVoltage()<2;
   }

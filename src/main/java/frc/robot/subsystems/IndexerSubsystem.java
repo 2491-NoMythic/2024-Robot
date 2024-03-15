@@ -24,18 +24,32 @@ public class IndexerSubsystem extends SubsystemBase {
         configurator = m_IndexerMotor.getConfigurator();
         configurator.apply(currentLimitsConfigs);
     }
-
+    /**
+     * sets the speed of the indexer motor to INDEXER_INTAKE_SPEED (from constants)
+     * <p>
+     * uses percentage of full power
+     */
     public void on() {
         m_IndexerMotor.set(IndexerConstants.INDEXER_INTAKE_SPEED);
     }
-
+    /**
+    sets the indxer motor's percent-of-full-power to 0
+     */
     public void off() {
         m_IndexerMotor.set(0);
     }
-
+    /**
+     * sets the indexer motor to -INDEXER_INTAKE_SPEED (from constants)
+     * <p>
+     * uses percentage of full power
+     */
     public void reverse() {
         m_IndexerMotor.set(-IndexerConstants.INDEXER_INTAKE_SPEED);
     }
+    /**
+     * sets the percentage-of-full-power on the indexer
+     * @param speed the desired speed, from -1 to 1
+     */
     public void set(double speed) {
         m_IndexerMotor.set(speed);
     }

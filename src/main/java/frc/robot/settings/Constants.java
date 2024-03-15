@@ -266,12 +266,20 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_RPS = -15;
   public static final double SAFE_SHOOTER_ANGLE = 15;
   public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
-
+  /**
+   * the values used when adjusting the shooter's angle based on our speaker distance. Here's how we calculated them:
+   * <p>
+   * shoot at the speaker from various distance, and calculate how far under the target we miss (could be negative if we miss above the target). Then graph these points on desmos where the 
+   * x-axis is distance-from-speaker (as calculated by the code), and the y-axis is how far under the target we missed. Using desmos, find the equation that fits these points as best we can. This might
+   * be a quadratic, cubic, or maybe exponential equation. Then, use the a, b, and c values from desmos as these constants.
+   */
+  public static final class AdjustEquation {
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
   public static final double COMP_ADJUST_EQUATION_A = 0.0469456;
   public static final double COMP_ADJUST_EQUATION_B = -0.237047;
   public static final double COMP_ADJUST_EQUATION_C = 0.699325;
+  }
   // public static final double COMP_ADJUST_EQUATION_D = 1; unused becuase we aren't using a cubic equation
 
   public static final double CompBotZeroOffset = 334.7;

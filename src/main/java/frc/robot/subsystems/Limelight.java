@@ -132,7 +132,14 @@ public class Limelight {
         }
         return valid;
     }
-
+    /**
+     * checks if the robotPose returned by the limelight is within the field and stable. It does this by running isValid() with the limelight, and checking if 
+     * the limelight's pose either contains 2+ tags or is closer then MAX_TAG_DISTANCE (from constants) from the tag.
+     * @param limelightName the name of the requested limelight, as seen on NetworkTables
+     * @param estimate the poseEstimate from that limelight
+     * @param odometryPose the robot's pose from the DriveTrain, unused right now
+     * @return
+     */
     private boolean isTrustworthy(String limelightName, PoseEstimate estimate, Pose2d odometryPose) {
         Boolean trusted = (
                 isValid(limelightName, estimate) &&
