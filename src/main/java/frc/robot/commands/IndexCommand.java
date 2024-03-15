@@ -133,6 +133,9 @@ public class IndexCommand extends Command {
       }
       if (indexer) {
           m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+          if(!intake.isNoteSeen() {
+            intake.setNoteHeld(false)
+          }
        } else {
           m_Indexer.off();
        }
