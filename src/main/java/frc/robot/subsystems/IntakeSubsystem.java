@@ -18,7 +18,8 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
   CANSparkMax intake1;
   CANSparkMax intake2;
-  CANSparkMax intakeSide;
+  CANSparkMax intakeSideLeft;
+  CANSparkMax intakeSideRight;
   SparkAnalogSensor m_DistanceSensor;
   boolean isNoteHeld;
 
@@ -26,10 +27,12 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     intake1 = new CANSparkMax(IntakeConstants.INTAKE_1_MOTOR, MotorType.kBrushless);
     intake2 = new CANSparkMax(IntakeConstants.INTAKE_2_MOTOR, MotorType.kBrushless);
-    intakeSide = new CANSparkMax(IntakeConstants.INTAKE_SIDE_MOTOR, MotorType.kBrushless);
+    intakeSideLeft = new CANSparkMax(IntakeConstants.INTAKE_SIDE_MOTOR_LEFT, MotorType.kBrushless);
+    intakeSideRight = new CANSparkMax(IntakeConstants.INTAKE_SIDE_MOTOR_RIGHT, MotorType.kBrushless);
     intake1.restoreFactoryDefaults();
     intake2.restoreFactoryDefaults();
-    intakeSide.restoreFactoryDefaults();
+    intakeSideLeft.restoreFactoryDefaults();
+    intakeSideRight.restoreFactoryDefaults();
     if(Preferences.getBoolean("CompBot", true)) {
       m_DistanceSensor = intake1.getAnalog(Mode.kAbsolute);
     } else {
@@ -40,13 +43,16 @@ public class IntakeSubsystem extends SubsystemBase {
     intake1.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
-    intakeSide.setIdleMode(IdleMode.kCoast);
+    intakeSideLeft.setIdleMode(IdleMode.kCoast);
+    intakeSideRight.setIdleMode(IdleMode.kCoast);
     intake1.setSmartCurrentLimit(25, 40, 1000);
     intake2.setSmartCurrentLimit(25, 40, 1000);
-    intakeSide.setSmartCurrentLimit(25, 40, 1000);
+    intakeSideLeft.setSmartCurrentLimit(25, 40, 1000);
+    intakeSideRight.setSmartCurrentLimit(25, 40, 1000);
     intake1.burnFlash();
     intake2.burnFlash();
-    intakeSide.burnFlash();
+    intakeSideLeft.burnFlash();
+    intakeSideRight.burnFlash();
   }
   /**
    * sets the intakes speed
@@ -58,7 +64,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intakeSideWheels(double sideWheelRunSpeed){
-    intakeSide.set(sideWheelRunSpeed);
+    intakeSideLeft.set(sideWheelRunSpeed);
+    intakeSideLeft.set(sideWheelRunSpeed);
   }
   /**
    * sets the intakes speed

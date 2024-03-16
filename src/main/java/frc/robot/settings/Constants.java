@@ -346,6 +346,8 @@ public static final class IndexerConstants{
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
   public static final int INTAKE_2_MOTOR = 21;
+  public static final int INTAKE_SIDE_MOTOR_LEFT = 2491;
+    public static final int INTAKE_SIDE_MOTOR_RIGHT = 2491;
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
