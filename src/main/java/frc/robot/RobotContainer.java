@@ -374,7 +374,7 @@ public class RobotContainer {
     }
     if(indexerExists) {
       SmartDashboard.putData("indexer intake speed", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED)));
-      SmartDashboard.putData("indexer shooting speed", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED)));
+      SmartDashboard.putData("indexer shooting speed", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER)));
       SmartDashboard.putData("indexer off", new InstantCommand(()->indexer.off()));
     }
     if(climberExists) {

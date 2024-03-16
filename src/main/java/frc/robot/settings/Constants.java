@@ -313,9 +313,10 @@ public static final class ClimberConstants{
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
   public static final int CURRENT_LIMIT = 50;
-  public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
+  public static final double INDEXER_INTAKE_SPEED = 0.3;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
-  public static final double INDEXER_SHOOTING_SPEED = 90;
+  public static final double INDEXER_SHOOTING_RPS = 90;
+  public static final double INDEXER_SHOOTING_POWER = 1;
   public static final double INDEXER_AMP_SPEED = 0.5;
   public static final double INDEXER_KS = 0.35;
   public static final double INDEXER_KV = 0.103;
