@@ -5,6 +5,7 @@
 package frc.robot.commands;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 import java.util.function.DoubleSupplier;
 
@@ -13,12 +14,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class ManualShoot extends Command {
   private IndexerSubsystem indexer;
   DoubleSupplier ampSupplier;
+  IntakeSubsystem intake;
   /** Creates a new ManualShoot. */
-  public ManualShoot(IndexerSubsystem indexer, DoubleSupplier ampSupplier) {
+  public ManualShoot(IndexerSubsystem indexer, DoubleSupplier ampSupplier, IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(indexer);
+    addRequirements(indexer, intake);
     this.indexer = indexer;
     this.ampSupplier = ampSupplier;
+    this.intake = intake;
   }
 
   // Called when the command is initially scheduled.
@@ -28,17 +31,14 @@ public class ManualShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(ampSupplier.getAsDouble() == 90 || ampSupplier.getAsDouble() == 45|| ampSupplier.getAsDouble() == 135) {
-      indexer.set(IndexerConstants.INDEXER_AMP_SPEED);
-    } else {
-      indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-    }
+    indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     indexer.off();
+    intake.setNoteHeld(false);
   }
 
   // Returns true when the command should end.

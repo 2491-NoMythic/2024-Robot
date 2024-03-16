@@ -40,14 +40,15 @@ public class CollectNote extends Command {
   @Override
   public void initialize() {
     txController = new PIDController(
-        Vision.K_DETECTOR_TX_P,
+        // Vision.K_DETECTOR_TX_P,
+        0.05,
         Vision.K_DETECTOR_TX_I,
         Vision.K_DETECTOR_TX_D);
     tyController = new PIDController(
         Vision.K_DETECTOR_TY_P,
         Vision.K_DETECTOR_TY_I,
         Vision.K_DETECTOR_TY_D);
-    tyLimiter = new SlewRateLimiter( 1, -1, 0);
+    tyLimiter = new SlewRateLimiter(1, -1, 0);
     txController.setSetpoint(0);
     tyController.setSetpoint(0);
     txController.setTolerance(3.5, 0.25);
@@ -82,6 +83,8 @@ public class CollectNote extends Command {
     tx = detectorData.tx;
     ty = detectorData.ty;
     
+    SmartDashboard.putNumber("CollectNote/calculated radians per second", txController.calculate(tx));
+    SmartDashboard.putNumber("CollectNote/calculated forward meters per second", tyController.calculate(ty));
     // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
     drivetrain.drive(new ChassisSpeeds(
       tyLimiter.calculate(tyController.calculate(ty)),

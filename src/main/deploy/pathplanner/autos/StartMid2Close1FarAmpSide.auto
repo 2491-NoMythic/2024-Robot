@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3247322168944597,
-      "y": 5.556419458894899
+      "x": 1.3171869760109631,
+      "y": 5.5410316277334815
     },
     "rotation": 180.0
   },
@@ -18,15 +18,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "shooterOn"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Blue3PickupFromStart"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseMidPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              }
+            ]
           }
         },
         {
@@ -42,10 +49,16 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 2.0
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoShootNote"
           }
         },
         {
@@ -55,7 +68,63 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueMiddleShoot3"
+                  "pathName": "CloseAmpPickupFromMiddle"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoShootNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue1Pickup"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BlueAmpShoot1"
                 }
               },
               {
@@ -65,80 +134,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShootNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Blue4PickupSourceSide"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "groundIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BlueSourceShoot4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShootNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Blue5PickupSourceSide"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "groundIntake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BlueSourceShoot5"
           }
         },
         {
