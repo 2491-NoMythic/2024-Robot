@@ -88,6 +88,7 @@ public class RobotContainer {
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
   private final boolean lightsExist = Preferences.getBoolean("Lights", true);
   private final boolean indexerExists = Preferences.getBoolean("Indexer", true);
+  private final boolean sidewheels = Preferences.getBoolean("sidewheels", true);
   //private final boolean autosExist = Preferences.getBoolean("Autos", true);
   private final boolean useDetectorLimelight = Preferences.getBoolean("Detector Limelight", true);
 
@@ -469,7 +470,9 @@ public class RobotContainer {
     }
     if(intakeExists) {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
-      NamedCommands.registerCommand("intakeSideWheels", new InstantCommand(()-> intake.intakeSideWheels(1)));
+      if(sidewheels){
+        NamedCommands.registerCommand("intakeSideWheels", new InstantCommand(()-> intake.intakeSideWheels(1)));
+      }
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));

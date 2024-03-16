@@ -64,8 +64,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intakeSideWheels(double sideWheelRunSpeed){
+    //TODO set one of these negative
     intakeSideLeft.set(sideWheelRunSpeed);
-    intakeSideLeft.set(sideWheelRunSpeed);
+    intakeSideRight.set(sideWheelRunSpeed);
   }
   /**
    * sets the intakes speed
