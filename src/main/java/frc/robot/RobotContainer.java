@@ -303,9 +303,6 @@ public class RobotContainer {
       new Trigger(ClimberUpSup).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
       // new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
-    if(shooterExists) {
-      new Trigger(AmpAngleSup).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
-    }
     if(intakeExists) {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
