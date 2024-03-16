@@ -33,12 +33,12 @@ public class shootNote extends Command {
     timer.reset();
     timer.start();
     indexer.off();
-    angleShooter.setDesiredShooterAngle(angleShooter.calculateSpeakerAngle());
   }
-
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    angleShooter.setDesiredShooterAngle(angleShooter.calculateSpeakerAngle());
     if(timer.get()>=0.8) {
       indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
     }

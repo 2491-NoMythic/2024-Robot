@@ -239,7 +239,7 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
   public static final double LONG_SHOOTING_RPS = 120;
-  public static final double SHORT_SHOOTING_RPS = 80;
+  public static final double SHORT_SHOOTING_RPS = 100;
   public static final double AMP_RPS = 17.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
