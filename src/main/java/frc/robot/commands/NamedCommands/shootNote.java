@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 
-public class shootNote extends Command {
+public class ShootNote extends Command {
   IndexerSubsystem indexer;
   Timer timer;
   double shootTime;
   /** Creates a new shootNote. */
-  public shootNote(IndexerSubsystem indexer, double shootTime) {
+  public ShootNote(IndexerSubsystem indexer, double shootTime) {
     this.indexer = indexer;
     this.shootTime = shootTime;
     timer = new Timer();

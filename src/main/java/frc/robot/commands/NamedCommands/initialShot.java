@@ -12,7 +12,7 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class initialShot extends Command {
+public class InitialShot extends Command {
   ShooterSubsystem shooter;
   IndexerSubsystem indexer;
   Timer timer;
@@ -20,7 +20,7 @@ public class initialShot extends Command {
   double shootTime;
   AngleShooterSubsystem angleShooter;
   /** Creates a new shootThing. */
-  public initialShot(ShooterSubsystem shooter, IndexerSubsystem indexer, double revTime, double shootTime, AngleShooterSubsystem angleShooter) {
+  public InitialShot(ShooterSubsystem shooter, IndexerSubsystem indexer, double revTime, double shootTime, AngleShooterSubsystem angleShooter) {
     this.indexer = indexer;
     this.shooter = shooter;
     this.revTime = revTime;

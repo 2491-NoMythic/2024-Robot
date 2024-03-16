@@ -35,9 +35,9 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.WaitUntil;
-import frc.robot.commands.shootAmp;
-import frc.robot.commands.NamedCommands.initialShot;
-import frc.robot.commands.NamedCommands.shootNote;
+import frc.robot.commands.ShootAmp;
+import frc.robot.commands.NamedCommands.InitialShot;
+import frc.robot.commands.NamedCommands.ShootNote;
 import frc.robot.commands.goToPose.GoToAmp;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Lights;
@@ -423,9 +423,9 @@ public class RobotContainer {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
     }
     if(indexerExists&&shooterExists) {
-      NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));
-      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
-      NamedCommands.registerCommand("shootNote", new shootNote(indexer, 1));
+      NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));
+      NamedCommands.registerCommand("shootNote", new ShootNote(indexer, 1));
+      NamedCommands.registerCommand("shootNote", new ShootNote(indexer, 1));
       NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
     }

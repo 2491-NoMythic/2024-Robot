@@ -11,12 +11,12 @@ import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class shootAmp extends Command {
+public class ShootAmp extends Command {
   IndexerSubsystem indexer;
   ShooterSubsystem shooter;
   Timer timer;
   /** Creates a new shootAmp. */
-  public shootAmp(IndexerSubsystem indexer, ShooterSubsystem shooter) {
+  public ShootAmp(IndexerSubsystem indexer, ShooterSubsystem shooter) {
     addRequirements(shooter, indexer);
     this.indexer = indexer;
     this.shooter = shooter;
