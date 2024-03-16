@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3171869760109631,
-      "y": 5.560508013068222
+      "x": 1.3142878194153342,
+      "y": 5.556419458894899
     },
     "rotation": 180.0
   },
@@ -18,45 +18,78 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.25
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "conditionlIndexer"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Blue1Pickup"
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "BlueAmpShoot1"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BlueAmpShoot1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shootNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "conditionlIndexer"
+            "name": "autoShootNote"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Blue2Pickup"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              }
+            ]
           }
         },
         {
@@ -68,13 +101,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shootNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "conditionlIndexer"
+            "name": "autoShootNote"
           }
         },
         {
@@ -84,15 +111,47 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "BlueMiddleShoot3"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BlueMiddleShoot3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shootNote"
+            "name": "autoShootNote"
           }
         }
       ]

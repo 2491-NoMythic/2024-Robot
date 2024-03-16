@@ -239,8 +239,8 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
   public static final double LONG_SHOOTING_RPS = 120;
-  public static final double SHORT_SHOOTING_RPS = 80;
-  public static final double AMP_RPS = 9.5;
+  public static final double SHORT_SHOOTING_RPS = 100;
+  public static final double AMP_RPS = 17.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
@@ -321,10 +321,27 @@ public static final class ClimberConstants{
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
   public static final int CURRENT_LIMIT = 50;
-  public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
+  public static final double INDEXER_INTAKE_SPEED = 0.3;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
-  public static final double INDEXER_SHOOTING_SPEED = 1;
-  public static final double INDEXER_AMP_SPEED = 0.8;
+  public static final double INDEXER_SHOOTING_RPS = 90;
+  public static final double INDEXER_SHOOTING_POWER = 1;
+  public static final double INDEXER_AMP_SPEED = 0.5;
+  public static final double INDEXER_KS = 0.35;
+  public static final double INDEXER_KV = 0.103;
+  public static final double INDEXER_KA = 0.01;
+  public static final double INDEXER_KP = 0.15;
+  /** the velocity to target when moving forward a set distance. in RPS */
+  public static final double INDEXER_CRUISE_VELOCITY = 40;
+  /** the acceleration to target target when moving to a set speed. In RPS^2*/
+  public static final double INDEXER_ACCELERATION = 400; // at 400 acceleration, the motor takes 0.1 seconds to reach 40 RPS
+  /** the jerk to target when moving to a set acceleration. In RPS^3.  */
+  public static final double INDEXER_JERK = 1000; // at 4000 jerk, the motor takes 0.4 seconds to reach 400 RPS^2
+  /**
+   * multiply motor rotations by this value to get inches. Divide inches by this value to get motor rotations.
+   */
+  public static final double MOTOR_ROTATIONS_TO_INCHES = 0.71;
+
+  public static final double AMP_SHOT_INCHES = 16;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;

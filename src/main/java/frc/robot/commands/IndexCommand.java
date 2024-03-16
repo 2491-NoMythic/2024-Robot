@@ -103,10 +103,10 @@ public class IndexCommand extends Command {
     } else {
       auto = false;
     }
-    if (!intake.isNoteIn()) {
+    if (!intake.isNoteSeen()) {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
-      if(runsEmpty>20) {
+      if(runsEmpty>=20) {
         if(humanPlayerSupplier.getAsBoolean()) {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
           shooter.shootSameRPS(ShooterConstants.HUMAN_PLAYER_RPS);
@@ -153,13 +153,14 @@ public class IndexCommand extends Command {
       if((stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||farStageAngleSup.getAsBoolean())&&revUpSupplier.getAsBoolean()&& shooter.validShot()) {
         indexer = true;
       }
-      if (intakeReverse.getAsBoolean()) {
-        m_Indexer.set(-0.1);
-      } else if (indexer) {
-        m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
-      } else {
-        m_Indexer.off();
-      }
+      if (indexer) {
+          m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
+          if(!intake.isNoteSeen()) {
+            intake.setNoteHeld(false);
+          }
+       } else {
+          m_Indexer.off();
+       }
     }
   }
 

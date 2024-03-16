@@ -19,6 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax intake1;
   CANSparkMax intake2;
   SparkAnalogSensor m_DistanceSensor;
+  boolean isNoteHeld;
 
   double intakeRunSpeed;
   public IntakeSubsystem() {
@@ -67,12 +68,19 @@ public class IntakeSubsystem extends SubsystemBase {
    * uses the distance sensor inside the indexer to tell if there is a note fully inside the indexer
    * @return if the sensor sees something within it's range in front of it
    */
-  public boolean isNoteIn() {
+  public boolean isNoteSeen() {
     return m_DistanceSensor.getVoltage()<2;
+  }
+  public boolean isNoteHeld() {
+    return isNoteHeld;
+  }
+  public void setNoteHeld(boolean held) {
+    isNoteHeld = held;
   }
   @Override
   public void periodic() {
   SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
-  SmartDashboard.putBoolean("is note in", isNoteIn());
+  SmartDashboard.putBoolean("is note in", isNoteSeen());
+  SmartDashboard.putBoolean("is note held", isNoteHeld());
   }
 }
