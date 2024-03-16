@@ -40,7 +40,7 @@ public class shootNote extends Command {
   @Override
   public void execute() {
     if(timer.get()>=0.8) {
-      indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+      indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
     }
     SmartDashboard.putNumber("auto timer", timer.get());
   }

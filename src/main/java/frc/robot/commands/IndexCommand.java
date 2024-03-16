@@ -134,7 +134,7 @@ public class IndexCommand extends Command {
         indexer = true;
       }
       if (indexer) {
-          m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+          m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
           if(!intake.isNoteSeen()) {
             intake.setNoteHeld(false);
           }

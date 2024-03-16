@@ -43,11 +43,12 @@ public class AutoGroundIntake extends Command {
     intake.intakeOff();
     indexer.off();
     angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
+    intake.setNoteHeld(true);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.isNoteIn();
+    return intake.isNoteSeen();
   }
 }
