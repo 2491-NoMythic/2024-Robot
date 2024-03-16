@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.665673221827673,
-        "y": 7.19589929449488
+        "x": 7.748036666556794,
+        "y": 6.2457496925171965
       },
       "isLocked": false,
       "linkedName": "SourceSideShoot"
@@ -38,8 +38,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -51,5 +51,5 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": null,
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

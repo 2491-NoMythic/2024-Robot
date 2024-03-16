@@ -1,0 +1,85 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.9905114975624361,
+      "y": 4.3344249538371855
+    },
+    "rotation": -179.13194855025444
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "initialShot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CloseMidPickupAuto"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoPickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CloseAmpPickupFromMidAuto"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoPickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CloseSourcePickupAuto"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoPickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoShootNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
