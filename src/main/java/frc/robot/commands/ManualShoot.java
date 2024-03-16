@@ -31,7 +31,7 @@ public class ManualShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    indexer.magicRPS(IndexerConstants.INDEXER_SHOOTING_SPEED);
+    indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
   }
 
   // Called once the command ends or is interrupted.

@@ -309,7 +309,8 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()&&GroundIntakeSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake, shooter, 1).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()&&HumanPlaySup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake, shooter, 0.1).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot
