@@ -139,7 +139,6 @@ public class RobotContainer {
     Preferences.initBoolean("Brushes", false);
     Preferences.initBoolean("CompBot", true);
     Preferences.initBoolean("Intake", true);
-    Preferences.initBoolean("Climber", true);
     Preferences.initBoolean("Shooter", true);
     Preferences.initBoolean("AngleShooter", true);
     Preferences.initBoolean("Lights", true);
@@ -470,6 +469,7 @@ public class RobotContainer {
     }
     if(intakeExists) {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
+      NamedCommands.registerCommand("intakeSideWheels", new InstantCommand(()-> intake.intakeSideWheels(1)));
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new initialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));

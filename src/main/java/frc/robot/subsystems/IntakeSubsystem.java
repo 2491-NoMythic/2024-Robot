@@ -18,6 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
   CANSparkMax intake1;
   CANSparkMax intake2;
+  CANSparkMax intakeSide;
   SparkAnalogSensor m_DistanceSensor;
   boolean isNoteHeld;
 
@@ -25,8 +26,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     intake1 = new CANSparkMax(IntakeConstants.INTAKE_1_MOTOR, MotorType.kBrushless);
     intake2 = new CANSparkMax(IntakeConstants.INTAKE_2_MOTOR, MotorType.kBrushless);
+    intakeSide = new CANSparkMax(IntakeConstants.INTAKE_SIDE_MOTOR, MotorType.kBrushless);
     intake1.restoreFactoryDefaults();
     intake2.restoreFactoryDefaults();
+    intakeSide.restoreFactoryDefaults();
     if(Preferences.getBoolean("CompBot", true)) {
       m_DistanceSensor = intake1.getAnalog(Mode.kAbsolute);
     } else {
@@ -37,10 +40,13 @@ public class IntakeSubsystem extends SubsystemBase {
     intake1.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
+    intakeSide.setIdleMode(IdleMode.kCoast);
     intake1.setSmartCurrentLimit(25, 40, 1000);
     intake2.setSmartCurrentLimit(25, 40, 1000);
+    intakeSide.setSmartCurrentLimit(25, 40, 1000);
     intake1.burnFlash();
     intake2.burnFlash();
+    intakeSide.burnFlash();
   }
   /**
    * sets the intakes speed
@@ -49,6 +55,10 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public void intakeYes(double intakeRunSpeed) {
     intake1.set(intakeRunSpeed);
+  }
+
+  public void intakeSideWheels(double sideWheelRunSpeed){
+    intakeSide.set(sideWheelRunSpeed);
   }
   /**
    * sets the intakes speed
