@@ -267,7 +267,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
+    SmartDashboard.putData("drivetrain", driveTrain);
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(ZeroGyroSup).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     // new Trigger(driverController::getCircleButton).whileTrue(new GoToAmp(driveTrain)); unused becuase we dont pickup from amp with a path anymore
@@ -283,9 +283,9 @@ public class RobotContainer {
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
-      new Trigger(operatorController::getR1Button).onTrue(new SequentialCommandGroup(
+      new Trigger(operatorController::getR1Button).whileTrue(new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
-        new DriveTimeCommand(-2, 0, 0, 0.5, driveTrain)
+        new DriveTimeCommand(-1, 0, 0, 1, driveTrain)
       ));
     }
     new Trigger(ForceVisionSup).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
@@ -310,15 +310,14 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()&&GroundIntakeSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake, shooter, 1).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()&&HumanPlaySup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake, shooter, 0.1).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       //this sequential command group SHOULD (not tested) 1) start rev'ing up the shooter 2) drive backwards 3) for shoter to rev, then shoot the note 4) wait for the shot to leave the robot
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
         // new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
         new InstantCommand(()->shooter.shootWithSupplier(()->10.2, true), shooter),
-        new MoveMeters(driveTrain, 0.04, 0.06, 0, 0),
+        new MoveMeters(driveTrain, 0.075, 0.06, 0, 0),
         new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
         // new InstantCommand(()->indexer.forwardInches(IndexerConstants.AMP_SHOT_INCHES), indexer),
         new InstantCommand(()->indexer.magicRPS(90), indexer),//45 worked but a bit too high
@@ -437,14 +436,21 @@ public class RobotContainer {
 
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
+    NamedCommands.registerCommand("driveBackwardsToIntake", new ParallelRaceGroup(
+      new SequentialCommandGroup(
+        new MoveMeters(driveTrain, 0.7, -2, 0, 0),
+        new MoveMeters(driveTrain, 0.7, 2, 0, 0)),
+      new AutoGroundIntake(indexer, intake, angleShooterSubsystem)
+    ));
     if(intakeExists&&indexerExists&&angleShooterExists) {
       NamedCommands.registerCommand("autoPickup",new ParallelCommandGroup(
         new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
-          new MoveMeters(driveTrain, 0.5, 0.75, 0, 0)
+          new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
+          new DriveTimeCommand(1, 0, 0, 0.5, driveTrain)
         )
-      ).withTimeout(2.5)
+      ).withTimeout(3.5)
       );
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
@@ -452,7 +458,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup).withTimeout(1));
       NamedCommands.registerCommand("autoPickup", new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
-        new MoveMeters(driveTrain, 0.5, 0.75, 0, 0)
+        new DriveTimeCommand(-1, 0, 0, 1, driveTrain)
       ).withTimeout(3));
     }
     if(shooterExists) {

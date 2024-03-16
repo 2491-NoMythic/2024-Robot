@@ -17,25 +17,19 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class IndexerNoteAlign extends SequentialCommandGroup {
   IndexerSubsystem indexer;
   IntakeSubsystem intake;
-  ShooterSubsystem shooter;
-  double waitTime;
   
   /** Creates a new indexerNoteAlign. 
    * This is a sequential command group that will run automatically in robot container when we detect that we have a note.
    * it runs the note backwards in the indexer until the sensor no longer detects a note and then runs the note forward //use with toggleOnTrue to stop when we detect the note again
    * this will hopefully make our note placement within the indexer more consistant.
    * */
-  public IndexerNoteAlign(IndexerSubsystem indexer, IntakeSubsystem intake, ShooterSubsystem shooter, double waitTime) {
+  public IndexerNoteAlign(IndexerSubsystem indexer, IntakeSubsystem intake) {
     this.intake = intake;
     this.indexer = indexer;
-    this.shooter = shooter;
-    this.waitTime = waitTime;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(()->indexer.magicRPS(-3), indexer),
-      new InstantCommand(()->shooter.shootRPS(-5)),//TODO try removing this and see if ground intake works
-      new WaitCommand(()->waitTime),
       new WaitUntil(()->!intake.isNoteSeen()),
       new InstantCommand(()->indexer.magicRPS(5), indexer),
       new WaitUntil(()->intake.isNoteSeen()),
