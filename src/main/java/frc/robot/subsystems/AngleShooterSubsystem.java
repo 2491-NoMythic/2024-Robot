@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.settings.Constants.ShooterConstants.*;
+import static frc.robot.settings.Constants.ShooterConstants.AdjustEquation.*;
 import static frc.robot.settings.Constants.LOOPS_VALID_FOR_SHOT;
 
 public class AngleShooterSubsystem extends SubsystemBase {
@@ -61,7 +62,13 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		pitchPID.setOutputRange(pitchMinOutput, pitchMaxOutput);
 		pitchMotor.burnFlash();
 	}
-	
+	/**
+	 * sets the setpoint for the pitch motor's onboard PID loop to be this angle. It should make the whole indexer and shooter snap to that angle. 
+	 * <p>
+	 * 0 degrees is parallel with the ground
+	 * @param degrees
+	 * the desired degrees
+	 */
 	public void setDesiredShooterAngle(double degrees) {
 		double MaxAngle = COMP_MAXIMUM_SHOOTER_ANGLE;
 		if(!Preferences.getBoolean("CompBot", true)) {
@@ -75,25 +82,54 @@ public class AngleShooterSubsystem extends SubsystemBase {
 			CANSparkMax.ControlType.kPosition
 		);
 	}
+	/**
+	 * sets the pitch motor to a percent of it's full power. 
+	 * @param pitchSpeed
+	 * Max: 1 Min: -1
+	 */
 	public void pitchShooter(double pitchSpeed) {
 		pitchMotor.set(pitchSpeed);
 	}
-	
+	/**
+	 * stops the indexer immediately
+	 */
 	public void stop() {
 		pitchPID.setReference(0, ControlType.kCurrent);
 	}
+	/**
+	 * @return
+	 * the current degrees of the shooter and indexer
+	 * <p>
+	 * 0 degrees is parallel with the ground
+	 */
 	public double getShooterAngle() {
 		return absoluteEncoder.getPosition();// * ShooterConstants.DEGREES_PER_ROTATION;
 	}
-	
+	/**
+	 * sets the dtvalues variable inside the AngleShooterSubsytem
+	 * @param pose
+	 * the current Pose2d of the robot's location, from the odometry
+	 */
 	public static void setDTPose(Pose2d pose) {
 		dtvalues = pose;
 	}
-	
+	/**
+	 * sets the DTChassisSpeeds variable inside the AngleShooterSubsytem
+	 * @param speeds
+	 * the current ChassisSpeeds of the drivetrain, gotten using drivetrain.getChassisSpeeds()
+	 */
 	public static void setDTChassisSpeeds(ChassisSpeeds speeds) {
 		DTChassisSpeeds = speeds;
 	}
-	
+	/**
+	 * a math method that will use trigonometry and other math to calculate the current anlge that the shooter should be at to point at the speaker
+	 * <p> 
+	 * this method uses the variables inside the AngleShooterSubsytem: DTChassisSpeeds and dtvalues, so make sure you set those values before running this method
+	 * <p>
+	 * you can set those values using {@code setDTPose(Pose2d)} and {@code SetDTChassisSpeeds(ChassisSpeeds)}
+	 * @return
+	 * the desired angle, in degrees, for the shooter
+	 */
 	public double calculateSpeakerAngle() {
 		double deltaX;
 		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
@@ -158,7 +194,12 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		
 		return desiredShooterAngle;
 	}
-
+	/**
+	 * using the constants made for this, it adjusts our shooter angle based on how far away we are from the speaker
+	 * @param initialAngle the angle that the {@code calculateSpeakerAngle()} method calculates before using this
+	 * @param distance the robot's distance from the speaker
+	 * @return the adjusted angle for the shooter
+	 */
 	private double adjustAngleForDistance(double initialAngle, double distance) {
 		double AdjustEquationA = PRAC_ADJUST_EQUATION_A;
 		double AdjustEquationB = PRAC_ADJUST_EQUATION_B;
@@ -180,6 +221,10 @@ public class AngleShooterSubsystem extends SubsystemBase {
 			}
 		}
 	}
+	/**
+	 * determines if we are close enough to the speaker to use our slower shooting speed
+	 * @return if we are in fact close enough
+	 */
 	public boolean shortSpeakerDist() {
 		return speakerDistGlobal<=Field.SHORT_RANGE_SHOOTING_DIST;
 	}
@@ -187,7 +232,10 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	private double calculateSpeakerAngleDifference() {
 		return Math.abs(calculateSpeakerAngle() - this.getShooterAngle());
 	}
-
+	/**
+	 * checks if the shooter has been at the correct angle for more than 20 (from constants) command scheduler loops
+	 * @return has it been correct for long enough
+	 */
 	public boolean validShot() {
 		return runsValid >= LOOPS_VALID_FOR_SHOT;
 	}

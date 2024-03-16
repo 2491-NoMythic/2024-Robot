@@ -43,19 +43,32 @@ public class IndexerSubsystem extends SubsystemBase {
         indexerMotor.getConfigurator().apply(talonFXConfig);
 
     }
-
+    /**
+     * sets the speed of the indexer motor to INDEXER_INTAKE_SPEED (from constants)
+     * <p>
+     * uses percentage of full power
+     */
     public void on() {
         indexerMotor.set(IndexerConstants.INDEXER_INTAKE_SPEED);
     }
-
+    /**
+    sets the indxer motor's percent-of-full-power to 0
+     */
     public void off() {
         indexerMotor.set(0);
     }
-
+    /**
+     * sets the indexer motor to -INDEXER_INTAKE_SPEED (from constants)
+     * <p>
+     * uses percentage of full power
+     */
     public void reverse() {
         indexerMotor.set(-IndexerConstants.INDEXER_INTAKE_SPEED);
     }
-
+    /**
+     * sets the percentage-of-full-power on the indexer
+     * @param speed the desired speed, from -1 to 1
+     */
     public void set(double speed) {
         indexerMotor.set(speed);
     }

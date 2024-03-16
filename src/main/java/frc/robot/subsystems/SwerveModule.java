@@ -82,7 +82,7 @@ public class SwerveModule {
         getSpeedMetersPerSecond(), getRotation());
   }
   /**
-   * Returns the current position of the module.
+   * Returns the current position of the module. Includes the modules rotation and the modules distance driven.
    * @return The current position of the module.
    */
   public SwerveModulePosition getPosition() {
