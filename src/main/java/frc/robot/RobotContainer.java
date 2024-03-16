@@ -54,6 +54,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -436,8 +437,24 @@ public class RobotContainer {
 
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
-    NamedCommands.registerCommand("autoPickup", new CollectNote(driveTrain, limelight));
-
+    if(intakeExists&&indexerExists&&angleShooterExists) {
+      NamedCommands.registerCommand("autoPickup",new ParallelCommandGroup(
+        new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
+        new SequentialCommandGroup(
+          new CollectNote(driveTrain, limelight),
+          new MoveMeters(driveTrain, 0.5, 0.75, 0, 0)
+        )
+      ).withTimeout(2.5)
+      );
+    }
+    if(intakeExists&&!indexerExists&&!angleShooterExists) {
+      NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED)));
+      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup).withTimeout(1));
+      NamedCommands.registerCommand("autoPickup", new SequentialCommandGroup(
+        new CollectNote(driveTrain, limelight),
+        new MoveMeters(driveTrain, 0.5, 0.75, 0, 0)
+      ).withTimeout(3));
+    }
     if(shooterExists) {
       NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(LONG_SHOOTING_RPS), shooter));
       SmartDashboard.putData("shooterOn", new InstantCommand(()->shooter.shootRPS(LONG_SHOOTING_RPS), shooter));
