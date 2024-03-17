@@ -239,7 +239,7 @@ public class RobotContainer {
     climber = new Climber();
   }
   private void indexInit() {
-    indexer = new IndexerSubsystem(intakeExists ? intake::isNoteIn : () -> false);
+    indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
   }
   private void indexCommandInst() {
     defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, intakeReverse);
