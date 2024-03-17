@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3171869760109631,
-      "y": 5.531293435066112
+      "x": 1.3247322168944597,
+      "y": 5.556419458894899
     },
     "rotation": 180.0
   },
@@ -18,45 +18,84 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.25
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "conditionlIndexer"
+            "name": "shooterOn"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Blue3PickupUnderStageSource"
+            "pathName": "Blue3PickupFromStart"
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "BlueMiddleShoot3"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BlueMiddleShoot3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shootNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "conditionlIndexer"
+            "name": "autoShootNote"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Blue4PickupSourceSide"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              }
+            ]
           }
         },
         {
@@ -68,19 +107,32 @@
         {
           "type": "named",
           "data": {
-            "name": "shootNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "conditionlIndexer"
+            "name": "autoShootNote"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Blue5PickupSourceSide"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "groundIntake"
+                }
+              }
+            ]
           }
         },
         {
@@ -92,13 +144,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shootNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "conditionlIndexer"
+            "name": "autoShootNote"
           }
         }
       ]

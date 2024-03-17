@@ -34,7 +34,17 @@ public class AimRobotMoving extends Command {
     double rotationSpeed;
     double allianceOffset;
     BooleanSupplier SubwooferAngleSup;
-    
+  /**
+   * a command to automatically aim the robot at the speaker if odometry is correct. This command also controls aiming from setpoints incase the odometry isn't working.
+   * @param drivetrain the swerve drive subsystem
+   * @param rotationSupplier rotational throttle, from -1 to 1
+   * @param translationXSupplier the forward throttle, from -1 to 1
+   * @param translationYSupplier the sideways (to the right) throttle, from -1 to 1
+   * @param run the button used to trigger this command
+   * @param PodiumAngleSup the button to turn the robot to poidum setpoint
+   * @param FarStageAngleSup the button to turn the robot to the far stage leg setpoint
+   * @param SubwooferAngleSup the button to use the subwoofer setpoint (doesn't turn the robot, but stops the robot from auto-aiming when you rev up)
+   */
   public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
