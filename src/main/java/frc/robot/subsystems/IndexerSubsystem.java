@@ -58,7 +58,7 @@ public class IndexerSubsystem extends SubsystemBase {
                         .withMotionMagicCruiseVelocity(IndexerConstants.INDEXER_CRUISE_VELOCITY)
                         .withMotionMagicAcceleration(IndexerConstants.INDEXER_ACCELERATION)
                         .withMotionMagicJerk(IndexerConstants.INDEXER_JERK));
-        indexerMotor.getConfigurator().apply(talonFXConfig);
+        m_IndexerMotor.getConfigurator().apply(talonFXConfig);
 
     }
     /**
@@ -67,13 +67,13 @@ public class IndexerSubsystem extends SubsystemBase {
      * uses percentage of full power
      */
     public void on() {
-        indexerMotor.set(IndexerConstants.INDEXER_INTAKE_SPEED);
+        m_IndexerMotor.set(IndexerConstants.INDEXER_INTAKE_SPEED);
     }
     /**
     sets the indxer motor's percent-of-full-power to 0
      */
     public void off() {
-        indexerMotor.set(0);
+        m_IndexerMotor.set(0);
     }
     /**
      * sets the indexer motor to -INDEXER_INTAKE_SPEED (from constants)
@@ -81,14 +81,14 @@ public class IndexerSubsystem extends SubsystemBase {
      * uses percentage of full power
      */
     public void reverse() {
-        indexerMotor.set(-IndexerConstants.INDEXER_INTAKE_SPEED);
+        m_IndexerMotor.set(-IndexerConstants.INDEXER_INTAKE_SPEED);
     }
     /**
      * sets the percentage-of-full-power on the indexer
      * @param speed the desired speed, from -1 to 1
      */
     public void set(double speed) {
-        indexerMotor.set(speed);
+        m_IndexerMotor.set(speed);
     }
     /**
      * uses the indexer motor's onboard Motion Magic control to move the indexer forward. To move backwards, use negative inches.
@@ -96,9 +96,9 @@ public class IndexerSubsystem extends SubsystemBase {
      */
     public void forwardInches(double inches) {
         double rotationsRequested = inches/IndexerConstants.MOTOR_ROTATIONS_TO_INCHES;
-        double position = indexerMotor.getPosition().getValueAsDouble()+rotationsRequested;
+        double position = m_IndexerMotor.getPosition().getValueAsDouble()+rotationsRequested;
         MotionMagicVoltage distanceRequest = new MotionMagicVoltage(position);
-        indexerMotor.setControl(distanceRequest);
+        m_IndexerMotor.setControl(distanceRequest);
     }
 
     public void trackNote() {
@@ -118,7 +118,7 @@ public class IndexerSubsystem extends SubsystemBase {
      */
     public void magicRPS(double RPS) {
         MotionMagicVelocityVoltage speedRequest = new MotionMagicVelocityVoltage(RPS);
-        indexerMotor.setControl(speedRequest);
+        m_IndexerMotor.setControl(speedRequest);
     }
 
     @Override
