@@ -66,6 +66,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -148,7 +149,10 @@ public class RobotContainer {
     Preferences.initBoolean("Use Limelight", true);
     Preferences.initBoolean("Use 2 Limelights", true);
     Preferences.initDouble("wait # of seconds", 0);
-    
+
+    DataLogManager.start(); //Start logging
+    DriverStation.startDataLog(DataLogManager.getLog()); //Joystick Data logging
+
     // DataLogManager.start();
     // URCL.start();
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
@@ -182,7 +186,7 @@ public class RobotContainer {
     driveTrainInst();
     
 
-    if(intakeExists) {intakeInst();}
+    if(intakeExists) {intakeInst(); /* Must happen before indexInit */}
     if(shooterExists) {shooterInst();}
     if(angleShooterExists) {angleShooterInst();}
     if(climberExists) {climberInst();}
@@ -235,7 +239,7 @@ public class RobotContainer {
     climber = new Climber();
   }
   private void indexInit() {
-    indexer = new IndexerSubsystem();
+    indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
   }
   private void indexCommandInst() {
     defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, intakeReverse);
