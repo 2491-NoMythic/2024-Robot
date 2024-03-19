@@ -18,6 +18,7 @@ This command sets the indexer to one of two speeds, depending on the D-pad(90, 4
 public class ManualShoot extends Command {
   private IndexerSubsystem indexer;
   DoubleSupplier ampSupplier;
+  IntakeSubsystem intake;
   /** Creates a new ManualShoot. 
    * This command sets the indexer to one of two speeds, depending on the D-pad(90, 45 and 135 = INDEXER_AMP_SPEED), otherwise speed is equal
      to INDEXER_SHOOTING_SPEED. 
