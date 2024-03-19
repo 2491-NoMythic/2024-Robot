@@ -445,5 +445,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("DRIVETRAIN/forward speed", getChassisSpeeds().vxMetersPerSecond);
 		SmartDashboard.putNumber("DRIVETRAIN/rotational speed", Math.toDegrees(getChassisSpeeds().omegaRadiansPerSecond));
 		SmartDashboard.putNumber("DRIVETRAIN/gyroscope rotation degrees", getPose().getRotation().getDegrees());
+		for (int i = 0; i < 4; i++) {
+			motorLoggers[i].log(modules[i].getDriveMotor());
+		}
 	}
 }
