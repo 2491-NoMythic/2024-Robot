@@ -35,6 +35,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
@@ -46,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
+import frc.robot.helpers.MotorLogger;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
@@ -98,8 +101,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public double speakerDist;
 	Limelight limelight;
 	int runsValid;
-
 	double MathRanNumber;
+	MotorLogger[] motorLoggers;
 
 	public DrivetrainSubsystem() {
 		MathRanNumber = 0;
@@ -144,6 +147,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			BR_STEER_ENCODER_ID,
 			Rotation2d.fromRotations(Preferences.getDouble("BR offset", 0)),
 			CANIVORE_DRIVETRAIN);
+
+		DataLog log = DataLogManager.getLog();
+		motorLoggers = new MotorLogger[] {
+			new MotorLogger(log, "/drivetrain/motorFL"),
+			new MotorLogger(log, "/drivetrain/motorFR"),
+			new MotorLogger(log, "/drivetrain/motorBL"),
+			new MotorLogger(log, "/drivetrain/motorBR"),
+		};
 		
 		odometer = new SwerveDrivePoseEstimator(
 			kinematics, 
@@ -421,6 +432,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			runsValid++;
 		} else {
 			runsValid = 0;
+		}
+		for (int i = 0; i < 4; i++) {
+			motorLoggers[i].log(modules[i].getDriveMotor());
 		}
 	}
 }
