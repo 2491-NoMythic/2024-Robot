@@ -18,6 +18,7 @@ public class WaitCommand extends Command {
   public WaitCommand(DoubleSupplier waitTime) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_waitTime = waitTime;
+    m_timer = new Timer();
   }
 
   // Called when the command is initially scheduled.

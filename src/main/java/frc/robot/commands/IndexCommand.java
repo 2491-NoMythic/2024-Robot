@@ -42,11 +42,32 @@ public class IndexCommand extends Command {
   BooleanSupplier subwooferAngleSup;
   BooleanSupplier farStageAngleSup;
   BooleanSupplier operatorRevSup;
+  BooleanSupplier intakeReverse; 
   boolean auto;
   double runsEmpty = 0;
 
-  /** Creates a new IndexCommand. */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup) {
+  /**
+   * A command to manage the control of notes throughout the robot. This command controls the Intake, Shooter, and Indexer. If any of these preferences are turned off, the command should not be initialized. If 
+   * any of these subsytems are required in a different command, this command will not run during that command. This command controls: ground intake, rev'ing up the shooter if we are at a setpoint or auto-aiming, shooting if the shoot-if-ready button is pressed
+   * and all the subsytems think we have a good shot, and collecting notes from the source.
+   * <p>
+   * the buttons fed into this command that match the names of buttons fed into the AimRobotMoving command and the AimShooter command should match.
+   * @param m_IndexerSubsystem indexer subsystem
+   * @param shootIfReadySupplier button to press to shoot if all subsystems think we have a good shot
+   * @param revUpSupplier same as the auto-aim supplier that starts the aimRobotMoving command
+   * @param shooter shooter subsystem
+   * @param intake intake subsystem
+   * @param drivetrain drivetrian subsystem
+   * @param angleShooterSubsystem angle shooter subsytem
+   * @param humanPlaySupplier button to press when intaking from source
+   * @param stageAngleSup button to press to aim at the speaker from the podium
+   * @param SubwooferSup button to press to aim at the speaker from the subwoofer
+   * @param groundIntakeSup button to press to do ground intake
+   * @param farStageAngleSup button to press to aim at the speaker from the far stage leg
+   * @param operatorRevSup button to press to rev up the shooter slowly while driving
+   * @param intakeReverse button to press to run the indexer backwards manually
+   */
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
@@ -60,6 +81,7 @@ public class IndexCommand extends Command {
     this.farStageAngleSup = farStageAngleSup;
     this.groundIntakeSup = groundIntakeSup;
     this.operatorRevSup = operatorRevSup;
+    this.intakeReverse = intakeReverse;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_SHOOTER_ANGLE);
@@ -81,10 +103,10 @@ public class IndexCommand extends Command {
     } else {
       auto = false;
     }
-    if (!intake.isNoteIn()) {
+    if (!intake.isNoteSeen()) {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
-      if(runsEmpty>20) {
+      if(runsEmpty>=20) {
         if(humanPlayerSupplier.getAsBoolean()) {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
           shooter.shootSameRPS(ShooterConstants.HUMAN_PLAYER_RPS);
@@ -104,7 +126,7 @@ public class IndexCommand extends Command {
       runsEmpty = 0;
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()) {
-        if(angleShooterSubsytem.shortSpeakerDist()) {
+        if(angleShooterSubsytem.shortSpeakerDist()||subwooferAngleSup.getAsBoolean()) {
           shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
         } else {
           shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
@@ -132,7 +154,10 @@ public class IndexCommand extends Command {
         indexer = true;
       }
       if (indexer) {
-          m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED);
+          m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
+          if(!intake.isNoteSeen()) {
+            intake.setNoteHeld(false);
+          }
        } else {
           m_Indexer.off();
        }

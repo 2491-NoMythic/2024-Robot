@@ -43,13 +43,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
 import frc.robot.settings.Constants;
-import frc.robot.settings.LimelightValues;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
-import frc.robot.settings.Constants.Vision;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
 
@@ -113,7 +112,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Preferences.initDouble("BR offset", 0);
 		PathPlannerLogging.setLogActivePathCallback((poses) -> m_field.getObject("path").setPoses(poses));
 		SmartDashboard.putData("Field", m_field);
-		SmartDashboard.putBoolean("force use limelight", false);
+		SmartDashboard.putBoolean("Vision/force use limelight", false);
 		modules = new SwerveModule[4];
 		lastAngles = new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()}; // manually make empty angles to avoid null errors.
 
@@ -157,7 +156,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * 'forwards' direction.
 	 */
 	public void zeroGyroscope() {
-		if(DriverStation.getAlliance().get() == Alliance.Red) {
+		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
 			zeroGyroscope(180);
 		} else {
 			zeroGyroscope(0);
@@ -200,7 +199,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return odometer.getEstimatedPosition();
 	}
     public void resetOdometry(Pose2d pose) {
-        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
+		odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     }
 	/**
 	 *  Sets the modules speed and rotation to zero.
@@ -249,9 +248,32 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void updateOdometry() {
 		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
 	}
-	public void updateOdometryWithVision(Pose2d estematedPose, double timestampSeconds) {
-		odometer.addVisionMeasurement(estematedPose, timestampSeconds);
+	/**
+	 * Provide the odometry a vision pose estimate, only if there is a trustworthy pose available.
+	 * <p>
+	 * Each time a vision pose is supplied, the odometry pose estimation will change a little, 
+	 * larger pose shifts will take multiple calls to complete.
+	 */
+	public void updateOdometryWithVision() {
+		PoseEstimate estimate = limelight.getTrustedPose(getPose());
+		if (estimate != null) {
+			odometer.addVisionMeasurement(estimate.pose, estimate.timestampSeconds);
+		}
 	}
+	/**
+	 * Set the odometry using the current apriltag estimate, disregarding the pose trustworthyness.
+	 * <p>
+	 * You only need to run this once for it to take effect.
+	 */
+	public void forceUpdateOdometryWithVision() {
+		PoseEstimate estimate = limelight.getValidPose();
+		if (estimate != null) {
+			resetOdometry(estimate.pose);
+		} else {
+			System.err.println("No valid limelight estimate to reset from. (Drivetrain.forceUpdateOdometryWithVision)");
+		}
+	}
+
 	public double calculateSpeakerAngle(){
 		Pose2d dtvalues = this.getPose();
 		// triangle for robot angle
@@ -262,7 +284,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 
 		}
-		if(DriverStation.getAlliance().get() == Alliance.Red) {
+		if(alliance.isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
 			deltaX = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
 		} else {
 			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
@@ -325,7 +347,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed
 		int correctionDirection;
 		double speakerX;
-		if(DriverStation.getAlliance().get() == Alliance.Blue) {
+		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
 			correctionDirection = 1;
 			speakerX = Field.BLUE_SPEAKER_X;
 		} else {
@@ -344,7 +366,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		// SmartDashboard.putString("offset amount", targetOffset.toString());
 		// SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
 		//getting desired robot angle
-		if (alliance.get() == Alliance.Blue) {
+		if (DriverStation.getAlliance().isPresent() && alliance.get() == Alliance.Blue) {
 			if (dtvalues.getY() >= adjustedTarget.getY()) {
 				double thetaAbove = -Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))-90;
 				m_desiredRobotAngle = thetaAbove;
@@ -372,70 +394,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public boolean validShot() {
 		return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
 	}
-	public Pose2d getAverageBotPose(LimelightValues ll2, LimelightValues ll3) {
-		double ll2X = ll2.getBotPoseBlue().getX();
-		double ll3X = ll3.getBotPoseBlue().getX();
-		double ll2Y = ll2.getBotPoseBlue().getY();
-		double ll3Y = ll3.getBotPoseBlue().getY();
-		double ll2rotation = ll2.getBotPoseBlue().getRotation().getRadians();
-		double ll3rotation = ll3.getBotPoseBlue().getRotation().getRadians();
-		Rotation2d averageRotation = new Rotation2d((ll2rotation+ll3rotation)/2);
-		double averageX = (ll2X+ll3X)/2;
-		double averageY = (ll2Y+ll3Y)/2;
-		return new Pose2d(new Translation2d(averageX, averageY), averageRotation);
-	}
-	public void forceUpdateOdometryWithVision() {
-		if(Preferences.getBoolean("Use Limelight", false)) {
-			if(Preferences.getBoolean("Use 2 Limelights", false)) {
-				LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-				LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
-				if (ll2.isResultValid && !ll3.isResultValid) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
-				if (!ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
-				if (ll2.isResultValid && ll3.isResultValid) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
-			} else {
-				LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-				if(ll2.isResultValid) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
-			}
-		}
-	}
+
+
 	@Override
 	public void periodic() {
-		SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
+		if (DriverStation.getAlliance().isPresent()) {
+			SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
+		}
 		updateOdometry();
 		AngleShooterSubsystem.setDTPose(getPose());
 		AngleShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());
-		if(SmartDashboard.getBoolean("force use limelight", false)) {
-			forceUpdateOdometryWithVision();
-		} else {
-			if (Preferences.getBoolean("Use Limelight", false)) {
-				if(Preferences.getBoolean("Use 2 Limelights", false)) {
-					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-					LimelightValues ll3 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT3_NAME);
-					Boolean isLL2VisionValid = ll2.isResultValid;
-					Boolean isLL3VisionValid = ll3.isResultValid;
-					if(isLL2VisionValid) {
-						SmartDashboard.putNumber("VISION left LL tag [0] distance", ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT2_NAME));
-					}
-					if(isLL3VisionValid) {
-						SmartDashboard.putNumber("VISION right LL tag [0] distance", ll3.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
-					}
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT2_NAME));
-					Boolean isLL3VisionTrustworthy = isLL3VisionValid && ll3.isPoseTrustworthy(ll3.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
-					SmartDashboard.putBoolean("LL2visionValid", isLL2VisionTrustworthy);
-					SmartDashboard.putBoolean("LL3visionValid", isLL3VisionTrustworthy);
-					if (isLL2VisionTrustworthy && !isLL3VisionTrustworthy) {updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());}
-					if (!isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(ll3.getBotPoseBlue(), ll3.gettimestamp());}
-					if (isLL2VisionTrustworthy && isLL3VisionTrustworthy) {updateOdometryWithVision(getAverageBotPose(ll2, ll3), ll3.gettimestamp());}
-				} else {
-					LimelightValues ll2 = limelight.getLimelightValues(Vision.APRILTAG_LIMELIGHT2_NAME);
-					Boolean isLL2VisionValid = ll2.isResultValid;
-					Boolean isLL2VisionTrustworthy = isLL2VisionValid && ll2.isPoseTrustworthy(ll2.calculateTagDistance(Vision.APRILTAG_LIMELIGHT3_NAME));
-					if (isLL2VisionTrustworthy) {
-						updateOdometryWithVision(ll2.getBotPoseBlue(), ll2.gettimestamp());
-					}
-				}
+		if (Preferences.getBoolean("Use Limelight", false)) {
+			if (SmartDashboard.getBoolean("Vision/force use limelight", false)) {
+				forceUpdateOdometryWithVision();
+			} else {
+				updateOdometryWithVision();
 			}
 		}
+	
 		m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

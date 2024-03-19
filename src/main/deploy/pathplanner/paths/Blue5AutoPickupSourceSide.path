@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.8969234607178125,
-        "y": 0.7286127049554054
+        "x": 5.878489517793285,
+        "y": 1.4413268521193536
       },
       "isLocked": false,
       "linkedName": "SourceSideBlueShoot"
@@ -20,8 +20,8 @@
         "y": 0.9944753381193234
       },
       "prevControl": {
-        "x": 5.9894519908143025,
-        "y": 1.2985233536227612
+        "x": 6.338043006874818,
+        "y": 1.232438902536838
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
+      "waypointRelativePos": 0.75,
       "rotationDegrees": 160.71,
       "rotateFast": true
     }

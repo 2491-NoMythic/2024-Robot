@@ -17,11 +17,17 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.RelativeEncoder;
  import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
+import frc.robot.helpers.MotorLogger;
 import frc.robot.settings.Constants;
 import  frc.robot.settings.Constants.ShooterConstants;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase; 
+
+import java.util.function.DoubleSupplier;
+
  
  public class ShooterSubsystem extends SubsystemBase {
    TalonFX shooterR;
@@ -46,6 +52,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
   int runsValid;
+
+  MotorLogger motorLoggerR;
+  MotorLogger motorLoggerL;
   
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
@@ -78,7 +87,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     
     configuratorR.apply(PIDRightconfigs);
     configuratorL.apply(PIDLeftconfigs);
+
+    DataLog log = DataLogManager.getLog();
+    motorLoggerL = new MotorLogger(log, "/shooter/motorL");
+    motorLoggerR = new MotorLogger(log, "/shooter/motorR");
   }
+  /**
+   * configures the current limits on the shooter motors. Can be ran as many times as you want
+   * @param supplyLimit the supply limit to apply to the motors
+   * @param statorLimit the stator limit to apply to the motors
+   */
   private void adjCurrentLimit( double supplyLimit, double statorLimit){
     currentLimitConfigs.SupplyCurrentLimit = supplyLimit;
     currentLimitConfigs.StatorCurrentLimit = statorLimit;
@@ -91,6 +109,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
   //  shooterR.set(runSpeed);
   //  shooterL.set(runSpeed);
   //}
+  /**
+   * configures the motor's current limits to our desired limit's while shooting, and then sets the setpoint of both shooter motor's onboard PID loop. The left motor will run at half the desired speed, and the right motor will run at full. To run
+   * the motors at the same speed, use {@code shooter.shootSameRPS(RPS)}
+   * @param RPS the desired Rotations Per Second
+   */
     public void shootRPS(double RPS) {
       shootRPSWithCurrent(RPS, ShooterConstants.CURRENT_LIMIT, 100);
     }
@@ -99,20 +122,59 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
       shooterL.setControl(new VelocityDutyCycle(RPS).withSlot(0));
     }
-    public void shootRPSWithCurrent(double RPS, double currentLimit, double statorLimit){
-      adjCurrentLimit(currentLimit, statorLimit);
+   /**
+     * allows you to set the shooter's speed using a supplier. this way you can use a value on SmartDashboard to tune
+     * the shooter's speed. 
+     * <p> if sameSpeed is true, than the wheels will run at the same RPS. Otherwise, the left wheel will run at half the speed.
+     * @param RPSSup
+     * @param sameSpeed
+     */
+    public void shootWithSupplier(DoubleSupplier RPSSup, boolean sameSpeed) {
+      DoubleSupplier speedSupplier = RPSSup;
+      if(sameSpeed) {
+        shootSameRPS(speedSupplier.getAsDouble());
+      } else {
+        shootRPS(speedSupplier.getAsDouble());
+      }
+    }
+   /**
+     * configures the motor's current limits, then it set's the setpoint for the motor's onboard PID loop based on the RPS
+     * the left motor will run at half the RPS, and the right motor will run at te full RPS
+     * @param RPS the desired Rotations Per Second of the shooter wheels
+     * @param supplyLimit the desired SupplyCurrentLimit for the shooter motor's
+     * @param statorLimit the desired StatorCurrentLimit for the shooter motor's
+     */
+    public void shootRPSWithCurrent(double RPS, double supplyLimit, double statorLimit){
+      adjCurrentLimit(supplyLimit, statorLimit);
       shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
       shooterL.setControl(new VelocityDutyCycle(RPS/2).withSlot(0));
     }
+    /**
+     * returns the absolute value of the right shooter motor's onboard PID loop. AKA it tells you how far away the right shooter motor's speed is from what we've told it to be
+     * <p> We use the right shooter motor becuase it's geared, so it takes longer to rev up or down
+     * @return the speed error of the right shooter motor
+     */
     private double getError() {
       return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
     }
+    /**
+     * checks if the right shooter motor is attempting to rev up
+    * <p> We use the right shooter motor becuase it's geared, so it takes longer to rev up or down.
+     * @return Is the speed of the right wheels higher than 15 RPS
+     */
     public boolean isReving() {
       return shooterR.getVelocity().getValueAsDouble()>15;
     }
+    /**
+     * checks if the shooter has been within ALLOWED_SPEED_ERROR (from constants) for more than 20 (from constants) commandScheduler loops
+     * @return has the shooter been at speed for long enough
+     */
     public boolean validShot() {
       return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
     }
+    /**
+     * turns off both of the shooter motors. We use percentage-of-full-power so that the wheels will coast to a stop and not use unnecessary power to stop them instantly.
+     */
   public void turnOff(){
     shooterR.setControl(new DutyCycleOut(0));
     shooterL.setControl(new DutyCycleOut(0));
@@ -126,11 +188,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
     SmartDashboard.getBoolean("shooter speed rev'ed", validShot());
     SmartDashboard.putNumber("shooter current right", shooterR.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("shooter current left", shooterL.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter/Right shooter speed", shooterR.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter/Left shooter speed", shooterL.getVelocity().getValueAsDouble());
     if(getError()<ShooterConstants.ALLOWED_SPEED_ERROR) {
       runsValid++;
     } else {
       runsValid = 0;
     }
+    motorLoggerL.log(shooterL);
+    motorLoggerR.log(shooterR);
   }
 }
  

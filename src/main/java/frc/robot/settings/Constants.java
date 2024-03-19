@@ -239,8 +239,8 @@ public static final class ShooterConstants{
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
   public static final double LONG_SHOOTING_RPS = 120;
-  public static final double SHORT_SHOOTING_RPS = 80;
-  public static final double AMP_RPS = 9.5;
+  public static final double SHORT_SHOOTING_RPS = 100;
+  public static final double AMP_RPS = 17.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
@@ -266,12 +266,20 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_RPS = -15;
   public static final double SAFE_SHOOTER_ANGLE = 15;
   public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
-
+  /**
+   * the values used when adjusting the shooter's angle based on our speaker distance. Here's how we calculated them:
+   * <p>
+   * shoot at the speaker from various distance, and calculate how far under the target we miss (could be negative if we miss above the target). Then graph these points on desmos where the 
+   * x-axis is distance-from-speaker (as calculated by the code), and the y-axis is how far under the target we missed. Using desmos, find the equation that fits these points as best we can. This might
+   * be a quadratic, cubic, or maybe exponential equation. Then, use the a, b, and c values from desmos as these constants.
+   */
+  public static final class AdjustEquation {
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
   public static final double COMP_ADJUST_EQUATION_A = 0.0469456;
   public static final double COMP_ADJUST_EQUATION_B = -0.237047;
   public static final double COMP_ADJUST_EQUATION_C = 0.699325;
+  }
   // public static final double COMP_ADJUST_EQUATION_D = 1; unused becuase we aren't using a cubic equation
 
   public static final double CompBotZeroOffset = 334.7;
@@ -313,10 +321,27 @@ public static final class ClimberConstants{
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
   public static final int CURRENT_LIMIT = 50;
-  public static final double INDEXER_INTAKE_SPEED = 0.5;//should be 0.5 TODO change to positive
+  public static final double INDEXER_INTAKE_SPEED = 0.3;//should be 0.5 TODO change to positive
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
-  public static final double INDEXER_SHOOTING_SPEED = 1;
-  public static final double INDEXER_AMP_SPEED = 0.8;
+  public static final double INDEXER_SHOOTING_RPS = 90;
+  public static final double INDEXER_SHOOTING_POWER = 1;
+  public static final double INDEXER_AMP_SPEED = 0.5;
+  public static final double INDEXER_KS = 0.35;
+  public static final double INDEXER_KV = 0.103;
+  public static final double INDEXER_KA = 0.01;
+  public static final double INDEXER_KP = 0.15;
+  /** the velocity to target when moving forward a set distance. in RPS */
+  public static final double INDEXER_CRUISE_VELOCITY = 40;
+  /** the acceleration to target target when moving to a set speed. In RPS^2*/
+  public static final double INDEXER_ACCELERATION = 400; // at 400 acceleration, the motor takes 0.1 seconds to reach 40 RPS
+  /** the jerk to target when moving to a set acceleration. In RPS^3.  */
+  public static final double INDEXER_JERK = 1000; // at 4000 jerk, the motor takes 0.4 seconds to reach 400 RPS^2
+  /**
+   * multiply motor rotations by this value to get inches. Divide inches by this value to get motor rotations.
+   */
+  public static final double MOTOR_ROTATIONS_TO_INCHES = 0.71;
+
+  public static final double AMP_SHOT_INCHES = 16;
 }
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
@@ -324,6 +349,7 @@ public static final class IntakeConstants{
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
+  /** the desired speed for the intake when doing ground intake. In Percent-of-full-power, from -1 to 1 */
   public static final double INTAKE_SPEED = 1;
 }
 public static final class CTREConfigs {
@@ -428,11 +454,13 @@ public final class Vision{
   public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-aprill";
   public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-aprilr";
   public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
-  
-  public static final double APRILTAG_CLOSENESS = 0.5;
-  public static final double MAX_TAG_DISTANCE = 2.3;
 
-  public static final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
+  public static final String LIMELIGHT_SHUFFLEBOARD_TAB = "Vision";
+  
+  public static final double ALLOWABLE_POSE_DIFFERENCE = 0.5;
+  public static final double MAX_TAG_DISTANCE = 2.5;
+
+  public static final Translation2d FIELD_CORNER = new Translation2d(16.54, 8.02);
 
   public static final double K_DETECTOR_TX_P = 0.1;
   public static final double K_DETECTOR_TX_I = 0;

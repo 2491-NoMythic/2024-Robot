@@ -17,7 +17,16 @@ public class AimShooter extends Command {
 	BooleanSupplier StageAngleSupplier;
 	BooleanSupplier groundIntakeSup;
 	BooleanSupplier farStageAngleSup;
-
+	/**
+	 * A Command that will control the angle of the shooter. If none of the supplied buttons are pressed, than it will automatically aim at the speaker
+	 * @param angleShooterSubsystem the subsytem to control the angle of the shooter
+	 * @param POVSupplier a button that tells us the output of the POV buttons on the controller
+	 * @param humanPlayerSupplier a button to set the shooter to the intake-from-source angle
+	 * @param SubwooferSupplier1 a button to set the shooter to the correct speaker angle while the robot is against the subwoofer
+	 * @param StageAngleSupplier a button to set the shooter to the correct speaker angle while the robot is against the podium
+	 * @param groundIntakeSup a button to set the shooter to the correct angle for a succesful ground intake
+	 * @param farStageAngleSup a button to set the shooter to the correct speaker angle while the robot is against the far stage leg
+	 */
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
 					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
