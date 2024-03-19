@@ -346,12 +346,12 @@ public static final class IndexerConstants{
 public static final class IntakeConstants{
   public static final int INTAKE_1_MOTOR = 20;
   public static final int INTAKE_2_MOTOR = 21;
-  public static final int INTAKE_SIDE_MOTOR_LEFT = 2491;
+public static final int INTAKE_SIDE_MOTOR_LEFT = 2491;
     public static final int INTAKE_SIDE_MOTOR_RIGHT = 2491;
   public static final int BRUSH_1_MOTOR = 2491;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
-  /** the desired speed for the intake when doing ground intake. In Percent-of-full-power, from -1 to 1 */
+    /** the desired speed for the intake when doing ground intake. In Percent-of-full-power, from -1 to 1 */
   public static final double INTAKE_SPEED = 1;
 }
 public static final class CTREConfigs {
