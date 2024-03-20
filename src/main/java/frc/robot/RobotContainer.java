@@ -66,6 +66,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -317,12 +318,17 @@ public class RobotContainer {
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
-        // new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
+        /**
+         * this version of scoreAmp is meant to drive away from the amp while raising the shooter and rev'ing it up.
+         * then it starts driving back at the amp. after 0.4 seconds, it will shoot the note.
+         * this is meant to shoot with our calculated speed and also some forward momentum.
+         * for this to be plausible, we'll have to slow down the shooter and indexer speeds.
+         */
         new InstantCommand(()->shooter.shootWithSupplier(()->10.2, true), shooter),
-        new MoveMeters(driveTrain, 0.075, 0.06, 0, 0),
-        new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
-        // new InstantCommand(()->indexer.forwardInches(IndexerConstants.AMP_SHOT_INCHES), indexer),
-        new InstantCommand(()->indexer.magicRPS(90), indexer),//45 worked but a bit too high
+        new MoveMeters(driveTrain, 0.15, 0.06, 0, 0),
+        new InstantCommand(()->driveTrain.drive(new ChassisSpeeds(0, -0.3, 0)), driveTrain),
+        new WaitCommand(0.4),
+        new InstantCommand(()->indexer.magicRPS(90), indexer),
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
         );
