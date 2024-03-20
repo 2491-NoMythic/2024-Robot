@@ -39,8 +39,8 @@ public class Climber extends SubsystemBase {
     runSpeed = 0;
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
     climbMotorL = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_LEFT, MotorType.kBrushless);
-    climbMotorR.setInverted(false);
-    climbMotorL.setInverted(false);
+    climbMotorR.setInverted(true);
+    climbMotorL.setInverted(true);
     hallEffectL = climbMotorL.getForwardLimitSwitch(Type.kNormallyOpen);
     hallEffectR = climbMotorR.getForwardLimitSwitch(Type.kNormallyOpen);
     climbEncoderR = climbMotorR.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
@@ -79,8 +79,8 @@ public class Climber extends SubsystemBase {
 }
 
 public void resetInitial(){
-  initialEncoderRotationsL = 0;
-  initialEncoderRotationsR = 0;
+  initialEncoderRotationsL = climbEncoderL.getPosition();
+  initialEncoderRotationsR = climbEncoderR.getPosition();
 }
 @Override
 public void periodic() {
