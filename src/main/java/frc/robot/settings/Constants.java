@@ -281,8 +281,10 @@ public static final class ShooterConstants{
   public static final double COMP_ADJUST_EQUATION_C = 0.699325;
   }
   // public static final double COMP_ADJUST_EQUATION_D = 1; unused becuase we aren't using a cubic equation
-
-  public static final double CompBotZeroOffset = 334.7;
+/**
+ * the value that the encoder thinks is zero. when the shooter is resting on the bottom stop, the encoder should read 11.63 
+ */
+  public static final double CompBotZeroOffset = 155.57;//before rebuild was 334.7
   public static final double PracBotZeroOffset = 328;
 
  
