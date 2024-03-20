@@ -288,7 +288,7 @@ public class RobotContainer {
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
-      autoPickup = new ParallelRaceGroup(
+      autoPickup = new ParallelCommandGroup(
         new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),

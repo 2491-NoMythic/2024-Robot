@@ -42,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
     } else {
       m_DistanceSensor = intake2.getAnalog(Mode.kAbsolute);
     }
-    intake2.setInverted(true);
+    intake2.setInverted(false);
     intake1.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
@@ -63,7 +63,7 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param intakeRunSpeed percentage of full power, from -1 to 1
    */
   public void intakeYes(double intakeRunSpeed) {
-    intake1.set(intakeRunSpeed);
+    intake1.set(intakeRunSpeed*0.75);
     intake2.set(intakeRunSpeed);
   }
   /**
