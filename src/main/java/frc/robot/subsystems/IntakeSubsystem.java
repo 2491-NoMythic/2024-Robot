@@ -42,7 +42,6 @@ public class IntakeSubsystem extends SubsystemBase {
     } else {
       m_DistanceSensor = intake2.getAnalog(Mode.kAbsolute);
     }
-    intake2.follow(intake1);
     intake2.setInverted(false);
     intake1.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
@@ -64,7 +63,8 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param intakeRunSpeed percentage of full power, from -1 to 1
    */
   public void intakeYes(double intakeRunSpeed) {
-    intake1.set(intakeRunSpeed);
+    intake1.set(intakeRunSpeed*0.75);
+    intake2.set(intakeRunSpeed);
   }
   /**
    * sets the intakes speed
@@ -73,12 +73,14 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public void intakeNo(double intakeRunSpeed) {
     intake1.set(-intakeRunSpeed);
+    intake2.set(-intakeRunSpeed);
   }
   /**
    * sets the intake's power to 0
    */
   public void intakeOff() {
     intake1.set(0);
+    intake2.set(0);
   }
   /**
    * uses the distance sensor inside the indexer to tell if there is a note fully inside the indexer

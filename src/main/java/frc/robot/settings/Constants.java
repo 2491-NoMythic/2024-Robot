@@ -284,7 +284,7 @@ public static final class ShooterConstants{
 /**
  * the value that the encoder thinks is zero. when the shooter is resting on the bottom stop, the encoder should read 11.63 
  */
-  public static final double CompBotZeroOffset = 155.57;//before rebuild was 334.7
+  public static final double CompBotZeroOffset = 155.2;//before rebuild was 334.7. After rebuild right away was 155.57
   public static final double PracBotZeroOffset = 328;
 
  
