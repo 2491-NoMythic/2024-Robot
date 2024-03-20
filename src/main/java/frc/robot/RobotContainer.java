@@ -196,9 +196,9 @@ public class RobotContainer {
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists && angleShooterExists) {indexCommandInst();}
     Limelight.useDetectorLimelight(useDetectorLimelight);
+    configureBindings();
     autoInit();
     // Configure the trigger bindings
-    configureBindings();
   }
   private void climbSpotChooserInit() {
     climbSpotChooser = new SendableChooser<String>();
@@ -288,7 +288,7 @@ public class RobotContainer {
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
-      autoPickup = new ParallelRaceGroup(
+      autoPickup = new ParallelCommandGroup(
         new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
