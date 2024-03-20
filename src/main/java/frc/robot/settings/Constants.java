@@ -266,6 +266,8 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_RPS = -15;
   public static final double SAFE_SHOOTER_ANGLE = 15;
   public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
+  public static final double LONG_PASS_AMP_SIDE_SHOOTER_ANGLE = 12;
+  public static final double LONG_PASS_SOURCE_SIDE_SHOOTER_ANGLE = 50;
   /**
    * the values used when adjusting the shooter's angle based on our speaker distance. Here's how we calculated them:
    * <p>
@@ -446,7 +448,11 @@ public static final class CTREConfigs {
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
     public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
     public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
-
+    
+    public static final double RED_LONG_PASS_AMP_SIDE_ROBOT_ANGLE = 0;
+    public static final double RED_LONG_PASS_SOURCE_SIDE_ROBOT_ANGLE = 30;
+    public static final double BLUE_LONG_PASS_AMP_SIDE_ROBOT_ANGLE = 180;
+    public static final double BLUE_LONG_PASS_SOURCE_SIDE_ROBOT_ANGLE = -150;
     //angle at 60 for bounce techinque, didn't work
   }
 

@@ -17,6 +17,8 @@ public class AimShooter extends Command {
 	BooleanSupplier StageAngleSupplier;
 	BooleanSupplier groundIntakeSup;
 	BooleanSupplier farStageAngleSup;
+	BooleanSupplier LongPassAmpSideSup;
+	BooleanSupplier LongPassSourceSideSup;
 	/**
 	 * A Command that will control the angle of the shooter. If none of the supplied buttons are pressed, than it will automatically aim at the speaker
 	 * @param angleShooterSubsystem the subsytem to control the angle of the shooter
@@ -26,9 +28,12 @@ public class AimShooter extends Command {
 	 * @param StageAngleSupplier a button to set the shooter to the correct speaker angle while the robot is against the podium
 	 * @param groundIntakeSup a button to set the shooter to the correct angle for a succesful ground intake
 	 * @param farStageAngleSup a button to set the shooter to the correct speaker angle while the robot is against the far stage leg
+	 * @param LongPassAmpSideSup a button to set the shooter to the correct angle to pass straight at the amp while on the amp side of the field
+	 * @param LongPassSourceSideSup a button to set the shooter to the correct angle to pass over the stage at the amp for long passes
 	 */
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup) {
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup,
+					  BooleanSupplier LongPassAmpSideSup, BooleanSupplier LongPassSourceSideSup) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.POVSupplier = POVSupplier;
 		this.humanPlayerSupplier = humanPlayerSupplier;
@@ -36,6 +41,8 @@ public class AimShooter extends Command {
 		this.StageAngleSupplier = StageAngleSupplier;
 		this.groundIntakeSup = groundIntakeSup;
 		this.farStageAngleSup = farStageAngleSup;
+		this.LongPassAmpSideSup = LongPassAmpSideSup;
+		this.LongPassSourceSideSup = LongPassSourceSideSup;
 		addRequirements(angleShooterSubsystem);
 	}
 
@@ -58,6 +65,10 @@ public class AimShooter extends Command {
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 		} else if (groundIntakeSup.getAsBoolean()){
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
+		} else if (LongPassAmpSideSup.getAsBoolean()){
+			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.LONG_PASS_AMP_SIDE_SHOOTER_ANGLE);
+		} else if (LongPassSourceSideSup.getAsBoolean()) {
+			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.LONG_PASS_SOURCE_SIDE_SHOOTER_ANGLE);
 		} else {
 			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 		}

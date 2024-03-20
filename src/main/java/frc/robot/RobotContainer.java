@@ -115,6 +115,8 @@ public class RobotContainer {
   BooleanSupplier ShootIfReadySup;
   BooleanSupplier SubwooferAngleSup;
   BooleanSupplier StageAngleSup;
+  BooleanSupplier LongPassAmpSideSup;
+  BooleanSupplier LongPassSourceSideSup;
   BooleanSupplier HumanPlaySup;
   BooleanSupplier AmpAngleSup;
   BooleanSupplier SourcePickupSup;
@@ -165,8 +167,9 @@ public class RobotContainer {
     ZeroGyroSup = driverController::getPSButton;
     AimWhileMovingSup = driverController::getL2Button;
     ShootIfReadySup = driverController::getR2Button;
-    SubwooferAngleSup = driverController::getCrossButton;
-    StageAngleSup = driverController::getTriangleButton;
+    SubwooferAngleSup = ()->(operatorController.getPOV()==180||operatorController.getPOV()==215||operatorController.getPOV()==135);
+    StageAngleSup = ()->(operatorController.getCircleButton()||operatorController.getSquareButton());
+    FarStageAngleSup = ()->(operatorController.getPOV()==0||operatorController.getPOV()==45||operatorController.getPOV()==315);
     HumanPlaySup = driverController::getR1Button;
     AmpAngleSup = ()->driverController.getPOV() == 90;
     ClimberDownSup = operatorController::getCrossButton;
@@ -175,7 +178,6 @@ public class RobotContainer {
     ManualShootSup = driverController::getL1Button;
     ForceVisionSup = driverController::getOptionsButton;
     GroundIntakeSup = operatorController::getTouchpad;
-    FarStageAngleSup = driverController::getTouchpad;
     OperatorPreRevSup = operatorController::getL2Button;
     zeroSup = ()->0;
     falseSup = ()->false;
@@ -229,7 +231,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, LongPassAmpSideSup, LongPassSourceSideSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -283,7 +285,9 @@ public class RobotContainer {
       driverController::getL2Button,
       StageAngleSup,
       FarStageAngleSup,
-      SubwooferAngleSup
+      SubwooferAngleSup,
+      LongPassAmpSideSup,
+      LongPassSourceSideSup
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
@@ -457,7 +461,7 @@ public class RobotContainer {
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
       NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED)));
-      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup).withTimeout(1));
+      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
       NamedCommands.registerCommand("autoPickup", new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
         new DriveTimeCommand(-1, 0, 0, 1, driveTrain)
@@ -479,15 +483,15 @@ public class RobotContainer {
       //the following command will both aim the robot at the speaker (with the AimRobotMoving), and shoot a note while aiming the shooter (with shootNote). As a race group, it ends
       //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
-        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup),
+        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup),
         new ShootNote(indexer, 1, angleShooterSubsystem)));
       // NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       // NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
     }
     if(angleShooterExists) {
       //the same command that we use during teleop, but all the buttons that would aim the shooter anywhere other than the speaker are set to false.
-      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, ()->false, ()->false, ()->false, ()->false, ()->false));
-      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, ()->false, ()->false, ()->false, ()->false, ()->false));
+      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, falseSup, falseSup, falseSup, falseSup, falseSup, falseSup, falseSup));
+      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, falseSup, falseSup, falseSup, falseSup, falseSup, falseSup, falseSup));
     }
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem));
@@ -497,6 +501,13 @@ public class RobotContainer {
   }
   public void teleopInit() {
     driveTrain.forceUpdateOdometryWithVision();
+    if(DriverStation.getAlliance().isPresent()&&DriverStation.getAlliance().get() == Alliance.Red) {
+      LongPassAmpSideSup = driverController::getCircleButton;
+      LongPassSourceSideSup = driverController::getSquareButton;
+    } else {
+      LongPassAmpSideSup = driverController::getSquareButton;
+      LongPassSourceSideSup = driverController::getCircleButton;
+    }
     if(climberExists) {
       SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
         new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),

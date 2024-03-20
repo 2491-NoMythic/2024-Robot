@@ -34,6 +34,8 @@ public class AimRobotMoving extends Command {
     double rotationSpeed;
     double allianceOffset;
     BooleanSupplier SubwooferAngleSup;
+    BooleanSupplier LongPassAmpSideSup;
+    BooleanSupplier LongPassSourceSideSup;
   /**
    * a command to automatically aim the robot at the speaker if odometry is correct. This command also controls aiming from setpoints incase the odometry isn't working.
    * @param drivetrain the swerve drive subsystem
@@ -45,7 +47,7 @@ public class AimRobotMoving extends Command {
    * @param FarStageAngleSup the button to turn the robot to the far stage leg setpoint
    * @param SubwooferAngleSup the button to use the subwoofer setpoint (doesn't turn the robot, but stops the robot from auto-aiming when you rev up)
    */
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup, BooleanSupplier LongPassAmpSideSup, BooleanSupplier LongPassSourceSideSup){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -59,6 +61,8 @@ public class AimRobotMoving extends Command {
           this.rotationSupplier = rotationSupplier;
           this.FarStageAngleSup = FarStageAngleSup;
           this.PodiumAngleSup = PodiumAngleSup;
+          this.LongPassAmpSideSup = LongPassAmpSideSup;
+          this.LongPassSourceSideSup = LongPassSourceSideSup;
           this.run = run;
           addRequirements(drivetrain);
         }
@@ -67,7 +71,6 @@ public class AimRobotMoving extends Command {
         @Override
         public void initialize() {
           SmartDashboard.putBoolean("isRotateRunning", true);
-          
         }
         
         // Called every time the scheduler runs while the command is scheduled.
@@ -76,17 +79,27 @@ public class AimRobotMoving extends Command {
           desiredRobotAngle = m_drivetrain.calculateSpeakerAngleMoving();
           double podiumRobotAngle;
           double farStageRobotAngle;
+          double longPassAmpSideAngle;
+          double longPassSourceSideAngle;
           if(DriverStation.getAlliance().get() == Alliance.Red) {
             podiumRobotAngle = Field.RED_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.RED_FAR_STAGE_ROBOT_ANGLE;
+            longPassAmpSideAngle = Field.RED_LONG_PASS_AMP_SIDE_ROBOT_ANGLE;
+            longPassSourceSideAngle = Field.RED_LONG_PASS_SOURCE_SIDE_ROBOT_ANGLE;
           } else {
             podiumRobotAngle = Field.BLUE_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.BLUE_FAR_STAGE_ROBOT_ANGLE;
+            longPassAmpSideAngle = Field.BLUE_LONG_PASS_AMP_SIDE_ROBOT_ANGLE;
+            longPassSourceSideAngle = Field.BLUE_LONG_PASS_SOURCE_SIDE_ROBOT_ANGLE;
           }
           if(PodiumAngleSup.getAsBoolean()) {
             speedController.setSetpoint(podiumRobotAngle);
           } else if(FarStageAngleSup.getAsBoolean()) {
             speedController.setSetpoint(farStageRobotAngle);
+          } else if(LongPassAmpSideSup.getAsBoolean()) {
+            speedController.setSetpoint(longPassAmpSideAngle);
+          } else if(LongPassSourceSideSup.getAsBoolean()) {
+            speedController.setSetpoint(longPassSourceSideAngle);
           } else {
             speedController.setSetpoint(desiredRobotAngle);
           }
