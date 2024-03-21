@@ -265,7 +265,7 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_ANGLE = 97;
   public static final double HUMAN_PLAYER_RPS = -15;
   public static final double SAFE_SHOOTER_ANGLE = 15;
-  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
+  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 69;
   /**
    * the values used when adjusting the shooter's angle based on our speaker distance. Here's how we calculated them:
    * <p>
