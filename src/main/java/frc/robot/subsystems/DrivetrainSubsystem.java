@@ -290,7 +290,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
 		}
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-		// SmartDashboard.putNumber("dist to speakre", speakerDist);
+		// SmartDashboard.putNumber("dist to speaker", speakerDist);
 
 		// RobotState.getInstance().ShooterInRange = speakerDist<Field.MAX_SHOOTING_DISTANCE;
 		
@@ -334,7 +334,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 		deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-		// SmartDashboard.putNumber("dist to speakre", speakerDist);
+		// SmartDashboard.putNumber("dist to speaker", speakerDist);
 		
 		Rotation2d unadjustedAngle = Rotation2d.fromRadians(Math.asin(deltaX/speakerDist));
 		double totalDistToSpeaker = Math.sqrt(Math.pow(Field.SPEAKER_Z-ShooterConstants.SHOOTER_HEIGHT, 2) + Math.pow(speakerDist, 2));
