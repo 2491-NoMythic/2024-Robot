@@ -63,7 +63,7 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param intakeRunSpeed percentage of full power, from -1 to 1
    */
   public void intakeYes(double intakeRunSpeed) {
-    intake1.set(intakeRunSpeed*0.75);
+    intake1.set(intakeRunSpeed);
     intake2.set(intakeRunSpeed);
   }
   /**
