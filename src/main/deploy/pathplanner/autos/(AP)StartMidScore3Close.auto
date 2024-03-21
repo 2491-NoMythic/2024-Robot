@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.9905114975624361,
-      "y": 4.3344249538371855
+      "x": 1.3171869760109631,
+      "y": 5.55
     },
-    "rotation": -179.13194855025444
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -36,6 +36,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.4
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "autoShootNote"
@@ -54,6 +60,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.4
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "autoShootNote"
@@ -69,6 +81,12 @@
           "type": "named",
           "data": {
             "name": "autoPickup"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.4
           }
         },
         {

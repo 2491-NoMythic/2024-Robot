@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.212464042958929,
-        "y": 1.665230946120256
+        "x": 3.401160206828125,
+        "y": 2.9019814148762353
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.659157170731644,
-        "y": 1.765103173972251
+        "x": 5.874661144340084,
+        "y": 1.1588449274170212
       },
       "isLocked": false,
       "linkedName": "SourceSideBlueShoot"
     },
     {
       "anchor": {
-        "x": 7.131817215288375,
-        "y": 2.067990700866898
+        "x": 7.043244264424471,
+        "y": 2.0937114234845327
       },
       "prevControl": {
-        "x": 6.107998457270485,
-        "y": 1.9729199033004963
+        "x": 5.767541024999013,
+        "y": 1.3243942027623088
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,7 +41,7 @@
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 800.0
   },
   "goalEndState": {
     "velocity": 0,
