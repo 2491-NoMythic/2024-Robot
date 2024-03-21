@@ -42,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
     } else {
       m_DistanceSensor = intake2.getAnalog(Mode.kAbsolute);
     }
-    intake2.setInverted(false);
+    intake2.setInverted(true);
     intake1.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
