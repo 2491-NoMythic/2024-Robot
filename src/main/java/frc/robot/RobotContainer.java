@@ -25,6 +25,9 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.GroundIntake;
 import frc.robot.commands.NamedCommands.AutoGroundIntake;
+import frc.robot.commands.testing.IndexerSpeedWithSupplier;
+import frc.robot.commands.testing.ShooterSpeedWithSupplier;
+import frc.robot.commands.testing.ShooterAngleWithSupplier;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.commands.IndexCommand;
 import frc.robot.commands.IndexerNoteAlign;
@@ -521,7 +524,22 @@ public class RobotContainer {
 		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);
 		SmartDashboard.putBoolean("shooter ready", RobotState.getInstance().ShooterReady);
   }
- 
+  public void testInit() {
+    if(shooterExists) {
+      SmartDashboard.putNumber("TEST/supplied shooter speed", 0);
+      SmartDashboard.putBoolean("TEST/shoot same speed", false);
+      SmartDashboard.putData("TEST/useSuppliedShooterSpeed", new ShooterSpeedWithSupplier(()->SmartDashboard.getNumber("TEST/supplied shooter speed", 0), shooter, ()->SmartDashboard.getBoolean("TEST/shoot same speed", false)));
+    }
+    if(angleShooterExists) {
+      SmartDashboard.putNumber("TEST/supplied shooter angle", 90);
+      SmartDashboard.putData("TEST/useSuppliedShooterAngle", new ShooterAngleWithSupplier(()->SmartDashboard.getNumber("TEST/supplied shooter angle", 90), angleShooterSubsystem));
+      
+    }
+    if(indexerExists) {
+      SmartDashboard.putNumber("TEST/supplied indexer speed", 0);
+      SmartDashboard.putData("TEST/useSuppliedIndexerSpeed", new IndexerSpeedWithSupplier(()->SmartDashboard.getNumber("TEST/supplied indexer speed", 0), indexer));
+    }
+  }
   public void logPower(){
     for(int i = 0; i < 16; i++) { 
       SmartDashboard.putNumber("PDP Current " + i, PDP.getCurrent(i));
