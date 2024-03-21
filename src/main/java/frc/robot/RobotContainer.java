@@ -130,6 +130,7 @@ public class RobotContainer {
   DoubleSupplier zeroSup;
 
   BooleanSupplier intakeReverse;
+  Command autoPickup;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -287,10 +288,17 @@ public class RobotContainer {
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
-      new Trigger(operatorController::getR1Button).whileTrue(new SequentialCommandGroup(
-        new CollectNote(driveTrain, limelight),
-        new DriveTimeCommand(-1, 0, 0, 1, driveTrain)
-      ));
+      autoPickup = new ParallelRaceGroup(
+        new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
+        new SequentialCommandGroup(
+          new CollectNote(driveTrain, limelight),
+          new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
+          new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
+          new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
+          new WaitCommand(0.5)
+          )
+          ).withTimeout(4);
+      new Trigger(operatorController::getR1Button).whileTrue(autoPickup);
     }
     new Trigger(ForceVisionSup).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
     SmartDashboard.putData("force update limelight position", new InstantCommand(()->driveTrain.forceUpdateOdometryWithVision(), driveTrain));
@@ -445,15 +453,7 @@ public class RobotContainer {
       new AutoGroundIntake(indexer, intake, angleShooterSubsystem)
     ));
     if(intakeExists&&indexerExists&&angleShooterExists) {
-      NamedCommands.registerCommand("autoPickup",new ParallelCommandGroup(
-        new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
-        new SequentialCommandGroup(
-          new CollectNote(driveTrain, limelight),
-          new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
-          new DriveTimeCommand(1, 0, 0, 0.5, driveTrain)
-        )
-      ).withTimeout(3.5)
-      );
+      NamedCommands.registerCommand("autoPickup", autoPickup);
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
       NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED)));
