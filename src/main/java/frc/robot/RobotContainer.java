@@ -125,6 +125,7 @@ public class RobotContainer {
   BooleanSupplier ForceVisionSup;
   BooleanSupplier GroundIntakeSup;
   BooleanSupplier FarStageAngleSup;
+  BooleanSupplier LongShotAngleSup;
   BooleanSupplier OperatorPreRevSup;
   BooleanSupplier falseSup;
   DoubleSupplier zeroSup;
@@ -167,7 +168,7 @@ public class RobotContainer {
     AimWhileMovingSup = driverController::getL2Button;
     ShootIfReadySup = driverController::getR2Button;
     SubwooferAngleSup = driverController::getCrossButton;
-    StageAngleSup = driverController::getTriangleButton;
+    StageAngleSup = falseSup;
     HumanPlaySup = driverController::getR1Button;
     AmpAngleSup = ()->driverController.getPOV() == 90;
     ClimberDownSup = operatorController::getCrossButton;
@@ -178,6 +179,7 @@ public class RobotContainer {
     GroundIntakeSup = operatorController::getTouchpad;
     FarStageAngleSup = driverController::getTouchpad;
     OperatorPreRevSup = operatorController::getL2Button;
+    LongShotAngleSup = driverController::getTriangleButton;
     zeroSup = ()->0;
     falseSup = ()->false;
     intakeReverse = operatorController::getL1Button;
@@ -284,7 +286,8 @@ public class RobotContainer {
       driverController::getL2Button,
       StageAngleSup,
       FarStageAngleSup,
-      SubwooferAngleSup
+      SubwooferAngleSup,
+      falseSup
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
@@ -336,6 +339,12 @@ public class RobotContainer {
         );
         new Trigger(AmpAngleSup).whileTrue(scoreAmp);
         SmartDashboard.putData("amp shot", scoreAmp);
+      Command LongShot = new SequentialCommandGroup(
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.LONG_SHOT_SHOOTER_ANGLE), angleShooterSubsystem),
+        new MoveMeters(driveTrain, 1, 1, 0, 0),
+        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, ()->true)
+        );
+      new Trigger(LongShotAngleSup).whileTrue(LongShot);
     }
     SmartDashboard.putData("move 1 meter", new MoveMeters(driveTrain, 1, 0.2, 0.2, 0.2));
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
@@ -457,7 +466,7 @@ public class RobotContainer {
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
       NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED)));
-      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup).withTimeout(1));
+      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
       NamedCommands.registerCommand("autoPickup", new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
         new DriveTimeCommand(-1, 0, 0, 1, driveTrain)
@@ -479,7 +488,7 @@ public class RobotContainer {
       //the following command will both aim the robot at the speaker (with the AimRobotMoving), and shoot a note while aiming the shooter (with shootNote). As a race group, it ends
       //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
-        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup),
+        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup),
         new ShootNote(indexer, 1, angleShooterSubsystem)));
       // NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       // NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
