@@ -78,7 +78,7 @@ public class AimRobotMoving extends Command {
           desiredRobotAngle = m_drivetrain.calculateSpeakerAngleMoving();
           double podiumRobotAngle;
           double farStageRobotAngle;
-          double = longShotAngle;
+          double longShotAngle;
           if(DriverStation.getAlliance().get() == Alliance.Red) {
             podiumRobotAngle = Field.RED_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.RED_FAR_STAGE_ROBOT_ANGLE;

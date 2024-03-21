@@ -31,6 +31,7 @@ import frc.robot.commands.IndexerNoteAlign;
 import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
@@ -342,8 +343,14 @@ public class RobotContainer {
       Command LongShot = new SequentialCommandGroup(
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.LONG_SHOT_SHOOTER_ANGLE), angleShooterSubsystem),
         new MoveMeters(driveTrain, 1, 1, 0, 0),
-        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, ()->true)
-        );
+        new ParallelRaceGroup(
+          new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, ()->true),
+          new SequentialCommandGroup(
+            new WaitUntil(ManualShootSup),
+            new ManualShoot(indexer, ()->1, intake)
+          )
+        )
+      );
       new Trigger(LongShotAngleSup).whileTrue(LongShot);
     }
     SmartDashboard.putData("move 1 meter", new MoveMeters(driveTrain, 1, 0.2, 0.2, 0.2));
