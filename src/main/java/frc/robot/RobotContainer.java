@@ -340,7 +340,7 @@ public class RobotContainer {
         new Trigger(AmpAngleSup).whileTrue(scoreAmp);
         SmartDashboard.putData("amp shot", scoreAmp);
       Command LongShot = new SequentialCommandGroup(
-        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.LONG_SHOT_SHOOTER_ANGLE), angleShooterSubsystem),
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.LONG_SHOT_SHOOTER_ANGLE), angleShooterSubsystem),
         new MoveMeters(driveTrain, 1, 1, 0, 0),
         new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, ()->true)
         );
