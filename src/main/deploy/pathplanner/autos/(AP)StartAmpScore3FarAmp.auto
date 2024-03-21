@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.9487339076459329,
-      "y": 6.7470807715152326
+      "x": 0.6842044526319189,
+      "y": 6.690138362483131
     },
     "rotation": -118.30075576600639
   },
@@ -36,6 +36,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "BlueAmpShoot1"
@@ -57,6 +63,12 @@
           "type": "named",
           "data": {
             "name": "autoPickup"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {

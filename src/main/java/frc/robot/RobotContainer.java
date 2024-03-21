@@ -288,7 +288,7 @@ public class RobotContainer {
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
-      autoPickup = new ParallelCommandGroup(
+      autoPickup = new ParallelRaceGroup(
         new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
@@ -321,7 +321,7 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
@@ -528,7 +528,7 @@ public class RobotContainer {
     }
   }
   public void robotPeriodic() {
-    logPower();
+    // logPower();
   }
   public void disabledPeriodic() {
   

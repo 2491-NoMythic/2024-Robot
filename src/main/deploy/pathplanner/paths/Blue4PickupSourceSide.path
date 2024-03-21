@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.212464042958929,
-        "y": 1.665230946120256
+        "x": 3.401160206828125,
+        "y": 2.9019814148762353
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.346710693421388,
-        "y": 1.7444754889509784
+        "x": 5.5354068572905835,
+        "y": 2.9812259577069575
       },
       "isLocked": false,
       "linkedName": "SourceSideBlueShoot"
@@ -64,7 +64,7 @@
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 800.0
   },
   "goalEndState": {
     "velocity": 0,

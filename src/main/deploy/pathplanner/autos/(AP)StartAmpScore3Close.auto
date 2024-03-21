@@ -36,6 +36,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "autoShootNote"
@@ -44,13 +50,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CloseAmpPickupFromMidAuto"
+            "pathName": " CloseMidPickupFromAmpAuto"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "autoPickup"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -69,6 +81,12 @@
           "type": "named",
           "data": {
             "name": "autoPickup"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
