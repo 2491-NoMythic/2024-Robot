@@ -8,8 +8,13 @@
       },
       "prevControl": null,
       "nextControl": {
+<<<<<<< HEAD
         "x": 3.6446150235123724,
         "y": 3.807633332941637
+=======
+        "x": 1.4034395396362394,
+        "y": 2.221942553358078
+>>>>>>> 1026573 (many auto changes and testing. Working 4 note close auto)
       },
       "isLocked": false,
       "linkedName": "SourceSideShoot"
