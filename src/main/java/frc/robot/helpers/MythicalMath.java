@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -21,6 +22,19 @@ import java.util.Optional;
 
 public class MythicalMath {
 	/**
+	 * GRAVITY: Acceleration via gravity in meters per second squared. 
+	 */
+	public static final double GRAVITY = -9.81;
+	public static class ShooterConfiguration {
+		public double robotAngle;
+		public double shooterAngle;
+		public ShooterConfiguration(double robotAngle, double shooterAngle) {
+			this.robotAngle = robotAngle;
+			this.shooterAngle = shooterAngle;
+		}
+	}
+
+	/**
 	 * clamps an input between a minimum and a maximum. If the input is greater than the maximum, the maximum will
 	 * be returned. Vice versa for the minimum.
 	 */
@@ -36,7 +50,7 @@ public class MythicalMath {
 		return Rotation2d.fromRadians(Math.atan2(deltaY, deltaX));
 	}
 
-	public static double adjustAngleForSpeed(Pose3d robotCoords, ChassisSpeeds robotSpeeds, Rotation2d startingAngle, Optional<DriverStation.Alliance> alliance, double shotSpeed, double distToTarget, Pose3d targetCoords) {
+public static double adjustAngleForSpeed(Pose3d robotCoords, ChassisSpeeds robotSpeeds, Rotation2d startingAngle, Optional<DriverStation.Alliance> alliance, double shotSpeed, double distToTarget, Pose3d targetCoords) {
 		double shootingTime = distToTarget/shotSpeed;
 		Translation2d targetOffset = new Translation2d(robotSpeeds.vxMetersPerSecond*shootingTime*OFFSET_MULTIPLIER*startingAngle.getRadians(), robotSpeeds.vyMetersPerSecond*shootingTime*OFFSET_MULTIPLIER);
 		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
@@ -145,5 +159,50 @@ public class MythicalMath {
 		// SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
 		
 		return desiredShooterAngle;
+	}
+
+	private double getDistance(double X, double Y){
+		return Math.sqrt(Y * Y + X * X);
+	}
+
+	/**
+	 * Gets the ShooterConfiguration that points directly at the given target
+	 * @param target the difference between the robot's position and the target's position
+	 */
+	public ShooterConfiguration pointAtTarget(Translation3d target){
+		double Y = target.getY();
+		double X = target.getX();
+		double robot = Math.atan2(Y, X);
+		double shooter = Math.atan2(target.getZ(), getDistance(X, Y));
+		
+		return new ShooterConfiguration(robot, shooter);
+	}
+	/**
+	 * Adjusts the target to compensate for the movement of the robot relative to the target and gravity.
+	 * @param base The unadjusted target in meters from the robot location 
+	 * @param robotVelocity The velocity of the robot in meters per second 
+	 * @param time The time the note is expected to take to hit the target in seconds
+	 */
+	public Translation3d adjustTarget(Translation3d base, Translation2d robotVelocity, double time){
+		double x = base.getX();
+		double y = base.getY();
+		double z = base.getZ();
+		x -= robotVelocity.getX() * time;
+		y -= robotVelocity.getY() * time;
+		z -= (GRAVITY / 2) * (time * time);
+		return new Translation3d(x, y, z);
+	}
+
+	public ShooterConfiguration pointAtTargetWithAdjustments(Translation3d base, Translation2d robotVelocity, double shooterVelocity) {
+		ShooterConfiguration angles = pointAtTarget(base);
+		for (int i=0; i<4; i++){
+			double horizontalDistance = getDistance(base.getX(),base.getY());
+			double horizontalShooterVelocity = Math.cos(angles.shooterAngle)*shooterVelocity;
+			double velocityX = horizontalShooterVelocity*Math.cos(angles.robotAngle) + robotVelocity.getX();
+			double velocityY = horizontalShooterVelocity*Math.sin(angles.robotAngle) + robotVelocity.getY();
+			double horizontalVelocity = getDistance(velocityX, velocityY);
+			Translation3d adjusted = adjustTarget(base, robotVelocity, horizontalDistance/horizontalVelocity);
+		}
+		return angles;
 	}
 }
