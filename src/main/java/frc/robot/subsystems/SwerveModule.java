@@ -40,7 +40,7 @@ public class SwerveModule {
   private VelocityDutyCycle m_driveControl = new VelocityDutyCycle(0);
   private PositionDutyCycle m_steerControl = new PositionDutyCycle(0);
   private NeutralOut m_neutralControl = new NeutralOut();
-  
+    
   /**
    * Constructs a SwerveModule with a drive motor, turning motor and turning encoder.
    *
@@ -132,6 +132,14 @@ public class SwerveModule {
    */
   public double getDriveDistanceMeters() {
     return (m_driveMotor.getPosition().getValue() * DriveConstants.DRIVETRAIN_ROTATIONS_TO_METERS);
+  }
+
+  public TalonFX getDriveMotor(){
+    return m_driveMotor;
+  }
+
+  public TalonFX getSteerMotor(){
+    return m_steerMotor;
   }
   /**Don't use */
   public void stop() {
