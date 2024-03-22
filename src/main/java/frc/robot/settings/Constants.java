@@ -240,6 +240,7 @@ public static final class ShooterConstants{
   
   public static final double LONG_SHOOTING_RPS = 120;
   public static final double SHORT_SHOOTING_RPS = 100;
+  public static final double PASSING_RPS = 87;
   public static final double AMP_RPS = 17.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
 
@@ -284,7 +285,7 @@ public static final class ShooterConstants{
   }
   // public static final double COMP_ADJUST_EQUATION_D = 1; unused becuase we aren't using a cubic equation
 
-  public static final double CompBotZeroOffset = 334.7;
+  public static final double CompBotZeroOffset = 155.57;
   public static final double PracBotZeroOffset = 328;
 
  
@@ -450,9 +451,9 @@ public static final class CTREConfigs {
     public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
     
     public static final double RED_LONG_PASS_AMP_SIDE_ROBOT_ANGLE = 0;
-    public static final double RED_LONG_PASS_SOURCE_SIDE_ROBOT_ANGLE = 30;
+    public static final double RED_LONG_PASS_SOURCE_SIDE_ROBOT_ANGLE = 55;
     public static final double BLUE_LONG_PASS_AMP_SIDE_ROBOT_ANGLE = 180;
-    public static final double BLUE_LONG_PASS_SOURCE_SIDE_ROBOT_ANGLE = -150;
+    public static final double BLUE_LONG_PASS_SOURCE_SIDE_ROBOT_ANGLE = -125;
     //angle at 60 for bounce techinque, didn't work
   }
 

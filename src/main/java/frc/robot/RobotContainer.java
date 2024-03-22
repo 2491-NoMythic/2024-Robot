@@ -182,6 +182,8 @@ public class RobotContainer {
     zeroSup = ()->0;
     falseSup = ()->false;
     intakeReverse = operatorController::getL1Button;
+    LongPassAmpSideSup = driverController::getCircleButton;
+    LongPassSourceSideSup = driverController::getSquareButton;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -244,7 +246,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, intakeReverse);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, intakeReverse, ()->LongPassAmpSideSup.getAsBoolean()||LongPassSourceSideSup.getAsBoolean());
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -501,13 +503,6 @@ public class RobotContainer {
   }
   public void teleopInit() {
     driveTrain.forceUpdateOdometryWithVision();
-    if(DriverStation.getAlliance().isPresent()&&DriverStation.getAlliance().get() == Alliance.Red) {
-      LongPassAmpSideSup = driverController::getCircleButton;
-      LongPassSourceSideSup = driverController::getSquareButton;
-    } else {
-      LongPassAmpSideSup = driverController::getSquareButton;
-      LongPassSourceSideSup = driverController::getCircleButton;
-    }
     if(climberExists) {
       SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
         new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),
@@ -531,6 +526,13 @@ public class RobotContainer {
     SmartDashboard.putBoolean("is note seen", RobotState.getInstance().IsNoteSeen);
 		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);
 		SmartDashboard.putBoolean("shooter ready", RobotState.getInstance().ShooterReady);
+    if(DriverStation.getAlliance().isPresent()&&DriverStation.getAlliance().get() == Alliance.Red) {
+      LongPassAmpSideSup = driverController::getCircleButton;
+      LongPassSourceSideSup = driverController::getSquareButton;
+    } else {
+      LongPassAmpSideSup = driverController::getSquareButton;
+      LongPassSourceSideSup = driverController::getCircleButton;
+    }
   }
  
   public void logPower(){
