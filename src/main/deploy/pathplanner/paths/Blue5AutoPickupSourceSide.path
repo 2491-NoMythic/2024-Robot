@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.212464042958929,
-        "y": 1.665230946120256
+        "x": 3.615400445510263,
+        "y": 3.018839726884674
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.878489517793285,
-        "y": 1.4413268521193536
+        "x": 4.2814259203446206,
+        "y": 2.794935632883772
       },
       "isLocked": false,
       "linkedName": "SourceSideBlueShoot"
     },
     {
       "anchor": {
-        "x": 7.334279751694896,
-        "y": 0.9944753381193234
+        "x": 6.994553301087623,
+        "y": 1.051724808075951
       },
       "prevControl": {
-        "x": 6.338043006874818,
-        "y": 1.232438902536838
+        "x": 5.998316556267545,
+        "y": 1.2896883724934654
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,10 +38,10 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 10.0,
+    "maxAcceleration": 15.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 800.0
   },
   "goalEndState": {
     "velocity": 0,

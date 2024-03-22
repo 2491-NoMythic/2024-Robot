@@ -196,9 +196,9 @@ public class RobotContainer {
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists && angleShooterExists) {indexCommandInst();}
     Limelight.useDetectorLimelight(useDetectorLimelight);
+    configureBindings();
     autoInit();
     // Configure the trigger bindings
-    configureBindings();
   }
   private void climbSpotChooserInit() {
     climbSpotChooser = new SendableChooser<String>();
@@ -321,7 +321,7 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
@@ -528,7 +528,7 @@ public class RobotContainer {
     }
   }
   public void robotPeriodic() {
-    logPower();
+    // logPower();
   }
   public void disabledPeriodic() {
   
