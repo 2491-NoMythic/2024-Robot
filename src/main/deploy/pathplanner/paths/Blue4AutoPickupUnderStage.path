@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4034395396362394,
-        "y": 2.221942553358078
+        "x": 3.6446150235123724,
+        "y": 3.807633332941637
       },
       "isLocked": false,
       "linkedName": "SourceSideShoot"
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.75,
       "rotationDegrees": 145.3,
       "rotateFast": true
     }
@@ -38,8 +38,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 10.0,
+    "maxAcceleration": 15.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 800.0
   },
