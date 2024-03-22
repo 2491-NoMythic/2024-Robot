@@ -422,5 +422,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		} else {
 			runsValid = 0;
 		}
+		SmartDashboard.putNumber("DRIVETRAIN/forward speed", getChassisSpeeds().vxMetersPerSecond);
+		SmartDashboard.putNumber("DRIVETRAIN/rotational speed", Math.toDegrees(getChassisSpeeds().omegaRadiansPerSecond));
 	}
 }
