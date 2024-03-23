@@ -24,7 +24,7 @@ public class CollectNote extends Command {
   PIDController txController;
   PIDController tyController;
   SlewRateLimiter tyLimiter;
-
+  Boolean closeNote;
   double tx;
   double ty;
   /** Creates a new CollectNote. */
@@ -39,6 +39,7 @@ public class CollectNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    closeNote = false;
     txController = new PIDController(
         // Vision.K_DETECTOR_TX_P,
         0.04,
@@ -71,6 +72,7 @@ public class CollectNote extends Command {
       if (runsInvalid <= 10) { // don't stop imediately, in case only a couple frames were missed
         drivetrain.drive(new ChassisSpeeds(tyLimiter.calculate(0), 0, 0));
       } else {
+
         drivetrain.stop();
       }
       System.err.println("invalidDetectorData");
@@ -81,13 +83,22 @@ public class CollectNote extends Command {
     }
     
     tx = detectorData.tx;
-    ty = detectorData.ty;
+    if(!closeNote) {
+      tx = detectorData.tx;
+    } else if(detectorData.ty<5.5){
+      tx = detectorData.tx;
+    } else {
+      runsInvalid++;
+    }
+    if (ty<5.5){
+      closeNote = true;
+    } 
     
     SmartDashboard.putNumber("CollectNote/calculated radians per second", txController.calculate(tx));
     SmartDashboard.putNumber("CollectNote/calculated forward meters per second", tyController.calculate(ty));
     // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
     drivetrain.drive(new ChassisSpeeds(
-      tyLimiter.calculate(tyController.calculate(ty)),
+      tyLimiter.calculate(-20/Math.abs(tx)),
       0,
       txController.calculate(tx)));
   }
@@ -103,6 +114,6 @@ public class CollectNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>15); 
+    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>10); 
   }
 }
