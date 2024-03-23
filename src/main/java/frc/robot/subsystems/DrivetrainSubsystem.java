@@ -27,6 +27,8 @@ import java.util.Optional;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -161,6 +163,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			getGyroscopeRotation(),
 			getModulePositions(),
 			DRIVE_ODOMETRY_ORIGIN);
+		odometer.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, 100));
 		}
 	/**
 	 * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
@@ -184,8 +187,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
 	}
+	public Rotation2d getOdometryRotation() {
+		return odometer.getEstimatedPosition().getRotation();
+	}
 	public double getHeadingDegrees() {
-		return pigeon.getAngle();
+		return odometer.getEstimatedPosition().getRotation().getDegrees();
 	}
 	public ChassisSpeeds getChassisSpeeds() {
 		return kinematics.toChassisSpeeds(getModuleStates());
@@ -268,7 +274,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void updateOdometryWithVision() {
 		PoseEstimate estimate = limelight.getTrustedPose(getPose());
 		if (estimate != null) {
-			odometer.addVisionMeasurement(estimate.pose, estimate.timestampSeconds);
+			odometer.addVisionMeasurement(new Pose2d(estimate.pose.getTranslation(), getOdometryRotation()), estimate.timestampSeconds);
 		}
 	}
 	/**
@@ -400,7 +406,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return m_desiredRobotAngle;
 	}
 	private double getSpeakerAngleDifference() {
-		return calculateSpeakerAngleMoving()-(getGyroscopeRotation().getDegrees()%360);
+		return calculateSpeakerAngleMoving()-(getOdometryRotation().getDegrees()%360);
 	}
 	public boolean validShot() {
 		return runsValid >= Constants.LOOPS_VALID_FOR_SHOT;
@@ -424,9 +430,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 	
 		m_field.setRobotPose(odometer.getEstimatedPosition());
-        SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
+        SmartDashboard.putNumber("Robot Angle", getOdometryRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngle());
+		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngleMoving());
 		SmartDashboard.putNumber("TESTING robot angle difference", getSpeakerAngleDifference());
 		if (getSpeakerAngleDifference()<DriveConstants.ALLOWED_ERROR) {
 			runsValid++;
@@ -438,5 +444,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 		SmartDashboard.putNumber("DRIVETRAIN/forward speed", getChassisSpeeds().vxMetersPerSecond);
 		SmartDashboard.putNumber("DRIVETRAIN/rotational speed", Math.toDegrees(getChassisSpeeds().omegaRadiansPerSecond));
+		SmartDashboard.putNumber("DRIVETRAIN/gyroscope rotation degrees", getPose().getRotation().getDegrees());
 	}
 }
