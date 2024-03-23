@@ -43,6 +43,7 @@ public class IndexCommand extends Command {
   BooleanSupplier farStageAngleSup;
   BooleanSupplier operatorRevSup;
   BooleanSupplier intakeReverse; 
+  BooleanSupplier OverStagePassSup; 
   boolean auto;
   double runsEmpty = 0;
 
@@ -67,7 +68,7 @@ public class IndexCommand extends Command {
    * @param operatorRevSup button to press to rev up the shooter slowly while driving
    * @param intakeReverse button to press to run the indexer backwards manually
    */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse, BooleanSupplier OverStagePassSup) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
@@ -82,6 +83,7 @@ public class IndexCommand extends Command {
     this.groundIntakeSup = groundIntakeSup;
     this.operatorRevSup = operatorRevSup;
     this.intakeReverse = intakeReverse;
+    this.OverStagePassSup = OverStagePassSup;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_SHOOTER_ANGLE);
@@ -126,8 +128,12 @@ public class IndexCommand extends Command {
     } else {
       runsEmpty = 0;
       intake.intakeOff();
-      if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()) {
+      if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||OverStagePassSup.getAsBoolean()) {
+        if(OverStagePassSup.getAsBoolean()) {
+          shooter.shootRPS(ShooterConstants.PASS_RPS);
+        } else {
           shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
+        }
       } else {
         if (operatorRevSup.getAsBoolean()){ 
           shooter.shootRPSWithCurrent(100, 10, 20);
