@@ -34,6 +34,7 @@ public class AimRobotMoving extends Command {
     double rotationSpeed;
     double allianceOffset;
     BooleanSupplier SubwooferAngleSup;
+    BooleanSupplier OverStagePassSup;
   /**
    * a command to automatically aim the robot at the speaker if odometry is correct. This command also controls aiming from setpoints incase the odometry isn't working.
    * @param drivetrain the swerve drive subsystem
@@ -45,7 +46,7 @@ public class AimRobotMoving extends Command {
    * @param FarStageAngleSup the button to turn the robot to the far stage leg setpoint
    * @param SubwooferAngleSup the button to use the subwoofer setpoint (doesn't turn the robot, but stops the robot from auto-aiming when you rev up)
    */
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup, BooleanSupplier OverStagePassSup){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -59,6 +60,7 @@ public class AimRobotMoving extends Command {
           this.rotationSupplier = rotationSupplier;
           this.FarStageAngleSup = FarStageAngleSup;
           this.PodiumAngleSup = PodiumAngleSup;
+          this.OverStagePassSup = OverStagePassSup;
           this.run = run;
           addRequirements(drivetrain);
         }
@@ -76,17 +78,22 @@ public class AimRobotMoving extends Command {
           desiredRobotAngle = m_drivetrain.calculateSpeakerAngleMoving();
           double podiumRobotAngle;
           double farStageRobotAngle;
+          double OverStagePassAngle;
           if(DriverStation.getAlliance().get() == Alliance.Red) {
             podiumRobotAngle = Field.RED_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.RED_FAR_STAGE_ROBOT_ANGLE;
+            OverStagePassAngle = Field.RED_OVER_STAGE_PASS_ANGLE;
           } else {
             podiumRobotAngle = Field.BLUE_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.BLUE_FAR_STAGE_ROBOT_ANGLE;
+            OverStagePassAngle = Field.BLUE_OVER_STAGE_PASS_ANGLE;
           }
           if(PodiumAngleSup.getAsBoolean()) {
             speedController.setSetpoint(podiumRobotAngle);
           } else if(FarStageAngleSup.getAsBoolean()) {
             speedController.setSetpoint(farStageRobotAngle);
+          } else if(OverStagePassSup.getAsBoolean()) {
+            speedController.setSetpoint(OverStagePassAngle);
           } else {
             speedController.setSetpoint(desiredRobotAngle);
           }
