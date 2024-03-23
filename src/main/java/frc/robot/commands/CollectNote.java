@@ -41,14 +41,14 @@ public class CollectNote extends Command {
   public void initialize() {
     txController = new PIDController(
         // Vision.K_DETECTOR_TX_P,
-        0.05,
+        0.04,
         Vision.K_DETECTOR_TX_I,
         Vision.K_DETECTOR_TX_D);
     tyController = new PIDController(
-        Vision.K_DETECTOR_TY_P,
+        0.6,//Vision.K_DETECTOR_TY_P,
         Vision.K_DETECTOR_TY_I,
         Vision.K_DETECTOR_TY_D);
-    tyLimiter = new SlewRateLimiter(1, -1, 0);
+    tyLimiter = new SlewRateLimiter(4, -4, 0);
     txController.setSetpoint(0);
     tyController.setSetpoint(0);
     txController.setTolerance(3.5, 0.25);
@@ -103,6 +103,6 @@ public class CollectNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>30); 
+    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>15); 
   }
 }
