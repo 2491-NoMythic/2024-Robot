@@ -10,10 +10,15 @@ import com.revrobotics.SparkAnalogSensor.Mode;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
- import frc.robot.settings.Constants.IntakeConstants;
+import frc.robot.helpers.MotorLogger;
+import frc.robot.settings.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
   CANSparkMax intake1;
@@ -22,6 +27,11 @@ public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax intakeSideRight;
   SparkAnalogSensor m_DistanceSensor;
   boolean isNoteHeld;
+
+  MotorLogger motorLogger1;
+  MotorLogger motorLogger2;
+  DoubleLogEntry logDistance;
+  BooleanLogEntry logNoteIn;
 
   double intakeRunSpeed;
   public IntakeSubsystem() {
@@ -55,6 +65,12 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.burnFlash();
     intakeSideLeft.burnFlash();
     intakeSideRight.burnFlash();
+
+    DataLog log = DataLogManager.getLog();
+    motorLogger1 = new MotorLogger(log, "/intake/motor1");
+    motorLogger2 = new MotorLogger(log, "/intake/motor2");
+    logDistance = new DoubleLogEntry(log, "/intake/noteDistance");
+    logNoteIn = new BooleanLogEntry(log, "/intake/noteIn");
   }
   /**
    * sets the intakes speed
@@ -105,8 +121,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-  SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
-  SmartDashboard.putBoolean("is note in", isNoteSeen());
-  SmartDashboard.putBoolean("is note held", isNoteHeld());
+    SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());  
+    motorLogger1.log(intake1);
+    motorLogger2.log(intake2);
+    logDistance.append(m_DistanceSensor.getVoltage());
+    logNoteIn.append(isNoteSeen());
+    SmartDashboard.putBoolean("is note in", isNoteSeen());
+    SmartDashboard.putBoolean("is note held", isNoteHeld());
   }
 }

@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
@@ -13,22 +16,38 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.SparkAnalogSensor;
 
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.helpers.MotorLogger;
 import frc.robot.settings.Constants.IndexerConstants;
 
 public class IndexerSubsystem extends SubsystemBase {
-    TalonFX indexerMotor;
-    SparkAnalogSensor distanceSensor;
+    TalonFX m_IndexerMotor;
     CurrentLimitsConfigs currentLimitsConfigs;
+    TalonFXConfigurator configurator;
+    BooleanSupplier isNoteIn;
+    double noteStart;
+    boolean wasNoteIn = false;
+    MotorLogger motorLogger;
+    DoubleLogEntry notePositionLog;
 
-    public IndexerSubsystem() {
-
-        indexerMotor = new TalonFX(IndexerConstants.INDEXER_MOTOR);
+    public IndexerSubsystem(BooleanSupplier isNoteIn) {
+        m_IndexerMotor = new TalonFX(IndexerConstants.INDEXER_MOTOR);
+        m_IndexerMotor.setInverted(false);
+        this.isNoteIn = isNoteIn;
 
         currentLimitsConfigs = new CurrentLimitsConfigs();
         currentLimitsConfigs.SupplyCurrentLimit = IndexerConstants.CURRENT_LIMIT;
         currentLimitsConfigs.SupplyCurrentLimitEnable = true;
+
+        configurator = m_IndexerMotor.getConfigurator();
+        configurator.apply(currentLimitsConfigs);
+
+        motorLogger = new MotorLogger(DataLogManager.getLog(), "/indexer/motor");
+        notePositionLog = new DoubleLogEntry(DataLogManager.getLog(),"/indexer/notePosistion");
+    
         TalonFXConfiguration talonFXConfig = new TalonFXConfiguration().withCurrentLimits(currentLimitsConfigs)
                 .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive))
                 .withSlot0(new Slot0Configs().
@@ -40,7 +59,7 @@ public class IndexerSubsystem extends SubsystemBase {
                         .withMotionMagicCruiseVelocity(IndexerConstants.INDEXER_CRUISE_VELOCITY)
                         .withMotionMagicAcceleration(IndexerConstants.INDEXER_ACCELERATION)
                         .withMotionMagicJerk(IndexerConstants.INDEXER_JERK));
-        indexerMotor.getConfigurator().apply(talonFXConfig);
+        m_IndexerMotor.getConfigurator().apply(talonFXConfig);
 
     }
     /**
@@ -49,13 +68,13 @@ public class IndexerSubsystem extends SubsystemBase {
      * uses percentage of full power
      */
     public void on() {
-        indexerMotor.set(IndexerConstants.INDEXER_INTAKE_SPEED);
+        m_IndexerMotor.set(IndexerConstants.INDEXER_INTAKE_SPEED);
     }
     /**
     sets the indxer motor's percent-of-full-power to 0
      */
     public void off() {
-        indexerMotor.set(0);
+        m_IndexerMotor.set(0);
     }
     /**
      * sets the indexer motor to -INDEXER_INTAKE_SPEED (from constants)
@@ -63,14 +82,14 @@ public class IndexerSubsystem extends SubsystemBase {
      * uses percentage of full power
      */
     public void reverse() {
-        indexerMotor.set(-IndexerConstants.INDEXER_INTAKE_SPEED);
+        m_IndexerMotor.set(-IndexerConstants.INDEXER_INTAKE_SPEED);
     }
     /**
      * sets the percentage-of-full-power on the indexer
      * @param speed the desired speed, from -1 to 1
      */
     public void set(double speed) {
-        indexerMotor.set(speed);
+        m_IndexerMotor.set(speed);
     }
     /**
      * uses the indexer motor's onboard Motion Magic control to move the indexer forward. To move backwards, use negative inches.
@@ -78,9 +97,21 @@ public class IndexerSubsystem extends SubsystemBase {
      */
     public void forwardInches(double inches) {
         double rotationsRequested = inches/IndexerConstants.MOTOR_ROTATIONS_TO_INCHES;
-        double position = indexerMotor.getPosition().getValueAsDouble()+rotationsRequested;
+        double position = m_IndexerMotor.getPosition().getValueAsDouble()+rotationsRequested;
         MotionMagicVoltage distanceRequest = new MotionMagicVoltage(position);
-        indexerMotor.setControl(distanceRequest);
+        m_IndexerMotor.setControl(distanceRequest);
+    }
+
+    public void trackNote() {
+        boolean noteIn = isNoteIn.getAsBoolean();
+        if (!wasNoteIn && noteIn) {
+            noteStart = m_IndexerMotor.getPosition().getValueAsDouble();
+        }
+        wasNoteIn = noteIn;
+    }
+
+    public double getNotePosition() {
+        return m_IndexerMotor.getPosition().getValueAsDouble() - noteStart;
     }
     /**
      * uses the indexer motor's onboard Motion Magic control to set the motor to a desired RPS
@@ -88,11 +119,15 @@ public class IndexerSubsystem extends SubsystemBase {
      */
     public void magicRPS(double RPS) {
         MotionMagicVelocityVoltage speedRequest = new MotionMagicVelocityVoltage(RPS);
-        indexerMotor.setControl(speedRequest);
+        m_IndexerMotor.setControl(speedRequest);
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("indexer current", indexerMotor.getSupplyCurrent().getValueAsDouble());
+        trackNote();
+        motorLogger.log(m_IndexerMotor);
+        double pos = getNotePosition();
+        notePositionLog.append(pos);
+        SmartDashboard.putNumber("note pos", pos);
     }
 }

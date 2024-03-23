@@ -7,11 +7,19 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.RobotState;
+
+/*
+ * 
+ */
 public class IndicatorLights extends Command {
  
   Lights lights;
-
-  public IndicatorLights(Lights lights) {
+ /**
+ * This command controls the lights.  Section One Lights: If a note is seen, lights = dark orange-brown. Otherwise,
+ *  lights = oddly deep dark purple.  Section Two Lights: If the shooter is in range, and is ready, lights = dark
+ * green. If it is in range, but not ready, lights = a dark green-yellow-brown. If neither is true, lights = deep dark purple
+ */
+public IndicatorLights(Lights lights) {
     addRequirements(lights);
     this.lights = lights;
   }

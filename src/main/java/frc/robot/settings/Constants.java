@@ -265,7 +265,7 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_ANGLE = 97;
   public static final double HUMAN_PLAYER_RPS = -15;
   public static final double SAFE_SHOOTER_ANGLE = 15;
-  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 90;
+  public static final double GROUND_INTAKE_SHOOTER_ANGLE = 69;
   /**
    * the values used when adjusting the shooter's angle based on our speaker distance. Here's how we calculated them:
    * <p>
@@ -281,8 +281,10 @@ public static final class ShooterConstants{
   public static final double COMP_ADJUST_EQUATION_C = 0.699325;
   }
   // public static final double COMP_ADJUST_EQUATION_D = 1; unused becuase we aren't using a cubic equation
-
-  public static final double CompBotZeroOffset = 334.7;
+/**
+ * the value that the encoder thinks is zero. when the shooter is resting on the bottom stop, the encoder should read 11.63 
+ */
+  public static final double CompBotZeroOffset = 155.2;//before rebuild was 334.7. After rebuild right away was 155.57
   public static final double PracBotZeroOffset = 328;
 
  

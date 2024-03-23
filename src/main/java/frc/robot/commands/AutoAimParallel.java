@@ -11,12 +11,12 @@ import frc.robot.subsystems.ShooterSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class autoAimParallel extends ParallelCommandGroup {
+public class AutoAimParallel extends ParallelCommandGroup {
   DrivetrainSubsystem m_drivetrain;
   ShooterSubsystem m_ShooterSubsystem;
 
   /** Creates a new autoAimParallel. */
-  public autoAimParallel( DrivetrainSubsystem drivetrain /*, ShooterSubsystem shooter */) {
+  public AutoAimParallel( DrivetrainSubsystem drivetrain /*, ShooterSubsystem shooter */) {
     m_drivetrain = drivetrain;
     // m_ShooterSubsystem = shooterSubsystem;
 

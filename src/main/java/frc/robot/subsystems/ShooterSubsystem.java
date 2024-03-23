@@ -17,8 +17,11 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.RelativeEncoder;
  import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
+import frc.robot.helpers.MotorLogger;
 import frc.robot.settings.Constants;
 import  frc.robot.settings.Constants.ShooterConstants;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase; 
@@ -49,6 +52,9 @@ import java.util.function.DoubleSupplier;
 	AngleShooter angleShooter;
 	int accumulativeTurns;
   int runsValid;
+
+  MotorLogger motorLoggerR;
+  MotorLogger motorLoggerL;
   
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
@@ -81,6 +87,10 @@ import java.util.function.DoubleSupplier;
     
     configuratorR.apply(PIDRightconfigs);
     configuratorL.apply(PIDLeftconfigs);
+
+    DataLog log = DataLogManager.getLog();
+    motorLoggerL = new MotorLogger(log, "/shooter/motorL");
+    motorLoggerR = new MotorLogger(log, "/shooter/motorR");
   }
   /**
    * configures the current limits on the shooter motors. Can be ran as many times as you want
@@ -185,6 +195,8 @@ import java.util.function.DoubleSupplier;
     } else {
       runsValid = 0;
     }
+    motorLoggerL.log(shooterL);
+    motorLoggerR.log(shooterR);
   }
 }
  
