@@ -39,10 +39,12 @@ public class IntakeSubsystem extends SubsystemBase {
       m_DistanceSensor = intake2.getAnalog(Mode.kAbsolute);
     }
     intake2.follow(intake1);
-    intake2.setInverted(false);
-    intake1.setInverted(true);
+    intake2.setInverted(true);
+    intake1.setInverted(false);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
+    intakeSideRight.setInverted(false);
+    intakeSideLeft.setInverted(true);
     intakeSideLeft.setIdleMode(IdleMode.kCoast);
     intakeSideRight.setIdleMode(IdleMode.kCoast);
     intake1.setSmartCurrentLimit(25, 40, 1000);
@@ -61,10 +63,12 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public void intakeYes(double intakeRunSpeed) {
     intake1.set(intakeRunSpeed);
+    intakeSideLeft.set(intakeRunSpeed);
+    intakeSideRight.set(intakeRunSpeed);
   }
 
   public void intakeSideWheels(double sideWheelRunSpeed){
-    //TODO set one of these negative
+    System.out.println("side wheels " + sideWheelRunSpeed);
     intakeSideLeft.set(sideWheelRunSpeed);
     intakeSideRight.set(sideWheelRunSpeed);
   }
@@ -75,12 +79,16 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public void intakeNo(double intakeRunSpeed) {
     intake1.set(-intakeRunSpeed);
+    intakeSideLeft.set(-intakeRunSpeed);
+    intakeSideRight.set(-intakeRunSpeed);
   }
   /**
    * sets the intake's power to 0
    */
   public void intakeOff() {
     intake1.set(0);
+    intakeSideLeft.set(0);
+    intakeSideRight.set(0);
   }
   /**
    * uses the distance sensor inside the indexer to tell if there is a note fully inside the indexer

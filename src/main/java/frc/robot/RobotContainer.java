@@ -182,7 +182,7 @@ public class RobotContainer {
     driveTrainInst();
     
 
-    if(intakeExists) {intakeInst();}
+    if(true) {intakeInst();}
     if(shooterExists) {shooterInst();}
     if(angleShooterExists) {angleShooterInst();}
     if(climberExists) {climberInst();}
@@ -191,9 +191,9 @@ public class RobotContainer {
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists && angleShooterExists) {indexCommandInst();}
     Limelight.useDetectorLimelight(useDetectorLimelight);
+    configureBindings();
     autoInit();
     // Configure the trigger bindings
-    configureBindings();
   }
   private void climbSpotChooserInit() {
     climbSpotChooser = new SendableChooser<String>();
@@ -306,7 +306,7 @@ public class RobotContainer {
     if(shooterExists) {
       new Trigger(AmpAngleSup).whileTrue(new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
     }
-    if(intakeExists) {
+    if(intakeExists&&indexerExists) {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(intakeExists&&indexerExists) {
@@ -354,7 +354,10 @@ public class RobotContainer {
  */
 //FOR TESTING PURPOSES:
     if(intakeExists) {
-      SmartDashboard.putData("intake on", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED), intake));
+      SmartDashboard.putData("intake on",new SequentialCommandGroup(
+        new InstantCommand(()->intake.intakeYes(-0.8), intake)
+        // new InstantCommand(()->intake.intakeSideWheels(0.5), intake)));
+      ));
       SmartDashboard.putData("intake off", new InstantCommand(intake::intakeOff, intake));
     }
     if(shooterExists) {
@@ -435,12 +438,14 @@ public class RobotContainer {
 
   private void registerNamedCommands() {
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
+    if(intakeExists&&indexerExists) {
     NamedCommands.registerCommand("driveBackwardsToIntake", new ParallelRaceGroup(
       new SequentialCommandGroup(
         new MoveMeters(driveTrain, 0.7, -2, 0, 0),
         new MoveMeters(driveTrain, 0.7, 2, 0, 0)),
       new AutoGroundIntake(indexer, intake, angleShooterSubsystem)
     ));
+    }
     if(intakeExists&&indexerExists&&angleShooterExists) {
       NamedCommands.registerCommand("autoPickup",new ParallelCommandGroup(
         new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
