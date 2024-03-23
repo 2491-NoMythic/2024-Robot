@@ -298,7 +298,7 @@ public class RobotContainer {
           new WaitCommand(0.5)
           )
           ).withTimeout(4);
-      new Trigger(operatorController::getR1Button).whileTrue(autoPickup);
+      new Trigger(driverController::getR3Button).whileTrue(autoPickup);
     }
     new Trigger(ForceVisionSup).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
     SmartDashboard.putData("force update limelight position", new InstantCommand(()->driveTrain.forceUpdateOdometryWithVision(), driveTrain));
