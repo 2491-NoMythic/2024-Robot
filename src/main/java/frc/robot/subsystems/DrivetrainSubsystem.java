@@ -302,9 +302,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		}
 		if(alliance.isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-			deltaX = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+			deltaX = Math.abs(dtvalues.getX() - Field.ROBOT_BLUE_SPEAKER_X);
 		} else {
-			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+			deltaX = Math.abs(dtvalues.getX() - Field.ROBOT_RED_SPEAKER_X);
 		}
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 		// SmartDashboard.putNumber("dist to speaker", speakerDist);
@@ -345,9 +345,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 		//triangle for robot angle
 		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+			deltaX = Math.abs(dtvalues.getX() - Field.ROBOT_RED_SPEAKER_X);
 		} else {
-			deltaX = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+			deltaX = Math.abs(dtvalues.getX() - Field.ROBOT_BLUE_SPEAKER_X);
 		}
 		deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
@@ -366,10 +366,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		double speakerX;
 		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
 			correctionDirection = 1;
-			speakerX = Field.BLUE_SPEAKER_X;
+			speakerX = Field.ROBOT_BLUE_SPEAKER_X;
 		} else {
 			correctionDirection = -1;
-			speakerX = Field.RED_SPEAKER_X;
+			speakerX = Field.ROBOT_RED_SPEAKER_X;
 		}
 		offsetSpeakerX = speakerX+(targetOffset.getX()*correctionDirection);
 		offsetSpeakerY = Field.SPEAKER_Y+(targetOffset.getY()*correctionDirection);
@@ -378,7 +378,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		
 		adjustedTarget = new Translation2d(offsetSpeakerX, offsetSpeakerY);
 		offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaY, 2) + Math.pow(offsetDeltaX, 2));
-		SmartDashboard.putNumber("offsetSpeakerDis", offsetSpeakerdist);
+		SmartDashboard.putNumber("MATH/Robot speaker dist", offsetSpeakerdist);
 		RobotState.getInstance().ShooterInRange = offsetSpeakerdist<Field.MAX_SHOOTING_DISTANCE;
 		// SmartDashboard.putString("offset amount", targetOffset.toString());
 		// SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());

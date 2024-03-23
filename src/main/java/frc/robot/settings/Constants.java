@@ -432,8 +432,10 @@ public static final class CTREConfigs {
   }
 
   public final class Field{
-    public static final double BLUE_SPEAKER_X = 0.23;
-    public static final double RED_SPEAKER_X = 16;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double ROBOT_BLUE_SPEAKER_X = 0.23;
+    public static final double ROBOT_RED_SPEAKER_X = 16;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double SHOOTER_BLUE_SPEAKER_X = 0.23;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double SHOOTER_RED_SPEAKER_X = 16.87;//16.38; changed so that shots from the side wil aim to the opposite side, and bank in
     public static final double SPEAKER_Y = 5.46;
     public static final double SPEAKER_Z = 1.5;//1.8;//2.08; //height of opening. Changed so that the smaller spekeaker_x shots will still go in
     public static final double MAX_SHOOTING_DISTANCE = 9;
