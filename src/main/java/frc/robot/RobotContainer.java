@@ -298,6 +298,7 @@ public class RobotContainer {
           new WaitCommand(0.5)
           )
           ).withTimeout(4);
+      new Trigger(driverController::getR3Button).whileTrue(autoPickup);
       new Trigger(operatorController::getR1Button).whileTrue(autoPickup);
     }
     new Trigger(ForceVisionSup).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
@@ -321,7 +322,7 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
@@ -480,7 +481,7 @@ public class RobotContainer {
       //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
         new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup),
-        new ShootNote(indexer, 1, angleShooterSubsystem)));
+        new ShootNote(indexer, 1.5, angleShooterSubsystem, intake)));
       // NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       // NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
     }

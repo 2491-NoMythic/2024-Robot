@@ -57,6 +57,6 @@ public class DriveTimeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get()>=time)||!SmartDashboard.getBoolean("note seen", true);
+    return (timer.get()>=time);
   }
 }

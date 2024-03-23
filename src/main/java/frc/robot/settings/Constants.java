@@ -72,7 +72,7 @@ public final class Constants {
     /**
      * The diameter of the module's wheel in meters.
      */
-    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.098;
+    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.092;//0.098;
 
     /**
      * The overall drive reduction of the module. Multiplying motor rotations by
@@ -433,9 +433,9 @@ public static final class CTREConfigs {
 
   public final class Field{
     public static final double BLUE_SPEAKER_X = 0.23;
-    public static final double RED_SPEAKER_X = 16.87;
-    public static final double SPEAKER_Y = 5.6;
-    public static final double SPEAKER_Z = 2.08; //height of opening
+    public static final double RED_SPEAKER_X = 16;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double SPEAKER_Y = 5.46;
+    public static final double SPEAKER_Z = 1.5;//1.8;//2.08; //height of opening. Changed so that the smaller spekeaker_x shots will still go in
     public static final double MAX_SHOOTING_DISTANCE = 9;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
@@ -460,7 +460,7 @@ public final class Vision{
   public static final String LIMELIGHT_SHUFFLEBOARD_TAB = "Vision";
   
   public static final double ALLOWABLE_POSE_DIFFERENCE = 0.5;
-  public static final double MAX_TAG_DISTANCE = 2.5;
+  public static final double MAX_TAG_DISTANCE = 3;
 
   public static final Translation2d FIELD_CORNER = new Translation2d(16.54, 8.02);
 
