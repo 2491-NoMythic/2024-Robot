@@ -322,7 +322,7 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
