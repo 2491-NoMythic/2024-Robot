@@ -127,11 +127,7 @@ public class IndexCommand extends Command {
       runsEmpty = 0;
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()) {
-        if(angleShooterSubsytem.shortSpeakerDist()||subwooferAngleSup.getAsBoolean()) {
-          shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
-        } else {
           shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
-        }
       } else {
         if (operatorRevSup.getAsBoolean()){ 
           shooter.shootRPSWithCurrent(100, 10, 20);

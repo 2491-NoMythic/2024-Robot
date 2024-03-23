@@ -276,9 +276,11 @@ public static final class ShooterConstants{
   public static final class AdjustEquation {
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
-  public static final double COMP_ADJUST_EQUATION_A = 0.0469456;
-  public static final double COMP_ADJUST_EQUATION_B = -0.237047;
-  public static final double COMP_ADJUST_EQUATION_C = 0.699325;
+  public static final double COMP_ADJUST_EQUATION_A = -0.00505024;
+  public static final double COMP_ADJUST_EQUATION_B = 0.0651897;
+  public static final double COMP_ADJUST_EQUATION_C = -0.0811224;
+  public static final double COMP_ADJUST_EQUATION_D = 0.0456604;
+
   }
   // public static final double COMP_ADJUST_EQUATION_D = 1; unused becuase we aren't using a cubic equation
 /**
