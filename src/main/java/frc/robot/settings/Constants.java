@@ -258,7 +258,7 @@ public static final class ShooterConstants{
   public static final double ANGLE_TICKS_PER_DEGREE = 2491;
   public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0.15;
-  public static final double OFFSET_MULTIPLIER = 1;
+  public static final double OFFSET_MULTIPLIER = 1.5;
   public static final double MINIMUM_SHOOTER_ANGLE = 11.64;
   public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 108;
   public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;

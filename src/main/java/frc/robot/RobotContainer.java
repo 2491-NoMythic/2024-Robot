@@ -322,13 +322,13 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
         // new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
         new InstantCommand(()->shooter.shootWithSupplier(()->10.2, true), shooter),
-        new MoveMeters(driveTrain, 0.075, 0.06, 0, 0),
+        new MoveMeters(driveTrain, 0.085, 0.08, 0, 0),
         new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
         // new InstantCommand(()->indexer.forwardInches(IndexerConstants.AMP_SHOT_INCHES), indexer),
         new InstantCommand(()->indexer.magicRPS(90), indexer),//45 worked but a bit too high
