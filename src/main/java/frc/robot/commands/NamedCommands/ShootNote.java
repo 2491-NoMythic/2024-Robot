@@ -42,7 +42,7 @@ public class ShootNote extends Command {
   @Override
   public void execute() {
     angleShooter.setDesiredShooterAngle(angleShooter.calculateSpeakerAngle());
-    if(timer.get()>=1.2) {
+    if(timer.get()>=1) {
       indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
     }
     SmartDashboard.putNumber("auto timer", timer.get());
