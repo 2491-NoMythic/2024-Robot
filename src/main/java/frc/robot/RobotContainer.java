@@ -168,7 +168,7 @@ public class RobotContainer {
     AimWhileMovingSup = driverController::getL2Button;
     ShootIfReadySup = driverController::getR2Button;
     SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getR2Button();
-    StageAngleSup = ()->operatorController.getPOV() == 270;
+    StageAngleSup = ()->operatorController.getPOV() == 270||driverController.getCircleButton();;
     HumanPlaySup = driverController::getR1Button;
     AmpAngleSup = ()->driverController.getPOV() == 90;
     ClimberDownSup = operatorController::getCrossButton;
@@ -177,7 +177,7 @@ public class RobotContainer {
     ManualShootSup = driverController::getL1Button;
     ForceVisionSup = driverController::getOptionsButton;
     GroundIntakeSup = operatorController::getTouchpad;
-    FarStageAngleSup = ()->operatorController.getPOV() == 0;
+    FarStageAngleSup = ()->operatorController.getPOV() == 0||driverController.getTouchpad();
     OperatorPreRevSup = operatorController::getL2Button;
     OverStagePassSup = driverController::getSquareButton;
     zeroSup = ()->0;
@@ -291,19 +291,17 @@ public class RobotContainer {
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
-      autoPickup = new SequentialCommandGroup(
-        new WaitCommand(0.3),
-        new ParallelRaceGroup(
-          new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
-          new SequentialCommandGroup(
-            new CollectNote(driveTrain, limelight),
-            new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
-            new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
-            new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
-            new WaitCommand(0.5)
-            )
-            ).withTimeout(4)
-      );
+      autoPickup = new ParallelRaceGroup(
+        new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
+        new SequentialCommandGroup(
+          new CollectNote(driveTrain, limelight),
+          new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
+          new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
+          new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
+          new WaitCommand(0.5)
+          )
+          ).withTimeout(4);
+      // new Trigger(driverController::getR3ButtonPressed).whileTrue(GroundIntake);
       new Trigger(driverController::getR3Button).whileTrue(autoPickup);
       new Trigger(operatorController::getR1Button).whileTrue(autoPickup);
     }
@@ -503,7 +501,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
   public void teleopInit() {
-    driveTrain.forceUpdateOdometryWithVision();
     if(climberExists) {
       SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
         new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),

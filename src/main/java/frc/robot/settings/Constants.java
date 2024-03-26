@@ -242,7 +242,7 @@ public static final class ShooterConstants{
   public static final double SHORT_SHOOTING_RPS = 100;
   public static final double AMP_RPS = 17.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
-  public static final double PASS_RPS = 70;
+  public static final double PASS_RPS = 80;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
   public static final double ANGLE_SHOOTER_POWER_KP = 0.026;
@@ -268,7 +268,7 @@ public static final class ShooterConstants{
   public static final double SAFE_SHOOTER_ANGLE = 15;
   public static final double GROUND_INTAKE_SHOOTER_ANGLE = 69;
 
-  public static final double OVER_STAGE_PASS_ANGLE = 50;
+  public static final double OVER_STAGE_PASS_ANGLE = 45;
   /**
    * the values used when adjusting the shooter's angle based on our speaker distance. Here's how we calculated them:
    * <p>
@@ -449,7 +449,7 @@ public static final class CTREConfigs {
     public static final double AMPLIFIER_SHOOTER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_SHOOTER_ANGLE = 36.3;
-    public static final double FAR_STAGE_SHOOTER_ANGLE = 24.5;
+    public static final double FAR_STAGE_SHOOTER_ANGLE = 28;//24.5;
     
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
