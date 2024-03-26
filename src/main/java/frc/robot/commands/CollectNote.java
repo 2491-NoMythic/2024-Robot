@@ -39,6 +39,7 @@ public class CollectNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    runsInvalid = 0;
     closeNote = false;
     txController = new PIDController(
         // Vision.K_DETECTOR_TX_P,
@@ -72,7 +73,6 @@ public class CollectNote extends Command {
       if (runsInvalid <= 10) { // don't stop imediately, in case only a couple frames were missed
         drivetrain.drive(new ChassisSpeeds(tyLimiter.calculate(0), 0, 0));
       } else {
-
         drivetrain.stop();
       }
       System.err.println("invalidDetectorData");
@@ -82,14 +82,15 @@ public class CollectNote extends Command {
       runsInvalid = 0;
     }
     
-    tx = detectorData.tx;
+    ty = detectorData.ty;
     if(!closeNote) {
       tx = detectorData.tx;
     } else if(detectorData.ty<5.5){
       tx = detectorData.tx;
-    } else {
-      runsInvalid++;
-    }
+    } 
+    // else {
+    //   runsInvalid++;
+    // }
     if (ty<5.5){
       closeNote = true;
     } 

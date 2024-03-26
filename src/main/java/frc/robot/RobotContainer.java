@@ -291,16 +291,19 @@ public class RobotContainer {
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
-      autoPickup = new ParallelRaceGroup(
-        new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
-        new SequentialCommandGroup(
-          new CollectNote(driveTrain, limelight),
-          new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
-          new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
-          new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
-          new WaitCommand(0.5)
-          )
-          ).withTimeout(4);
+      autoPickup = new SequentialCommandGroup(
+        new WaitCommand(0.3),
+        new ParallelRaceGroup(
+          new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
+          new SequentialCommandGroup(
+            new CollectNote(driveTrain, limelight),
+            new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
+            new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
+            new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
+            new WaitCommand(0.5)
+            )
+            ).withTimeout(4)
+      );
       new Trigger(driverController::getR3Button).whileTrue(autoPickup);
       new Trigger(operatorController::getR1Button).whileTrue(autoPickup);
     }
@@ -479,7 +482,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
     }
     if(indexerExists&&shooterExists) {
-      NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 2.0, 2.25, angleShooterSubsystem));
+      NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 1.0, 1.25, angleShooterSubsystem));
       //the following command will both aim the robot at the speaker (with the AimRobotMoving), and shoot a note while aiming the shooter (with shootNote). As a race group, it ends
       //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
