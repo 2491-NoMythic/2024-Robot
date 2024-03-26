@@ -177,7 +177,7 @@ public class RobotContainer {
     ManualShootSup = driverController::getL1Button;
     ForceVisionSup = driverController::getOptionsButton;
     GroundIntakeSup = operatorController::getTouchpad;
-    FarStageAngleSup = ()->operatorController.getPOV() == 0;
+    FarStageAngleSup = ()->operatorController.getPOV() == 0||driverController.getTouchpad();
     OperatorPreRevSup = operatorController::getL2Button;
     OverStagePassSup = driverController::getSquareButton;
     zeroSup = ()->0;
@@ -301,6 +301,7 @@ public class RobotContainer {
           new WaitCommand(0.5)
           )
           ).withTimeout(4);
+      // new Trigger(driverController::getR3ButtonPressed).whileTrue(GroundIntake);
       new Trigger(driverController::getR3Button).whileTrue(autoPickup);
       new Trigger(operatorController::getR1Button).whileTrue(autoPickup);
     }
@@ -500,7 +501,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }
   public void teleopInit() {
-    driveTrain.forceUpdateOdometryWithVision();
     if(climberExists) {
       SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
         new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),
