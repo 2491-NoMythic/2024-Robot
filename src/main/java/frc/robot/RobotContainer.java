@@ -168,7 +168,7 @@ public class RobotContainer {
     AimWhileMovingSup = driverController::getL2Button;
     ShootIfReadySup = driverController::getR2Button;
     SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getR2Button();
-    StageAngleSup = ()->operatorController.getPOV() == 270;
+    StageAngleSup = ()->operatorController.getPOV() == 270||driverController.getCircleButton();;
     HumanPlaySup = driverController::getR1Button;
     AmpAngleSup = ()->driverController.getPOV() == 90;
     ClimberDownSup = operatorController::getCrossButton;
