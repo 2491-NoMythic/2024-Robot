@@ -72,7 +72,7 @@ public final class Constants {
     /**
      * The diameter of the module's wheel in meters.
      */
-    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.098;
+    public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.092;//0.098;
 
     /**
      * The overall drive reduction of the module. Multiplying motor rotations by
@@ -242,6 +242,7 @@ public static final class ShooterConstants{
   public static final double SHORT_SHOOTING_RPS = 100;
   public static final double AMP_RPS = 17.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
+  public static final double PASS_RPS = 80;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
   public static final double ANGLE_SHOOTER_POWER_KP = 0.026;
@@ -258,7 +259,7 @@ public static final class ShooterConstants{
   public static final double ANGLE_TICKS_PER_DEGREE = 2491;
   public static final double DEGREES_PER_ROTATION = 360;
   public static final double DISTANCE_MULTIPLIER = 0.15;
-  public static final double OFFSET_MULTIPLIER = 1;
+  public static final double OFFSET_MULTIPLIER = 1.5;
   public static final double MINIMUM_SHOOTER_ANGLE = 11.64;
   public static final double COMP_MAXIMUM_SHOOTER_ANGLE = 108;
   public static final double PRAC_MAXIMUM_SHOOTER_ANGLE = 101;
@@ -266,6 +267,8 @@ public static final class ShooterConstants{
   public static final double HUMAN_PLAYER_RPS = -15;
   public static final double SAFE_SHOOTER_ANGLE = 15;
   public static final double GROUND_INTAKE_SHOOTER_ANGLE = 69;
+
+  public static final double OVER_STAGE_PASS_ANGLE = 45;
   /**
    * the values used when adjusting the shooter's angle based on our speaker distance. Here's how we calculated them:
    * <p>
@@ -276,9 +279,11 @@ public static final class ShooterConstants{
   public static final class AdjustEquation {
   public static final double PRAC_ADJUST_EQUATION_A = 1.14168;
   public static final double PRAC_ADJUST_EQUATION_B = -1.22979;
-  public static final double COMP_ADJUST_EQUATION_A = 0.0469456;
-  public static final double COMP_ADJUST_EQUATION_B = -0.237047;
-  public static final double COMP_ADJUST_EQUATION_C = 0.699325;
+  public static final double COMP_ADJUST_EQUATION_A = -0.00505024;
+  public static final double COMP_ADJUST_EQUATION_B = 0.0651897;
+  public static final double COMP_ADJUST_EQUATION_C = -0.0811224;
+  public static final double COMP_ADJUST_EQUATION_D = 0.0456604;
+
   }
   // public static final double COMP_ADJUST_EQUATION_D = 1; unused becuase we aren't using a cubic equation
 /**
@@ -432,22 +437,26 @@ public static final class CTREConfigs {
   }
 
   public final class Field{
-    public static final double BLUE_SPEAKER_X = 0.23;
-    public static final double RED_SPEAKER_X = 16.87;
-    public static final double SPEAKER_Y = 5.6;
-    public static final double SPEAKER_Z = 2.08; //height of opening
+    public static final double ROBOT_BLUE_SPEAKER_X = 0.23;
+    public static final double ROBOT_RED_SPEAKER_X = 16;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double SHOOTER_BLUE_SPEAKER_X = 0.23;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double SHOOTER_RED_SPEAKER_X = 16.87;//16.38; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double SPEAKER_Y = 5.46;
+    public static final double SPEAKER_Z = 2.08;//1.5;//1.8;//2.08; //height of opening. Changed so that the smaller spekeaker_x shots will still go in
     public static final double MAX_SHOOTING_DISTANCE = 9;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
     public static final double AMPLIFIER_SHOOTER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_SHOOTER_ANGLE = 36.3;
-    public static final double FAR_STAGE_SHOOTER_ANGLE = 24.5;
+    public static final double FAR_STAGE_SHOOTER_ANGLE = 28;//24.5;
     
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
     public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
     public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
+    public static final double RED_OVER_STAGE_PASS_ANGLE = 55;
+    public static final double BLUE_OVER_STAGE_PASS_ANGLE = -125;
 
     //angle at 60 for bounce techinque, didn't work
   }
@@ -460,7 +469,7 @@ public final class Vision{
   public static final String LIMELIGHT_SHUFFLEBOARD_TAB = "Vision";
   
   public static final double ALLOWABLE_POSE_DIFFERENCE = 0.5;
-  public static final double MAX_TAG_DISTANCE = 2.5;
+  public static final double MAX_TAG_DISTANCE = 3;
 
   public static final Translation2d FIELD_CORNER = new Translation2d(16.54, 8.02);
 
