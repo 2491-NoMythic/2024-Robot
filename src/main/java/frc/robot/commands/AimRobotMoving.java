@@ -98,7 +98,7 @@ public class AimRobotMoving extends Command {
             speedController.setSetpoint(desiredRobotAngle);
           }
           //move robot to desired angle
-          this.currentHeading = m_drivetrain.getPose().getRotation().getDegrees();
+          this.currentHeading = m_drivetrain.getOdometryRotation().getDegrees();
           SmartDashboard.putNumber("AIMROBOT/input degrees", currentHeading);
           SmartDashboard.putNumber("AIMROBOT/setpoint", speedController.getSetpoint());
           if(Math.abs(rotationSupplier.getAsDouble()) > 0.3) {
