@@ -89,12 +89,13 @@ public class RobotContainer {
   private final boolean climberExists = Preferences.getBoolean("Climber", true);
   private final boolean lightsExist = Preferences.getBoolean("Lights", true);
   private final boolean indexerExists = Preferences.getBoolean("Indexer", true);
-  private final boolean sidewheels = Preferences.getBoolean("sidewheels", true);
+  private final boolean sideWheelsExists = Preferences.getBoolean("IntakeSideWheels", true);
   //private final boolean autosExist = Preferences.getBoolean("Autos", true);
   private final boolean useDetectorLimelight = Preferences.getBoolean("Detector Limelight", true);
 
   private DrivetrainSubsystem driveTrain;
   private IntakeSubsystem intake;
+  private IntakeSubsystem sideWheels;
   private ShooterSubsystem shooter;
   private AngleShooterSubsystem angleShooterSubsystem;
   private Drive defaultDriveCommand;
@@ -142,6 +143,7 @@ public class RobotContainer {
     Preferences.initBoolean("Brushes", false);
     Preferences.initBoolean("CompBot", true);
     Preferences.initBoolean("Intake", true);
+    Preferences.initBoolean("IntakeSideWheels", false);
     Preferences.initBoolean("Shooter", true);
     Preferences.initBoolean("AngleShooter", true);
     Preferences.initBoolean("Lights", true);
@@ -187,6 +189,7 @@ public class RobotContainer {
     driveTrainInst();
     
     if(intakeExists) {intakeInst(); /* Must happen before indexInit */}
+    if(sideWheelsExists) {sideWheelsInst();}
     if(shooterExists) {shooterInst();}
     if(angleShooterExists) {angleShooterInst();}
     if(climberExists) {climberInst();}
@@ -234,6 +237,9 @@ public class RobotContainer {
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
+  }
+  private void sideWheelsInst() {
+    sideWheels = new IntakeSubsystem();
   }
   private void climberInst() {
     climber = new Climber();
@@ -477,7 +483,7 @@ public class RobotContainer {
     }
     if(intakeExists) {
       NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
-      if(sidewheels){
+      if(sideWheelsExists){
         NamedCommands.registerCommand("intakeSideWheels", new InstantCommand(()-> intake.intakeSideWheels(1)));
       }
     }

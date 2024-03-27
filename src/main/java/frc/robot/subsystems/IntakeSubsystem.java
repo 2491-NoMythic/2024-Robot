@@ -43,18 +43,13 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.restoreFactoryDefaults();
     intakeSideLeft.restoreFactoryDefaults();
     intakeSideRight.restoreFactoryDefaults();
-    if(Preferences.getBoolean("CompBot", true)) {
-      m_DistanceSensor = intake1.getAnalog(Mode.kAbsolute);
-    } else {
-      m_DistanceSensor = intake2.getAnalog(Mode.kAbsolute);
-    }
     intake2.follow(intake1);
-    intake2.setInverted(true);
     intake1.setInverted(false);
-    intake1.setIdleMode(IdleMode.kCoast);
-    intake2.setIdleMode(IdleMode.kCoast);
+    intake2.setInverted(true);    
+    intakeSideLeft.setInverted(true);    
     intakeSideRight.setInverted(false);
-    intakeSideLeft.setInverted(true);
+    intake1.setIdleMode(IdleMode.kCoast);
+    intake2.setIdleMode(IdleMode.kCoast);    
     intakeSideLeft.setIdleMode(IdleMode.kCoast);
     intakeSideRight.setIdleMode(IdleMode.kCoast);
     intake1.setSmartCurrentLimit(25, 40, 1000);
@@ -65,7 +60,11 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2.burnFlash();
     intakeSideLeft.burnFlash();
     intakeSideRight.burnFlash();
-
+    if(Preferences.getBoolean("CompBot", true)) {
+      m_DistanceSensor = intake1.getAnalog(Mode.kAbsolute);
+    } else {
+      m_DistanceSensor = intake2.getAnalog(Mode.kAbsolute);
+    }
     DataLog log = DataLogManager.getLog();
     motorLogger1 = new MotorLogger(log, "/intake/motor1");
     motorLogger2 = new MotorLogger(log, "/intake/motor2");
