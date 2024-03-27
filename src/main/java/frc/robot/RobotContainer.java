@@ -95,7 +95,6 @@ public class RobotContainer {
 
   private DrivetrainSubsystem driveTrain;
   private IntakeSubsystem intake;
-  private IntakeSubsystem sideWheels;
   private ShooterSubsystem shooter;
   private AngleShooterSubsystem angleShooterSubsystem;
   private Drive defaultDriveCommand;
@@ -189,7 +188,6 @@ public class RobotContainer {
     driveTrainInst();
     
     if(intakeExists) {intakeInst(); /* Must happen before indexInit */}
-    if(sideWheelsExists) {sideWheelsInst();}
     if(shooterExists) {shooterInst();}
     if(angleShooterExists) {angleShooterInst();}
     if(climberExists) {climberInst();}
@@ -237,9 +235,6 @@ public class RobotContainer {
   }
   private void intakeInst() {
     intake = new IntakeSubsystem();
-  }
-  private void sideWheelsInst() {
-    sideWheels = new IntakeSubsystem();
   }
   private void climberInst() {
     climber = new Climber();
