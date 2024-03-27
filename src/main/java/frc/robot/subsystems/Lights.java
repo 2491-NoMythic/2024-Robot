@@ -12,10 +12,10 @@ public class Lights extends SubsystemBase {
   private AddressableLED lights;
   private AddressableLEDBuffer LEDBuffer;
   
-  public Lights(int LedCount) {
+  public Lights() {
     lights = new AddressableLED(6);
-    LEDBuffer = new AddressableLEDBuffer(LedCount);
-    lights.setLength(LedCount);
+    LEDBuffer = new AddressableLEDBuffer(60);
+    lights.setLength(60);
   }
   public void dataSetter(){
     lights.setData(LEDBuffer);
@@ -29,11 +29,28 @@ public class Lights extends SubsystemBase {
       setOneLightRGB(i, R, G, B);
     }
   }
-  public void setSectionOne(int R, int G, int B){
-    setLights(0, LEDBuffer.getLength()/2, R, G, B);
+  //All setLights methods are based on having four rows of fifteen lights, divided into three sections. 
+  public void setLeft(int R, int G, int B){
+    setLights(10, 20, R, G, B);
+    setLights(40, 50, R, G, B);
   }
-  public void setSectionTwo(int R, int G, int B){
-    setLights(LEDBuffer.getLength()/2, LEDBuffer.getLength(), R, G, B);
+
+  public void setMid(int R, int G, int B){
+   setLights(5, 10, R, G, B); 
+   setLights(20, 25, R, G, B); 
+   setLights(35, 40, R, G, B); 
+   setLights(50, 55, R, G, B); 
+  }
+
+  public void setRight(int R, int G, int B){
+    setLights(0, 5, R, G, B);
+    setLights(25, 35, R, G, B);
+    setLights(55, 60, R, G, B);
+  }
+
+  public void setSides(int R, int G, int B){
+    setLeft(R, G, B);
+    setRight(R, G, B);
   }
 
   public void lightsOut() {

@@ -260,7 +260,7 @@ public class RobotContainer {
     limelight = Limelight.getInstance();
   }
   private void lightsInst() {
-    lights = new Lights(Constants.LED_COUNT-1);
+    lights = new Lights();
     lights.setDefaultCommand(new IndicatorLights(lights));
   }
   
