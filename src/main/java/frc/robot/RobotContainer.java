@@ -141,6 +141,7 @@ public class RobotContainer {
 
     Preferences.initBoolean("Brushes", false);
     Preferences.initBoolean("CompBot", true);
+    Preferences.initBoolean("Climber", true);
     Preferences.initBoolean("Intake", true);
     Preferences.initBoolean("IntakeSideWheels", false);
     Preferences.initBoolean("Shooter", true);
