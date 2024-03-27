@@ -11,6 +11,12 @@ public class Lights extends SubsystemBase {
   /** Creates a new SubsystemLights. */
   private AddressableLED lights;
   private AddressableLEDBuffer LEDBuffer;
+  int shooterLightsStart = 20;
+  int shooterLightsEnd = 40;
+  int shooterRailLightsStart = 0;
+  int shooterRailLightsEnd = 19;
+  int OtherLightsStart = 41;
+  int OtherLightsEnd = 60;
   
   public Lights() {
     lights = new AddressableLED(6);
@@ -52,7 +58,6 @@ public class Lights extends SubsystemBase {
     setLeft(R, G, B);
     setRight(R, G, B);
   }
-
   public void lightsOut() {
     setLights(0, LEDBuffer.getLength(), 0, 0, 0);
   }

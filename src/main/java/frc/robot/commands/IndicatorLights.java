@@ -31,20 +31,33 @@ public IndicatorLights(Lights lights) {
 
   @Override
   public void execute() {
-    if (RobotState.getInstance().IsNoteSeen) {
-      lights.setMid(50,40,0);
+    boolean noteInRobot = RobotState.getInstance().IsNoteHeld;
+    boolean noteSeenByLimelight = RobotState.getInstance().IsNoteSeen;
+    boolean limelightsUpdated = RobotState.getInstance().LimelightsUpdated;
+    boolean readyToShoot = noteInRobot&&limelightsUpdated;
+    boolean allSystemsGoodToGo = RobotState.getInstance().ShooterReady;
+    
+    if(limelightsUpdated) {
+      lights.setMid(0, 40, 0);
     } else {
-      lights.setMid(50, 0, 50);
+      lights.setMid(50, 0, 0);
     }
 
-
-    if (RobotState.getInstance().ShooterInRange && RobotState.getInstance().ShooterReady){
-      lights.setSides(0,50,0);
-    } else if (RobotState.getInstance().ShooterInRange){
-      lights.setSides(50, 50, 0);
-    } else {
-      lights.setSides(50, 0, 50);
+    if(!noteInRobot) {
+      if(noteSeenByLimelight) {
+        lights.setSides(50, 50, 0);
+      } else {
+        lights.setSides(0, 0, 0);
+      }
     }
+    if(noteInRobot) {
+      if(allSystemsGoodToGo) {
+        lights.setSides(0, 50, 0);
+      } else {
+        lights.setSides(50, 0, 0);
+      }
+    }
+
     lights.dataSetter();
   }
 
