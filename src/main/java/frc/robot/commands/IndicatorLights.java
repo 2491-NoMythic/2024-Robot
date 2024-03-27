@@ -30,17 +30,26 @@ public IndicatorLights(Lights lights) {
 
   @Override
   public void execute() {
-    if (RobotState.getInstance().IsNoteSeen) {
-    lights.setSectionOne(50,40,0);
-    } else {
-      lights.setSectionOne(50, 0, 50);
+    boolean noteInRobot = RobotState.getInstance().IsNoteHeld;
+    boolean noteSeenByLimelight = RobotState.getInstance().IsNoteSeen;
+    boolean limelightsUpdated = RobotState.getInstance().LimelightsUpdated;
+    boolean readyToShoot = noteInRobot&&limelightsUpdated;
+    boolean allSystemsGoodToGo = RobotState.getInstance().ShooterReady;
+    if(readyToShoot) {
+      if(allSystemsGoodToGo) {
+        lights.setShooterFaceLights(50, 50, 50);
+        lights.setShooterRailLights(0, 50, 0);
+        lights.setOtherLights(0, 50, 0);
+      } else {
+        lights.setShooterFaceLights(0, 50, 0);
+        lights.setShooterRailLights(0, 50, 0);
+        lights.setOtherLights(0, 50, 0);
+      }
     }
-    if (RobotState.getInstance().ShooterInRange && RobotState.getInstance().ShooterReady){
-      lights.setSectionTwo(0,50,0);
-    } else if (RobotState.getInstance().ShooterInRange){
-      lights.setSectionTwo(50, 50, 0);
-    } else {
-      lights.setSectionTwo(50, 0, 50);
+    if(!noteInRobot&&noteSeenByLimelight) {
+      lights.setShooterFaceLights(50, 25, 25);
+      lights.setShooterRailLights(50, 25, 25);
+      lights.setOtherLights(50, 25, 25);
     }
     lights.dataSetter();
   }

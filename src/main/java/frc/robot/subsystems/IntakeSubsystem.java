@@ -104,5 +104,6 @@ public class IntakeSubsystem extends SubsystemBase {
     logNoteIn.append(isNoteSeen());
     SmartDashboard.putBoolean("is note in", isNoteSeen());
     SmartDashboard.putBoolean("is note held", isNoteHeld());
+    RobotState.getInstance().IsNoteHeld = isNoteSeen();
   }
 }
