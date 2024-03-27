@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7265787504547981,
+      "y": 4.4744363362600605
+    },
+    "rotation": 118.88658176691074
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "initialShot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "chaosState"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ChaosPathSourceSide"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
