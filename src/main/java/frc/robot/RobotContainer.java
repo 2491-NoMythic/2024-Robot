@@ -529,6 +529,8 @@ public class RobotContainer {
     if(useDetectorLimelight) {
       SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
       RobotState.getInstance().IsNoteSeen = limelight.getNeuralDetectorValues().isResultValid;
+    } else {
+      RobotState.getInstance().IsNoteSeen = false;
     }
     SmartDashboard.putBoolean("is note seen", RobotState.getInstance().IsNoteSeen);
 		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);
