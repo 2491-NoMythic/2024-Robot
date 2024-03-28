@@ -27,18 +27,18 @@ public class GroundIntake extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    double robotSpeed = Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2));
-    double rollerSpeed = (IntakeConstants.INTAKE_SPEED - (0.25 * IntakeConstants.INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (0.25 * IntakeConstants.INTAKE_SPEED);
-    double sideSpeed =  (IntakeConstants.INTAKE_SIDE_SPEED - (0.25 * IntakeConstants.INTAKE_SIDE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (0.25 * IntakeConstants.INTAKE_SIDE_SPEED);
-    double indexerSpeed = (IndexerConstants.INDEXER_INTAKE_SPEED- (0.25 * IndexerConstants.INDEXER_INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (0.25 * IndexerConstants.INDEXER_INTAKE_SPEED);
-    intake.intakeYes(rollerSpeed, sideSpeed);
-    indexer.set(indexerSpeed);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double robotSpeed = Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2));
+    double rollerSpeed = (IntakeConstants.INTAKE_SPEED - (0.25 * IntakeConstants.INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (0.25 * IntakeConstants.INTAKE_SPEED);
+    double sideSpeed =  (IntakeConstants.INTAKE_SIDE_SPEED - (0.25 * IntakeConstants.INTAKE_SIDE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (0.75 * IntakeConstants.INTAKE_SIDE_SPEED);
+    double indexerSpeed = (IndexerConstants.INDEXER_INTAKE_SPEED- (0.25 * IndexerConstants.INDEXER_INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (0.75 * IndexerConstants.INDEXER_INTAKE_SPEED);
+    intake.intakeYes(rollerSpeed, sideSpeed);
+    indexer.set(indexerSpeed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
