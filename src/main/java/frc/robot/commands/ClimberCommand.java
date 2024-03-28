@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,14 +15,16 @@ public class ClimberCommand extends Command {
   Climber climber;
   DoubleSupplier translationYSupplierLeft;
   DoubleSupplier translationYSupplierRight;
-/*
+  BooleanSupplier climberDown;
+/* 
  * moves the climbers at a specific speed
  */
-  public ClimberCommand(Climber climber, DoubleSupplier translationYSupplierLeft, DoubleSupplier translationYSupplierRight) {
+  public ClimberCommand(Climber climber, DoubleSupplier translationYSupplierLeft, DoubleSupplier translationYSupplierRight, BooleanSupplier climberDown) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.climber = climber;
     this.translationYSupplierLeft = translationYSupplierLeft;
     this.translationYSupplierRight = translationYSupplierRight;
+    this.climberDown = climberDown;
     addRequirements(climber);
   }
 
@@ -32,8 +35,15 @@ public class ClimberCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.climberGoLeft(translationYSupplierLeft.getAsDouble());
-    climber.climberGoRight(translationYSupplierRight.getAsDouble());
+    if (climberDown.getAsBoolean() && !climber.isClimberIn()){
+      climber.climberGoLeft(1.0);
+      climber.climberGoRight(1.0);
+    }
+    else{
+      climber.climberGoLeft(translationYSupplierLeft.getAsDouble());
+      climber.climberGoRight(translationYSupplierRight.getAsDouble());
+    }
+
   }
 
   // Called once the command ends or is interrupted.

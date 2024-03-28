@@ -249,7 +249,8 @@ public class RobotContainer {
     climber.setDefaultCommand(new ClimberCommand(
       climber,
       ()-> modifyAxis(operatorController.getLeftY(), DEADBAND_NORMAL),
-      ()-> modifyAxis(operatorController.getRightY(), DEADBAND_NORMAL)));
+      ()-> modifyAxis(operatorController.getRightY(), DEADBAND_NORMAL),
+      ClimberDownSup));
   }
   private void indexInit() {
     indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
