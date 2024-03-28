@@ -41,8 +41,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2 = new CANSparkMax(IntakeConstants.INTAKE_2_MOTOR, MotorType.kBrushless);
     intake1.restoreFactoryDefaults();
     intake2.restoreFactoryDefaults();
-    intake2.follow(intake1);
-    intake1.setInverted(false);
+    intake1.setInverted(true);
     intake2.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
     intake2.setIdleMode(IdleMode.kCoast);
@@ -56,8 +55,8 @@ public class IntakeSubsystem extends SubsystemBase {
       intakeSideRight = new CANSparkMax(IntakeConstants.INTAKE_SIDE_MOTOR_RIGHT, MotorType.kBrushless);
       intakeSideLeft.restoreFactoryDefaults();
       intakeSideRight.restoreFactoryDefaults();
-      intakeSideLeft.setInverted(true);
-      intakeSideRight.setInverted(false);
+      intakeSideLeft.setInverted(false);
+      intakeSideRight.setInverted(true);
       intakeSideLeft.setIdleMode(IdleMode.kCoast);
       intakeSideRight.setIdleMode(IdleMode.kCoast);
       intakeSideLeft.setSmartCurrentLimit(25, 40, 1000);
@@ -85,12 +84,14 @@ public class IntakeSubsystem extends SubsystemBase {
    * uses percentage of full power
    * 
    * @param intakeRunSpeed percentage of full power, from -1 to 1
+   * @param intakeSideRunSpeed percentage of full power of the side wheels, from -1 to 1
    */
-  public void intakeYes(double intakeRunSpeed) {
+  public void intakeYes(double intakeRunSpeed, double intakeSideRunSpeed) {
     intake1.set(intakeRunSpeed);
+    intake2.set(intakeRunSpeed);
     if (Preferences.getBoolean("IntakeSideWheels", false)) {
-      intakeSideLeft.set(intakeRunSpeed);
-      intakeSideRight.set(intakeRunSpeed);
+      intakeSideLeft.set(intakeSideRunSpeed);
+      intakeSideRight.set(intakeSideRunSpeed);
     }
   }
 
@@ -108,6 +109,7 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public void intakeNo(double intakeRunSpeed) {
     intake1.set(-intakeRunSpeed);
+    intake2.set(-intakeRunSpeed);
     if (Preferences.getBoolean("IntakeSideWheels", false)) {
       intakeSideLeft.set(-intakeRunSpeed);
       intakeSideRight.set(-intakeRunSpeed);
@@ -119,6 +121,7 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public void intakeOff() {
     intake1.set(0);
+    intake2.set(0);
     if (Preferences.getBoolean("IntakeSideWheels", false)) {
       intakeSideLeft.set(0);
       intakeSideRight.set(0);
@@ -152,5 +155,6 @@ public class IntakeSubsystem extends SubsystemBase {
     logNoteIn.append(isNoteSeen());
     SmartDashboard.putBoolean("is note in", isNoteSeen());
     SmartDashboard.putBoolean("is note held", isNoteHeld());
+    RobotState.getInstance().IsNoteHeld = isNoteSeen();
   }
 }

@@ -275,6 +275,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		PoseEstimate estimate = limelight.getTrustedPose(getPose());
 		if (estimate != null) {
 			odometer.addVisionMeasurement(new Pose2d(estimate.pose.getTranslation(), getOdometryRotation()), estimate.timestampSeconds);
+			RobotState.getInstance().LimelightsUpdated = true;
+		} else {
+			RobotState.getInstance().LimelightsUpdated = false;
 		}
 	}
 	/**
@@ -427,6 +430,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			} else {
 				updateOdometryWithVision();
 			}
+		} else {
+			RobotState.getInstance().LimelightsUpdated = false;
 		}
 	
 		m_field.setRobotPose(odometer.getEstimatedPosition());

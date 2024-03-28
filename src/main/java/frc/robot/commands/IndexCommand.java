@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.PASS_RPS;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -114,14 +116,14 @@ public class IndexCommand extends Command {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
           shooter.shootSameRPS(ShooterConstants.HUMAN_PLAYER_RPS);
           intake.intakeOff();
-        }
-        else {
+        } else {
           if(groundIntakeSup.getAsBoolean()) {
             m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-            intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+            intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED);
           } else {
             m_Indexer.off();
           }
+          //shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 10, 20);
           shooter.turnOff();
         }
       }
@@ -136,9 +138,10 @@ public class IndexCommand extends Command {
         }
       } else {
         if (operatorRevSup.getAsBoolean()){ 
-          shooter.shootRPSWithCurrent(100, 10, 20);
+          shooter.shootRPS(PASS_RPS);
         } else {
-          shooter.turnOff();
+          // shooter.turnOff();
+          shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 20, 30);
         }
       }
       boolean indexer = false;

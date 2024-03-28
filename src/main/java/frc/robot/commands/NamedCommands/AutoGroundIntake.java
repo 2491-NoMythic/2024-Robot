@@ -32,7 +32,7 @@ public class AutoGroundIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+    intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED);
     indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
     angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
   }
