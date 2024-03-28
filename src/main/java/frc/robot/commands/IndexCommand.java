@@ -48,6 +48,7 @@ public class IndexCommand extends Command {
   BooleanSupplier OverStagePassSup; 
   boolean auto;
   double runsEmpty = 0;
+  boolean idleReving;
 
   /**
    * A command to manage the control of notes throughout the robot. This command controls the Intake, Shooter, and Indexer. If any of these preferences are turned off, the command should not be initialized. If 
@@ -97,6 +98,7 @@ public class IndexCommand extends Command {
   @Override
   public void initialize() {
     runsEmpty = 0;
+    idleReving = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -131,6 +133,7 @@ public class IndexCommand extends Command {
       runsEmpty = 0;
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||OverStagePassSup.getAsBoolean()) {
+        idleReving = false;
         if(OverStagePassSup.getAsBoolean()) {
           shooter.shootRPS(ShooterConstants.PASS_RPS);
         } else {
@@ -139,13 +142,15 @@ public class IndexCommand extends Command {
       } else {
         if (operatorRevSup.getAsBoolean()){ 
           shooter.shootRPS(PASS_RPS);
+          idleReving = false;
         } else {
           // shooter.turnOff();
           shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 20, 30);
+          idleReving = true;
         }
       }
       boolean indexer = false;
-      if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot() && shooter.isReving()) {
+      if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot() && shooter.isReving()&&!idleReving) {
         RobotState.getInstance().ShooterReady = true;
         if (shootIfReadySupplier.getAsBoolean()) {
           indexer = true;
