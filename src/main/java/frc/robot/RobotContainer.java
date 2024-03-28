@@ -467,7 +467,7 @@ public class RobotContainer {
       new AutoGroundIntake(indexer, intake, angleShooterSubsystem)
     ));
     }
-    if(intakeExists&&indexerExists&&angleShooterExists) {
+    if(autoPickup != null) {
       NamedCommands.registerCommand("autoPickup", autoPickup);
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
