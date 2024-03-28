@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.PASS_RPS;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -136,9 +138,10 @@ public class IndexCommand extends Command {
         }
       } else {
         if (operatorRevSup.getAsBoolean()){ 
-          shooter.shootRPSWithCurrent(100, 10, 20);
+          shooter.shootRPS(PASS_RPS);
         } else {
           shooter.turnOff();
+          // shooter.shootRPS(LONG_SHOOTING_RPS);
         }
       }
       boolean indexer = false;

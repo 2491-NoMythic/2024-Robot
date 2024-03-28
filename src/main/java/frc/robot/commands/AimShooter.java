@@ -11,7 +11,7 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 
 public class AimShooter extends Command {
 	AngleShooterSubsystem angleShooterSubsystem;
-	DoubleSupplier POVSupplier;
+	BooleanSupplier AmpSup;
 	BooleanSupplier humanPlayerSupplier;
 	BooleanSupplier SubwooferSupplier1;
 	BooleanSupplier StageAngleSupplier;
@@ -28,10 +28,10 @@ public class AimShooter extends Command {
 	 * @param groundIntakeSup a button to set the shooter to the correct angle for a succesful ground intake
 	 * @param farStageAngleSup a button to set the shooter to the correct speaker angle while the robot is against the far stage leg
 	 */
-	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
+	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier AmpSup, BooleanSupplier humanPlayerSupplier,
 					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier OverStageAngleSup) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
-		this.POVSupplier = POVSupplier;
+		this.AmpSup = AmpSup;
 		this.humanPlayerSupplier = humanPlayerSupplier;
 		this.SubwooferSupplier1 = SubwooferSupplier1;
 		this.StageAngleSupplier = StageAngleSupplier;
@@ -54,7 +54,7 @@ public class AimShooter extends Command {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.PODIUM_SHOOTER_ANGLE);
 		}  else if (farStageAngleSup.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.FAR_STAGE_SHOOTER_ANGLE);
-		} else if (POVSupplier.getAsDouble() == 90 || POVSupplier.getAsDouble() == 45 || POVSupplier.getAsDouble() == 135) {
+		} else if (AmpSup.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE);
 		} else if(humanPlayerSupplier.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);

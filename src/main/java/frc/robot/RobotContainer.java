@@ -126,10 +126,12 @@ public class RobotContainer {
   BooleanSupplier ForceVisionSup;
   BooleanSupplier GroundIntakeSup;
   BooleanSupplier FarStageAngleSup;
-  BooleanSupplier OperatorPreRevSup;
+  BooleanSupplier OperatorRevForPass;
   BooleanSupplier OverStagePassSup;
   BooleanSupplier falseSup;
   DoubleSupplier zeroSup;
+  BooleanSupplier AutoPickupSup;
+  BooleanSupplier CenterAmpPassSup;
 
   BooleanSupplier intakeReverse;
   Command autoPickup;
@@ -168,23 +170,26 @@ public class RobotContainer {
 
     ZeroGyroSup = driverController::getPSButton;
     AimWhileMovingSup = driverController::getL2Button;
-    ShootIfReadySup = driverController::getR2Button;
-    SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getR2Button();
-    StageAngleSup = ()->operatorController.getPOV() == 270||driverController.getCircleButton();;
     HumanPlaySup = driverController::getR1Button;
-    AmpAngleSup = ()->driverController.getPOV() == 90;
-    ClimberDownSup = operatorController::getCrossButton;
-    ClimberUpSup = operatorController::getTriangleButton;
-    ShooterUpManualSup = ()->driverController.getPOV() == 0;
-    ManualShootSup = driverController::getL1Button;
-    ForceVisionSup = driverController::getOptionsButton;
-    GroundIntakeSup = operatorController::getTouchpad;
-    FarStageAngleSup = ()->operatorController.getPOV() == 0||driverController.getTouchpad();
-    OperatorPreRevSup = operatorController::getL2Button;
-    OverStagePassSup = driverController::getSquareButton;
+    AmpAngleSup = ()->driverController.getPOV() == 90||driverController.getPOV() == 45||driverController.getPOV() == 135;;
+    ManualShootSup = driverController::getR2Button;
+    ClimberDownSup = operatorController::getPSButton;
+    GroundIntakeSup = driverController::getL1Button;
+    OperatorRevForPass = ()->operatorController.getPOV() != 1;
+    SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
+    StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
+    FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
+    OverStagePassSup = operatorController::getL1Button;
+    CenterAmpPassSup = operatorController::getL2Button;
+    AutoPickupSup = ()->operatorController.getTouchpad()||driverController.getTouchpad();
     zeroSup = ()->0;
     falseSup = ()->false;
-    intakeReverse = operatorController::getL1Button;
+    //discontinued buttons:
+    intakeReverse = ()->false;
+    ClimberUpSup = ()->false;
+    ShooterUpManualSup = ()->false;
+    ForceVisionSup = ()->false;
+    ShootIfReadySup = ()->false;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -233,7 +238,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, OverStagePassSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, AmpAngleSup, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, OverStagePassSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -246,7 +251,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, intakeReverse, OverStagePassSup);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorRevForPass, intakeReverse, OverStagePassSup);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -303,8 +308,7 @@ public class RobotContainer {
           )
           ).withTimeout(4);
       // new Trigger(driverController::getR3ButtonPressed).whileTrue(GroundIntake);
-      new Trigger(driverController::getR3Button).whileTrue(autoPickup);
-      new Trigger(operatorController::getR1Button).whileTrue(autoPickup);
+      new Trigger(AutoPickupSup).whileTrue(autoPickup);
     }
     new Trigger(ForceVisionSup).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
     SmartDashboard.putData("force update limelight position", new InstantCommand(()->driveTrain.forceUpdateOdometryWithVision(), driveTrain));
@@ -500,8 +504,8 @@ public class RobotContainer {
     }
     if(angleShooterExists) {
       //the same command that we use during teleop, but all the buttons that would aim the shooter anywhere other than the speaker are set to false.
-      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
-      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
+      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
+      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
     }
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem));
