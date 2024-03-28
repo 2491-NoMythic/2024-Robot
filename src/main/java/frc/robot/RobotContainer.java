@@ -139,7 +139,7 @@ public class RobotContainer {
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
     SmartDashboard.putNumber("amp RPS", ShooterConstants.AMP_RPS);
-
+    
     Preferences.initBoolean("Brushes", false);
     Preferences.initBoolean("CompBot", true);
     Preferences.initBoolean("Climber", true);
@@ -463,7 +463,7 @@ public class RobotContainer {
       new AutoGroundIntake(indexer, intake, angleShooterSubsystem)
     ));
     }
-    if(intakeExists&&indexerExists&&angleShooterExists) {
+    if(autoPickup!=null) {
       NamedCommands.registerCommand("autoPickup", autoPickup);
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
