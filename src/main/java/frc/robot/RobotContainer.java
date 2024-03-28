@@ -31,6 +31,7 @@ import frc.robot.commands.IndexerNoteAlign;
 import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
+import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
@@ -336,7 +337,7 @@ public class RobotContainer {
     if(shooterExists) {
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer));
+      new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer, driveTrain));
     }
     if(intakeExists&&indexerExists) {
       new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
@@ -483,7 +484,11 @@ public class RobotContainer {
       NamedCommands.registerCommand("autoPickup", autoPickup);
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
-      NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED)));
+      NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(
+        IntakeConstants.INTAKE_SPEED *
+        (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND),
+        IntakeConstants.INTAKE_SIDE_SPEED *
+        (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND))));
       NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
       NamedCommands.registerCommand("autoPickup", new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
