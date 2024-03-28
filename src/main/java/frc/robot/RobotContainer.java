@@ -71,6 +71,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.commands.AngleShooter;
+import frc.robot.commands.ClimberCommand;
 
 
 /**
@@ -120,16 +121,17 @@ public class RobotContainer {
   BooleanSupplier AmpAngleSup;
   BooleanSupplier SourcePickupSup;
   BooleanSupplier ClimberDownSup;
-  BooleanSupplier ClimberUpSup;
   BooleanSupplier ShooterUpManualSup;
   BooleanSupplier ManualShootSup;
   BooleanSupplier ForceVisionSup;
   BooleanSupplier GroundIntakeSup;
   BooleanSupplier FarStageAngleSup;
-  BooleanSupplier OperatorPreRevSup;
+  BooleanSupplier OperatorRevForPass;
   BooleanSupplier OverStagePassSup;
   BooleanSupplier falseSup;
   DoubleSupplier zeroSup;
+  BooleanSupplier AutoPickupSup;
+  BooleanSupplier CenterAmpPassSup;
 
   BooleanSupplier intakeReverse;
   Command autoPickup;
@@ -168,23 +170,25 @@ public class RobotContainer {
 
     ZeroGyroSup = driverController::getPSButton;
     AimWhileMovingSup = driverController::getL2Button;
-    ShootIfReadySup = driverController::getR2Button;
-    SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getR2Button();
-    StageAngleSup = ()->operatorController.getPOV() == 270||driverController.getCircleButton();;
     HumanPlaySup = driverController::getR1Button;
-    AmpAngleSup = ()->driverController.getPOV() == 90;
-    ClimberDownSup = operatorController::getCrossButton;
-    ClimberUpSup = operatorController::getTriangleButton;
-    ShooterUpManualSup = ()->driverController.getPOV() == 0;
-    ManualShootSup = driverController::getL1Button;
-    ForceVisionSup = driverController::getOptionsButton;
-    GroundIntakeSup = operatorController::getTouchpad;
-    FarStageAngleSup = ()->operatorController.getPOV() == 0||driverController.getTouchpad();
-    OperatorPreRevSup = operatorController::getL2Button;
-    OverStagePassSup = driverController::getSquareButton;
+    AmpAngleSup = ()->driverController.getPOV() == 90||driverController.getPOV() == 45||driverController.getPOV() == 135;;
+    ManualShootSup = driverController::getR2Button;
+    ClimberDownSup = operatorController::getPSButton;
+    GroundIntakeSup = driverController::getL1Button;
+    OperatorRevForPass = ()->operatorController.getPOV() != 1;
+    SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
+    StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
+    FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
+    OverStagePassSup = operatorController::getL1Button;
+    CenterAmpPassSup = operatorController::getL2Button;
+    AutoPickupSup = ()->operatorController.getTouchpad()||driverController.getTouchpad();
     zeroSup = ()->0;
     falseSup = ()->false;
-    intakeReverse = operatorController::getL1Button;
+    //discontinued buttons:
+    intakeReverse = ()->false;
+    ShooterUpManualSup = ()->false;
+    ForceVisionSup = ()->false;
+    ShootIfReadySup = ()->false;
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -233,7 +237,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, driverController::getPOV, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, OverStagePassSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, AmpAngleSup, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, OverStagePassSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -241,12 +245,16 @@ public class RobotContainer {
   }
   private void climberInst() {
     climber = new Climber();
+    climber.setDefaultCommand(new ClimberCommand(
+      climber,
+      ()-> modifyAxis(operatorController.getLeftY(), DEADBAND_NORMAL),
+      ()-> modifyAxis(operatorController.getRightY(), DEADBAND_NORMAL)));
   }
   private void indexInit() {
     indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorPreRevSup, intakeReverse, OverStagePassSup);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorRevForPass, intakeReverse, OverStagePassSup);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -260,7 +268,7 @@ public class RobotContainer {
     limelight = Limelight.getInstance();
   }
   private void lightsInst() {
-    lights = new Lights(Constants.LED_COUNT-1);
+    lights = new Lights();
     lights.setDefaultCommand(new IndicatorLights(lights));
   }
   
@@ -303,8 +311,7 @@ public class RobotContainer {
           )
           ).withTimeout(4);
       // new Trigger(driverController::getR3ButtonPressed).whileTrue(GroundIntake);
-      new Trigger(driverController::getR3Button).whileTrue(autoPickup);
-      new Trigger(operatorController::getR1Button).whileTrue(autoPickup);
+      new Trigger(AutoPickupSup).whileTrue(autoPickup);
     }
     new Trigger(ForceVisionSup).onTrue(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", true))).onFalse(new InstantCommand(()->SmartDashboard.putBoolean("force use limelight", false)));
     SmartDashboard.putData("force update limelight position", new InstantCommand(()->driveTrain.forceUpdateOdometryWithVision(), driveTrain));
@@ -317,8 +324,13 @@ public class RobotContainer {
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(ClimberDownSup).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
-      new Trigger(ClimberUpSup).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
+      new Trigger(ClimberDownSup).onTrue(new InstantCommand(()->{
+         climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_DOWN);
+        climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_DOWN);
+        })).onFalse(new InstantCommand(()->{ 
+          climber.climberGoLeft(0);
+          climber.climberGoRight(0);
+        }));
       // new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
@@ -398,8 +410,12 @@ public class RobotContainer {
       SmartDashboard.putData("indexer off", new InstantCommand(()->indexer.off()));
     }
     if(climberExists) {
-      SmartDashboard.putData("climber up", new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP)));
-      SmartDashboard.putData("climber down", new InstantCommand(()-> climber.climberGo(-ClimberConstants.CLIMBER_SPEED_UP)));
+      SmartDashboard.putData("climber up", new InstantCommand(()->{
+      climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_UP);
+      climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_UP);}));
+      SmartDashboard.putData("climber down", new InstantCommand(()->{
+      climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_DOWN);
+      climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_DOWN);}));
       SmartDashboard.putData("climber stop", new InstantCommand(()-> climber.climberStop()));
     }
   };
@@ -463,7 +479,7 @@ public class RobotContainer {
       new AutoGroundIntake(indexer, intake, angleShooterSubsystem)
     ));
     }
-    if(intakeExists&&indexerExists&&angleShooterExists) {
+    if(autoPickup != null) {
       NamedCommands.registerCommand("autoPickup", autoPickup);
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
@@ -500,8 +516,8 @@ public class RobotContainer {
     }
     if(angleShooterExists) {
       //the same command that we use during teleop, but all the buttons that would aim the shooter anywhere other than the speaker are set to false.
-      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
-      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->1, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
+      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
+      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
     }
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem));
@@ -512,7 +528,7 @@ public class RobotContainer {
   public void teleopInit() {
     if(climberExists) {
       SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
-        new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),
+        new InstantCommand(()->{climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_DOWN);climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_DOWN);}, climber),
         new WaitCommand(2),
         new InstantCommand(()->climber.climberStop(), climber),
         new InstantCommand(climber::resetInitial)
@@ -529,6 +545,8 @@ public class RobotContainer {
     if(useDetectorLimelight) {
       SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
       RobotState.getInstance().IsNoteSeen = limelight.getNeuralDetectorValues().isResultValid;
+    } else {
+      RobotState.getInstance().IsNoteSeen = false;
     }
     SmartDashboard.putBoolean("is note seen", RobotState.getInstance().IsNoteSeen);
 		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);

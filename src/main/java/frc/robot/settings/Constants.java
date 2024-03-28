@@ -31,7 +31,6 @@ public final class Constants {
 
   private Constants () {}
 
-  public static final int LED_COUNT = 24;
   public static final int LOOPS_VALID_FOR_SHOT = 20;
   
   public static final class DriveConstants {
@@ -290,7 +289,7 @@ public static final class ShooterConstants{
  * the value that the encoder thinks is zero. when the shooter is resting on the bottom stop, the encoder should read 11.63 
  */
   public static final double CompBotZeroOffset = 155.2;//before rebuild was 334.7. After rebuild right away was 155.57
-  public static final double PracBotZeroOffset = 328;
+  public static final double PracBotZeroOffset = 83;
 
  
 
@@ -440,10 +439,10 @@ public static final class CTREConfigs {
 
   public final class Field{
     public static final double ROBOT_BLUE_SPEAKER_X = 0.23;
-    public static final double ROBOT_RED_SPEAKER_X = 16;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double ROBOT_RED_SPEAKER_X = 16.3;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
     public static final double SHOOTER_BLUE_SPEAKER_X = 0.23;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
-    public static final double SHOOTER_RED_SPEAKER_X = 16.87;//16.38; changed so that shots from the side wil aim to the opposite side, and bank in
-    public static final double SPEAKER_Y = 5.46;
+    public static final double SHOOTER_RED_SPEAKER_X = 16.4;//16.38; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double SPEAKER_Y = 5.35;//5.46;
     public static final double SPEAKER_Z = 2.08;//1.5;//1.8;//2.08; //height of opening. Changed so that the smaller spekeaker_x shots will still go in
     public static final double MAX_SHOOTING_DISTANCE = 9;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;

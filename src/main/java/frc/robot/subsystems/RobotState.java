@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 public class RobotState {
 	private static RobotState instance;
 	public boolean IsNoteSeen;
+	public boolean IsNoteHeld;
 	public boolean ShooterInRange;
 	public boolean ShooterReady;
+	public boolean LimelightsUpdated;
 
 	private RobotState() {
 
