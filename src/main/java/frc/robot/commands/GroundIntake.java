@@ -5,8 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.IntakeConstants;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -14,23 +16,30 @@ public class GroundIntake extends Command {
   /** Creates a new GroundIntake. */
   IntakeSubsystem intake;
   IndexerSubsystem indexer;
-  public GroundIntake(IntakeSubsystem intake, IndexerSubsystem indexer) {
+  DrivetrainSubsystem driveTrain;
+  public GroundIntake(IntakeSubsystem intake, IndexerSubsystem indexer, DrivetrainSubsystem driveTrain) {
     this.intake = intake;
     this.indexer = indexer;
+    this.driveTrain = driveTrain;
     addRequirements(intake, indexer);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    intake.intakeYes(IntakeConstants.INTAKE_SPEED);
-    indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double mult = 1.0;
+    double robotSpeed = Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2));
+    double rollerSpeed = (IntakeConstants.INTAKE_SPEED - (mult * IntakeConstants.INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (mult * IntakeConstants.INTAKE_SPEED);
+    double sideSpeed =  (IntakeConstants.INTAKE_SIDE_SPEED - (mult * IntakeConstants.INTAKE_SIDE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (mult * IntakeConstants.INTAKE_SIDE_SPEED);
+    double indexerSpeed = (IndexerConstants.INDEXER_INTAKE_SPEED- (mult * IndexerConstants.INDEXER_INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (mult * IndexerConstants.INDEXER_INTAKE_SPEED);
+    intake.intakeYes(rollerSpeed, sideSpeed);
+    indexer.set(indexerSpeed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

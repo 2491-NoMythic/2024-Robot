@@ -136,9 +136,9 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		// triangle for robot angle
 		Optional<Alliance> alliance = DriverStation.getAlliance();
 		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-			deltaX = Math.abs(dtvalues.getX() - Field.RED_SPEAKER_X);
+			deltaX = Math.abs(dtvalues.getX() - Field.ROBOT_RED_SPEAKER_X);
 		} else {
-			deltaX = Math.abs(dtvalues.getX() - Field.BLUE_SPEAKER_X);
+			deltaX = Math.abs(dtvalues.getX() - Field.ROBOT_BLUE_SPEAKER_X);
 		}
 		double deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
 		double speakerDist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2));
@@ -157,10 +157,10 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double offsetSpeakerX;
 		double offsetSpeakerY;
 		if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-			offsetSpeakerX = Field.RED_SPEAKER_X - targetOffset.getX();
+			offsetSpeakerX = Field.SHOOTER_RED_SPEAKER_X - targetOffset.getX();
 			offsetSpeakerY = Field.SPEAKER_Y - targetOffset.getY();
 		} else {
-			offsetSpeakerX = Field.BLUE_SPEAKER_X - targetOffset.getX();
+			offsetSpeakerX = Field.SHOOTER_BLUE_SPEAKER_X - targetOffset.getX();
 			offsetSpeakerY = Field.SPEAKER_Y - targetOffset.getY();
 		}
 		double offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
@@ -173,6 +173,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		// getting desired robot angle
 		double totalOffsetDistToSpeaker = Math
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
+		SmartDashboard.putNumber("MATH/shooter's speaker dist", totalOffsetDistToSpeaker);
 		double desiredShooterAngle = Math
 				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalOffsetDistToSpeaker));
 		desiredShooterAngle = adjustAngleForDistance(desiredShooterAngle, offsetSpeakerdist);
@@ -204,13 +205,15 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double AdjustEquationA = PRAC_ADJUST_EQUATION_A;
 		double AdjustEquationB = PRAC_ADJUST_EQUATION_B;
 		double AdjustEquationC = 0;
+		double AdjustEquationD = 0;
 		if(Preferences.getBoolean("CompBot", true)) {
 			AdjustEquationB = COMP_ADJUST_EQUATION_B;
 			AdjustEquationA = COMP_ADJUST_EQUATION_A;
 			AdjustEquationC = COMP_ADJUST_EQUATION_C;
+			AdjustEquationD = COMP_ADJUST_EQUATION_D;
 		}
 		if(Preferences.getBoolean("CompBot", false)) {
-			double errorMeters = AdjustEquationA*Math.pow(distance, 2) + AdjustEquationB*distance + AdjustEquationC;
+			double errorMeters = AdjustEquationA*Math.pow(distance, 3) + AdjustEquationB*Math.pow(distance, 2) + AdjustEquationC*distance + AdjustEquationD;
 			return initialAngle + Math.toDegrees(Math.atan(errorMeters/distance));
 		} else {
 			double errorMeters = Math.pow(AdjustEquationA, distance) + AdjustEquationB;

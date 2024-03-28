@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class ShootNote extends Command {
   IndexerSubsystem indexer;
@@ -17,11 +18,13 @@ public class ShootNote extends Command {
   Timer timer;
   double shootTime;
   double revTime;
+  IntakeSubsystem intake;
   /** Creates a new shootNote. */
-  public ShootNote(IndexerSubsystem indexer, double shootTime, AngleShooterSubsystem angleShooter) {
+  public ShootNote(IndexerSubsystem indexer, double shootTime, AngleShooterSubsystem angleShooter, IntakeSubsystem intake) {
     this.indexer = indexer;
     this.shootTime = shootTime;
     this.angleShooter = angleShooter;
+    this.intake = intake;
     timer = new Timer();
     addRequirements(indexer, angleShooter);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,7 +42,7 @@ public class ShootNote extends Command {
   @Override
   public void execute() {
     angleShooter.setDesiredShooterAngle(angleShooter.calculateSpeakerAngle());
-    if(timer.get()>=0.8) {
+    if(timer.get()>=1) {
       indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
     }
     SmartDashboard.putNumber("auto timer", timer.get());
@@ -51,6 +54,7 @@ public class ShootNote extends Command {
     timer.stop();
     indexer.off();
     timer.reset();
+    intake.setNoteHeld(false);
   }
 
   // Returns true when the command should end.

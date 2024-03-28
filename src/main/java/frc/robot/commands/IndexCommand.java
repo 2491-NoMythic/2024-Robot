@@ -4,7 +4,10 @@
 
 package frc.robot.commands;
 
+import static frc.robot.settings.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.PASS_RPS;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -12,6 +15,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.IntakeConstants;
@@ -43,6 +47,7 @@ public class IndexCommand extends Command {
   BooleanSupplier farStageAngleSup;
   BooleanSupplier operatorRevSup;
   BooleanSupplier intakeReverse; 
+  BooleanSupplier OverStagePassSup; 
   boolean auto;
   double runsEmpty = 0;
 
@@ -67,7 +72,7 @@ public class IndexCommand extends Command {
    * @param operatorRevSup button to press to rev up the shooter slowly while driving
    * @param intakeReverse button to press to run the indexer backwards manually
    */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse, BooleanSupplier OverStagePassSup) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
@@ -82,6 +87,7 @@ public class IndexCommand extends Command {
     this.groundIntakeSup = groundIntakeSup;
     this.operatorRevSup = operatorRevSup;
     this.intakeReverse = intakeReverse;
+    this.OverStagePassSup = OverStagePassSup;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
     SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_SHOOTER_ANGLE);
@@ -107,35 +113,53 @@ public class IndexCommand extends Command {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
       if(runsEmpty>=20) {
+        intake.setNoteHeld(false);
         if(humanPlayerSupplier.getAsBoolean()) {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
           shooter.shootSameRPS(ShooterConstants.HUMAN_PLAYER_RPS);
           intake.intakeOff();
-        }
-        else {
+        } else {
           if(groundIntakeSup.getAsBoolean()) {
-            m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-            intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+            //     double robotSpeed = Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond, 2));
+            //     double speedScaleMultiplier = 1;
+            //     double scaledIntakeSpeed = IntakeConstants.INTAKE_SPEED*speedScaleMultiplier*(robotSpeed/MAX_VELOCITY_METERS_PER_SECOND);
+            //     double scaledIndexerSpeed = IndexerConstants.INDEXER_INTAKE_SPEED*speedScaleMultiplier*(robotSpeed/MAX_VELOCITY_METERS_PER_SECOND);
+            //     double scaledIntakeSideSpeed = IntakeConstants.INTAKE_SIDE_SPEED*speedScaleMultiplier*(robotSpeed/MAX_VELOCITY_METERS_PER_SECOND);
+            //     double unscaledIntakeSpeed = 1-IntakeConstants.INTAKE_SPEED*speedScaleMultiplier;
+            //     double unscaledIndexerSpeed = 1-IndexerConstants.INDEXER_INTAKE_SPEED*speedScaleMultiplier;
+            //     double unscaledIntakeSideSpeed = 1-IntakeConstants.INTAKE_SIDE_SPEED*speedScaleMultiplier;
+            //     double rollerSpeed = unscaledIntakeSpeed+scaledIntakeSpeed;
+            //     double sideSpeed = unscaledIntakeSideSpeed+scaledIntakeSideSpeed;
+            //     double indexerSpeed = unscaledIndexerSpeed+scaledIndexerSpeed;
+            //     SmartDashboard.putNumber("unscaled indexer speed", unscaledIndexerSpeed);
+            //     SmartDashboard.putNumber("scaled indexer speed", scaledIndexerSpeed);
+            //     // double rollerSpeed = (IntakeConstants.INTAKE_SPEED - (1 * IntakeConstants.INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (1 * IntakeConstants.INTAKE_SPEED);
+            //     // double sideSpeed =  (IntakeConstants.INTAKE_SIDE_SPEED - (1 * IntakeConstants.INTAKE_SIDE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (1 * IntakeConstants.INTAKE_SIDE_SPEED);
+            //     // double indexerSpeed = (IndexerConstants.INDEXER_INTAKE_SPEED- (1 * IndexerConstants.INDEXER_INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (1 * IndexerConstants.INDEXER_INTAKE_SPEED);
+            // m_Indexer.set(indexerSpeed);
+            // intake.intakeYes(rollerSpeed, sideSpeed);
           } else {
             m_Indexer.off();
           }
+          //shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 10, 20);
           shooter.turnOff();
         }
       }
     } else {
       runsEmpty = 0;
       intake.intakeOff();
-      if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()) {
-        if(angleShooterSubsytem.shortSpeakerDist()||subwooferAngleSup.getAsBoolean()) {
-          shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
+      if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||OverStagePassSup.getAsBoolean()) {
+        if(OverStagePassSup.getAsBoolean()) {
+          shooter.shootRPS(ShooterConstants.PASS_RPS);
         } else {
           shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
         }
       } else {
         if (operatorRevSup.getAsBoolean()){ 
-          shooter.shootRPSWithCurrent(100, 10, 20);
+          shooter.shootRPS(PASS_RPS);
         } else {
-          shooter.turnOff();
+          // shooter.turnOff();
+          shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 20, 30);
         }
       }
       boolean indexer = false;
@@ -150,7 +174,7 @@ public class IndexCommand extends Command {
       if(SmartDashboard.getBoolean("feedMotor", false)) {
         indexer = true;
       }
-      if((stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||farStageAngleSup.getAsBoolean())&&revUpSupplier.getAsBoolean()&& shooter.validShot()) {
+      if((stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||farStageAngleSup.getAsBoolean()||OverStagePassSup.getAsBoolean())&&shooter.isReving()&&revUpSupplier.getAsBoolean()&& shooter.validShot()&&shootIfReadySupplier.getAsBoolean()) {
         indexer = true;
       }
       if (indexer) {

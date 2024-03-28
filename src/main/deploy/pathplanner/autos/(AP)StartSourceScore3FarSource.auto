@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue5AutoPickupSourceSide"
+            "pathName": "Blue5AutoPickupFromStart"
           }
         },
         {
@@ -74,7 +74,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueSourceShoot4UnderStage"
+            "pathName": "BlueSourceShoot4"
           }
         },
         {

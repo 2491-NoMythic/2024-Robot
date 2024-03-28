@@ -11,12 +11,13 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 
 public class AimShooter extends Command {
 	AngleShooterSubsystem angleShooterSubsystem;
-	DoubleSupplier POVSupplier;
+	BooleanSupplier AmpSup;
 	BooleanSupplier humanPlayerSupplier;
 	BooleanSupplier SubwooferSupplier1;
 	BooleanSupplier StageAngleSupplier;
 	BooleanSupplier groundIntakeSup;
 	BooleanSupplier farStageAngleSup;
+	BooleanSupplier OverStageAngleSup;
 	/**
 	 * A Command that will control the angle of the shooter. If none of the supplied buttons are pressed, than it will automatically aim at the speaker
 	 * @param angleShooterSubsystem the subsytem to control the angle of the shooter
@@ -27,15 +28,16 @@ public class AimShooter extends Command {
 	 * @param groundIntakeSup a button to set the shooter to the correct angle for a succesful ground intake
 	 * @param farStageAngleSup a button to set the shooter to the correct speaker angle while the robot is against the far stage leg
 	 */
-	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, DoubleSupplier POVSupplier, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup) {
+	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier AmpSup, BooleanSupplier humanPlayerSupplier,
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier OverStageAngleSup) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
-		this.POVSupplier = POVSupplier;
+		this.AmpSup = AmpSup;
 		this.humanPlayerSupplier = humanPlayerSupplier;
 		this.SubwooferSupplier1 = SubwooferSupplier1;
 		this.StageAngleSupplier = StageAngleSupplier;
-		this.groundIntakeSup = groundIntakeSup;
+		this.groundIntakeSup = ()->false;
 		this.farStageAngleSup = farStageAngleSup;
+		this.OverStageAngleSup = OverStageAngleSup;
 		addRequirements(angleShooterSubsystem);
 	}
 
@@ -52,12 +54,14 @@ public class AimShooter extends Command {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.PODIUM_SHOOTER_ANGLE);
 		}  else if (farStageAngleSup.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.FAR_STAGE_SHOOTER_ANGLE);
-		} else if (POVSupplier.getAsDouble() == 90 || POVSupplier.getAsDouble() == 45 || POVSupplier.getAsDouble() == 135) {
+		} else if (AmpSup.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE);
 		} else if(humanPlayerSupplier.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
 		} else if (groundIntakeSup.getAsBoolean()){
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
+		} else  if(OverStageAngleSup.getAsBoolean()) {
+			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.OVER_STAGE_PASS_ANGLE);
 		} else {
 			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 		}

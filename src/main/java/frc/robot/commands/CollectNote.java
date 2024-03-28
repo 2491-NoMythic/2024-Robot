@@ -24,7 +24,7 @@ public class CollectNote extends Command {
   PIDController txController;
   PIDController tyController;
   SlewRateLimiter tyLimiter;
-
+  Boolean closeNote;
   double tx;
   double ty;
   /** Creates a new CollectNote. */
@@ -39,16 +39,18 @@ public class CollectNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    runsInvalid = 0;
+    closeNote = false;
     txController = new PIDController(
         // Vision.K_DETECTOR_TX_P,
-        0.05,
+        0.04,
         Vision.K_DETECTOR_TX_I,
         Vision.K_DETECTOR_TX_D);
     tyController = new PIDController(
-        Vision.K_DETECTOR_TY_P,
+        0.6,//Vision.K_DETECTOR_TY_P,
         Vision.K_DETECTOR_TY_I,
         Vision.K_DETECTOR_TY_D);
-    tyLimiter = new SlewRateLimiter(1, -1, 0);
+    tyLimiter = new SlewRateLimiter(4, -4, 0);
     txController.setSetpoint(0);
     tyController.setSetpoint(0);
     txController.setTolerance(3.5, 0.25);
@@ -80,14 +82,24 @@ public class CollectNote extends Command {
       runsInvalid = 0;
     }
     
-    tx = detectorData.tx;
     ty = detectorData.ty;
+    if(!closeNote) {
+      tx = detectorData.tx;
+    } else if(detectorData.ty<5.5){
+      tx = detectorData.tx;
+    } 
+    // else {
+    //   runsInvalid++;
+    // }
+    if (ty<5.5){
+      closeNote = true;
+    } 
     
     SmartDashboard.putNumber("CollectNote/calculated radians per second", txController.calculate(tx));
     SmartDashboard.putNumber("CollectNote/calculated forward meters per second", tyController.calculate(ty));
     // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
     drivetrain.drive(new ChassisSpeeds(
-      tyLimiter.calculate(tyController.calculate(ty)),
+      tyLimiter.calculate(-20/Math.abs(tx)),
       0,
       txController.calculate(tx)));
   }
@@ -97,11 +109,12 @@ public class CollectNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    runsInvalid = 0;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>30); 
+    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>10); 
   }
 }
