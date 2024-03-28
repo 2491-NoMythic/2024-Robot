@@ -359,7 +359,7 @@ public static final int INTAKE_SIDE_MOTOR_LEFT = 25;
   public static final int BRUSH_3_MOTOR = 2491;
     /** the desired speed for the intake when doing ground intake. In Percent-of-full-power, from -1 to 1 */
   public static final double INTAKE_SPEED = 1;
-  public static final double INTAKE_SIDE_SPEED 0.75;
+  public static final double INTAKE_SIDE_SPEED = 0.75;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
