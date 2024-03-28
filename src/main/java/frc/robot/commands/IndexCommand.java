@@ -136,6 +136,7 @@ public class IndexCommand extends Command {
       runsEmpty = 0;
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||OverStagePassSup.getAsBoolean()) {
+        idleReving = false;
         if(OverStagePassSup.getAsBoolean()) {
           shooter.shootRPS(ShooterConstants.PASS_RPS);
           idleReving = false;
