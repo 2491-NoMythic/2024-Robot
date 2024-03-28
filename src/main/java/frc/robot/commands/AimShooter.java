@@ -35,7 +35,7 @@ public class AimShooter extends Command {
 		this.humanPlayerSupplier = humanPlayerSupplier;
 		this.SubwooferSupplier1 = SubwooferSupplier1;
 		this.StageAngleSupplier = StageAngleSupplier;
-		this.groundIntakeSup = groundIntakeSup;
+		this.groundIntakeSup = ()->false;
 		this.farStageAngleSup = farStageAngleSup;
 		this.OverStageAngleSup = OverStageAngleSup;
 		addRequirements(angleShooterSubsystem);

@@ -116,15 +116,14 @@ public class IndexCommand extends Command {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
           shooter.shootSameRPS(ShooterConstants.HUMAN_PLAYER_RPS);
           intake.intakeOff();
-        }
-        else {
+        } else {
           if(groundIntakeSup.getAsBoolean()) {
             m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
             intake.intakeYes(IntakeConstants.INTAKE_SPEED);
           } else {
             m_Indexer.off();
           }
-          shooter.turnOff();
+          shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 10, 20);
         }
       }
     } else {
@@ -140,8 +139,8 @@ public class IndexCommand extends Command {
         if (operatorRevSup.getAsBoolean()){ 
           shooter.shootRPS(PASS_RPS);
         } else {
-          shooter.turnOff();
-          // shooter.shootRPS(LONG_SHOOTING_RPS);
+          // shooter.turnOff();
+          shooter.shootRPS(LONG_SHOOTING_RPS);
         }
       }
       boolean indexer = false;
