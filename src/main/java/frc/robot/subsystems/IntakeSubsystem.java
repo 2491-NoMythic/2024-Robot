@@ -84,13 +84,14 @@ public class IntakeSubsystem extends SubsystemBase {
    * uses percentage of full power
    * 
    * @param intakeRunSpeed percentage of full power, from -1 to 1
+   * @param intakeSideRunSpeed percentage of full power of the side wheels, from -1 to 1
    */
-  public void intakeYes(double intakeRunSpeed) {
+  public void intakeYes(double intakeRunSpeed, double intakeSideRunSpeed) {
     intake1.set(intakeRunSpeed);
     intake2.set(intakeRunSpeed);
     if (Preferences.getBoolean("IntakeSideWheels", false)) {
-      intakeSideLeft.set(intakeRunSpeed);
-      intakeSideRight.set(intakeRunSpeed);
+      intakeSideLeft.set(intakeSideRunSpeed);
+      intakeSideRight.set(intakeSideRunSpeed);
     }
   }
 

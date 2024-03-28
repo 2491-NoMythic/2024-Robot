@@ -24,7 +24,7 @@ public class GroundIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+    intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED);
     indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
   }
 

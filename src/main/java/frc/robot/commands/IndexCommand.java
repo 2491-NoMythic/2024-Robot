@@ -119,11 +119,12 @@ public class IndexCommand extends Command {
         } else {
           if(groundIntakeSup.getAsBoolean()) {
             m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-            intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+            intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED);
           } else {
             m_Indexer.off();
           }
-          shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 10, 20);
+          //shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 10, 20);
+          shooter.turnOff();
         }
       }
     } else {
@@ -140,7 +141,7 @@ public class IndexCommand extends Command {
           shooter.shootRPS(PASS_RPS);
         } else {
           // shooter.turnOff();
-          shooter.shootRPS(LONG_SHOOTING_RPS);
+          shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 20, 30);
         }
       }
       boolean indexer = false;

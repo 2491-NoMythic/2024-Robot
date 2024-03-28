@@ -384,7 +384,7 @@ public class RobotContainer {
 //FOR TESTING PURPOSES:
     if(intakeExists) {
       SmartDashboard.putData("intake on",new SequentialCommandGroup(
-        new InstantCommand(()->intake.intakeYes(-0.8), intake)
+        new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED), intake)
         // new InstantCommand(()->intake.intakeSideWheels(0.5), intake)));
       ));
       SmartDashboard.putData("intake off", new InstantCommand(intake::intakeOff, intake));
@@ -483,7 +483,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("autoPickup", autoPickup);
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
-      NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED)));
+      NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED)));
       NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
       NamedCommands.registerCommand("autoPickup", new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
@@ -499,7 +499,7 @@ public class RobotContainer {
       // NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));
     }
     if(intakeExists) {
-      NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(1)));
+      NamedCommands.registerCommand("intakeOn", new InstantCommand(()-> intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED)));
       if(sideWheelsExists){
         NamedCommands.registerCommand("intakeSideWheels", new InstantCommand(()-> intake.intakeSideWheels(1)));
       }
