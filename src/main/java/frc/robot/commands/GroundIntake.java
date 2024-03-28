@@ -28,9 +28,9 @@ public class GroundIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.intakeYes(IntakeConstants.INTAKE_SPEED * (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND),
-    IntakeConstants.INTAKE_SIDE_SPEED * (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND));
-    indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED * (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND));
+    intake.intakeYes(2 + (IntakeConstants.INTAKE_SPEED * (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND)),
+    2 + (IntakeConstants.INTAKE_SIDE_SPEED * (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND)));
+    indexer.set(2 + (IndexerConstants.INDEXER_INTAKE_SPEED * (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND)));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
