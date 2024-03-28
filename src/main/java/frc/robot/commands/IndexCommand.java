@@ -123,7 +123,8 @@ public class IndexCommand extends Command {
           } else {
             m_Indexer.off();
           }
-          shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 10, 20);
+          // shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 10, 20);
+          shooter.turnOff();
         }
       }
     } else {
@@ -140,7 +141,7 @@ public class IndexCommand extends Command {
           shooter.shootRPS(PASS_RPS);
         } else {
           // shooter.turnOff();
-          shooter.shootRPS(LONG_SHOOTING_RPS);
+          shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 20, 30);
         }
       }
       boolean indexer = false;
