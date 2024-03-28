@@ -37,6 +37,7 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.MoveMeters;
+import frc.robot.commands.OverrideCommand;
 import frc.robot.commands.WaitUntil;
 import frc.robot.commands.ShootAmp;
 import frc.robot.commands.NamedCommands.InitialShot;
@@ -371,7 +372,12 @@ public class RobotContainer {
     if(shooterExists) {
       SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS), shooter));
       SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
-      SmartDashboard.putData("shooter off", new InstantCommand(shooter::turnOff, shooter));
+      SmartDashboard.putNumber("run shooter speed", ShooterConstants.LONG_SHOOTING_RPS);
+      SmartDashboard.putData("shooterSubsystem", shooter);
+      SmartDashboard.putData("run shooter", new OverrideCommand(shooter) {
+        @Override public void execute() { shooter.shootRPS(SmartDashboard.getNumber("run shooter speed", ShooterConstants.LONG_SHOOTING_RPS)); }
+        @Override public void end(boolean interrupted) { shooter.turnOff(); }
+      });
     }
     if(angleShooterExists) {
       double testAngle = 45;

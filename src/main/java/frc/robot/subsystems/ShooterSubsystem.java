@@ -39,6 +39,10 @@ import java.util.function.DoubleSupplier;
   double differenceAngle;
 	 double currentHeading;
 	 double m_DesiredShooterAngle;
+   double targetVelocityL;
+   double targetVelocityR;
+   boolean isRevingL;
+   boolean isRevingR;
  
   CurrentLimitsConfigs currentLimitConfigs;
    Slot0Configs PIDLeftconfigs; 
@@ -103,7 +107,11 @@ import java.util.function.DoubleSupplier;
     configuratorL.apply(currentLimitConfigs);
     configuratorR.apply(currentLimitConfigs);
   }
-  
+  public void shootSeperateRPS(double RPS_Left, double RPS_Right, double supplyLimit, double statorLimit) {
+    targetVelocityL = RPS_Left;
+    targetVelocityR = RPS_Right;
+    adjCurrentLimit(supplyLimit, statorLimit);
+  }
   //public void shootThing(double runSpeed) {
   //  currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.CURRENT_LIMIT;
   //  shooterR.set(runSpeed);
@@ -118,9 +126,7 @@ import java.util.function.DoubleSupplier;
       shootRPSWithCurrent(RPS, ShooterConstants.CURRENT_LIMIT, 100);
     }
     public void shootSameRPS(double RPS) {
-      adjCurrentLimit(ShooterConstants.CURRENT_LIMIT, 100);
-      shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
-      shooterL.setControl(new VelocityDutyCycle(RPS).withSlot(0));
+      shootSeperateRPS(RPS, RPS, ShooterConstants.CURRENT_LIMIT, 100);
     }
    /**
      * allows you to set the shooter's speed using a supplier. this way you can use a value on SmartDashboard to tune
@@ -145,9 +151,7 @@ import java.util.function.DoubleSupplier;
      * @param statorLimit the desired StatorCurrentLimit for the shooter motor's
      */
     public void shootRPSWithCurrent(double RPS, double supplyLimit, double statorLimit){
-      adjCurrentLimit(supplyLimit, statorLimit);
-      shooterR.setControl(new VelocityDutyCycle(RPS).withSlot(0));
-      shooterL.setControl(new VelocityDutyCycle(RPS/2).withSlot(0));
+      shootSeperateRPS(RPS/2, RPS, supplyLimit, statorLimit);
     }
     /**
      * returns the absolute value of the right shooter motor's onboard PID loop. AKA it tells you how far away the right shooter motor's speed is from what we've told it to be
@@ -176,14 +180,56 @@ import java.util.function.DoubleSupplier;
      * turns off both of the shooter motors. We use percentage-of-full-power so that the wheels will coast to a stop and not use unnecessary power to stop them instantly.
      */
   public void turnOff(){
-    shooterR.setControl(new DutyCycleOut(0));
-    shooterL.setControl(new DutyCycleOut(0));
+    targetVelocityL = 0;
+    targetVelocityR = 0;
+    updateMotors();
+  }
+
+  /**
+   * Sets the motor to Rev if below target speed.
+   * @param isReving Old isReving
+   * @return Updated isReving
+   */
+  private static boolean updateIsReving(boolean isReving, double targetSpeed, double speed){
+    double revUpEn =  -6;
+    double revUpDis = -2;
+    targetSpeed = Math.abs(targetSpeed);
+    speed = Math.abs(speed);
+    if (speed < targetSpeed + revUpEn){
+      isReving = true;
+    } else if (speed > targetSpeed + revUpDis){
+      isReving = false;
+    }    
+    return isReving;
+  }
+  /**
+   * If the motor is Reving, set speed to full, if not Reving, use PID Mode
+   */
+  private static void updateMotor(TalonFX shooterMotor, boolean revState, double targetSpeed){
+    if(targetSpeed == 0) {
+      shooterMotor.set(0);
+    } else if (revState){
+      shooterMotor.set(Math.signum(targetSpeed));
+    } else {
+      shooterMotor.setControl(new VelocityDutyCycle(targetSpeed).withSlot(0));
+    }
+  }
+  /**
+   *  Revs left and right motors while below target velocity, if above target velocity, the motors are put to PID Mode
+   */
+  private void updateMotors(){
+    isRevingL = updateIsReving(isRevingL, targetVelocityL, shooterL.getVelocity().getValueAsDouble());
+    isRevingR = updateIsReving(isRevingR, targetVelocityR, shooterR.getVelocity().getValueAsDouble());
+    updateMotor(shooterL, isRevingL, targetVelocityL); 
+    updateMotor(shooterR, isRevingR, targetVelocityR); 
   }
   // public double getSpeedRPS() {
   //   return shooterR.getVelocity().asSupplier().get();
   // }
 @Override
   public void periodic() {
+    updateMotors();
+    
     SmartDashboard.putNumber("TESTING shooter speed error", getError());
     SmartDashboard.getBoolean("shooter speed rev'ed", validShot());
     SmartDashboard.putNumber("shooter current right", shooterR.getSupplyCurrent().getValueAsDouble());
