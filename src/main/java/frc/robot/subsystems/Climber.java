@@ -33,10 +33,12 @@ public class Climber extends SubsystemBase {
   SparkLimitSwitch hallEffectL;
   Boolean leftClimberOn;
   Boolean rightClimberOn;
-  double runSpeed;
+  double runSpeedL;
+  double runSpeedR;
     /** Creates a new Climber. */
   public Climber() {
-    runSpeed = 0;
+    runSpeedL = 0;
+    runSpeedR = 0;
     climbMotorR = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_RIGHT, MotorType.kBrushless);
     climbMotorL = new CANSparkMax(ClimberConstants.CLIMBER_MOTOR_LEFT, MotorType.kBrushless);
     climbMotorR.setInverted(true);
@@ -52,8 +54,12 @@ public class Climber extends SubsystemBase {
     climbMotorL.burnFlash();
     climbMotorR.burnFlash();
   }
- public void climberGo(double speed){
-    runSpeed = speed;
+ public void climberGoLeft(double speed){
+    runSpeedL = speed;
+ }
+ 
+ public void climberGoRight(double speed){
+  runSpeedR = speed;
  }
 
  public void climberStop(){
@@ -92,20 +98,27 @@ public void periodic() {
   SmartDashboard.putBoolean("right hall effect value", hallEffectR.isPressed());
   double rSpeed = 0;
   double lSpeed = 0;
-   if (runSpeed>0) {
-    if(!hallEffectL.isPressed()) {
-      lSpeed = runSpeed;
-    } 
-    if(!hallEffectR.isPressed()) {
-      rSpeed = runSpeed;
+
+  if(runSpeedL>0){
+    if(!hallEffectL.isPressed()){
+      lSpeed = runSpeedL;
     }
-  } else {
+  }
+  else{
     if (currentEncoderRotationsL < ClimberConstants.MAX_MOTOR_ROTATIONS){
-      lSpeed = runSpeed;
+      lSpeed = runSpeedL;
     }
+  }
+  
+  if(runSpeedR>0){
+    if(!hallEffectR.isPressed()){
+      rSpeed = runSpeedR;
+    }
+  }
+  else{
     if (currentEncoderRotationsR < ClimberConstants.MAX_MOTOR_ROTATIONS){
-      rSpeed = runSpeed;
-    } 
+      rSpeed = runSpeedR;
+    }
   }
   climbMotorL.set(lSpeed);
   climbMotorR.set(rSpeed);
