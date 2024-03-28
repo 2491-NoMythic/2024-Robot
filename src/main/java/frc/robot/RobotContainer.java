@@ -71,6 +71,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.commands.AngleShooter;
+import frc.robot.commands.ClimberCommand;
 
 
 /**
@@ -120,7 +121,6 @@ public class RobotContainer {
   BooleanSupplier AmpAngleSup;
   BooleanSupplier SourcePickupSup;
   BooleanSupplier ClimberDownSup;
-  BooleanSupplier ClimberUpSup;
   BooleanSupplier ShooterUpManualSup;
   BooleanSupplier ManualShootSup;
   BooleanSupplier ForceVisionSup;
@@ -186,7 +186,6 @@ public class RobotContainer {
     falseSup = ()->false;
     //discontinued buttons:
     intakeReverse = ()->false;
-    ClimberUpSup = ()->false;
     ShooterUpManualSup = ()->false;
     ForceVisionSup = ()->false;
     ShootIfReadySup = ()->false;
@@ -246,6 +245,10 @@ public class RobotContainer {
   }
   private void climberInst() {
     climber = new Climber();
+    climber.setDefaultCommand(new ClimberCommand(
+      climber,
+      ()-> modifyAxis(operatorController.getLeftY(), DEADBAND_NORMAL),
+      ()-> modifyAxis(operatorController.getRightY(), DEADBAND_NORMAL)));
   }
   private void indexInit() {
     indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
@@ -321,8 +324,13 @@ public class RobotContainer {
     }
     if(climberExists) {
       // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(ClimberDownSup).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
-      new Trigger(ClimberUpSup).onTrue(new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP))).onFalse(new InstantCommand(()-> climber.climberGo(0)));
+      new Trigger(ClimberDownSup).onTrue(new InstantCommand(()->{
+         climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_DOWN);
+        climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_DOWN);
+        })).onFalse(new InstantCommand(()->{ 
+          climber.climberGoLeft(0);
+          climber.climberGoRight(0);
+        }));
       // new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
@@ -402,8 +410,12 @@ public class RobotContainer {
       SmartDashboard.putData("indexer off", new InstantCommand(()->indexer.off()));
     }
     if(climberExists) {
-      SmartDashboard.putData("climber up", new InstantCommand(()-> climber.climberGo(ClimberConstants.CLIMBER_SPEED_UP)));
-      SmartDashboard.putData("climber down", new InstantCommand(()-> climber.climberGo(-ClimberConstants.CLIMBER_SPEED_UP)));
+      SmartDashboard.putData("climber up", new InstantCommand(()->{
+      climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_UP);
+      climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_UP);}));
+      SmartDashboard.putData("climber down", new InstantCommand(()->{
+      climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_DOWN);
+      climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_DOWN);}));
       SmartDashboard.putData("climber stop", new InstantCommand(()-> climber.climberStop()));
     }
   };
@@ -516,7 +528,7 @@ public class RobotContainer {
   public void teleopInit() {
     if(climberExists) {
       SequentialCommandGroup resetClimbers = new SequentialCommandGroup(
-        new InstantCommand(()->climber.climberGo(ClimberConstants.CLIMBER_SPEED_DOWN), climber),
+        new InstantCommand(()->{climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_DOWN);climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_DOWN);}, climber),
         new WaitCommand(2),
         new InstantCommand(()->climber.climberStop(), climber),
         new InstantCommand(climber::resetInitial)
