@@ -177,7 +177,7 @@ public class RobotContainer {
     ManualShootSup = driverController::getR2Button;
     ClimberDownSup = operatorController::getPSButton;
     GroundIntakeSup = driverController::getL1Button;
-    OperatorRevForPass = ()->operatorController.getPOV() != 1;
+    OperatorRevForPass = ()->operatorController.getPOV() != -1;
     SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
     StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
     FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
