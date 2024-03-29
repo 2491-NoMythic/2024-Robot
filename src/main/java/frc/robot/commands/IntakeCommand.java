@@ -32,7 +32,7 @@ public class IntakeCommand extends Command {
         intake.intakeOff();
         break;
       case INTAKE:
-        intake.intakeYes(IntakeConstants.INTAKE_SPEED);
+        intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED);
         break;
       case OUTAKE:
         intake.intakeNo(IntakeConstants.INTAKE_SPEED);

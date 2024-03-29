@@ -15,9 +15,9 @@ public class IndicatorLights extends Command {
  
   Lights lights;
  /**
- * This command controls the lights.  Section One Lights: If a note is seen, lights = dark orange-brown. Otherwise,
- *  lights = oddly deep dark purple.  Section Two Lights: If the shooter is in range, and is ready, lights = dark
- * green. If it is in range, but not ready, lights = a dark green-yellow-brown. If neither is true, lights = deep dark purple
+ * This command controls the lights.  Middle Lights: if limelights are updating the odometry, these lights are green, otherwise they are red.
+ * Side Lights: If a note is held, they are red if the shooter isn't rev'ed up, and green if they are rev'ed up. If a note is not held, they are off unless a note is seen by the intake
+ * limelight, in which case they are yellow
  */
 public IndicatorLights(Lights lights) {
     addRequirements(lights);
@@ -30,18 +30,33 @@ public IndicatorLights(Lights lights) {
 
   @Override
   public void execute() {
-    if (RobotState.getInstance().IsNoteSeen) {
-    lights.setSectionOne(50,40,0);
+    boolean noteInRobot = RobotState.getInstance().IsNoteHeld;
+    boolean noteSeenByLimelight = RobotState.getInstance().IsNoteSeen;
+    boolean limelightsUpdated = RobotState.getInstance().LimelightsUpdated;
+    boolean readyToShoot = noteInRobot&&limelightsUpdated;
+    boolean allSystemsGoodToGo = RobotState.getInstance().ShooterReady;
+    
+    if(limelightsUpdated) {
+      lights.setMid(0, 40, 0);
     } else {
-      lights.setSectionOne(50, 0, 50);
+      lights.setMid(50, 0, 0);
     }
-    if (RobotState.getInstance().ShooterInRange && RobotState.getInstance().ShooterReady){
-      lights.setSectionTwo(0,50,0);
-    } else if (RobotState.getInstance().ShooterInRange){
-      lights.setSectionTwo(50, 50, 0);
-    } else {
-      lights.setSectionTwo(50, 0, 50);
+
+    if(!noteInRobot) {
+      if(noteSeenByLimelight) {
+        lights.setSides(50, 50, 0);
+      } else {
+        lights.setSides(0, 0, 0);
+      }
     }
+    if(noteInRobot) {
+      if(allSystemsGoodToGo) {
+        lights.setSides(0, 50, 0);
+      } else {
+        lights.setSides(50, 0, 0);
+      }
+    }
+
     lights.dataSetter();
   }
 

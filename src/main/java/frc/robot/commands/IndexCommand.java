@@ -4,7 +4,10 @@
 
 package frc.robot.commands;
 
+import static frc.robot.settings.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.PASS_RPS;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -12,6 +15,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.IntakeConstants;
@@ -41,11 +45,12 @@ public class IndexCommand extends Command {
   BooleanSupplier stageAngleSup;
   BooleanSupplier subwooferAngleSup;
   BooleanSupplier farStageAngleSup;
-  BooleanSupplier operatorRevSup;
+  BooleanSupplier operatorOverStageRev;
   BooleanSupplier intakeReverse; 
   BooleanSupplier OverStagePassSup; 
   boolean auto;
   double runsEmpty = 0;
+  boolean idleReving;
 
   /**
    * A command to manage the control of notes throughout the robot. This command controls the Intake, Shooter, and Indexer. If any of these preferences are turned off, the command should not be initialized. If 
@@ -81,7 +86,7 @@ public class IndexCommand extends Command {
     this.stageAngleSup = stageAngleSup;
     this.farStageAngleSup = farStageAngleSup;
     this.groundIntakeSup = groundIntakeSup;
-    this.operatorRevSup = operatorRevSup;
+    this.operatorOverStageRev = operatorRevSup;
     this.intakeReverse = intakeReverse;
     this.OverStagePassSup = OverStagePassSup;
     SmartDashboard.putNumber("amp RPS", AMP_RPS);
@@ -95,6 +100,7 @@ public class IndexCommand extends Command {
   @Override
   public void initialize() {
     runsEmpty = 0;
+    idleReving = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -109,17 +115,14 @@ public class IndexCommand extends Command {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
       if(runsEmpty>=20) {
+        idleReving = false;
         intake.setNoteHeld(false);
         if(humanPlayerSupplier.getAsBoolean()) {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
           shooter.shootSameRPS(ShooterConstants.HUMAN_PLAYER_RPS);
           intake.intakeOff();
-        }
-        else {
-          if(groundIntakeSup.getAsBoolean()) {
-            m_Indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-            intake.intakeYes(IntakeConstants.INTAKE_SPEED);
-          } else {
+        } else {
+          if(!groundIntakeSup.getAsBoolean()) {
             m_Indexer.off();
           }
           shooter.turnOff();
@@ -131,18 +134,22 @@ public class IndexCommand extends Command {
       if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||OverStagePassSup.getAsBoolean()) {
         if(OverStagePassSup.getAsBoolean()) {
           shooter.shootRPS(ShooterConstants.PASS_RPS);
+          idleReving = false;
         } else {
           shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
+          idleReving = false;
         }
       } else {
-        if (operatorRevSup.getAsBoolean()){ 
-          shooter.shootRPSWithCurrent(100, 10, 20);
+        if (operatorOverStageRev.getAsBoolean()){ 
+          shooter.shootRPSWithCurrent(PASS_RPS, 20, 30);
+          idleReving = false;
         } else {
-          shooter.turnOff();
+          shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 20, 30);
+          idleReving = true;
         }
       }
       boolean indexer = false;
-      if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot() && shooter.isReving()) {
+      if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot() && shooter.isReving() && !idleReving) {
         RobotState.getInstance().ShooterReady = true;
         if (shootIfReadySupplier.getAsBoolean()) {
           indexer = true;
