@@ -15,10 +15,9 @@ public class IndicatorLights extends Command {
  
   Lights lights;
  /**
- * This command controls the lights.  Middle Lights: If a note is seen, lights = dark orange-brown. Otherwise,
- *  lights = purple. 
- * Side Lights: If the shooter is in range, and is ready, lights = dark green. 
- * If it is in range, but not ready, lights = a dark green-yellow-brown. If neither is true, lights = purple.
+ * This command controls the lights.  Middle Lights: if limelights are updating the odometry, these lights are green, otherwise they are red.
+ * Side Lights: If a note is held, they are red if the shooter isn't rev'ed up, and green if they are rev'ed up. If a note is not held, they are off unless a note is seen by the intake
+ * limelight, in which case they are yellow
  */
 public IndicatorLights(Lights lights) {
     addRequirements(lights);
