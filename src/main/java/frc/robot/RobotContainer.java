@@ -326,15 +326,6 @@ public class RobotContainer {
       new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV, intake));
     }
     if(climberExists) {
-      // new Trigger(driverController::getCrossButton).whileTrue(new AutoClimb(climber)).onFalse(new InstantCommand(()-> climber.climberStop()));
-      new Trigger(ClimberDownSup).onTrue(new InstantCommand(()->{
-         climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_DOWN);
-        climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_DOWN);
-        })).onFalse(new InstantCommand(()->{ 
-          climber.climberGoLeft(0);
-          climber.climberGoRight(0);
-        }));
-      // new Trigger(driverController::getSquareButton).whileTrue(new ClimberPullDown(climber));
     }
     if(shooterExists) {
     }

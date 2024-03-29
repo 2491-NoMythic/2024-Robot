@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.subsystems.Climber;
 
 public class ClimberCommand extends Command {
@@ -36,8 +37,8 @@ public class ClimberCommand extends Command {
   @Override
   public void execute() {
     if (climberDown.getAsBoolean() && !climber.isClimberIn()){
-      climber.climberGoLeft(1.0);
-      climber.climberGoRight(1.0);
+      climber.climberGoLeft(ClimberConstants.CLIMBER_SPEED_DOWN);
+      climber.climberGoRight(ClimberConstants.CLIMBER_SPEED_DOWN);
     }
     else{
       climber.climberGoLeft(translationYSupplierLeft.getAsDouble());
