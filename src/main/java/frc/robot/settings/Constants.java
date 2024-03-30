@@ -456,11 +456,14 @@ public static final class CTREConfigs {
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_SHOOTER_ANGLE = 36.3;
     public static final double FAR_STAGE_SHOOTER_ANGLE = 28;//24.5;
+    public static final double OPPOSITE_STAGE_SHOOTER_ANGLE = 26;//24.5;
     
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
     public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
     public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
+    public static final double RED_OPPOSITE_STAGE_ROBOT_ANGLE = 31;
+    public static final double BLUE_OPPOSITE_STAGE_ROBOT_ANGLE = 149;
     public static final double RED_OVER_STAGE_PASS_ANGLE = 55;
     public static final double BLUE_OVER_STAGE_PASS_ANGLE = -125;
 
