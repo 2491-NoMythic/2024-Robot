@@ -158,7 +158,7 @@ import java.util.function.DoubleSupplier;
      * <p> We use the right shooter motor becuase it's geared, so it takes longer to rev up or down
      * @return the speed error of the right shooter motor
      */
-    private double getError() {
+    public double getError() {
       return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
     }
     /**
@@ -223,9 +223,12 @@ import java.util.function.DoubleSupplier;
     updateMotor(shooterL, isRevingL, targetVelocityL); 
     updateMotor(shooterR, isRevingR, targetVelocityR); 
   }
-  // public double getSpeedRPS() {
-  //   return shooterR.getVelocity().asSupplier().get();
-  // }
+ public double getSpeedRPS() {
+   return shooterR.getVelocity().asSupplier().get();
+ }
+ public double getTargetVel(){
+  return targetVelocityR;
+ }
 @Override
   public void periodic() {
     updateMotors();

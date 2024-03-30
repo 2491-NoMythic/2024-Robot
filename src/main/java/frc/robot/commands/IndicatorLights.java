@@ -4,6 +4,10 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.RobotState;
@@ -14,17 +18,38 @@ import frc.robot.subsystems.RobotState;
 public class IndicatorLights extends Command {
  
   Lights lights;
+  DoubleSupplier targetVel;
+  DoubleSupplier currentVel;
+
  /**
  * This command controls the lights.  Middle Lights: if limelights are updating the odometry, these lights are green, otherwise they are red.
  * Side Lights: If a note is held, they are red if the shooter isn't rev'ed up, and green if they are rev'ed up. If a note is not held, they are off unless a note is seen by the intake
  * limelight, in which case they are yellow
+ * 
+ * @param target a value from 0 to 1
+ * @param current a value from 0 to 1
  */
-public IndicatorLights(Lights lights) {
+  public IndicatorLights(Lights lights, DoubleSupplier target, DoubleSupplier current) {
     addRequirements(lights);
     this.lights = lights;
+    this.targetVel = target;
+    this.currentVel = current;
   }
 
+  private double doTheMath(){
+   double x = targetVel.getAsDouble()-(targetVel.getAsDouble()-currentVel.getAsDouble());
+   double a = 0;
+   double b = 100;
+   double min = 0;
+   double max = targetVel.getAsDouble();
+   double y = (((b-a)*(x-min))/(max-min))+a;
+   return y;
+  }
 
+  private int convertDoubleToInt(double doubleVal) {
+    int targetI = (int)(doubleVal);
+    return targetI;
+  }
   @Override
   public void initialize() {}
 
@@ -48,13 +73,9 @@ public IndicatorLights(Lights lights) {
       } else {
         lights.setSides(0, 0, 0);
       }
-    }
-    if(noteInRobot) {
-      if(allSystemsGoodToGo) {
-        lights.setSides(0, 50, 0);
-      } else {
-        lights.setSides(50, 0, 0);
-      }
+    } else {
+      lights.setSides(0, convertDoubleToInt(doTheMath()), 0);
+      SmartDashboard.putNumber("Light Value", convertDoubleToInt(doTheMath()));
     }
 
     lights.dataSetter();

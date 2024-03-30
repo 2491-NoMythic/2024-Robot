@@ -23,6 +23,9 @@ public class Lights extends SubsystemBase {
     LEDBuffer = new AddressableLEDBuffer(60);
     lights.setLength(60);
   }
+  public int getLength(){
+    return OtherLightsEnd;
+  }
   public void dataSetter(){
     lights.setData(LEDBuffer);
     lights.start();
@@ -30,9 +33,17 @@ public class Lights extends SubsystemBase {
   public void setOneLightRGB(int index, int R, int G, int B){
     LEDBuffer.setRGB(index, R, G, B);
   }
+  public void setOneLightHSV(int index, int H, int S, int V){
+    LEDBuffer.setHSV(index, H, S, V);
+  }
   public void setLights(int start, int end, int R, int G, int B){
     for(int i = start; i < end; i++){
       setOneLightRGB(i, R, G, B);
+    }
+  }
+  public void setLightsHSV(int start, int end, int H, int S, int V){
+    for (int i = start; i< end; i++){
+      setOneLightHSV(end, H, S, V);
     }
   }
   //All setLights methods are based on having four rows of fifteen lights, divided into three sections. 

@@ -9,6 +9,7 @@ import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
 
@@ -201,7 +202,7 @@ public class RobotContainer {
     if(angleShooterExists) {angleShooterInst();}
     if(climberExists) {climberInst();}
     climbSpotChooserInit();
-    if(lightsExist) {lightsInst();}
+    if(lightsExist && shooterExists) {lightsInst();}
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists && angleShooterExists) {indexCommandInst();}
     Limelight.useDetectorLimelight(useDetectorLimelight);
@@ -272,9 +273,10 @@ public class RobotContainer {
   }
   private void lightsInst() {
     lights = new Lights();
-    lights.setDefaultCommand(new IndicatorLights(lights));
+    DoubleSupplier targetSup = ()-> shooter.getTargetVel();
+    DoubleSupplier currentSup = ()-> shooter.getSpeedRPS();
+    lights.setDefaultCommand(new IndicatorLights(lights, targetSup, currentSup));
   }
-  
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
