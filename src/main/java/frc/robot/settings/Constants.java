@@ -239,7 +239,8 @@ public static final class ShooterConstants{
   
   public static final double LONG_SHOOTING_RPS = 120;
   public static final double SHORT_SHOOTING_RPS = 100;
-  public static final double AMP_RPS = 17.0;
+  public static final double PRAC_AMP_RPS = 11.0;
+  public static final double COMP_AMP_RPS = 11.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
   public static final double PASS_RPS = 80;
 
@@ -294,8 +295,10 @@ public static final class ShooterConstants{
  
 
   //PID coefficients for shooter
-  public static final double PrackP = 0.128;
-  public static final double PrackFF  = 0.009;
+  public static final double PracLeftkP = 0.01;
+  public static final double PracRightkP = 0.01;
+  public static final double PracLeftkFF  = 0.0105;
+  public static final double PracRightkFF = 0.0068;
   // public static final double kI = 0;
   // public static final double kD = 0;
   public static final double kIz = 0;
@@ -327,11 +330,12 @@ public static final class ClimberConstants{
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
   public static final int CURRENT_LIMIT = 50;
-  public static final double INDEXER_INTAKE_SPEED = 0.4516 ;//ground intake
+  public static final double INDEXER_INTAKE_SPEED = 1;//0.903 ;//speed to pick up at 10 ft/s
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_RPS = 90;
   public static final double INDEXER_SHOOTING_POWER = 1;
-  public static final double INDEXER_AMP_SPEED = 0.5;
+  public static final double PRAC_INDEXER_AMP_SPEED = 200;
+  public static final double COMP_INDEXER_AMP_SPEED = 200;
   public static final double INDEXER_KS = 0.35;
   public static final double INDEXER_KV = 0.103;
   public static final double INDEXER_KA = 0.01;
@@ -339,9 +343,9 @@ public static final class IndexerConstants{
   /** the velocity to target when moving forward a set distance. in RPS */
   public static final double INDEXER_CRUISE_VELOCITY = 40;
   /** the acceleration to target target when moving to a set speed. In RPS^2*/
-  public static final double INDEXER_ACCELERATION = 400; // at 400 acceleration, the motor takes 0.1 seconds to reach 40 RPS
+  public static final double INDEXER_ACCELERATION = 800; // at 400 acceleration, the motor takes 0.1 seconds to reach 40 RPS
   /** the jerk to target when moving to a set acceleration. In RPS^3.  */
-  public static final double INDEXER_JERK = 1000; // at 4000 jerk, the motor takes 0.4 seconds to reach 400 RPS^2
+  public static final double INDEXER_JERK = 8000; // at 4000 jerk, the motor takes 0.4 seconds to reach 400 RPS^2
   /**
    * multiply motor rotations by this value to get inches. Divide inches by this value to get motor rotations.
    */
@@ -358,8 +362,8 @@ public static final int INTAKE_SIDE_MOTOR_LEFT = 25;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
     /** the desired speed for the intake when doing ground intake. In Percent-of-full-power, from -1 to 1 */
-  public static final double INTAKE_SPEED = 0.29167 ;
-  public static final double INTAKE_SIDE_SPEED = 0.29167;
+  public static final double INTAKE_SPEED = 0.65;//0.5834 ; // ground intakes speed. 0.4167 picks up at 10 ft/s
+  public static final double INTAKE_SIDE_SPEED = 0.65;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
@@ -452,11 +456,14 @@ public static final class CTREConfigs {
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_SHOOTER_ANGLE = 36.3;
     public static final double FAR_STAGE_SHOOTER_ANGLE = 28;//24.5;
+    public static final double OPPOSITE_STAGE_SHOOTER_ANGLE = 26;//24.5;
     
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
     public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
     public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
+    public static final double RED_OPPOSITE_STAGE_ROBOT_ANGLE = 29;//31
+    public static final double BLUE_OPPOSITE_STAGE_ROBOT_ANGLE = 151;
     public static final double RED_OVER_STAGE_PASS_ANGLE = 55;
     public static final double BLUE_OVER_STAGE_PASS_ANGLE = -125;
 

@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import static frc.robot.settings.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.PRAC_AMP_RPS;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 import static frc.robot.settings.Constants.ShooterConstants.PASS_RPS;
 
@@ -48,6 +48,7 @@ public class IndexCommand extends Command {
   BooleanSupplier operatorOverStageRev;
   BooleanSupplier intakeReverse; 
   BooleanSupplier OverStagePassSup; 
+  BooleanSupplier OppositeStageShotSup; 
   boolean auto;
   double runsEmpty = 0;
   boolean idleReving;
@@ -72,8 +73,10 @@ public class IndexCommand extends Command {
    * @param farStageAngleSup button to press to aim at the speaker from the far stage leg
    * @param operatorRevSup button to press to rev up the shooter slowly while driving
    * @param intakeReverse button to press to run the indexer backwards manually
+   * @param OverStagePassSup button to press to aim at the speaker from the opposite side of the stage (from the speaker)
+   * @param OppositeStageShotSup button to press to aim at the speaker from the opposite side of the stage (from the speaker)
    */
-  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse, BooleanSupplier OverStagePassSup) {
+  public IndexCommand(IndexerSubsystem m_IndexerSubsystem, BooleanSupplier shootIfReadySupplier, BooleanSupplier revUpSupplier, ShooterSubsystem shooter, IntakeSubsystem intake, DrivetrainSubsystem drivetrain, AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier humanPlaySupplier, BooleanSupplier stageAngleSup, BooleanSupplier SubwooferSup, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier operatorRevSup, BooleanSupplier intakeReverse, BooleanSupplier OverStagePassSup, BooleanSupplier OppositeStageShotSup) {
     this.m_Indexer = m_IndexerSubsystem;
     this.shootIfReadySupplier = shootIfReadySupplier;//R2
     this.revUpSupplier = revUpSupplier;//L2
@@ -89,8 +92,9 @@ public class IndexCommand extends Command {
     this.operatorOverStageRev = operatorRevSup;
     this.intakeReverse = intakeReverse;
     this.OverStagePassSup = OverStagePassSup;
-    SmartDashboard.putNumber("amp RPS", AMP_RPS);
-    SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
+    this.OppositeStageShotSup = OppositeStageShotSup;
+    SmartDashboard.putNumber("amp RPS", ShooterConstants.COMP_AMP_RPS);
+    SmartDashboard.putNumber("indexer amp speed", IndexerConstants.COMP_INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_SHOOTER_ANGLE);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IndexerSubsystem, shooter, intake);
@@ -160,7 +164,8 @@ public class IndexCommand extends Command {
       if(SmartDashboard.getBoolean("feedMotor", false)) {
         indexer = true;
       }
-      if((stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||farStageAngleSup.getAsBoolean()||OverStagePassSup.getAsBoolean())&&shooter.isReving()&&revUpSupplier.getAsBoolean()&& shooter.validShot()&&shootIfReadySupplier.getAsBoolean()) {
+      //if any of the setpoint buttons are pressed, AND we're trying to rev up, AND the shooter is rev'ed up, AND we say "shootIfReady", than turn on the indexer
+      if((stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||farStageAngleSup.getAsBoolean()||OverStagePassSup.getAsBoolean()||OppositeStageShotSup.getAsBoolean())&&shooter.isReving()&&revUpSupplier.getAsBoolean()&& shooter.validShot()&&shootIfReadySupplier.getAsBoolean()) {
         indexer = true;
       }
       if (indexer) {

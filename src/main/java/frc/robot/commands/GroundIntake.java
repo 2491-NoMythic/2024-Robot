@@ -32,13 +32,15 @@ public class GroundIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double mult = 1.0;
+    double mult = 0.43;
     double robotSpeed = Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2));
-    double rollerSpeed = (IntakeConstants.INTAKE_SPEED - (mult * IntakeConstants.INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (mult * IntakeConstants.INTAKE_SPEED);
-    double sideSpeed =  (IntakeConstants.INTAKE_SIDE_SPEED - (mult * IntakeConstants.INTAKE_SIDE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (mult * IntakeConstants.INTAKE_SIDE_SPEED);
-    double indexerSpeed = (IndexerConstants.INDEXER_INTAKE_SPEED- (mult * IndexerConstants.INDEXER_INTAKE_SPEED)) * (robotSpeed / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND) + (mult * IndexerConstants.INDEXER_INTAKE_SPEED);
+    double rollerSpeed = (IntakeConstants.INTAKE_SPEED - (mult * IntakeConstants.INTAKE_SPEED)) * (robotSpeed / /*DriveConstants.MAX_VELOCITY_METERS_PER_SECOND*/2.4) + (mult * IntakeConstants.INTAKE_SPEED);
+    double sideSpeed =  (IntakeConstants.INTAKE_SIDE_SPEED - (mult * IntakeConstants.INTAKE_SIDE_SPEED)) * (robotSpeed / /*DriveConstants.MAX_VELOCITY_METERS_PER_SECOND*/2.4) + (mult * IntakeConstants.INTAKE_SIDE_SPEED);
+    double indexerSpeed = (IndexerConstants.INDEXER_INTAKE_SPEED- (mult * IndexerConstants.INDEXER_INTAKE_SPEED)) * (robotSpeed / /*DriveConstants.MAX_VELOCITY_METERS_PER_SECOND*/2.4) + (mult * IndexerConstants.INDEXER_INTAKE_SPEED);
     intake.intakeYes(rollerSpeed, sideSpeed);
     indexer.set(indexerSpeed);
+    // intake.intakeYes(0.6, 0.6);
+    // indexer.set(0.9);
   }
 
   // Called once the command ends or is interrupted.

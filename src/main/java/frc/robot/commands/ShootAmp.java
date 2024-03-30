@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.IndexerConstants;
@@ -29,15 +30,22 @@ public class ShootAmp extends Command {
   public void initialize() {
     timer.reset();
     timer.start();
-    shooter.shootSameRPS(ShooterConstants.AMP_RPS);
+    shooter.shootSameRPS(ShooterConstants.PRAC_AMP_RPS);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(timer.get()>1) {
-      indexer.set(IndexerConstants.INDEXER_AMP_SPEED);
+    if (Preferences.getBoolean("CompBot", true)){
+      if(timer.get()>1) {
+        indexer.set(IndexerConstants.COMP_INDEXER_AMP_SPEED);
     }
+  }
+  else{
+    if(timer.get()>1){
+      indexer.set(IndexerConstants.PRAC_INDEXER_AMP_SPEED);
+    }
+  }
   }
 
   // Called once the command ends or is interrupted.

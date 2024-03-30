@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static frc.robot.settings.Constants.PS4Driver.*;
+import static frc.robot.settings.Constants.ShooterConstants.PRAC_AMP_RPS;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 
 import java.util.function.BooleanSupplier;
@@ -40,7 +41,7 @@ import frc.robot.commands.ManualShoot;
 import frc.robot.commands.MoveMeters;
 import frc.robot.commands.OverrideCommand;
 import frc.robot.commands.WaitUntil;
-import frc.robot.commands.ShootAmp;
+
 import frc.robot.commands.NamedCommands.InitialShot;
 import frc.robot.commands.NamedCommands.ShootNote;
 import frc.robot.commands.NamedCommands.AutoGroundIntake;
@@ -130,6 +131,7 @@ public class RobotContainer {
   BooleanSupplier FarStageAngleSup;
   BooleanSupplier OperatorRevForPass;
   BooleanSupplier OverStagePassSup;
+  BooleanSupplier OppositeStageShotSup;
   BooleanSupplier falseSup;
   DoubleSupplier zeroSup;
   BooleanSupplier AutoPickupSup;
@@ -142,7 +144,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
-    SmartDashboard.putNumber("amp RPS", ShooterConstants.AMP_RPS);
+    SmartDashboard.putNumber("amp RPS", ShooterConstants.PRAC_AMP_RPS);
 
     Preferences.initBoolean("Brushes", false);
     Preferences.initBoolean("CompBot", true);
@@ -171,6 +173,8 @@ public class RobotContainer {
     PDP = new PowerDistribution(1, ModuleType.kRev);
 
     ZeroGyroSup = driverController::getPSButton;
+    ForceVisionSup = driverController::getOptionsButton;
+
     AimWhileMovingSup = driverController::getL2Button;
     HumanPlaySup = driverController::getR1Button;
     AmpAngleSup = ()->driverController.getPOV() == 90||driverController.getPOV() == 45||driverController.getPOV() == 135;;
@@ -181,6 +185,7 @@ public class RobotContainer {
     SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
     StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
     FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
+    OppositeStageShotSup = ()->operatorController.getCircleButton()||driverController.getCircleButton();
     OverStagePassSup = operatorController::getL1Button;
     CenterAmpPassSup = operatorController::getL2Button;
     AutoPickupSup = ()->operatorController.getTouchpad()||driverController.getTouchpad();
@@ -239,7 +244,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, AmpAngleSup, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, OverStagePassSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, AmpAngleSup, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, OverStagePassSup, OppositeStageShotSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -257,7 +262,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorRevForPass, intakeReverse, OverStagePassSup);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorRevForPass, intakeReverse, OverStagePassSup, OppositeStageShotSup);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -286,6 +291,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    new Trigger(AmpAngleSup).onTrue(new InstantCommand(driveTrain::pointWheelsInward, driveTrain));
     SmartDashboard.putData("drivetrain", driveTrain);
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(ZeroGyroSup).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
@@ -299,7 +305,8 @@ public class RobotContainer {
       StageAngleSup,
       FarStageAngleSup,
       SubwooferAngleSup,
-      OverStagePassSup
+      OverStagePassSup,
+      OppositeStageShotSup
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
@@ -336,13 +343,22 @@ public class RobotContainer {
       new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
+      double indexerAmpSpeed;
+      double shooterAmpSpeed;
+      if(Preferences.getBoolean("CompBot", true)) {
+        shooterAmpSpeed = ShooterConstants.COMP_AMP_RPS;
+        indexerAmpSpeed = IndexerConstants.COMP_INDEXER_AMP_SPEED;
+      } else {
+        shooterAmpSpeed = ShooterConstants.PRAC_AMP_RPS;
+        indexerAmpSpeed = IndexerConstants.PRAC_INDEXER_AMP_SPEED;
+      }
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
         // new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
-        new InstantCommand(()->shooter.shootWithSupplier(()->10.2, true), shooter),
-        new MoveMeters(driveTrain, 0.085, 0.08, 0, 0),
+        new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
+        new MoveMeters(driveTrain, 0.06, 0.3, 0, 0),
+        // new WaitCommand(2),
         new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
-        // new InstantCommand(()->indexer.forwardInches(IndexerConstants.AMP_SHOT_INCHES), indexer),
-        new InstantCommand(()->indexer.magicRPS(90), indexer),//45 worked but a bit too high
+        new InstantCommand(()->indexer.magicRPS(indexerAmpSpeed), indexer),//45 worked but a bit too high
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
         );
@@ -385,7 +401,7 @@ public class RobotContainer {
     }
     if(shooterExists) {
       SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS), shooter));
-      SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
+      SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootRPS(ShooterConstants.PRAC_AMP_RPS), shooter));
       SmartDashboard.putNumber("run shooter speed", ShooterConstants.LONG_SHOOTING_RPS);
       SmartDashboard.putData("shooterSubsystem", shooter);
       SmartDashboard.putData("run shooter", new OverrideCommand(shooter) {
@@ -482,12 +498,8 @@ public class RobotContainer {
       NamedCommands.registerCommand("autoPickup", autoPickup);
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
-      NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(
-        IntakeConstants.INTAKE_SPEED *
-        (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND),
-        IntakeConstants.INTAKE_SIDE_SPEED *
-        (Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2)) / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND))));
-      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
+      NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED)));
+      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
       NamedCommands.registerCommand("autoPickup", new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
         new DriveTimeCommand(-1, 0, 0, 1, driveTrain)
@@ -512,15 +524,15 @@ public class RobotContainer {
       //the following command will both aim the robot at the speaker (with the AimRobotMoving), and shoot a note while aiming the shooter (with shootNote). As a race group, it ends
       //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
-        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup),
+        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup),
         new ShootNote(indexer, 1.5, angleShooterSubsystem, intake)));
       // NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       // NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
     }
     if(angleShooterExists) {
       //the same command that we use during teleop, but all the buttons that would aim the shooter anywhere other than the speaker are set to false.
-      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
-      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
+      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
+      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
     }
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem));
