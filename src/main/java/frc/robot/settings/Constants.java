@@ -294,8 +294,10 @@ public static final class ShooterConstants{
  
 
   //PID coefficients for shooter
-  public static final double PrackP = 0.128;
-  public static final double PrackFF  = 0.009;
+  public static final double PracLeftkP = 0.01;
+  public static final double PracRightkP = 0.01;
+  public static final double PracLeftkFF  = 0.0105;
+  public static final double PracRightkFF = 0.0068;
   // public static final double kI = 0;
   // public static final double kD = 0;
   public static final double kIz = 0;
