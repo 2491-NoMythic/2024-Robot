@@ -330,7 +330,7 @@ public static final class ClimberConstants{
 public static final class IndexerConstants{
   public static final int INDEXER_MOTOR = 11;
   public static final int CURRENT_LIMIT = 50;
-  public static final double INDEXER_INTAKE_SPEED = 0.4516 ;//ground intake
+  public static final double INDEXER_INTAKE_SPEED = 1;//0.903 ;//speed to pick up at 10 ft/s
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_RPS = 90;
   public static final double INDEXER_SHOOTING_POWER = 1;
@@ -362,8 +362,8 @@ public static final int INTAKE_SIDE_MOTOR_LEFT = 25;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
     /** the desired speed for the intake when doing ground intake. In Percent-of-full-power, from -1 to 1 */
-  public static final double INTAKE_SPEED = 0.29167 ;
-  public static final double INTAKE_SIDE_SPEED = 0.29167;
+  public static final double INTAKE_SPEED = 0.65;//0.5834 ; // ground intakes speed. 0.4167 picks up at 10 ft/s
+  public static final double INTAKE_SIDE_SPEED = 0.65;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
