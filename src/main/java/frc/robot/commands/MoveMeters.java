@@ -56,13 +56,14 @@ public class MoveMeters extends Command {
 
     SmartDashboard.putNumber("MOVE1METER/distance x", distanceX);
     SmartDashboard.putNumber("MOVE1METER/distance y", distanceY);
-    SmartDashboard.putNumber("MOVE1METER/distance from target", distance);
+    SmartDashboard.putNumber("MOVE1METER/distance from start", distance);
+    SmartDashboard.putNumber("MOVEMETERS/target distance", m_meters);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.stop();
+    m_drivetrain.pointWheelsInward();
     distance = 0;
   }
 

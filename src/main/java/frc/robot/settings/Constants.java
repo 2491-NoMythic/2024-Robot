@@ -239,7 +239,8 @@ public static final class ShooterConstants{
   
   public static final double LONG_SHOOTING_RPS = 120;
   public static final double SHORT_SHOOTING_RPS = 100;
-  public static final double AMP_RPS = 17.0;
+  public static final double PRAC_AMP_RPS = 11.0;
+  public static final double COMP_AMP_RPS = 11.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
   public static final double PASS_RPS = 80;
 
@@ -333,7 +334,8 @@ public static final class IndexerConstants{
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_RPS = 90;
   public static final double INDEXER_SHOOTING_POWER = 1;
-  public static final double INDEXER_AMP_SPEED = 0.5;
+  public static final double PRAC_INDEXER_AMP_SPEED = 0.5;
+  public static final double COMP_INDEXER_AMP_SPEED = 0.5;
   public static final double INDEXER_KS = 0.35;
   public static final double INDEXER_KV = 0.103;
   public static final double INDEXER_KA = 0.01;
@@ -341,9 +343,9 @@ public static final class IndexerConstants{
   /** the velocity to target when moving forward a set distance. in RPS */
   public static final double INDEXER_CRUISE_VELOCITY = 40;
   /** the acceleration to target target when moving to a set speed. In RPS^2*/
-  public static final double INDEXER_ACCELERATION = 400; // at 400 acceleration, the motor takes 0.1 seconds to reach 40 RPS
+  public static final double INDEXER_ACCELERATION = 800; // at 400 acceleration, the motor takes 0.1 seconds to reach 40 RPS
   /** the jerk to target when moving to a set acceleration. In RPS^3.  */
-  public static final double INDEXER_JERK = 1000; // at 4000 jerk, the motor takes 0.4 seconds to reach 400 RPS^2
+  public static final double INDEXER_JERK = 8000; // at 4000 jerk, the motor takes 0.4 seconds to reach 400 RPS^2
   /**
    * multiply motor rotations by this value to get inches. Divide inches by this value to get motor rotations.
    */

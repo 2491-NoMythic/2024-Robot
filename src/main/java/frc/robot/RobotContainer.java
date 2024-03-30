@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static frc.robot.settings.Constants.PS4Driver.*;
+import static frc.robot.settings.Constants.ShooterConstants.PRAC_AMP_RPS;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 
 import java.util.function.BooleanSupplier;
@@ -40,7 +41,7 @@ import frc.robot.commands.ManualShoot;
 import frc.robot.commands.MoveMeters;
 import frc.robot.commands.OverrideCommand;
 import frc.robot.commands.WaitUntil;
-import frc.robot.commands.ShootAmp;
+
 import frc.robot.commands.NamedCommands.InitialShot;
 import frc.robot.commands.NamedCommands.ShootNote;
 import frc.robot.commands.NamedCommands.AutoGroundIntake;
@@ -142,7 +143,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //preferences are initialized IF they don't already exist on the Rio
-    SmartDashboard.putNumber("amp RPS", ShooterConstants.AMP_RPS);
+    SmartDashboard.putNumber("amp RPS", ShooterConstants.PRAC_AMP_RPS);
 
     Preferences.initBoolean("Brushes", false);
     Preferences.initBoolean("CompBot", true);
@@ -286,6 +287,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    new Trigger(AmpAngleSup).onTrue(new InstantCommand(driveTrain::pointWheelsInward, driveTrain));
     SmartDashboard.putData("drivetrain", driveTrain);
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(ZeroGyroSup).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
@@ -336,13 +338,22 @@ public class RobotContainer {
       new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
+      double indexerAmpSpeed;
+      double shooterAmpSpeed;
+      if(Preferences.getBoolean("CompBot", true)) {
+        shooterAmpSpeed = ShooterConstants.COMP_AMP_RPS;
+        indexerAmpSpeed = IndexerConstants.COMP_INDEXER_AMP_SPEED;
+      } else {
+        shooterAmpSpeed = ShooterConstants.PRAC_AMP_RPS;
+        indexerAmpSpeed = IndexerConstants.PRAC_INDEXER_AMP_SPEED;
+      }
       SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
         // new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
-        new InstantCommand(()->shooter.shootWithSupplier(()->10.2, true), shooter),
-        new MoveMeters(driveTrain, 0.085, 0.08, 0, 0),
+        new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
+        new MoveMeters(driveTrain, 0.06, 0.3, 0, 0),
+        // new WaitCommand(2),
         new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
-        // new InstantCommand(()->indexer.forwardInches(IndexerConstants.AMP_SHOT_INCHES), indexer),
-        new InstantCommand(()->indexer.magicRPS(90), indexer),//45 worked but a bit too high
+        new InstantCommand(()->indexer.magicRPS(indexerAmpSpeed), indexer),//45 worked but a bit too high
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
         );
@@ -385,7 +396,7 @@ public class RobotContainer {
     }
     if(shooterExists) {
       SmartDashboard.putData("shooter on speaker", new InstantCommand(()->shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS), shooter));
-      SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootRPS(ShooterConstants.AMP_RPS), shooter));
+      SmartDashboard.putData("shooter on amp", new InstantCommand(()->shooter.shootRPS(ShooterConstants.PRAC_AMP_RPS), shooter));
       SmartDashboard.putNumber("run shooter speed", ShooterConstants.LONG_SHOOTING_RPS);
       SmartDashboard.putData("shooterSubsystem", shooter);
       SmartDashboard.putData("run shooter", new OverrideCommand(shooter) {

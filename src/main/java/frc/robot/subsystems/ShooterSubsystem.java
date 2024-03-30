@@ -66,8 +66,8 @@ import java.util.function.DoubleSupplier;
       PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF);
       PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF);
   } else {
-      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PrackP).withKV(ShooterConstants.PrackFF);
-      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PrackP).withKV(ShooterConstants.PrackFF);
+      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PracRightkP).withKV(ShooterConstants.PracRightkFF);
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PracLeftkP).withKV(ShooterConstants.PracLeftkFF);
     }
     runsValid = 0;
     shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
@@ -107,7 +107,7 @@ import java.util.function.DoubleSupplier;
     configuratorL.apply(currentLimitConfigs);
     configuratorR.apply(currentLimitConfigs);
   }
-  public void shootSeperateRPS(double RPS_Left, double RPS_Right, double supplyLimit, double statorLimit) {
+  public void setTargetVelocity(double RPS_Left, double RPS_Right, double supplyLimit, double statorLimit) {
     targetVelocityL = RPS_Left;
     targetVelocityR = RPS_Right;
     adjCurrentLimit(supplyLimit, statorLimit);
@@ -126,7 +126,7 @@ import java.util.function.DoubleSupplier;
       shootRPSWithCurrent(RPS, ShooterConstants.CURRENT_LIMIT, 100);
     }
     public void shootSameRPS(double RPS) {
-      shootSeperateRPS(RPS, RPS, ShooterConstants.CURRENT_LIMIT, 100);
+      setTargetVelocity(RPS, RPS, ShooterConstants.CURRENT_LIMIT, 100);
     }
    /**
      * allows you to set the shooter's speed using a supplier. this way you can use a value on SmartDashboard to tune
@@ -151,7 +151,7 @@ import java.util.function.DoubleSupplier;
      * @param statorLimit the desired StatorCurrentLimit for the shooter motor's
      */
     public void shootRPSWithCurrent(double RPS, double supplyLimit, double statorLimit){
-      shootSeperateRPS(RPS/2, RPS, supplyLimit, statorLimit);
+      setTargetVelocity(RPS/2, RPS, supplyLimit, statorLimit);
     }
     /**
      * returns the absolute value of the right shooter motor's onboard PID loop. AKA it tells you how far away the right shooter motor's speed is from what we've told it to be

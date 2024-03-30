@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import static frc.robot.settings.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-import static frc.robot.settings.Constants.ShooterConstants.AMP_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.PRAC_AMP_RPS;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 import static frc.robot.settings.Constants.ShooterConstants.PASS_RPS;
 
@@ -89,8 +89,8 @@ public class IndexCommand extends Command {
     this.operatorOverStageRev = operatorRevSup;
     this.intakeReverse = intakeReverse;
     this.OverStagePassSup = OverStagePassSup;
-    SmartDashboard.putNumber("amp RPS", AMP_RPS);
-    SmartDashboard.putNumber("indexer amp speed", IndexerConstants.INDEXER_AMP_SPEED);
+    SmartDashboard.putNumber("amp RPS", PRAC_AMP_RPS);
+    SmartDashboard.putNumber("indexer amp speed", IndexerConstants.COMP_INDEXER_AMP_SPEED);
     SmartDashboard.putNumber("amp angle", Field.AMPLIFIER_SHOOTER_ANGLE);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IndexerSubsystem, shooter, intake);
