@@ -9,7 +9,7 @@
     "to shooting pos"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.5,
+  "defaultMaxVel": 3.5,
   "defaultMaxAccel": 8.0,
   "defaultMaxAngVel": 740.0,
   "defaultMaxAngAccel": 1000.0,
