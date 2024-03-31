@@ -85,7 +85,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     if (Preferences.getBoolean("CompBot", true)) {
-      m_DistanceSensor = intake1.getAnalog(Mode.kAbsolute);
+      m_DistanceSensor = intakeSideLeft.getAnalog(Mode.kAbsolute);
     } else {
       m_DistanceSensor = intakeSideLeft.getAnalog(Mode.kAbsolute);
     }
