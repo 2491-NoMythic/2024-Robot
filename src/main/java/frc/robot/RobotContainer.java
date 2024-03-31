@@ -311,10 +311,10 @@ public class RobotContainer {
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
       autoPickup = new ParallelRaceGroup(
-        new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
+        new AutoGroundIntake(indexer, intake, angleShooterSubsystem, driveTrain),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
-          new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
+          new DriveTimeCommand(-0.25, 0, 0, 6, driveTrain),
           new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
           new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
           new WaitCommand(0.5)
@@ -491,7 +491,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
         new MoveMeters(driveTrain, 0.7, -2, 0, 0),
         new MoveMeters(driveTrain, 0.7, 2, 0, 0)),
-      new AutoGroundIntake(indexer, intake, angleShooterSubsystem)
+      new AutoGroundIntake(indexer, intake, angleShooterSubsystem, driveTrain)
     ));
     }
     if(autoPickup != null) {
@@ -535,8 +535,8 @@ public class RobotContainer {
       SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
     }
     if (indexerExists&&intakeExists) {
-      NamedCommands.registerCommand("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem));
-      SmartDashboard.putData("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem));
+      NamedCommands.registerCommand("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem, driveTrain));
+      SmartDashboard.putData("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem, driveTrain));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }

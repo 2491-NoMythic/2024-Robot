@@ -4,9 +4,13 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.signals.ControlModeValue;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.SparkAnalogSensor;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkAnalogSensor.Mode;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -23,7 +27,9 @@ import frc.robot.settings.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
   CANSparkMax intake1;
+  SparkPIDController intake1Controller;
   CANSparkMax intake2;
+  SparkPIDController intake2Controller;
   CANSparkMax intakeSideLeft;
   CANSparkMax intakeSideRight;
   SparkAnalogSensor m_DistanceSensor;
@@ -41,6 +47,16 @@ public class IntakeSubsystem extends SubsystemBase {
     intake2 = new CANSparkMax(IntakeConstants.INTAKE_2_MOTOR, MotorType.kBrushless);
     intake1.restoreFactoryDefaults();
     intake2.restoreFactoryDefaults();
+    intake1Controller = intake1.getPIDController();
+    intake2Controller = intake2.getPIDController();
+      intake1Controller.setP(IntakeConstants.INTAKE_1_kP);
+      intake1Controller.setI(IntakeConstants.INTAKE_1_kI);
+      intake1Controller.setD(IntakeConstants.INTAKE_1_kD);
+      intake1Controller.setFF(IntakeConstants.INTAKE_1_kFF);
+      intake2Controller.setP(IntakeConstants.INTAKE_2_kP);
+      intake2Controller.setI(IntakeConstants.INTAKE_2_kI);
+      intake2Controller.setD(IntakeConstants.INTAKE_2_kD);
+      intake2Controller.setFF(IntakeConstants.INTAKE_2_kF);
     intake1.setInverted(true);
     intake2.setInverted(true);
     intake1.setIdleMode(IdleMode.kCoast);
@@ -61,8 +77,11 @@ public class IntakeSubsystem extends SubsystemBase {
       intakeSideRight.setIdleMode(IdleMode.kCoast);
       intakeSideLeft.setSmartCurrentLimit(25, 40, 1000);
       intakeSideRight.setSmartCurrentLimit(25, 40, 1000);
+      intakeSideRight.getEncoder().setPositionConversionFactor(1);
+      intakeSideLeft.getEncoder().setPositionConversionFactor(1);
       intakeSideLeft.burnFlash();
       intakeSideRight.burnFlash();
+      //intakeSideRight.getPIDController().setReference(intakeRunSpeed, CANSparkMax.ControlType.kVelocity)
     }
 
     if (Preferences.getBoolean("CompBot", true)) {
@@ -93,6 +112,11 @@ public class IntakeSubsystem extends SubsystemBase {
       intakeSideLeft.set(intakeSideRunSpeed);
       intakeSideRight.set(intakeSideRunSpeed);
     }
+  }
+
+  public void setVelocity(double velocity) {
+    intake1Controller.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+    intake2Controller.setReference(velocity, CANSparkMax.ControlType.kVelocity);
   }
 
   public void intakeSideWheels(double sideWheelRunSpeed) {

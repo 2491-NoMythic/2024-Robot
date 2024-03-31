@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.settings.Constants.IndexerConstants;
@@ -29,7 +30,7 @@ public class IndexerNoteAlign extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(()->indexer.magicRPS(-35), indexer),
+      new InstantCommand(()->indexer.magicRPS(-200), indexer),
       new WaitCommand(()->0.3),
       new WaitUntil(()->!intake.isNoteSeen()),
       new InstantCommand(()->indexer.magicRPS(10), indexer),

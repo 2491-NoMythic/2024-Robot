@@ -364,6 +364,16 @@ public static final int INTAKE_SIDE_MOTOR_LEFT = 25;
     /** the desired speed for the intake when doing ground intake. In Percent-of-full-power, from -1 to 1 */
   public static final double INTAKE_SPEED = 0.65;//0.5834 ; // ground intakes speed. 0.4167 picks up at 10 ft/s
   public static final double INTAKE_SIDE_SPEED = 0.65;
+  public static final double INTAKE_MAX_VELOCITY = 11000;
+
+  public static final double INTAKE_1_kP = 0.00002;
+  public static final double INTAKE_1_kI = 0;
+  public static final double INTAKE_1_kD = 0.0008;
+  public static final double INTAKE_1_kFF = 0.000085;
+  public static final double INTAKE_2_kP = 0.00007;
+  public static final double INTAKE_2_kI = 0;//0.7;
+  public static final double INTAKE_2_kD = 0;//0.002;
+  public static final double INTAKE_2_kF = 0.00009;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
