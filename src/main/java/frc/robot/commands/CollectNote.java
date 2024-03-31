@@ -43,7 +43,7 @@ public class CollectNote extends Command {
     closeNote = false;
     txController = new PIDController(
         // Vision.K_DETECTOR_TX_P,
-        0.04,
+        0.03,
         Vision.K_DETECTOR_TX_I,
         Vision.K_DETECTOR_TX_D);
     tyController = new PIDController(
@@ -86,9 +86,9 @@ public class CollectNote extends Command {
     if(!closeNote) {
       tx = detectorData.tx;
       drivetrain.drive(new ChassisSpeeds(
-        tyLimiter.calculate(-10/Math.abs(tx)),
-        0,
-        txController.calculate(tx)));
+        tyLimiter.calculate(-20/Math.abs(tx)),
+        txController.calculate(-tx),
+        0));
     } else if(detectorData.ty<5.5){
       tx = detectorData.tx;
     } else {
@@ -113,6 +113,7 @@ public class CollectNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    drivetrain.pointWheelsInward();
     runsInvalid = 0;
     closeNote = false;
   }
@@ -120,6 +121,6 @@ public class CollectNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>10); 
+    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>5); 
   }
 }
