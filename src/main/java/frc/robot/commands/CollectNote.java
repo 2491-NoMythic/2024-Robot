@@ -85,8 +85,10 @@ public class CollectNote extends Command {
     ty = detectorData.ty;
     if(!closeNote) {
       tx = detectorData.tx;
+      double forwardSpeed = tyLimiter.calculate(-20/Math.abs(tx));
+      if(forwardSpeed>4||tx == 0) {forwardSpeed = 4;}
       drivetrain.drive(new ChassisSpeeds(
-        tyLimiter.calculate(-20/Math.abs(tx)),
+        tyLimiter.calculate(forwardSpeed),
         txController.calculate(-tx),
         0));
     } else if(detectorData.ty<5.5){
