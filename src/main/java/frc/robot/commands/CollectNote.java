@@ -85,9 +85,16 @@ public class CollectNote extends Command {
     ty = detectorData.ty;
     if(!closeNote) {
       tx = detectorData.tx;
+      drivetrain.drive(new ChassisSpeeds(
+        tyLimiter.calculate(-10/Math.abs(tx)),
+        0,
+        txController.calculate(tx)));
     } else if(detectorData.ty<5.5){
       tx = detectorData.tx;
-    } 
+    } else {
+      drivetrain.drive(new ChassisSpeeds(
+        1, 0, 0));
+    }
     // else {
     //   runsInvalid++;
     // }
@@ -97,11 +104,8 @@ public class CollectNote extends Command {
     
     SmartDashboard.putNumber("CollectNote/calculated radians per second", txController.calculate(tx));
     SmartDashboard.putNumber("CollectNote/calculated forward meters per second", tyController.calculate(ty));
+    SmartDashboard.putBoolean("CollectNote/closeNote", closeNote);
     // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
-    drivetrain.drive(new ChassisSpeeds(
-      tyLimiter.calculate(-20/Math.abs(tx)),
-      0,
-      txController.calculate(tx)));
   }
   
 
@@ -110,6 +114,7 @@ public class CollectNote extends Command {
   @Override
   public void end(boolean interrupted) {
     runsInvalid = 0;
+    closeNote = false;
   }
 
   // Returns true when the command should end.

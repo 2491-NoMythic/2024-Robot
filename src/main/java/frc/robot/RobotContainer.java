@@ -314,7 +314,7 @@ public class RobotContainer {
         new AutoGroundIntake(indexer, intake, angleShooterSubsystem, driveTrain),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
-          new DriveTimeCommand(-0.25, 0, 0, 6, driveTrain),
+          new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
           new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
           new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
           new WaitCommand(0.5)
