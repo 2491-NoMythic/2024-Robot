@@ -43,7 +43,7 @@ public class CollectNote extends Command {
     closeNote = false;
     txController = new PIDController(
         // Vision.K_DETECTOR_TX_P,
-        0.03,
+        0.035,//0.03,
         Vision.K_DETECTOR_TX_I,
         Vision.K_DETECTOR_TX_D);
     tyController = new PIDController(
@@ -86,7 +86,8 @@ public class CollectNote extends Command {
     if(!closeNote) {
       tx = detectorData.tx;
       double forwardSpeed = tyLimiter.calculate(-20/Math.abs(tx));
-      if(forwardSpeed>1||tx == 0) {forwardSpeed = 1;}
+      SmartDashboard.putNumber("CollectNote/forward speed limited", forwardSpeed);
+      if(Math.abs(forwardSpeed)>1) {forwardSpeed = -1;}
       drivetrain.drive(new ChassisSpeeds(
         forwardSpeed,
         txController.calculate(-tx),
@@ -94,11 +95,12 @@ public class CollectNote extends Command {
       } else if(detectorData.ty<=5.5){
         tx = detectorData.tx;
         double forwardSpeed = tyLimiter.calculate(-20/Math.abs(tx));
-        if(forwardSpeed>4||tx == 0) {forwardSpeed = 4;}
+        if(Math.abs(forwardSpeed)>1) {forwardSpeed = -1;}
         drivetrain.drive(new ChassisSpeeds(
           forwardSpeed,
           txController.calculate(-tx),
           0));
+        SmartDashboard.putNumber("CollectNote/forward speed limited", forwardSpeed);
     } else {
       drivetrain.drive(new ChassisSpeeds(
         -1, 0, 0));
@@ -114,6 +116,7 @@ public class CollectNote extends Command {
     SmartDashboard.putNumber("CollectNote/calculated radians per second", txController.calculate(tx));
     SmartDashboard.putNumber("CollectNote/calculated forward meters per second", tyController.calculate(ty));
     SmartDashboard.putBoolean("CollectNote/closeNote", closeNote);
+    SmartDashboard.putNumber("CollectNote/runsInvalid", runsInvalid);
     // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
   }
   

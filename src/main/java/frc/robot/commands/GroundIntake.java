@@ -52,7 +52,8 @@ public class GroundIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.intakeOff();
-    indexer.magicRPS(0);
+    // indexer.magicRPS(0);
+    indexer.forwardInches(-1);
   }
 
   // Returns true when the command should end.
