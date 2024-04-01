@@ -19,10 +19,10 @@ public class GroundIntake extends Command {
   IndexerSubsystem indexer;
   DrivetrainSubsystem driveTrain;
   public GroundIntake(IntakeSubsystem intake, IndexerSubsystem indexer, DrivetrainSubsystem driveTrain) {
+    addRequirements(intake, indexer);
     this.intake = intake;
     this.indexer = indexer;
     this.driveTrain = driveTrain;
-    addRequirements(intake, indexer);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -52,7 +52,7 @@ public class GroundIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.intakeOff();
-    indexer.off();
+    indexer.magicRPS(0);
   }
 
   // Returns true when the command should end.

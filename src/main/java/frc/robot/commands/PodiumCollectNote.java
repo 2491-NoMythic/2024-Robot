@@ -14,7 +14,7 @@ import frc.robot.settings.LimelightDetectorData;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Limelight;
 
-public class CollectNote extends Command {
+public class PodiumCollectNote extends Command {
 
   DrivetrainSubsystem drivetrain;
   LimelightDetectorData detectorData;
@@ -28,7 +28,7 @@ public class CollectNote extends Command {
   double tx;
   double ty;
   /** Creates a new CollectNote. */
-  public CollectNote(DrivetrainSubsystem drivetrain, Limelight limelight) {
+  public PodiumCollectNote(DrivetrainSubsystem drivetrain, Limelight limelight) {
     addRequirements(drivetrain);
     this.drivetrain = drivetrain;
     this.limelight = limelight;
@@ -94,7 +94,7 @@ public class CollectNote extends Command {
       } else if(detectorData.ty<=5.5){
         tx = detectorData.tx;
         double forwardSpeed = tyLimiter.calculate(-20/Math.abs(tx));
-        if(forwardSpeed>4||tx == 0) {forwardSpeed = 4;}
+        if(forwardSpeed>1.5||tx == 0) {forwardSpeed = 1.5;}
         drivetrain.drive(new ChassisSpeeds(
           forwardSpeed,
           txController.calculate(-tx),

@@ -173,6 +173,8 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
+    SmartDashboard.putNumber("INTAKE/leading roller speed", intake1.getEncoder().getVelocity());
+    SmartDashboard.putNumber("INTAKE/trailing roller speed", intake2.getEncoder().getVelocity());
     motorLogger1.log(intake1);
     motorLogger2.log(intake2);
     logDistance.append(m_DistanceSensor.getVoltage());

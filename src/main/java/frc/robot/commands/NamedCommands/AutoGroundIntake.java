@@ -20,12 +20,11 @@ public class AutoGroundIntake extends Command {
   IntakeSubsystem intake;
   AngleShooterSubsystem angleShooterSubsystem;
   DrivetrainSubsystem driveTrain;
-  public AutoGroundIntake(IndexerSubsystem indexer, IntakeSubsystem intake, AngleShooterSubsystem angleShooter, DrivetrainSubsystem driveTrain) {
+  public AutoGroundIntake(IndexerSubsystem indexer, IntakeSubsystem intake, DrivetrainSubsystem driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.\
-   addRequirements(indexer,intake, angleShooter);
+   addRequirements(indexer,intake);
     this.indexer = indexer;
     this.intake = intake;
-    this.angleShooterSubsystem = angleShooter;
     this.driveTrain = driveTrain;
   }
   
@@ -47,6 +46,8 @@ public class AutoGroundIntake extends Command {
     SmartDashboard.putNumber("GROUNDINTAKE/roller speed", rollerSpeed);
     intake.intakeSideWheels(sideSpeed);
     indexer.set(indexerSpeed);
+    // intake.intakeYes(0.6, 0.6);
+    // indexer.set(0.9);
   }
 
   // Called once the command ends or is interrupted.
@@ -54,7 +55,6 @@ public class AutoGroundIntake extends Command {
   public void end(boolean interrupted) {
     intake.intakeOff();
     indexer.off();
-    angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
     intake.setNoteHeld(true);
   }
 

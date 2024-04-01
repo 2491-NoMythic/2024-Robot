@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9763502326596363,
-        "y": 6.972545949830438
+        "x": 1.0581473014797882,
+        "y": 7.409038027952599
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1813930081875528,
-        "y": 6.980289376420702
+        "x": 1.263190077007704,
+        "y": 7.416781454542863
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.1516377006722949,
-        "y": 7.69317220721581
+        "x": 2.2091145416858735,
+        "y": 7.761753795112528
       },
       "prevControl": {
-        "x": 1.0469668045790654,
-        "y": 7.686496767413758
+        "x": 1.4065244211409311,
+        "y": 7.7560004609150734
       },
       "nextControl": {
-        "x": 4.9690092262746814,
-        "y": 7.936627023906479
+        "x": 4.798790832149566,
+        "y": 7.780317782857788
       },
       "isLocked": false,
       "linkedName": "CollectNote1Blue"
     },
     {
       "anchor": {
-        "x": 7.035751355453329,
-        "y": 7.613241893150453
+        "x": 6.507643667719127,
+        "y": 7.449717390537984
       },
       "prevControl": {
-        "x": 5.454285114449193,
-        "y": 7.569825337801377
+        "x": 4.9261774267149905,
+        "y": 7.406300835188908
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,18 +46,18 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
+      "waypointRelativePos": 0.25,
       "rotationDegrees": 180.0,
-      "rotateFast": false
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 740.0,
-    "maxAngularAcceleration": 1000.0
+    "maxAcceleration": 2.3,
+    "maxAngularVelocity": 650.0,
+    "maxAngularAcceleration": 350.0
   },
   "goalEndState": {
     "velocity": 0,
@@ -67,7 +67,7 @@
   "reversed": false,
   "folder": "Collect Notes",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": -128.02709091266487,
     "velocity": 0
   },
   "useDefaultConstraints": true
