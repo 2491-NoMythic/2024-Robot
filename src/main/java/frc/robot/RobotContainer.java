@@ -11,6 +11,8 @@ import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import javax.management.InstanceNotFoundException;
+
 import static frc.robot.settings.Constants.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -33,6 +35,7 @@ import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
@@ -382,7 +385,17 @@ public class RobotContainer {
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
         );
-        new Trigger(AmpAngleSup).whileTrue(scoreAmp);
+      Command orbitAmpShot = new SequentialCommandGroup(
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(15), angleShooterSubsystem),
+        new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
+        new WaitUntil(()->(shooter.validShot())),
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
+        new WaitCommand(0.6),
+        new InstantCommand(()->indexer.magicRPS(indexerAmpSpeed), indexer),//45 worked but a bit too high
+        new WaitCommand(0.5),
+        new InstantCommand(()->intake.setNoteHeld(false))
+      );
+        new Trigger(AmpAngleSup).whileTrue(orbitAmpShot);
         SmartDashboard.putData("amp shot", scoreAmp);
     }
     SmartDashboard.putData("move 1 meter", new MoveMeters(driveTrain, 1, 0.2, 0.2, 0.2));
