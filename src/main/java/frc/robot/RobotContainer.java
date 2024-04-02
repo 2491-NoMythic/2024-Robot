@@ -386,11 +386,12 @@ public class RobotContainer {
         new InstantCommand(()->intake.setNoteHeld(false))
         );
       Command orbitAmpShot = new SequentialCommandGroup(
+        new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(15), angleShooterSubsystem),
         new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
         new WaitUntil(()->(shooter.validShot())),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
-        new WaitCommand(0.6),
+        new WaitCommand(0.2),
         new InstantCommand(()->indexer.magicRPS(indexerAmpSpeed), indexer),//45 worked but a bit too high
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
