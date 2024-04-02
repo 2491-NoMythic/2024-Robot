@@ -4,11 +4,13 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.IntakeConstants;
+import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -18,17 +20,21 @@ public class GroundIntake extends Command {
   IntakeSubsystem intake;
   IndexerSubsystem indexer;
   DrivetrainSubsystem driveTrain;
-  public GroundIntake(IntakeSubsystem intake, IndexerSubsystem indexer, DrivetrainSubsystem driveTrain) {
-    addRequirements(intake, indexer);
+  AngleShooterSubsystem angleShooter;
+  public GroundIntake(IntakeSubsystem intake, IndexerSubsystem indexer, DrivetrainSubsystem driveTrain, AngleShooterSubsystem angleShooter) {
+    addRequirements(intake, indexer, angleShooter);
     this.intake = intake;
     this.indexer = indexer;
     this.driveTrain = driveTrain;
+    this.angleShooter = angleShooter;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    angleShooter.setDesiredShooterAngle(30);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -53,7 +59,11 @@ public class GroundIntake extends Command {
   public void end(boolean interrupted) {
     intake.intakeOff();
     // indexer.magicRPS(0);
-    indexer.forwardInches(-1);
+    if(DriverStation.isAutonomous()) {
+      indexer.forwardInches(-1);
+    } else {
+      indexer.off();
+    }
   }
 
   // Returns true when the command should end.

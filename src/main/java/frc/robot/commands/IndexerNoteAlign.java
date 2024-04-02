@@ -36,6 +36,7 @@ public class IndexerNoteAlign extends SequentialCommandGroup {
       new InstantCommand(()->indexer.magicRPS(10), indexer),
       new WaitCommand(()->0.3),
       new WaitUntil(()->intake.isNoteSeen()),
+      new WaitCommand(()->0.1),
       new InstantCommand(()->intake.setNoteHeld(true))
     );
   }

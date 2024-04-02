@@ -239,7 +239,7 @@ public static final class ShooterConstants{
   
   public static final double LONG_SHOOTING_RPS = 120;
   public static final double SHORT_SHOOTING_RPS = 100;
-  public static final double PRAC_AMP_RPS = 11.0;
+  public static final double PRAC_AMP_RPS = 8.0;
   public static final double COMP_AMP_RPS = 11.0;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
   public static final double PASS_RPS = 80;
@@ -334,7 +334,7 @@ public static final class IndexerConstants{
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_RPS = 90;
   public static final double INDEXER_SHOOTING_POWER = 1*0.8;
-  public static final double PRAC_INDEXER_AMP_SPEED = 200;
+  public static final double PRAC_INDEXER_AMP_SPEED = 170;
   public static final double COMP_INDEXER_AMP_SPEED = 200;
   public static final double INDEXER_KS = 0.35;
   public static final double INDEXER_KV = 0.103;

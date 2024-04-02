@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -121,6 +122,11 @@ public class IndexerSubsystem extends SubsystemBase {
      */
     public void magicRPS(double RPS) {
         MotionMagicVelocityVoltage speedRequest = new MotionMagicVelocityVoltage(RPS);
+        m_IndexerMotor.setControl(speedRequest);
+    }
+
+    public void magicRPSSupplier(DoubleSupplier RPSSupplier) {
+        MotionMagicVelocityVoltage speedRequest = new MotionMagicVelocityVoltage(RPSSupplier.getAsDouble());
         m_IndexerMotor.setControl(speedRequest);
     }
 

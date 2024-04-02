@@ -316,13 +316,13 @@ public class RobotContainer {
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
       Command AutoGroundIntake = new SequentialCommandGroup(
-        new GroundIntake(intake, indexer, driveTrain),
+        new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem),
         new InstantCommand(()->intake.setNoteHeld(true))
       );
       autoPickup = new ParallelRaceGroup(
         new SequentialCommandGroup(
           new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(30), angleShooterSubsystem),
-          new GroundIntake(intake, indexer, driveTrain),
+          new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem),
           new InstantCommand(()->intake.setNoteHeld(true))),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
@@ -333,7 +333,7 @@ public class RobotContainer {
           )).withTimeout(4);
       podiumAutoPickup = new ParallelRaceGroup(
           new SequentialCommandGroup(
-            new GroundIntake(intake, indexer, driveTrain),
+            new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem),
             new InstantCommand(()->intake.setNoteHeld(true))),
           new SequentialCommandGroup(
             new PodiumCollectNote(driveTrain, limelight),
@@ -360,7 +360,7 @@ public class RobotContainer {
     if(shooterExists) {
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer, driveTrain));
+      new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem));
     }
     if(intakeExists&&indexerExists) {
       new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(()->DriverStation.isTeleop()).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
@@ -385,14 +385,17 @@ public class RobotContainer {
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
         );
-      Command orbitAmpShot = new SequentialCommandGroup(
+        SmartDashboard.putNumber("Indexer Amp Speed", shooterAmpSpeed);
+      SequentialCommandGroup orbitAmpShot = new SequentialCommandGroup(
+        new InstantCommand(()->shooter.shootWithSupplier(()->SmartDashboard.getNumber("amp RPS", shooterAmpSpeed), true), shooter),
+        new MoveMeters(driveTrain, 0.05, 0.5, 0, 0),
+        new WaitCommand(5),
         new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(15), angleShooterSubsystem),
-        new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
-        new WaitUntil(()->(shooter.validShot())),
+        new WaitUntil(()->(Math.abs(shooter.getLSpeed()-SmartDashboard.getNumber("amp RPS", shooterAmpSpeed))<1)&&(Math.abs(shooter.getRSpeed()-SmartDashboard.getNumber("amp RPS", shooterAmpSpeed))<1)),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
-        new WaitCommand(0.2),
-        new InstantCommand(()->indexer.magicRPS(indexerAmpSpeed), indexer),//45 worked but a bit too high
+        new WaitCommand(0.1),
+        new InstantCommand(()->indexer.magicRPSSupplier(()->SmartDashboard.getNumber("Indexer Amp Speed", shooterAmpSpeed))),
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
       );
