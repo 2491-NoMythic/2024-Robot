@@ -333,7 +333,7 @@ public static final class IndexerConstants{
   public static final double INDEXER_INTAKE_SPEED = 1;//0.903 ;//speed to pick up at 10 ft/s
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_RPS = 90;
-  public static final double INDEXER_SHOOTING_POWER = 1*0.8;
+  public static final double INDEXER_SHOOTING_POWER = 1*0.6;
   public static final double PRAC_INDEXER_AMP_SPEED = 170;
   public static final double COMP_INDEXER_AMP_SPEED = 200;
   public static final double INDEXER_KS = 0.35;
@@ -362,8 +362,8 @@ public static final int INTAKE_SIDE_MOTOR_LEFT = 25;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
     /** the desired speed for the intake when doing ground intake. In Percent-of-full-power, from -1 to 1 */
-  public static final double INTAKE_SPEED = 0.65*0.8;//0.5834 ; // ground intakes speed. 0.4167 picks up at 10 ft/s
-  public static final double INTAKE_SIDE_SPEED = 0.65*0.8;
+  public static final double INTAKE_SPEED = 0.65*0.6;//0.5834 ; // ground intakes speed. 0.4167 picks up at 10 ft/s
+  public static final double INTAKE_SIDE_SPEED = 0.65*0.6;
   public static final double INTAKE_MAX_VELOCITY = 11000;
 
   public static final double INTAKE_1_kP = 0.00002;
@@ -478,17 +478,18 @@ public static final class CTREConfigs {
     public static final double AMPLIFIER_SHOOTER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_SHOOTER_ANGLE = 36.3;
-    public static final double FAR_STAGE_SHOOTER_ANGLE = 28;//24.5;
+    public static final double FAR_STAGE_SHOOTER_ANGLE = 25.5;
+    //24.5;
     public static final double OPPOSITE_STAGE_SHOOTER_ANGLE = 26;//24.5;
     
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
     public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
     public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
-    public static final double RED_OPPOSITE_STAGE_ROBOT_ANGLE = 29;//31
-    public static final double BLUE_OPPOSITE_STAGE_ROBOT_ANGLE = 151;
-    public static final double RED_OVER_STAGE_PASS_ANGLE = 55;
-    public static final double BLUE_OVER_STAGE_PASS_ANGLE = -125;
+    public static final double RED_OPPOSITE_STAGE_ROBOT_ANGLE = 32;//31
+    public static final double BLUE_OPPOSITE_STAGE_ROBOT_ANGLE = 149;
+    public static final double RED_OVER_STAGE_PASS_ANGLE = 45;
+    public static final double BLUE_OVER_STAGE_PASS_ANGLE = -115;
 
     //angle at 60 for bounce techinque, didn't work
   }

@@ -153,14 +153,16 @@ public class IndexCommand extends Command {
         }
       }
       boolean indexer = false;
-      if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot() && shooter.isReving() && !idleReving) {
+      if(shooter.validShot()&&!idleReving) {
         RobotState.getInstance().ShooterReady = true;
-        if (shootIfReadySupplier.getAsBoolean()) {
-          indexer = true;
-        }
       } else {
         RobotState.getInstance().ShooterReady = false;
       }
+      if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot() && shooter.isReving() && !idleReving) {
+        if (shootIfReadySupplier.getAsBoolean()) {
+          indexer = true;
+        }
+      } 
       if(SmartDashboard.getBoolean("feedMotor", false)) {
         indexer = true;
       }
