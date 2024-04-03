@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -14,6 +15,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.SparkAnalogSensor;
 
 import edu.wpi.first.util.datalog.DoubleLogEntry;
@@ -36,6 +38,7 @@ public class IndexerSubsystem extends SubsystemBase {
     public IndexerSubsystem(BooleanSupplier isNoteIn) {
         m_IndexerMotor = new TalonFX(IndexerConstants.INDEXER_MOTOR);
         m_IndexerMotor.setInverted(false);
+        m_IndexerMotor.setNeutralMode(NeutralModeValue.Brake);
         this.isNoteIn = isNoteIn;
 
         currentLimitsConfigs = new CurrentLimitsConfigs();
@@ -119,6 +122,11 @@ public class IndexerSubsystem extends SubsystemBase {
      */
     public void magicRPS(double RPS) {
         MotionMagicVelocityVoltage speedRequest = new MotionMagicVelocityVoltage(RPS);
+        m_IndexerMotor.setControl(speedRequest);
+    }
+
+    public void magicRPSSupplier(DoubleSupplier RPSSupplier) {
+        MotionMagicVelocityVoltage speedRequest = new MotionMagicVelocityVoltage(RPSSupplier.getAsDouble());
         m_IndexerMotor.setControl(speedRequest);
     }
 

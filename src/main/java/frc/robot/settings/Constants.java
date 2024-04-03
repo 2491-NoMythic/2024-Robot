@@ -197,8 +197,8 @@ public final class Constants {
     public static final double k_XY_I = 0.0;
     public static final double k_XY_D = 0.0;
 
-    public static final double k_THETA_P = 1;
-    public static final double k_THETA_I = 0.0;
+    public static final double k_THETA_P = 4;
+    public static final double k_THETA_I = 5.0;
     public static final double k_THETA_D = 0.0;
     public static final double k_THETA_TOLORANCE_DEGREES = 2.0;
     public static final double k_THETA_TOLORANCE_DEG_PER_SEC = 10;
@@ -239,8 +239,8 @@ public static final class ShooterConstants{
   
   public static final double LONG_SHOOTING_RPS = 120;
   public static final double SHORT_SHOOTING_RPS = 100;
-  public static final double PRAC_AMP_RPS = 11.0;
-  public static final double COMP_AMP_RPS = 11.0;
+  public static final double PRAC_AMP_RPS = 8.0;
+  public static final double COMP_AMP_RPS = 6.1;
   public static final double SUBWOOFER_RPS = SHORT_SHOOTING_RPS;
   public static final double PASS_RPS = 80;
 
@@ -333,9 +333,9 @@ public static final class IndexerConstants{
   public static final double INDEXER_INTAKE_SPEED = 1;//0.903 ;//speed to pick up at 10 ft/s
   public static final double HUMAN_PLAYER_INDEXER_SPEED = -0.5;//should be 0.5 TODO change to positive
   public static final double INDEXER_SHOOTING_RPS = 90;
-  public static final double INDEXER_SHOOTING_POWER = 1;
-  public static final double PRAC_INDEXER_AMP_SPEED = 200;
-  public static final double COMP_INDEXER_AMP_SPEED = 200;
+  public static final double INDEXER_SHOOTING_POWER = 1*0.6;
+  public static final double PRAC_INDEXER_AMP_SPEED = 170;
+  public static final double COMP_INDEXER_AMP_SPEED = 135;
   public static final double INDEXER_KS = 0.35;
   public static final double INDEXER_KV = 0.103;
   public static final double INDEXER_KA = 0.01;
@@ -362,8 +362,18 @@ public static final int INTAKE_SIDE_MOTOR_LEFT = 25;
   public static final int BRUSH_2_MOTOR = 2491;
   public static final int BRUSH_3_MOTOR = 2491;
     /** the desired speed for the intake when doing ground intake. In Percent-of-full-power, from -1 to 1 */
-  public static final double INTAKE_SPEED = 0.65;//0.5834 ; // ground intakes speed. 0.4167 picks up at 10 ft/s
-  public static final double INTAKE_SIDE_SPEED = 0.65;
+  public static final double INTAKE_SPEED = 0.65*0.6;//0.5834 ; // ground intakes speed. 0.4167 picks up at 10 ft/s
+  public static final double INTAKE_SIDE_SPEED = 0.65*0.6;
+  public static final double INTAKE_MAX_VELOCITY = 11000;
+
+  public static final double INTAKE_1_kP = 0.00002;
+  public static final double INTAKE_1_kI = 0;
+  public static final double INTAKE_1_kD = 0.0008;
+  public static final double INTAKE_1_kFF = 0.000085;
+  public static final double INTAKE_2_kP = 0.00007;
+  public static final double INTAKE_2_kI = 0;//0.7;
+  public static final double INTAKE_2_kD = 0;//0.002;
+  public static final double INTAKE_2_kF = 0.00009;
 }
 public static final class CTREConfigs {
   public TalonFXConfiguration driveMotorConfig;
@@ -443,29 +453,43 @@ public static final class CTREConfigs {
   }
 
   public final class Field{
-    public static final double ROBOT_BLUE_SPEAKER_X = 0.23;
-    public static final double ROBOT_RED_SPEAKER_X = 16;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
-    public static final double SHOOTER_BLUE_SPEAKER_X = 0.23;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
-    public static final double SHOOTER_RED_SPEAKER_X = 16.87;//16.38; changed so that shots from the side wil aim to the opposite side, and bank in
-    public static final double SPEAKER_Y = 5.46;
+    
+    public static final double ROBOT_CENTER_TO_BUMBER = 0.419;
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_X = 2.79;//NOT fOUND
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_Y = 4.33; //NOT FOUND
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_X = 13.99;
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_Y = 3.99;
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_X = AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_X-ROBOT_CENTER_TO_BUMBER;
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_Y = AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_Y+ROBOT_CENTER_TO_BUMBER;
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_X+ROBOT_CENTER_TO_BUMBER;
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_Y = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_Y-ROBOT_CENTER_TO_BUMBER;
+
+    public static final double ROBOT_BLUE_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X-3;
+    public static final double ROBOT_RED_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_RED_X+3;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double SHOOTER_BLUE_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X-3.213;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double SHOOTER_RED_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_RED_X+3.213;//16.38; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double RED_SPEAKER_Y = AMP_SIDE_OUTER_TAPE_CORNER_RED_Y+1.263;//5.46;
+    public static final double BLUE_SPEAKER_Y = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_Y+1.263;//5.46;
     public static final double SPEAKER_Z = 2.08;//1.5;//1.8;//2.08; //height of opening. Changed so that the smaller spekeaker_x shots will still go in
+
     public static final double MAX_SHOOTING_DISTANCE = 9;
     public static final double SHORT_RANGE_SHOOTING_DIST = 3;
 
     public static final double AMPLIFIER_SHOOTER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
     public static final double PODIUM_SHOOTER_ANGLE = 36.3;
-    public static final double FAR_STAGE_SHOOTER_ANGLE = 28;//24.5;
+    public static final double FAR_STAGE_SHOOTER_ANGLE = 25.5;
+    //24.5;
     public static final double OPPOSITE_STAGE_SHOOTER_ANGLE = 26;//24.5;
     
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
     public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
     public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
-    public static final double RED_OPPOSITE_STAGE_ROBOT_ANGLE = 29;//31
-    public static final double BLUE_OPPOSITE_STAGE_ROBOT_ANGLE = 151;
-    public static final double RED_OVER_STAGE_PASS_ANGLE = 55;
-    public static final double BLUE_OVER_STAGE_PASS_ANGLE = -125;
+    public static final double RED_OPPOSITE_STAGE_ROBOT_ANGLE = 32;//31
+    public static final double BLUE_OPPOSITE_STAGE_ROBOT_ANGLE = 149;
+    public static final double RED_OVER_STAGE_PASS_ANGLE = 45;
+    public static final double BLUE_OVER_STAGE_PASS_ANGLE = -115;
 
     //angle at 60 for bounce techinque, didn't work
   }

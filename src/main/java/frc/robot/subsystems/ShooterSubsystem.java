@@ -63,11 +63,11 @@ import java.util.function.DoubleSupplier;
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
     if(Preferences.getBoolean("CompBot", true)) {
-      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF);
-      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF);
+      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF).withKI(0.004);
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF).withKI(0.004);
   } else {
-      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PracRightkP).withKV(ShooterConstants.PracRightkFF);
-      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PracLeftkP).withKV(ShooterConstants.PracLeftkFF);
+      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PracRightkP).withKV(ShooterConstants.PracRightkFF).withKI(0.004);
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PracLeftkP).withKV(ShooterConstants.PracLeftkFF).withKI(0.004);
     }
     runsValid = 0;
     shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
@@ -222,6 +222,12 @@ import java.util.function.DoubleSupplier;
     isRevingR = updateIsReving(isRevingR, targetVelocityR, shooterR.getVelocity().getValueAsDouble());
     updateMotor(shooterL, isRevingL, targetVelocityL); 
     updateMotor(shooterR, isRevingR, targetVelocityR); 
+  }
+  public double getRSpeed() {
+    return shooterR.getVelocity().getValueAsDouble();
+  }
+  public double getLSpeed() {
+    return shooterL.getVelocity().getValueAsDouble();
   }
   // public double getSpeedRPS() {
   //   return shooterR.getVelocity().asSupplier().get();

@@ -11,6 +11,8 @@ import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import javax.management.InstanceNotFoundException;
+
 import static frc.robot.settings.Constants.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -33,6 +35,7 @@ import frc.robot.commands.IndicatorLights;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.ClimberConstants;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
@@ -40,6 +43,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.commands.ManualShoot;
 import frc.robot.commands.MoveMeters;
 import frc.robot.commands.OverrideCommand;
+import frc.robot.commands.PodiumCollectNote;
 import frc.robot.commands.WaitUntil;
 
 import frc.robot.commands.NamedCommands.InitialShot;
@@ -139,6 +143,7 @@ public class RobotContainer {
 
   BooleanSupplier intakeReverse;
   Command autoPickup;
+  Command podiumAutoPickup;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -310,16 +315,34 @@ public class RobotContainer {
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
+      Command AutoGroundIntake = new SequentialCommandGroup(
+        new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem),
+        new InstantCommand(()->intake.setNoteHeld(true))
+      );
       autoPickup = new ParallelRaceGroup(
-        new AutoGroundIntake(indexer, intake, angleShooterSubsystem),
+        new SequentialCommandGroup(
+          new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(30), angleShooterSubsystem),
+          new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem),
+          new InstantCommand(()->intake.setNoteHeld(true))),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
           new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
           new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
           new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
           new WaitCommand(0.5)
-          )
-          ).withTimeout(4);
+          )).withTimeout(4);
+      podiumAutoPickup = new ParallelRaceGroup(
+          new SequentialCommandGroup(
+            new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem),
+            new InstantCommand(()->intake.setNoteHeld(true))),
+          new SequentialCommandGroup(
+            new PodiumCollectNote(driveTrain, limelight),
+            new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
+            new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
+            new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
+            new MoveMeters(driveTrain, 0.5, 0, -1, 0),
+            new WaitCommand(0.5)
+          )).withTimeout(4);
       // new Trigger(driverController::getR3ButtonPressed).whileTrue(GroundIntake);
       new Trigger(AutoPickupSup).whileTrue(autoPickup);
     }
@@ -337,10 +360,10 @@ public class RobotContainer {
     if(shooterExists) {
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer, driveTrain));
+      new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(DriverStation::isTeleop).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
+      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(()->DriverStation.isTeleop()).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
     }
     if(indexerExists&&shooterExists&&angleShooterExists) {
       double indexerAmpSpeed;
@@ -362,7 +385,20 @@ public class RobotContainer {
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
         );
-        new Trigger(AmpAngleSup).whileTrue(scoreAmp);
+        SmartDashboard.putNumber("Indexer Amp Speed", shooterAmpSpeed);
+      SequentialCommandGroup orbitAmpShot = new SequentialCommandGroup(
+        new InstantCommand(()->shooter.shootWithSupplier(()->SmartDashboard.getNumber("amp RPS", shooterAmpSpeed), true), shooter),
+        new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
+        new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(15), angleShooterSubsystem),
+        new WaitUntil(()->(Math.abs(shooter.getLSpeed()-SmartDashboard.getNumber("amp RPS", shooterAmpSpeed))<1)&&(Math.abs(shooter.getRSpeed()-SmartDashboard.getNumber("amp RPS", shooterAmpSpeed))<1)),
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
+        new WaitCommand(0.1),
+        new InstantCommand(()->indexer.magicRPSSupplier(()->SmartDashboard.getNumber("Indexer Amp Speed", 150)), indexer),
+        new WaitCommand(0.5),
+        new InstantCommand(()->intake.setNoteHeld(false))
+      );
+        new Trigger(AmpAngleSup).whileTrue(orbitAmpShot);
         SmartDashboard.putData("amp shot", scoreAmp);
     }
     SmartDashboard.putData("move 1 meter", new MoveMeters(driveTrain, 1, 0.2, 0.2, 0.2));
@@ -485,17 +521,20 @@ public class RobotContainer {
   }
 
   private void registerNamedCommands() {
+    NamedCommands.registerCommand("awayFromPodium", new MoveMeters(driveTrain, 0.2, 1, 0, 0));
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
+    NamedCommands.registerCommand("hardStop", new InstantCommand(driveTrain::pointWheelsInward, driveTrain));
     if(intakeExists&&indexerExists) {
     NamedCommands.registerCommand("driveBackwardsToIntake", new ParallelRaceGroup(
       new SequentialCommandGroup(
         new MoveMeters(driveTrain, 0.7, -2, 0, 0),
         new MoveMeters(driveTrain, 0.7, 2, 0, 0)),
-      new AutoGroundIntake(indexer, intake, angleShooterSubsystem)
+      new AutoGroundIntake(indexer, intake, driveTrain)
     ));
     }
     if(autoPickup != null) {
       NamedCommands.registerCommand("autoPickup", autoPickup);
+      NamedCommands.registerCommand("podiumAutoPickup", podiumAutoPickup);
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
       NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED)));
@@ -535,8 +574,8 @@ public class RobotContainer {
       SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
     }
     if (indexerExists&&intakeExists) {
-      NamedCommands.registerCommand("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem));
-      SmartDashboard.putData("groundIntake", new AutoGroundIntake(indexer, intake, angleShooterSubsystem));
+      NamedCommands.registerCommand("groundIntake", new AutoGroundIntake(indexer, intake, driveTrain));
+      SmartDashboard.putData("groundIntake", new AutoGroundIntake(indexer, intake, driveTrain));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
   }

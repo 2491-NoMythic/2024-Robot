@@ -70,6 +70,7 @@ public class MoveMeters extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return distance >= m_meters;
+    // return distance >= m_meters;
+    return distance>=m_meters;
   }
 }

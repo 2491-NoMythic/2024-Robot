@@ -293,15 +293,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			System.err.println("No valid limelight estimate to reset from. (Drivetrain.forceUpdateOdometryWithVision)");
 		}
 	}
-
+/**
+ * DISCONTINUED
+ * <p>
+ * use calculateSpeakerAngleMoving() instead
+ * @return claculated robot angle for the speaker, but bad
+ */
 	public double calculateSpeakerAngle(){
 		Pose2d dtvalues = this.getPose();
 		// triangle for robot angle
 		Optional<Alliance> alliance = DriverStation.getAlliance();
 		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-			deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
+			deltaY = Math.abs(dtvalues.getY() - Field.RED_SPEAKER_Y);
 		} else {
-			deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
+			deltaY = Math.abs(dtvalues.getY() - Field.BLUE_SPEAKER_Y);
 
 		}
 		if(alliance.isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
@@ -316,7 +321,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		
 		//getting desired robot angle
 		// if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
-			if (dtvalues.getY() >= Field.SPEAKER_Y) {
+			if (dtvalues.getY() >= Field.RED_SPEAKER_Y) {
 				//the robot is to the left of the speaker
 				double thetaAbove = -Math.toDegrees(Math.asin(deltaX / speakerDist))-90;
 				m_desiredRobotAngle = thetaAbove;
@@ -345,14 +350,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public double calculateSpeakerAngleMoving(){
 		dtvalues = this.getPose();
 		Optional<Alliance> alliance = DriverStation.getAlliance();
+		double speakerY;
 		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
 		//triangle for robot angle
 		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
 			deltaX = Math.abs(dtvalues.getX() - Field.ROBOT_RED_SPEAKER_X);
+			speakerY = Field.RED_SPEAKER_Y;
 		} else {
 			deltaX = Math.abs(dtvalues.getX() - Field.ROBOT_BLUE_SPEAKER_X);
+			speakerY = Field.BLUE_SPEAKER_Y;
 		}
-		deltaY = Math.abs(dtvalues.getY() - Field.SPEAKER_Y);
+		deltaY = Math.abs(dtvalues.getY() - speakerY);
 		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 		// SmartDashboard.putNumber("dist to speaker", speakerDist);
 		
@@ -375,7 +383,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			speakerX = Field.ROBOT_RED_SPEAKER_X;
 		}
 		offsetSpeakerX = speakerX+(targetOffset.getX()*correctionDirection);
-		offsetSpeakerY = Field.SPEAKER_Y+(targetOffset.getY()*correctionDirection);
+		offsetSpeakerY = speakerY+(targetOffset.getY()*correctionDirection);
 		offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
 		
@@ -450,6 +458,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("DRIVETRAIN/forward speed", getChassisSpeeds().vxMetersPerSecond);
 		SmartDashboard.putNumber("DRIVETRAIN/rotational speed", Math.toDegrees(getChassisSpeeds().omegaRadiansPerSecond));
 		SmartDashboard.putNumber("DRIVETRAIN/gyroscope rotation degrees", getPose().getRotation().getDegrees());
+		SmartDashboard.putNumber("DRIVETRAIN/degrees per second", Math.toDegrees(getChassisSpeeds().omegaRadiansPerSecond));
 		for (int i = 0; i < 4; i++) {
 			motorLoggers[i].log(modules[i].getDriveMotor());
 		}

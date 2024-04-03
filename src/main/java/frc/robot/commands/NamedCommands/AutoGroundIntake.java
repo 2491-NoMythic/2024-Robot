@@ -4,12 +4,14 @@
 
 package frc.robot.commands.NamedCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.settings.Constants.IntakeConstants;
 import frc.robot.settings.Constants.ShooterConstants;
 import frc.robot.subsystems.AngleShooterSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 public class AutoGroundIntake extends Command {
@@ -17,12 +19,13 @@ public class AutoGroundIntake extends Command {
   IndexerSubsystem indexer;
   IntakeSubsystem intake;
   AngleShooterSubsystem angleShooterSubsystem;
-  public AutoGroundIntake(IndexerSubsystem indexer, IntakeSubsystem intake, AngleShooterSubsystem angleShooter) {
+  DrivetrainSubsystem driveTrain;
+  public AutoGroundIntake(IndexerSubsystem indexer, IntakeSubsystem intake, DrivetrainSubsystem driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.\
-   addRequirements(indexer,intake, angleShooter);
+   addRequirements(indexer,intake);
     this.indexer = indexer;
     this.intake = intake;
-    this.angleShooterSubsystem = angleShooter;
+    this.driveTrain = driveTrain;
   }
   
   // Called when the command is initially scheduled.
@@ -32,9 +35,19 @@ public class AutoGroundIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED);
-    indexer.set(IndexerConstants.INDEXER_INTAKE_SPEED);
-    angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
+    double mult = 0.43;
+    double robotSpeed = Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2));
+    double rollerSpeed = (IntakeConstants.INTAKE_SPEED*IntakeConstants.INTAKE_MAX_VELOCITY - (mult * IntakeConstants.INTAKE_SPEED*IntakeConstants.INTAKE_MAX_VELOCITY)) * (robotSpeed / /*DriveConstants.MAX_VELOCITY_METERS_PER_SECOND*/2.4) + (mult * IntakeConstants.INTAKE_SPEED*IntakeConstants.INTAKE_MAX_VELOCITY);
+    // double rollerSpeed = ( - (mult * 9000)) * (robotSpeed / /*DriveConstants.MAX_VELOCITY_METERS_PER_SECOND*/2.4) + (mult * 10000);
+    double sideSpeed =  (IntakeConstants.INTAKE_SIDE_SPEED - (mult * IntakeConstants.INTAKE_SIDE_SPEED)) * (robotSpeed / /*DriveConstants.MAX_VELOCITY_METERS_PER_SECOND*/2.4) + (mult * IntakeConstants.INTAKE_SIDE_SPEED);
+    double indexerSpeed = (IndexerConstants.INDEXER_INTAKE_SPEED- (mult * IndexerConstants.INDEXER_INTAKE_SPEED)) * (robotSpeed / /*DriveConstants.MAX_VELOCITY_METERS_PER_SECOND*/2.4) + (mult * IndexerConstants.INDEXER_INTAKE_SPEED);
+    // intake.intakeYes(rollerSpeed, sideSpeed);
+    intake.setVelocity(rollerSpeed);
+    SmartDashboard.putNumber("GROUNDINTAKE/roller speed", rollerSpeed);
+    intake.intakeSideWheels(sideSpeed);
+    indexer.set(indexerSpeed);
+    // intake.intakeYes(0.6, 0.6);
+    // indexer.set(0.9);
   }
 
   // Called once the command ends or is interrupted.
@@ -42,7 +55,6 @@ public class AutoGroundIntake extends Command {
   public void end(boolean interrupted) {
     intake.intakeOff();
     indexer.off();
-    angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
     intake.setNoteHeld(true);
   }
 

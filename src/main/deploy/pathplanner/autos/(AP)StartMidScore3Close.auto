@@ -32,13 +32,13 @@
         {
           "type": "named",
           "data": {
-            "name": "autoPickup"
+            "name": "hardStop"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.4
+            "name": "autoPickup"
           }
         },
         {
@@ -56,13 +56,13 @@
         {
           "type": "named",
           "data": {
-            "name": "autoPickup"
+            "name": "hardStop"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.4
+            "name": "autoPickup"
           }
         },
         {
@@ -74,19 +74,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CloseSourcePickupAuto"
+            "pathName": "CloseSourcePickupFromAmpAuto"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "autoPickup"
+            "name": "podiumAutoPickup"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.4
+            "name": "awayFromPodium"
           }
         },
         {
