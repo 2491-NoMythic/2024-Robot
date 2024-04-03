@@ -326,8 +326,8 @@ public class RobotContainer {
           new InstantCommand(()->intake.setNoteHeld(true))),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
-          new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
-          new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
+          new DriveTimeCommand(-0.7, 0, 0, 1.5, driveTrain),
+          new DriveTimeCommand(0.7, 0, 0, 0.5, driveTrain),
           new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
           new WaitCommand(0.5)
           )).withTimeout(4);
@@ -385,7 +385,7 @@ public class RobotContainer {
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
         );
-        SmartDashboard.putNumber("Indexer Amp Speed", shooterAmpSpeed);
+        SmartDashboard.putNumber("Indexer Amp Speed", indexerAmpSpeed);
       SequentialCommandGroup orbitAmpShot = new SequentialCommandGroup(
         new InstantCommand(()->shooter.shootWithSupplier(()->SmartDashboard.getNumber("amp RPS", shooterAmpSpeed), true), shooter),
         new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),

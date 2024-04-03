@@ -455,21 +455,23 @@ public static final class CTREConfigs {
   public final class Field{
     
     public static final double ROBOT_CENTER_TO_BUMBER = 0.419;
-    public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_X = 2.79;//NOT fOUND
-    public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_Y = 4.33; //NOT FOUND
-    public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_X = 13.99;
-    public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_Y = 3.99;
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_X = 2.48;//NOT fOUND
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_Y = 4.89; //NOT FOUND
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_X = 14.11;
+    public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_Y = 4.02;
     public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_X = AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_X-ROBOT_CENTER_TO_BUMBER;
     public static final double AMP_SIDE_OUTER_TAPE_CORNER_RED_Y = AMP_SIDE_OUTER_TAPE_CORNER_RED_ROBOT_Y+ROBOT_CENTER_TO_BUMBER;
     public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_X+ROBOT_CENTER_TO_BUMBER;
     public static final double AMP_SIDE_OUTER_TAPE_CORNER_BLUE_Y = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_ROBOT_Y-ROBOT_CENTER_TO_BUMBER;
 
-    public static final double ROBOT_BLUE_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X-3;
-    public static final double ROBOT_RED_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_RED_X+3;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double CALCULATED_RED_SPEAKER_Y = AMP_SIDE_OUTER_TAPE_CORNER_RED_Y+1.263;//5.46;
+    public static final double RED_SPEAKER_Y = 5.5;
     public static final double SHOOTER_BLUE_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X-3.213;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
-    public static final double SHOOTER_RED_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_RED_X+3.213;//16.38; changed so that shots from the side wil aim to the opposite side, and bank in
-    public static final double RED_SPEAKER_Y = AMP_SIDE_OUTER_TAPE_CORNER_RED_Y+1.263;//5.46;
-    public static final double BLUE_SPEAKER_Y = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_Y+1.263;//5.46;
+    public static final double ROBOT_BLUE_SPEAKER_X =SHOOTER_BLUE_SPEAKER_X+0.6;// AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X-3;
+    public static final double CALCULATED_SHOOTER_RED_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_RED_X+3.213;
+    public static final double SHOOTER_RED_SPEAKER_X = 16.5;//AMP_SIDE_OUTER_TAPE_CORNER_RED_X+3.213;//16.38; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double ROBOT_RED_SPEAKER_X = SHOOTER_RED_SPEAKER_X-0.165;//AMP_SIDE_OUTER_TAPE_CORNER_RED_X+3;//16.38;//16.87; changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double BLUE_SPEAKER_Y = 5.4;//AMP_SIDE_OUTER_TAPE_CORNER_BLUE_Y+1.263;//5.46;
     public static final double SPEAKER_Z = 2.08;//1.5;//1.8;//2.08; //height of opening. Changed so that the smaller spekeaker_x shots will still go in
 
     public static final double MAX_SHOOTING_DISTANCE = 9;
@@ -477,7 +479,7 @@ public static final class CTREConfigs {
 
     public static final double AMPLIFIER_SHOOTER_ANGLE = 108;
     public static final double SUBWOOFER_ANGLE = 60;
-    public static final double PODIUM_SHOOTER_ANGLE = 36.3;
+    public static final double PODIUM_SHOOTER_ANGLE = 40;//36.3;
     public static final double FAR_STAGE_SHOOTER_ANGLE = 25.5;
     //24.5;
     public static final double OPPOSITE_STAGE_SHOOTER_ANGLE = 26;//24.5;
