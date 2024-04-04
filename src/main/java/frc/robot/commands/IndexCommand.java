@@ -153,11 +153,6 @@ public class IndexCommand extends Command {
         }
       }
       boolean indexer = false;
-      if(shooter.validShot()&&!idleReving) {
-        RobotState.getInstance().ShooterReady = true;
-      } else {
-        RobotState.getInstance().ShooterReady = false;
-      }
       if(angleShooterSubsytem.validShot() && drivetrain.validShot() && shooter.validShot() && shooter.isReving() && !idleReving) {
         if (shootIfReadySupplier.getAsBoolean()) {
           indexer = true;
@@ -184,7 +179,6 @@ public class IndexCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotState.getInstance().ShooterReady = false;
   }
 
   // Returns true when the command should end.

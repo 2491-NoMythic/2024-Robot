@@ -159,7 +159,11 @@ import java.util.function.DoubleSupplier;
      * @return the speed error of the right shooter motor
      */
     private double getError() {
-      return Math.abs(shooterR.getClosedLoopError().getValueAsDouble());
+      return Math.abs(getSignedError());
+    }
+
+    private double getSignedError(){
+      return shooterR.getClosedLoopError().getValueAsDouble();
     }
     /**
      * checks if the right shooter motor is attempting to rev up
@@ -242,7 +246,9 @@ import java.util.function.DoubleSupplier;
     SmartDashboard.putNumber("shooter current left", shooterL.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Shooter/Right shooter speed", shooterR.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Shooter/Left shooter speed", shooterL.getVelocity().getValueAsDouble());
-    if(getError()<ShooterConstants.ALLOWED_SPEED_ERROR) {
+    double error = getSignedError();
+    RobotState.getInstance().ShooterError = error;
+    if(Math.abs(error)<ShooterConstants.ALLOWED_SPEED_ERROR) {
       runsValid++;
     } else {
       runsValid = 0;
