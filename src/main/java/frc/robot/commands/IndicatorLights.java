@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.RobotState;
@@ -14,6 +15,8 @@ import frc.robot.subsystems.RobotState;
 public class IndicatorLights extends Command {
  
   Lights lights;
+  Timer timer;
+  boolean noteWasIn;
  /**
  * This command controls the lights.  Middle Lights: if limelights are updating the odometry, these lights are green, otherwise they are red.
  * Side Lights: If a note is held, they are red if the shooter isn't rev'ed up, and green if they are rev'ed up. If a note is not held, they are off unless a note is seen by the intake
@@ -22,6 +25,8 @@ public class IndicatorLights extends Command {
 public IndicatorLights(Lights lights) {
     addRequirements(lights);
     this.lights = lights;
+    timer = new Timer();
+    timer.start();
   }
 
 
@@ -42,14 +47,22 @@ public IndicatorLights(Lights lights) {
       lights.setMid(50, 0, 0);
     }
 
-    if(!noteInRobot) {
+    if(timer.get() < 2){
+      lights.setSides(255, 255, 255);
+    }
+    else if(!noteInRobot) {
+      noteWasIn = false;
       if(noteSeenByLimelight) {
         lights.setSides(70, 35, 0);
       } else {
         lights.setSides(0, 0, 0);
       }
     }
-    if(noteInRobot) {
+    else{
+      if(!noteWasIn){
+        noteWasIn = true;
+        timer.reset();
+      }
       if(allSystemsGoodToGo) {
         lights.setSides(0, 50, 0);
       } else {
