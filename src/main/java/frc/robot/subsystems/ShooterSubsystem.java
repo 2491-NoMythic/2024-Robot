@@ -163,7 +163,7 @@ import java.util.function.DoubleSupplier;
     }
 
     private double getSignedError(){
-      return shooterR.getClosedLoopError().getValueAsDouble();
+      return shooterR.getVelocity().getValueAsDouble()-targetVelocityR;
     }
     /**
      * checks if the right shooter motor is attempting to rev up

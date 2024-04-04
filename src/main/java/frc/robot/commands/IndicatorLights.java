@@ -45,9 +45,13 @@ public IndicatorLights(Lights lights) {
     } else {
       lights.setMid(50, 0, 0);
     }
-
-    if(timer.get() < 2){
-      lights.setSides(255, 255, 255);
+    double time  = timer.get();
+    if(time < 2){
+      if(time%0.2<0.1) {
+        lights.setSides(255, 255, 255);
+      } else {
+        lights.setSides(0, 0, 0);
+      }
     }
     else if(!noteInRobot) {
       noteWasIn = false;
@@ -62,7 +66,7 @@ public IndicatorLights(Lights lights) {
         noteWasIn = true;
         timer.reset();
       }
-      lights.setProgress(RobotState.getInstance().ShooterError / 10, 50, 0, 0, 0, 50, 0);
+      lights.setProgress((RobotState.getInstance().ShooterError / 50)-0.2, 50, 0, 0, 0, 50, 0);
 
     }
 
