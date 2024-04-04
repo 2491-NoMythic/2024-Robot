@@ -103,7 +103,7 @@ public class CollectNote extends Command {
         SmartDashboard.putNumber("CollectNote/forward speed limited", forwardSpeed);
     } else {
       drivetrain.drive(new ChassisSpeeds(
-        -0.6, 0, 0));
+        -1, 0, 0));
         runsInvalid++;
     }
     // else {

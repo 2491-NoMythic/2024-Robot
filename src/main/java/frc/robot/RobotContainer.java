@@ -326,8 +326,8 @@ public class RobotContainer {
           new InstantCommand(()->intake.setNoteHeld(true))),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
-          new DriveTimeCommand(-0.7, 0, 0, 1.5, driveTrain),
-          new DriveTimeCommand(0.7, 0, 0, 0.5, driveTrain),
+          new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
+          new DriveTimeCommand(1, 0, 0, 0.5, driveTrain),
           new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
           new WaitCommand(0.5)
           )).withTimeout(4);
