@@ -44,7 +44,7 @@ public IndicatorLights(Lights lights) {
 
     if(!noteInRobot) {
       if(noteSeenByLimelight) {
-        lights.setSides(50, 43, 0);
+        lights.setSides(70, 35, 0);
       } else {
         lights.setSides(0, 0, 0);
       }
