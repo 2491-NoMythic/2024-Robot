@@ -604,7 +604,6 @@ public class RobotContainer {
     }
     SmartDashboard.putBoolean("is note seen", RobotState.getInstance().IsNoteSeen);
 		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);
-		SmartDashboard.putBoolean("shooter ready", RobotState.getInstance().ShooterReady);
   }
  
   public void logPower(){
