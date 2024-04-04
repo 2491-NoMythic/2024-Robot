@@ -495,7 +495,7 @@ public static final class CTREConfigs {
     public static final double RED_OPPOSITE_STAGE_ROBOT_ANGLE = 32;//31
     public static final double BLUE_OPPOSITE_STAGE_ROBOT_ANGLE = 148;
     public static final double RED_OVER_STAGE_PASS_ANGLE = 45;
-    public static final double BLUE_OVER_STAGE_PASS_ANGLE = -135;
+    public static final double BLUE_OVER_STAGE_PASS_ANGLE = 135;
 
     //angle at 60 for bounce techinque, didn't work
   }
