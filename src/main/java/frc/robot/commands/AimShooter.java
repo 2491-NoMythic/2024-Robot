@@ -64,7 +64,6 @@ public class AimShooter extends Command {
 		} else if(humanPlayerSupplier.getAsBoolean()) {
 			frc.robot.subsystems.RobotState.getInstance().lightsReset = true;
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
-			frc.robot.subsystems.RobotState.getInstance().lightsReset = false;
 		} else if (groundIntakeSup.getAsBoolean()){
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
 		} else  if(OverStageAngleSup.getAsBoolean()) {

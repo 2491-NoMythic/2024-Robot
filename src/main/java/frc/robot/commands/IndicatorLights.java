@@ -39,14 +39,14 @@ public IndicatorLights(Lights lights) {
     boolean noteSeenByLimelight = RobotState.getInstance().IsNoteSeen;
     boolean limelightsUpdated = RobotState.getInstance().LimelightsUpdated;
     boolean readyToShoot = noteInRobot&&limelightsUpdated;
-    boolean timerReset = RobotState.getInstance().lightsReset;
-    
+
     if(limelightsUpdated) {
       lights.setMid(0, 40, 0);
     } else {
       lights.setMid(50, 0, 0);
     }
     double time  = timer.get();
+    boolean timerReset = RobotState.getInstance().lightsReset;
     if(time < 2){
       if(time%0.2<0.1) {
         lights.setSides(255, 255, 255);
@@ -70,7 +70,8 @@ public IndicatorLights(Lights lights) {
       lights.setProgress((RobotState.getInstance().ShooterError / 50)-0.2, 50, 0, 0, 0, 50, 0);
     }
     if(noteInRobot&&timerReset) {
-      timer.reset();
+      timer.reset();    
+      RobotState.getInstance().lightsReset = false;
     }
     lights.dataSetter();
   }

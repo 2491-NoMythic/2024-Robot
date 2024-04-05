@@ -34,7 +34,9 @@ public class GroundIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotState.getInstance().lightsReset = true;
+    if (intake.isNoteSeen()){
+      RobotState.getInstance().lightsReset = true;
+    }
     angleShooter.setDesiredShooterAngle(30);
   }
 
