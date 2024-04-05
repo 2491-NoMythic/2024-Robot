@@ -490,7 +490,7 @@ public static final class CTREConfigs {
     
     public static final double BLUE_PODIUM_ROBOT_ANGLE = 149;
     public static final double RED_PODIUM_ROBOT_ANGLE = 31;
-    public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 186;
+    public static final double BLUE_FAR_STAGE_ROBOT_ANGLE = 184;
     public static final double RED_FAR_STAGE_ROBOT_ANGLE = -4;
     public static final double RED_OPPOSITE_STAGE_ROBOT_ANGLE = 32;//31
     public static final double BLUE_OPPOSITE_STAGE_ROBOT_ANGLE = 148;
