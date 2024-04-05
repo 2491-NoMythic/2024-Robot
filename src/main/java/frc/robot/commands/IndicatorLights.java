@@ -39,6 +39,7 @@ public IndicatorLights(Lights lights) {
     boolean noteSeenByLimelight = RobotState.getInstance().IsNoteSeen;
     boolean limelightsUpdated = RobotState.getInstance().LimelightsUpdated;
     boolean readyToShoot = noteInRobot&&limelightsUpdated;
+    boolean timerReset = RobotState.getInstance().lightsReset;
     
     if(limelightsUpdated) {
       lights.setMid(0, 40, 0);
@@ -57,7 +58,7 @@ public IndicatorLights(Lights lights) {
       noteWasIn = false;
       if(noteSeenByLimelight) {
         lights.setSides(70, 35, 0);
-      } else {
+      } else {  
         lights.setSides(0, 0, 0);
       }
     }
@@ -67,9 +68,10 @@ public IndicatorLights(Lights lights) {
         timer.reset();
       }
       lights.setProgress((RobotState.getInstance().ShooterError / 50)-0.2, 50, 0, 0, 0, 50, 0);
-
     }
-
+    if(noteInRobot&&timerReset) {
+      timer.reset();
+    }
     lights.dataSetter();
   }
 

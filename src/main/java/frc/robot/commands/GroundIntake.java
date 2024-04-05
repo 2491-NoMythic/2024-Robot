@@ -14,6 +14,7 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RobotState;
 
 public class GroundIntake extends Command {
   /** Creates a new GroundIntake. */
@@ -33,12 +34,14 @@ public class GroundIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    RobotState.getInstance().lightsReset = true;
     angleShooter.setDesiredShooterAngle(30);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    RobotState.getInstance().lightsReset = false;
     double mult = 0.43;
     double robotSpeed = Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2));
     double rollerSpeed = (IntakeConstants.INTAKE_SPEED*IntakeConstants.INTAKE_MAX_VELOCITY - (mult * IntakeConstants.INTAKE_SPEED*IntakeConstants.INTAKE_MAX_VELOCITY)) * (robotSpeed / /*DriveConstants.MAX_VELOCITY_METERS_PER_SECOND*/2.4) + (mult * IntakeConstants.INTAKE_SPEED*IntakeConstants.INTAKE_MAX_VELOCITY);
