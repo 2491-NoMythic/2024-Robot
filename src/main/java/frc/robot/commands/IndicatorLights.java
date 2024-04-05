@@ -70,7 +70,9 @@ public IndicatorLights(Lights lights) {
       lights.setProgress((RobotState.getInstance().ShooterError / 50)-0.2, 50, 0, 0, 0, 50, 0);
     }
     if(noteInRobot&&timerReset) {
-      timer.reset();    
+      if (time > 2){
+        timer.reset();
+      } 
       RobotState.getInstance().lightsReset = false;
     }
     lights.dataSetter();
