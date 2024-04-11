@@ -5,8 +5,9 @@ public class RobotState {
 	public boolean IsNoteSeen;
 	public boolean IsNoteHeld;
 	public boolean ShooterInRange;
-	public boolean ShooterReady;
+	public double ShooterError;
 	public boolean LimelightsUpdated;
+	public boolean lightsReset;
 
 	private RobotState() {
 

@@ -24,18 +24,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "CloseMidPickupAuto"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "hardStop"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "autoPickup"
