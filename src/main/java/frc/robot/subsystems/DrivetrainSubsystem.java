@@ -20,6 +20,9 @@ import static frc.robot.settings.Constants.DriveConstants.FR_DRIVE_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
 import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
+import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT2_NAME;
+import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT3_NAME;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -47,6 +50,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
@@ -163,7 +167,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			getGyroscopeRotation(),
 			getModulePositions(),
 			DRIVE_ODOMETRY_ORIGIN);
-		odometer.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, 100));
+		odometer.setVisionMeasurementStdDevs(VecBuilder.fill(0.9, 0.9, 99999999));
 		}
 	/**
 	 * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
@@ -274,7 +278,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void updateOdometryWithVision() {
 		PoseEstimate estimate = limelight.getTrustedPose(getPose());
 		if (estimate != null) {
-			odometer.addVisionMeasurement(new Pose2d(estimate.pose.getTranslation(), getOdometryRotation()), estimate.timestampSeconds);
+			LimelightHelpers.SetRobotOrientation(APRILTAG_LIMELIGHT2_NAME, odometer.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+			LimelightHelpers.SetRobotOrientation(APRILTAG_LIMELIGHT3_NAME, odometer.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+			boolean doRejectUpdate = false;
+			if(Math.abs(pigeon.getRate()) > 720) {
+				doRejectUpdate = true;
+			} 
+			if(estimate.tagCount == 0) {
+				doRejectUpdate = true;
+			}
+			if(!doRejectUpdate) {
+				odometer.addVisionMeasurement(estimate.pose, estimate.timestampSeconds);
+			}
 			RobotState.getInstance().LimelightsUpdated = true;
 		} else {
 			RobotState.getInstance().LimelightsUpdated = false;
