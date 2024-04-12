@@ -104,7 +104,7 @@ public class Limelight {
                 LimelightHelpers.getTX(OBJ_DETECTION_LIMELIGHT_NAME),
                 LimelightHelpers.getTY(OBJ_DETECTION_LIMELIGHT_NAME),
                 LimelightHelpers.getTA(OBJ_DETECTION_LIMELIGHT_NAME),
-                LimelightHelpers.getNeuralClassIDDouble(OBJ_DETECTION_LIMELIGHT_NAME),
+                LimelightHelpers.getNeuralClassID(OBJ_DETECTION_LIMELIGHT_NAME),
                 LimelightHelpers.getTV(OBJ_DETECTION_LIMELIGHT_NAME));
     }
 
