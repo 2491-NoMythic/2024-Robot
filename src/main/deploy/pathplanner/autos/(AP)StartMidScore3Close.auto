@@ -14,13 +14,19 @@
         {
           "type": "named",
           "data": {
-            "name": "initialShot"
+            "name": "shooterOn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CloseAmpPickupAuto"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shooterOn"
+            "name": "autoShootNote"
           }
         },
         {
@@ -38,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CloseAmpPickupFromMidAuto"
+            "pathName": " CloseMidPickupFromAmpAuto"
           }
         },
         {
@@ -62,7 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CloseSourcePickupFromAmpAuto"
+            "pathName": "CloseSourcePickupFromMidAuto"
           }
         },
         {
