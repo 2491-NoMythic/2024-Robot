@@ -503,7 +503,7 @@ public static final class CTREConfigs {
 public final class Vision{
   public static final String APRILTAG_LIMELIGHT2_NAME = "limelight-aprill";
   public static final String APRILTAG_LIMELIGHT3_NAME = "limelight-aprilr";
-  public static final String OBJ_DETECITON_LIMELIGHT_NAME = "limelight-neural";
+  public static final String OBJ_DETECTION_LIMELIGHT_NAME = "limelight-neural";
 
   public static final String LIMELIGHT_SHUFFLEBOARD_TAB = "Vision";
   
