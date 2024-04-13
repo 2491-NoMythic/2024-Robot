@@ -145,7 +145,7 @@ public class Limelight {
                 isValid(limelightName, estimate) &&
                 // estimate.pose.getTranslation().getDistance(odometryPose.getTranslation()) < ALLOWABLE_POSE_DIFFERENCE && // Unused
                 // ((estimate.avgTagDist < MAX_TAG_DISTANCE) || (estimate.tagCount >= 2 && estimate.avgTagDist<6))); // Trust poses when there are two tags, or when the tags are close to the camera.
-                estimate.tagCount >= 2 && estimate.avgTagDist<6);
+                estimate.avgTagDist<7);
 
         if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT2_NAME)) {
             SmartDashboard.putBoolean("Vision/Left/trusted", trusted);

@@ -28,16 +28,32 @@
         "y": 7.780317782857788
       },
       "isLocked": false,
-      "linkedName": "CollectNote1Blue"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.507643667719127,
-        "y": 7.449717390537984
+        "x": 4.852150914266242,
+        "y": 7.45
       },
       "prevControl": {
-        "x": 4.9261774267149905,
-        "y": 7.406300835188908
+        "x": 4.719085501741837,
+        "y": 7.479677359878633
+      },
+      "nextControl": {
+        "x": 5.202725850291558,
+        "y": 7.371811849199025
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.585549209058087,
+        "y": 7.225738959188476
+      },
+      "prevControl": {
+        "x": 4.986149852656257,
+        "y": 7.181901774728098
       },
       "nextControl": null,
       "isLocked": false,
@@ -52,7 +68,25 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "shootNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 2.3,
