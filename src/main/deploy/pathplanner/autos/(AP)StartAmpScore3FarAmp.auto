@@ -14,19 +14,26 @@
         {
           "type": "named",
           "data": {
-            "name": "initialShot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shooterOn"
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Blue1AutoPickupFromStart"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Blue1AutoPickupFromStart"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              }
+            ]
           }
         },
         {
@@ -36,15 +43,34 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "BlueAmpShoot1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BlueAmpShoot1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "note isn't held"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "autoShootNote"
+            "name": "shootNote"
           }
         },
         {
@@ -60,15 +86,34 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "BlueMiddleShoot2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BlueAmpShoot2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "note isn't held"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "autoShootNote"
+            "name": "shootNote"
           }
         }
       ]
