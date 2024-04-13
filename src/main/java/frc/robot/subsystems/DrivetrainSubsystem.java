@@ -26,6 +26,7 @@ import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT3_NAME;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -111,6 +112,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	MotorLogger[] motorLoggers;
 
 	public DrivetrainSubsystem() {
+		SmartDashboard.putNumber("CALLIBRATION/redRobotX", Field.CALCULATED_SHOOTER_RED_SPEAKER_X);
+		SmartDashboard.putNumber("CALLIBRATION/blueRobotX", Field.CALCULATED_SHOOTER_BLUE_SPEAKER_X);
+		SmartDashboard.putNumber("CALLIBRATION/blueY", Field.CALCULATED_BLUE_SPEAKER_Y);
+		SmartDashboard.putNumber("CALLIBRATION/redY", Field.CALCULATED_RED_SPEAKER_Y);
+
 		MathRanNumber = 0;
 		runsValid = 0;
 		this.limelight=Limelight.getInstance();
@@ -278,8 +284,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void updateOdometryWithVision() {
 		PoseEstimate estimate = limelight.getTrustedPose(getPose());
 		if (estimate != null) {
-			LimelightHelpers.SetRobotOrientation(APRILTAG_LIMELIGHT2_NAME, odometer.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-			LimelightHelpers.SetRobotOrientation(APRILTAG_LIMELIGHT3_NAME, odometer.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 			boolean doRejectUpdate = false;
 			if(Math.abs(pigeon.getRate()) > 720) {
 				doRejectUpdate = true;
@@ -431,6 +435,80 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putString("adjusted target", adjustedTarget.toString());
 		return m_desiredRobotAngle;
 	}
+
+	public double calculateSpeakerAngleMovingWithSuppliers(DoubleSupplier redYSup, DoubleSupplier blueYSup, DoubleSupplier redRobotXSup, DoubleSupplier blueRobotXSup){
+		double redY = redYSup.getAsDouble();
+		double blueY = blueYSup.getAsDouble();
+		double blueRobotX = blueRobotXSup.getAsDouble();
+		double redRobotX = redRobotXSup.getAsDouble();
+		dtvalues = this.getPose();
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+		double speakerY;
+		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
+		//triangle for robot angle
+		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+			deltaX = Math.abs(dtvalues.getX() - redRobotX);
+			speakerY = redY;
+		} else {
+			deltaX = Math.abs(dtvalues.getX() - blueRobotX);
+			speakerY = blueY;
+		}
+		deltaY = Math.abs(dtvalues.getY() - speakerY);
+		speakerDist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+		// SmartDashboard.putNumber("dist to speaker", speakerDist);
+		
+		Rotation2d unadjustedAngle = Rotation2d.fromRadians(Math.asin(deltaX/speakerDist));
+		double totalDistToSpeaker = Math.sqrt(Math.pow(Field.SPEAKER_Z-ShooterConstants.SHOOTER_HEIGHT, 2) + Math.pow(speakerDist, 2));
+		shootingTime = totalDistToSpeaker/shootingSpeed; //calculates how long the note will take to reach the target
+		currentXSpeed = this.getChassisSpeeds().vxMetersPerSecond;
+		currentYSpeed = this.getChassisSpeeds().vyMetersPerSecond;
+		targetOffset = new Translation2d(currentXSpeed*shootingTime*OFFSET_MULTIPLIER*unadjustedAngle.getRadians(), currentYSpeed*shootingTime*OFFSET_MULTIPLIER); 
+		//line above calculates how much our current speed will affect the ending location of the note if it's in the air for ShootingTime
+		
+		//next 3 lines set where we actually want to aim, given the offset our shooting will have based on our speed
+		int correctionDirection;
+		double speakerX;
+		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+			correctionDirection = 1;
+			speakerX = blueRobotX;
+		} else {
+			correctionDirection = -1;
+			speakerX = redRobotX;
+		}
+		offsetSpeakerX = speakerX+(targetOffset.getX()*correctionDirection);
+		offsetSpeakerY = speakerY+(targetOffset.getY()*correctionDirection);
+		offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
+		offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
+		
+		adjustedTarget = new Translation2d(offsetSpeakerX, offsetSpeakerY);
+		offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaY, 2) + Math.pow(offsetDeltaX, 2));
+		SmartDashboard.putNumber("MATH/Robot speaker dist", offsetSpeakerdist);
+		RobotState.getInstance().ShooterInRange = offsetSpeakerdist<Field.MAX_SHOOTING_DISTANCE;
+		// SmartDashboard.putString("offset amount", targetOffset.toString());
+		// SmartDashboard.putString("offset speaker location", new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
+		//getting desired robot angle
+		if (DriverStation.getAlliance().isPresent() && alliance.get() == Alliance.Blue) {
+			if (dtvalues.getY() >= adjustedTarget.getY()) {
+				double thetaAbove = -Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))-90;
+				m_desiredRobotAngle = thetaAbove;
+			}
+			else{
+				double thetaBelow = Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))+90;
+				m_desiredRobotAngle = thetaBelow;
+		} } else {
+			if (dtvalues.getY() >= adjustedTarget.getY()) {
+				double thetaAbove = Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))-90;
+				m_desiredRobotAngle = thetaAbove;
+			}
+			else{
+				double thetaBelow = -Math.toDegrees(Math.asin(offsetDeltaX / offsetSpeakerdist))+90;
+				m_desiredRobotAngle = thetaBelow;
+			}
+		}
+		MathRanNumber++;
+		SmartDashboard.putString("adjusted target", adjustedTarget.toString());
+		return m_desiredRobotAngle;
+	}
 	private double getSpeakerAngleDifference() {
 		return calculateSpeakerAngleMoving()-(getOdometryRotation().getDegrees()%360);
 	}
@@ -448,6 +526,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		AngleShooterSubsystem.setDTPose(getPose());
 		AngleShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());
 		if (Preferences.getBoolean("Use Limelight", false)) {
+			LimelightHelpers.SetRobotOrientation(APRILTAG_LIMELIGHT2_NAME, odometer.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+			LimelightHelpers.SetRobotOrientation(APRILTAG_LIMELIGHT3_NAME, odometer.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 			if (SmartDashboard.getBoolean("Vision/force use limelight", false)) {
 				forceUpdateOdometryWithVision();
 			} else {
@@ -474,6 +554,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("DRIVETRAIN/rotational speed", Math.toDegrees(getChassisSpeeds().omegaRadiansPerSecond));
 		SmartDashboard.putNumber("DRIVETRAIN/gyroscope rotation degrees", getPose().getRotation().getDegrees());
 		SmartDashboard.putNumber("DRIVETRAIN/degrees per second", Math.toDegrees(getChassisSpeeds().omegaRadiansPerSecond));
+
+		SmartDashboard.putNumber("CALLIBRATION/Supplied calculated robot angle", calculateSpeakerAngleMovingWithSuppliers(()->SmartDashboard.getNumber("CALLIBRATION/redY", 0), ()->SmartDashboard.getNumber("CALLIBRATION/blueY", 0), ()->SmartDashboard.getNumber("CALLIBRATION/redRobotX", 0), ()->SmartDashboard.getNumber("CALLIBRATION/blueRobotX", 0)));
 		for (int i = 0; i < 4; i++) {
 			motorLoggers[i].log(modules[i].getDriveMotor());
 		}

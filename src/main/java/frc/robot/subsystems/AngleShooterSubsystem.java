@@ -5,6 +5,7 @@ import frc.robot.settings.Constants.ShooterConstants;
 import pabeles.concurrency.IntOperatorTask.Max;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -39,6 +40,12 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	double speakerDistGlobal;
 
 	public AngleShooterSubsystem() {
+		
+		SmartDashboard.putNumber("CALLIBRATION/redShooterX", Field.CALCULATED_SHOOTER_RED_SPEAKER_X);
+		SmartDashboard.putNumber("CALLIBRATION/blueShooterX", Field.CALCULATED_SHOOTER_BLUE_SPEAKER_X);
+		SmartDashboard.putNumber("CALLIBRATION/blueY", Field.CALCULATED_BLUE_SPEAKER_Y);
+		SmartDashboard.putNumber("CALLIBRATION/redY", Field.CALCULATED_RED_SPEAKER_Y);
+
 		runsValid = 0;
 		pitchMotor = new CANSparkMax(PITCH_MOTOR_ID, MotorType.kBrushless);
 		pitchMotor.restoreFactoryDefaults();
@@ -197,6 +204,76 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		
 		return desiredShooterAngle;
 	}
+
+	public double calculateSpeakerAngleWithSuppliers(DoubleSupplier redShooterXSup, DoubleSupplier blueShooterXSup, DoubleSupplier redYSup, DoubleSupplier blueYSup) {
+		double deltaX;
+		double deltaY;
+		double redX = redShooterXSup.getAsDouble();
+		double blueX = blueShooterXSup.getAsDouble();
+		double redY = redYSup.getAsDouble();
+		double blueY = blueYSup.getAsDouble();
+		shootingSpeed = ShooterConstants.SHOOTING_SPEED_MPS;
+		// triangle for robot angle
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+		if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+			deltaX = Math.abs(dtvalues.getX() - redX);
+			deltaY = Math.abs(dtvalues.getY() - redY);
+		} else {
+			deltaX = Math.abs(dtvalues.getX() - blueX);
+			deltaY = Math.abs(dtvalues.getY() - blueY);
+		}
+		double speakerDist = Math.sqrt(Math.pow(deltaY, 2) + Math.pow(deltaX, 2));
+		// SmartDashboard.putNumber("dist to speaker", speakerDist);
+		Rotation2d unadjustedAngle = Rotation2d.fromRadians(Math.asin(deltaX/speakerDist));
+		double totalDistToSpeaker = Math.sqrt(Math.pow(Field.SPEAKER_Z-ShooterConstants.SHOOTER_HEIGHT, 2) + Math.pow(speakerDist, 2));
+		double shootingTime = totalDistToSpeaker / shootingSpeed; // calculates how long the note will take to reach the target
+		double currentXSpeed = DTChassisSpeeds.vxMetersPerSecond;
+		double currentYSpeed = DTChassisSpeeds.vyMetersPerSecond;
+		Translation2d targetOffset = new Translation2d(currentXSpeed * shootingTime*OFFSET_MULTIPLIER * unadjustedAngle.getRadians(), currentYSpeed * shootingTime*OFFSET_MULTIPLIER * unadjustedAngle.getRadians());
+		// line above calculates how much our current speed will affect the ending
+		// location of the note if it's in the air for ShootingTime
+		
+		// next 3 lines set where we actually want to aim, given the offset our shooting
+		// will have based on our speed
+		double offsetSpeakerX;
+		double offsetSpeakerY;
+		if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+			offsetSpeakerX = redX - targetOffset.getX();
+			offsetSpeakerY = redY - targetOffset.getY();
+		} else {
+			offsetSpeakerX = redX - targetOffset.getX();
+			offsetSpeakerY = redY - targetOffset.getY();
+		}
+		double offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
+		double offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
+		double offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaX, 2) + Math.pow(offsetDeltaY, 2));
+		offsetSpeakerdist = offsetSpeakerdist+0.127; //to compensate for the pivot point of the shooter bieng offset from the center of the robot
+		SmartDashboard.putString("offset amount", targetOffset.toString());
+		SmartDashboard.putString("offset speaker location",
+		new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
+		// getting desired robot angle
+		double totalOffsetDistToSpeaker = Math
+				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
+		SmartDashboard.putNumber("MATH/shooter's speaker dist", totalOffsetDistToSpeaker);
+		double desiredShooterAngle = Math
+				.toDegrees(Math.asin((Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT) / totalOffsetDistToSpeaker));
+		desiredShooterAngle = adjustAngleForDistance(desiredShooterAngle, offsetSpeakerdist);
+		if(desiredShooterAngle<ShooterConstants.MINIMUM_SHOOTER_ANGLE) {
+			desiredShooterAngle = ShooterConstants.MINIMUM_SHOOTER_ANGLE;
+		}
+		if(desiredShooterAngle>ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE) {
+			desiredShooterAngle = ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE;
+		}
+		if(offsetSpeakerdist>Field.MAX_SHOOTING_DISTANCE) {
+			desiredShooterAngle = SAFE_SHOOTER_ANGLE;
+		}		
+		
+		speakerDistGlobal = offsetSpeakerdist;
+		// double differenceAngle = (desiredShooterAngle - this.getShooterAngle());
+		// SmartDashboard.putNumber("differenceAngleShooter", differenceAngle);
+		
+		return desiredShooterAngle;
+	}
 	/**
 	 * using the constants made for this, it adjusts our shooter angle based on how far away we are from the speaker
 	 * @param initialAngle the angle that the {@code calculateSpeakerAngle()} method calculates before using this
@@ -253,6 +330,8 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("ANGLE SHOOTER encoder zero offset", absoluteEncoder.getZeroOffset());
 
 		SmartDashboard.putNumber("ANGLE SHOOTER speaker angle error", calculateSpeakerAngleDifference());
+
+		SmartDashboard.putNumber("CALLIBRATION/Supplied calculated shooter angle", calculateSpeakerAngleWithSuppliers(()->SmartDashboard.getNumber("CALLIBRATION/redShooterX", 0), ()->SmartDashboard.getNumber("CALLIBRATION/blueShooterX", 0), ()->SmartDashboard.getNumber("CALLIBRATION/redY", 0), ()->SmartDashboard.getNumber("CALLIBRATION/blueY", 0)));
 		if(calculateSpeakerAngleDifference()<ShooterConstants.ALLOWED_ANGLE_ERROR) {
 			runsValid++;
 		} else {
