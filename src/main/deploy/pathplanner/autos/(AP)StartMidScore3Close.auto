@@ -18,39 +18,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "CloseAmpPickupAuto"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShootNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoPickup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShootNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": " CloseMidPickupFromAmpAuto"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "hardStop"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseAmpPickupAuto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              }
+            ]
           }
         },
         {
@@ -60,15 +43,53 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "autoShootNote"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": " CloseMidPickupFromAmpAuto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "CloseSourcePickupFromMidAuto"
+            "name": "autoPickup"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseSourcePickupFromMidAuto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNote"
           }
         },
         {

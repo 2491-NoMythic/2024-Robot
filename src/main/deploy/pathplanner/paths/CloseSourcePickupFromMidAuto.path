@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.183886123411755,
-        "y": 4.859358141022456
+        "x": 2.6443798011133075,
+        "y": 4.964008887705681
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1281941601759766,
-        "y": 4.645872281951973
+        "x": 2.4415493304328604,
+        "y": 4.867931296330732
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.9956286826153902,
-        "y": 4.39239001934794
+        "x": 2.105980582067926,
+        "y": 4.57695055366386
       },
       "prevControl": {
-        "x": 1.9406557155265987,
-        "y": 4.377730561457596
+        "x": 2.0510076149791345,
+        "y": 4.562291095773515
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,25 @@
       }
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "shootNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 2.3,
