@@ -14,25 +14,26 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class ShootNote extends Command {
   IndexerSubsystem indexer;
-  AngleShooterSubsystem angleShooter;
   Timer timer;
   double shootTime;
   double revTime;
   IntakeSubsystem intake;
   /** Creates a new shootNote. */
-  public ShootNote(IndexerSubsystem indexer, double shootTime, AngleShooterSubsystem angleShooter, IntakeSubsystem intake) {
+  public ShootNote(IndexerSubsystem indexer, double shootTime, double revTime, IntakeSubsystem intake) {
+    SmartDashboard.putNumber("notes shot", 0);
     this.indexer = indexer;
     this.shootTime = shootTime;
-    this.angleShooter = angleShooter;
     this.intake = intake;
+    this.revTime = revTime;
     timer = new Timer();
-    addRequirements(indexer, angleShooter);
+    addRequirements(indexer);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    SmartDashboard.putNumber("notes shot", SmartDashboard.getNumber("notes shot", 0)+1);
     timer.reset();
     timer.start();
     indexer.off();
@@ -41,8 +42,7 @@ public class ShootNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    angleShooter.setDesiredShooterAngle(angleShooter.calculateSpeakerAngle());
-    if(timer.get()>=1) {
+    if(timer.get()>revTime) {
       indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
     }
     SmartDashboard.putNumber("auto timer", timer.get());

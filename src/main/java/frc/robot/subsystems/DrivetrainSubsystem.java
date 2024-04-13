@@ -19,6 +19,9 @@ import static frc.robot.settings.Constants.DriveConstants.FL_STEER_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_DRIVE_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
+import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kD;
+import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kI;
+import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kP;
 import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT2_NAME;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT3_NAME;
@@ -33,6 +36,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -110,12 +114,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	int runsValid;
 	double MathRanNumber;
 	MotorLogger[] motorLoggers;
+	PIDController speedController;
 
 	public DrivetrainSubsystem() {
 		SmartDashboard.putNumber("CALLIBRATION/redRobotX", Field.CALCULATED_SHOOTER_RED_SPEAKER_X);
 		SmartDashboard.putNumber("CALLIBRATION/blueRobotX", Field.CALCULATED_SHOOTER_BLUE_SPEAKER_X);
 		SmartDashboard.putNumber("CALLIBRATION/blueY", Field.CALCULATED_BLUE_SPEAKER_Y);
 		SmartDashboard.putNumber("CALLIBRATION/redY", Field.CALCULATED_RED_SPEAKER_Y);
+
+		speedController = new PIDController(
+			AUTO_AIM_ROBOT_kP, 
+			AUTO_AIM_ROBOT_kI,
+			AUTO_AIM_ROBOT_kD);
+		speedController.setTolerance(ShooterConstants.ROBOT_ANGLE_TOLERANCE);
+		speedController.enableContinuousInput(-180, 180);
 
 		MathRanNumber = 0;
 		runsValid = 0;
@@ -253,6 +265,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		} else {
 			setModuleStates(desiredStates);
 		}
+	}
+
+	public void driveWhileAimed(ChassisSpeeds chassisSpeeds) {
+		ChassisSpeeds desiredSpeeds = new ChassisSpeeds(
+			chassisSpeeds.vxMetersPerSecond,
+			chassisSpeeds.vyMetersPerSecond,
+			speedController.calculate(getOdometryRotation().getDegrees()));
+		drive(desiredSpeeds);
 	}
 	/**
 	 * Sets all module drive speeds to 0, but leaves the wheel angles where they were.
@@ -522,6 +542,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		if (DriverStation.getAlliance().isPresent()) {
 			SmartDashboard.putString("alliance:", DriverStation.getAlliance().get().toString());
 		}
+		speedController.setSetpoint(calculateSpeakerAngleMoving());
 		updateOdometry();
 		AngleShooterSubsystem.setDTPose(getPose());
 		AngleShooterSubsystem.setDTChassisSpeeds(getChassisSpeeds());
