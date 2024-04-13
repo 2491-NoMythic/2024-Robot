@@ -466,8 +466,8 @@ public static final class CTREConfigs {
 
     public static final double CALCULATED_SHOOTER_RED_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_RED_X+3.213;
     public static final double CALCULATED_RED_SPEAKER_Y = AMP_SIDE_OUTER_TAPE_CORNER_RED_Y+1.263;
-    public static final double RED_SPEAKER_Y = 5.58;
-    public static final double SHOOTER_RED_SPEAKER_X = 16.45;//changed so that shots from the side wil aim to the opposite side, and bank in
+    public static final double RED_SPEAKER_Y = 5.613;
+    public static final double SHOOTER_RED_SPEAKER_X = 16.582;//changed so that shots from the side wil aim to the opposite side, and bank in
     public static final double ROBOT_RED_SPEAKER_X = SHOOTER_RED_SPEAKER_X-0.165;//changed so that shots from the side wil aim to the opposite side, and bank in
     
     public static final double CALCULATED_SHOOTER_BLUE_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X-3.213; //changed so that shots from the side wil aim to the opposite side, and bank in
