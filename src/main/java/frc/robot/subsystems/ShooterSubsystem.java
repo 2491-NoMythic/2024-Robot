@@ -226,6 +226,13 @@ import java.util.function.DoubleSupplier;
     isRevingR = updateIsReving(isRevingR, targetVelocityR, shooterR.getVelocity().getValueAsDouble());
     updateMotor(shooterL, isRevingL, targetVelocityL); 
     updateMotor(shooterR, isRevingR, targetVelocityR); 
+    if(shooterL.getClosedLoopError().getValueAsDouble()>7) {
+      configuratorL.apply(PIDLeftconfigs.withKI(0));
+      configuratorR.apply(PIDRightconfigs.withKI(0));
+    } else {
+      configuratorL.apply(PIDLeftconfigs.withKI(0.004));
+      configuratorR.apply(PIDRightconfigs.withKI(0.004));
+    }
   }
   public double getRSpeed() {
     return shooterR.getVelocity().getValueAsDouble();
