@@ -24,7 +24,10 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase; 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static frc.robot.settings.Constants.ShooterConstants.CompLeftkS;
+import static frc.robot.settings.Constants.ShooterConstants.CompRightkS;
 
 import java.util.function.DoubleSupplier;
 
@@ -63,8 +66,8 @@ import java.util.function.DoubleSupplier;
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
     if(Preferences.getBoolean("CompBot", true)) {
-      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF).withKI(0.004);
-      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF).withKI(0.004);
+      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF).withKI(0.004).withKS(CompRightkS);
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF).withKI(0.004).withKS(CompLeftkS);
   } else {
       PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PracRightkP).withKV(ShooterConstants.PracRightkFF).withKI(0.004);
       PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PracLeftkP).withKV(ShooterConstants.PracLeftkFF).withKI(0.004);

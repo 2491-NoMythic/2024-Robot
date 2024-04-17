@@ -302,9 +302,11 @@ public static final class ShooterConstants{
   // public static final double kI = 0;
   // public static final double kD = 0;
   public static final double kIz = 0;
-  public static final double CompRightkFF = 0.0053;
+  public static final double CompRightkFF = 0.0049;
   public static final double CompLeftkFF = 0.0098;
-  public static final double CompRightkP = 0.012;
+  public static final double CompRightkS = 0.012;
+  public static final double CompLeftkS = 0.00;
+  public static final double CompRightkP = 0.015;
   public static final double CompLeftkP = 0.012;
   public static final double kMaxOutput = 1;
   public static final double kMinOutput = -1;
