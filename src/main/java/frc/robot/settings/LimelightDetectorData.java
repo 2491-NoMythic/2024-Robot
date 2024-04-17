@@ -19,9 +19,9 @@ public class LimelightDetectorData {
     /**Target Area (0% of image to 100% of image) */
     public double ta;
     
-    public double classID;
+    public String classID;
 
-    public LimelightDetectorData(double tx, double ty, double ta, double classID, boolean valid) {
+    public LimelightDetectorData(double tx, double ty, double ta, String classID, boolean valid) {
         this.tx = tx;
         this.ty = ty;
         this.ta = ta;

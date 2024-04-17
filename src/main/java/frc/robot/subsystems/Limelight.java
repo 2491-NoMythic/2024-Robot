@@ -56,8 +56,8 @@ public class Limelight {
      *         prioritized by lowest tagDistance.
      */
     public PoseEstimate getTrustedPose(Pose2d odometryPose) {
-        PoseEstimate pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT2_NAME);
-        PoseEstimate pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT3_NAME);
+        PoseEstimate pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME);
+        PoseEstimate pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT3_NAME);
 
         Boolean pose1Trust = isTrustworthy(APRILTAG_LIMELIGHT2_NAME, pose1, odometryPose);
         Boolean pose2Trust = isTrustworthy(APRILTAG_LIMELIGHT3_NAME, pose2, odometryPose);
@@ -83,8 +83,8 @@ public class Limelight {
      *         are prioritized by lowest tagDistance.
      */
     public PoseEstimate getValidPose() {
-        PoseEstimate pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT2_NAME);
-        PoseEstimate pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue(APRILTAG_LIMELIGHT3_NAME);
+        PoseEstimate pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME);
+        PoseEstimate pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT3_NAME);
 
         Boolean pose1Valid = isValid(APRILTAG_LIMELIGHT2_NAME, pose1);
         Boolean pose2Valid = isValid(APRILTAG_LIMELIGHT3_NAME, pose2);
@@ -101,11 +101,11 @@ public class Limelight {
 
     public LimelightDetectorData getNeuralDetectorValues() {
         return new LimelightDetectorData(
-                LimelightHelpers.getTX(OBJ_DETECITON_LIMELIGHT_NAME),
-                LimelightHelpers.getTY(OBJ_DETECITON_LIMELIGHT_NAME),
-                LimelightHelpers.getTA(OBJ_DETECITON_LIMELIGHT_NAME),
-                LimelightHelpers.getNeuralClassID(OBJ_DETECITON_LIMELIGHT_NAME),
-                LimelightHelpers.getTV(OBJ_DETECITON_LIMELIGHT_NAME));
+                LimelightHelpers.getTX(OBJ_DETECTION_LIMELIGHT_NAME),
+                LimelightHelpers.getTY(OBJ_DETECTION_LIMELIGHT_NAME),
+                LimelightHelpers.getTA(OBJ_DETECTION_LIMELIGHT_NAME),
+                LimelightHelpers.getNeuralClassID(OBJ_DETECTION_LIMELIGHT_NAME),
+                LimelightHelpers.getTV(OBJ_DETECTION_LIMELIGHT_NAME));
     }
 
     private boolean isValid(String limelightName, PoseEstimate estimate) {
@@ -145,7 +145,7 @@ public class Limelight {
                 isValid(limelightName, estimate) &&
                 // estimate.pose.getTranslation().getDistance(odometryPose.getTranslation()) < ALLOWABLE_POSE_DIFFERENCE && // Unused
                 // ((estimate.avgTagDist < MAX_TAG_DISTANCE) || (estimate.tagCount >= 2 && estimate.avgTagDist<6))); // Trust poses when there are two tags, or when the tags are close to the camera.
-                estimate.tagCount >= 2 && estimate.avgTagDist<6);
+                estimate.avgTagDist<7);
 
         if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT2_NAME)) {
             SmartDashboard.putBoolean("Vision/Left/trusted", trusted);

@@ -65,6 +65,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -499,7 +500,7 @@ public class RobotContainer {
                 driveTrain::getPose, // Pose2d supplier
                 driveTrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
                 driveTrain::getChassisSpeeds,
-                driveTrain::drive,
+                driveTrain::driveWhileAimed,
                 new HolonomicPathFollowerConfig(
                     new PIDConstants(
                         k_XY_P,
@@ -547,7 +548,10 @@ public class RobotContainer {
     if(shooterExists) {
       NamedCommands.registerCommand("shooterOn", new InstantCommand(()->shooter.shootRPS(LONG_SHOOTING_RPS), shooter));
       SmartDashboard.putData("shooterOn", new InstantCommand(()->shooter.shootRPS(LONG_SHOOTING_RPS), shooter));
-  }
+    }
+    if(intakeExists&&indexerExists&&angleShooterExists) {
+      NamedCommands.registerCommand("shootNote", new ShootNote(indexer, 0.25, 0, intake));
+    }
     if(indexerExists) {
       // NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));
       // NamedCommands.registerCommand("stopFeedingShooter", new InstantCommand(indexer::off, indexer));
@@ -557,6 +561,7 @@ public class RobotContainer {
       if(sideWheelsExists){
         NamedCommands.registerCommand("intakeSideWheels", new InstantCommand(()-> intake.intakeSideWheels(1)));
       }
+      NamedCommands.registerCommand("note isn't held", new WaitUntilCommand(()->!intake.isNoteSeen()));
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 1.0, 1.25, angleShooterSubsystem));
@@ -564,7 +569,10 @@ public class RobotContainer {
       //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
         new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup),
-        new ShootNote(indexer, 1.5, angleShooterSubsystem, intake)));
+        new SequentialCommandGroup(
+          new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle()), angleShooterSubsystem),
+          new ShootNote(indexer, 1.5, 0.5,intake)
+        )));
       // NamedCommands.registerCommand("setFeedTrue", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", true)));
       // NamedCommands.registerCommand("setFeedFalse", new InstantCommand(()->SmartDashboard.putBoolean("feedMotor", false)));
     }
