@@ -128,6 +128,9 @@ import java.util.function.DoubleSupplier;
     public void shootSameRPS(double RPS) {
       setTargetVelocity(RPS, RPS, ShooterConstants.CURRENT_LIMIT, 100);
     }
+    public void shootSameRPSWithCurrent(double RPS, double supplyLimit, double statorLimit) {
+      setTargetVelocity(RPS, RPS, supplyLimit, statorLimit);
+    }
    /**
      * allows you to set the shooter's speed using a supplier. this way you can use a value on SmartDashboard to tune
      * the shooter's speed. 

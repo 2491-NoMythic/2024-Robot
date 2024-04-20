@@ -19,6 +19,7 @@ public class InitialShot extends Command {
   double revTime;
   double shootTime;
   AngleShooterSubsystem angleShooter;
+  boolean shot;
   /** Creates a new shootThing. */
   public InitialShot(ShooterSubsystem shooter, IndexerSubsystem indexer, double revTime, double shootTime, AngleShooterSubsystem angleShooter) {
     this.indexer = indexer;
@@ -30,22 +31,25 @@ public class InitialShot extends Command {
     addRequirements(shooter, indexer, angleShooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
-
+  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    shot = false;
     timer.reset();
     timer.start();
     indexer.off();
-    shooter.shootRPS(ShooterConstants.SHORT_SHOOTING_RPS);
+    shooter.shootRPSWithCurrent(90, 600, 600);
     angleShooter.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(timer.get()>revTime) {
+    if(shooter.getRSpeed()>45) {
       indexer.on();
+      timer.reset();
+      shot = true;
     }
   }
 
@@ -58,6 +62,7 @@ public class InitialShot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get()>shootTime;
+    return timer.get()>shootTime&&shot;
+
   }
 }
