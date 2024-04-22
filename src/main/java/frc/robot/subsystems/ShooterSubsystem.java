@@ -224,15 +224,15 @@ import java.util.function.DoubleSupplier;
   private void updateMotors(){
     isRevingL = updateIsReving(isRevingL, targetVelocityL, shooterL.getVelocity().getValueAsDouble());
     isRevingR = updateIsReving(isRevingR, targetVelocityR, shooterR.getVelocity().getValueAsDouble());
-    updateMotor(shooterL, isRevingL, targetVelocityL); 
-    updateMotor(shooterR, isRevingR, targetVelocityR); 
-    if(shooterL.getClosedLoopError().getValueAsDouble()>7) {
+    if(Math.abs(shooterL.getClosedLoopError().getValueAsDouble())>1.5) {
       configuratorL.apply(PIDLeftconfigs.withKI(0));
       configuratorR.apply(PIDRightconfigs.withKI(0));
     } else {
-      configuratorL.apply(PIDLeftconfigs.withKI(0.004));
-      configuratorR.apply(PIDRightconfigs.withKI(0.004));
+      configuratorL.apply(PIDLeftconfigs.withKI(0.00));//was 0.004 for both
+      configuratorR.apply(PIDRightconfigs.withKI(0.00));
     }
+    updateMotor(shooterL, isRevingL, targetVelocityL); 
+    updateMotor(shooterR, isRevingR, targetVelocityR); 
   }
   public double getRSpeed() {
     return shooterR.getVelocity().getValueAsDouble();
@@ -253,6 +253,7 @@ import java.util.function.DoubleSupplier;
     SmartDashboard.putNumber("shooter current left", shooterL.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Shooter/Right shooter speed", shooterR.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Shooter/Left shooter speed", shooterL.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter/right integral value", shooterR.getClosedLoopIntegratedOutput().getValueAsDouble());
     double error = getSignedError();
     RobotState.getInstance().ShooterError = error;
     if(Math.abs(error)<ShooterConstants.ALLOWED_SPEED_ERROR) {
