@@ -63,11 +63,11 @@ import java.util.function.DoubleSupplier;
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
     if(Preferences.getBoolean("CompBot", true)) {
-      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF).withKI(0.004);
-      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF).withKI(0.004);
+      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF).withKI(0);
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF).withKI(0);
   } else {
-      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PracRightkP).withKV(ShooterConstants.PracRightkFF).withKI(0.004);
-      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PracLeftkP).withKV(ShooterConstants.PracLeftkFF).withKI(0.004);
+      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PracRightkP).withKV(ShooterConstants.PracRightkFF).withKI(0);
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PracLeftkP).withKV(ShooterConstants.PracLeftkFF).withKI(0);
     }
     runsValid = 0;
     shooterR = new TalonFX(ShooterConstants.SHOOTER_R_MOTORID);
@@ -227,13 +227,6 @@ import java.util.function.DoubleSupplier;
   private void updateMotors(){
     isRevingL = updateIsReving(isRevingL, targetVelocityL, shooterL.getVelocity().getValueAsDouble());
     isRevingR = updateIsReving(isRevingR, targetVelocityR, shooterR.getVelocity().getValueAsDouble());
-    if(Math.abs(shooterL.getClosedLoopError().getValueAsDouble())>1.5) {
-      configuratorL.apply(PIDLeftconfigs.withKI(0));
-      configuratorR.apply(PIDRightconfigs.withKI(0));
-    } else {
-      configuratorL.apply(PIDLeftconfigs.withKI(0.00));//was 0.004 for both
-      configuratorR.apply(PIDRightconfigs.withKI(0.00));
-    }
     updateMotor(shooterL, isRevingL, targetVelocityL); 
     updateMotor(shooterR, isRevingR, targetVelocityR); 
   }
