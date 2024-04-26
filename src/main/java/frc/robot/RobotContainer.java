@@ -394,7 +394,7 @@ public class RobotContainer {
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(15), angleShooterSubsystem),
         new WaitUntil(()->(Math.abs(shooter.getLSpeed()-shooterAmpSpeed)<0.2)&&(Math.abs(shooter.getRSpeed()-shooterAmpSpeed)<1)),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
-        new WaitCommand(0.1),
+        new WaitCommand(0.08),
         new InstantCommand(()->indexer.magicRPSSupplier(()->indexerAmpSpeed), indexer),
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
