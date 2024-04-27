@@ -564,7 +564,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("note isn't held", new WaitUntilCommand(()->!intake.isNoteSeen()));
     }
     if(indexerExists&&shooterExists) {
-      NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 0.55, 0.15, angleShooterSubsystem));
+      NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 0.9, 0.1, angleShooterSubsystem));
       //the following command will both aim the robot at the speaker (with the AimRobotMoving), and shoot a note while aiming the shooter (with shootNote). As a race group, it ends
       //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(

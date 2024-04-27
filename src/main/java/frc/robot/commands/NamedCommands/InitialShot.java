@@ -5,6 +5,7 @@
 package frc.robot.commands.NamedCommands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
@@ -39,14 +40,15 @@ public class InitialShot extends Command {
     timer.reset();
     timer.start();
     indexer.off();
-    shooter.shootRPSWithCurrent(90, 600, 600);
+    shooter.setTargetVelocity(65, 50, 600, 600);
+    SmartDashboard.putNumber("shooter resets", SmartDashboard.getNumber("shooter resets", 0)+1);
     angleShooter.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooter.getRSpeed()>45) {
+    if(shooter.getRSpeed()>35&&shooter.getLSpeed()>60) {
       indexer.on();
       timer.reset();
       shot = true;
