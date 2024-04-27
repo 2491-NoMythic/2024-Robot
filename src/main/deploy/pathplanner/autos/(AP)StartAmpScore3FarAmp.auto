@@ -109,12 +109,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shootNote"
-          }
         }
       ]
     }
