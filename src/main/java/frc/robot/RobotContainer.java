@@ -487,6 +487,9 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
+  public void autonomousInit() {
+    SmartDashboard.putNumber("autos ran", SmartDashboard.getNumber("autos ran", 0)+1);
+  }
   private double modifyAxis(double value, double deadband) {
     // Deadband
     value = MathUtil.applyDeadband(value, deadband);
@@ -561,7 +564,7 @@ public class RobotContainer {
       if(sideWheelsExists){
         NamedCommands.registerCommand("intakeSideWheels", new InstantCommand(()-> intake.intakeSideWheels(1)));
       }
-      NamedCommands.registerCommand("note isn't held", new WaitUntilCommand(()->!intake.isNoteSeen()));
+      NamedCommands.registerCommand("note isn't held", new WaitUntil(()->!intake.isNoteSeen()));
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 0.9, 0.1, angleShooterSubsystem));
