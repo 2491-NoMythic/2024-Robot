@@ -5,7 +5,7 @@
       "x": 0.7523718013035084,
       "y": 4.450354048988052
     },
-    "rotation": 119.0
+    "rotation": 118.0
   },
   "command": {
     "type": "sequential",
@@ -74,9 +74,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "sourceSideLongShot"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Blue4AutoPickupUnderStage"
+            "pathName": "Blue4AutoPickupSourceSide"
           }
         },
         {

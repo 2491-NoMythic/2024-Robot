@@ -312,7 +312,8 @@ public class RobotContainer {
       FarStageAngleSup,
       SubwooferAngleSup,
       OverStagePassSup,
-      OppositeStageShotSup
+      OppositeStageShotSup,
+      falseSup
       ));
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
@@ -542,7 +543,7 @@ public class RobotContainer {
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
       NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED)));
-      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
+      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
       NamedCommands.registerCommand("autoPickup", new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
         new DriveTimeCommand(-1, 0, 0, 1, driveTrain)
@@ -554,6 +555,13 @@ public class RobotContainer {
     }
     if(intakeExists&&indexerExists&&angleShooterExists) {
       NamedCommands.registerCommand("shootNote", new ShootNote(indexer, 0.2, 0, intake));
+      NamedCommands.registerCommand("sourceSideLongShot", new SequentialCommandGroup(
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(25.3), angleShooterSubsystem),
+        new ParallelRaceGroup(
+          new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup, ()->true),
+          new ShootNote(indexer, 0.75, 0.6, intake)
+        )
+      ));
     }
     if(indexerExists) {
       // NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));
@@ -571,7 +579,7 @@ public class RobotContainer {
       //the following command will both aim the robot at the speaker (with the AimRobotMoving), and shoot a note while aiming the shooter (with shootNote). As a race group, it ends
       //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
-        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup),
+        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup, falseSup),
         new SequentialCommandGroup(
           new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle()), angleShooterSubsystem),
           new ShootNote(indexer, 1.5, 0.5,intake)
