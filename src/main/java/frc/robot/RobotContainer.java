@@ -315,6 +315,15 @@ public class RobotContainer {
       OppositeStageShotSup,
       falseSup
       ));
+    // new Trigger(()->driverController.getL3Button()&&driverController.getR3Button()).onTrue(
+    //   new SequentialCommandGroup(
+    //     new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(22.5), angleShooterSubsystem),
+    //     new ParallelRaceGroup(
+    //       new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup, ()->true),
+    //       new ShootNote(indexer, 0.65, 0.4, intake)
+    //     )
+    //   )
+    // );
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
       Command AutoGroundIntake = new SequentialCommandGroup(
