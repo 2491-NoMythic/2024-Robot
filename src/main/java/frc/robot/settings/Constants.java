@@ -406,9 +406,9 @@ public static final class CTREConfigs {
       driveMotorConfig.MotorOutput.Inverted = DriveConstants.DRIVETRAIN_DRIVE_INVERTED;
       driveMotorConfig.MotorOutput.DutyCycleNeutralDeadband = 0.0;
       driveMotorConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = DriveConstants.DRIVE_MOTOR_RAMP;
-      driveMotorConfig.Slot0.kP = DriveConstants.k_DRIVE_P;
-      driveMotorConfig.Slot0.kI = DriveConstants.k_DRIVE_I;
-      driveMotorConfig.Slot0.kD = DriveConstants.k_DRIVE_D;
+      driveMotorConfig.Slot0.kP = DriveConstants.k_DRIVE_P*12;
+      driveMotorConfig.Slot0.kI = DriveConstants.k_DRIVE_I*12;
+      driveMotorConfig.Slot0.kD = DriveConstants.k_DRIVE_D*12;
       driveMotorConfig.Slot0.kS = DriveConstants.k_DRIVE_FF_S;
       driveMotorConfig.Slot0.kV = DriveConstants.k_DRIVE_FF_V;
       driveMotorConfig.Voltage.PeakForwardVoltage = 12;
@@ -466,8 +466,8 @@ public static final class CTREConfigs {
 
     public static final double CALCULATED_SHOOTER_RED_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_RED_X+3.213;
     public static final double CALCULATED_RED_SPEAKER_Y = AMP_SIDE_OUTER_TAPE_CORNER_RED_Y+1.263;
-    public static final double RED_SPEAKER_Y = 5.68;//home field: 5.613 HCPA: 5.68
-    public static final double SHOOTER_RED_SPEAKER_X = 16.55;//home field: 16.582 HCPA: 16.55
+    public static final double RED_SPEAKER_Y = 5.613;//home field: 5.613 HCPA: 5.68
+    public static final double SHOOTER_RED_SPEAKER_X = 16.582;//home field: 16.582 HCPA: 16.55
     public static final double ROBOT_RED_SPEAKER_X = SHOOTER_RED_SPEAKER_X-0.165;//changed so that shots from the side wil aim to the opposite side, and bank in
     
     public static final double CALCULATED_SHOOTER_BLUE_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X-3.213; //changed so that shots from the side wil aim to the opposite side, and bank in
