@@ -556,12 +556,22 @@ public class RobotContainer {
     if(intakeExists&&indexerExists&&angleShooterExists) {
       NamedCommands.registerCommand("shootNote", new ShootNote(indexer, 0.2, 0, intake));
       NamedCommands.registerCommand("sourceSideLongShot", new SequentialCommandGroup(
-        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(25.3), angleShooterSubsystem),
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(22.5), angleShooterSubsystem),
         new ParallelRaceGroup(
           new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup, ()->true),
-          new ShootNote(indexer, 0.75, 0.6, intake)
+          new ShootNote(indexer, 0.5, 0.4, intake)
         )
       ));
+      NamedCommands.registerCommand("midAmpSideShooterAngle", new OverrideCommand(angleShooterSubsystem) {
+        public void execute() {
+          angleShooterSubsystem.setDesiredShooterAngle(27);
+        };
+      });
+      NamedCommands.registerCommand("lowAmpSideShooterAngle", new OverrideCommand(angleShooterSubsystem) {
+        public void execute() {
+          angleShooterSubsystem.setDesiredShooterAngle(29.5);
+        };
+      });
     }
     if(indexerExists) {
       // NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));

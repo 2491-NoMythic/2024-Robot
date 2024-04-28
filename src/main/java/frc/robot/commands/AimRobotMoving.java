@@ -92,7 +92,7 @@ public class AimRobotMoving extends Command {
             farStageRobotAngle = Field.RED_FAR_STAGE_ROBOT_ANGLE;
             OverStagePassAngle = Field.RED_OVER_STAGE_PASS_ANGLE;
             OppositeStageShotAngle = Field.RED_OPPOSITE_STAGE_ROBOT_ANGLE;
-            AutonomousLongShotAngle = 33.7;
+            AutonomousLongShotAngle = 35;
           } else {
             podiumRobotAngle = Field.BLUE_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.BLUE_FAR_STAGE_ROBOT_ANGLE;

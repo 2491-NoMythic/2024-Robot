@@ -61,7 +61,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "autoAimAtSpeaker"
+                  "name": "midAmpSideShooterAngle"
                 }
               },
               {
@@ -98,7 +98,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "autoAimAtSpeaker"
+                  "name": "midAmpSideShooterAngle"
                 }
               },
               {
