@@ -401,10 +401,9 @@ public class RobotContainer {
         new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
         new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
         new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
-        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(15), angleShooterSubsystem),
-        new WaitUntil(()->(Math.abs(shooter.getLSpeed()-shooterAmpSpeed)<0.2)&&(Math.abs(shooter.getRSpeed()-shooterAmpSpeed)<1)),
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
+        new WaitUntil(()->(Math.abs(shooter.getLSpeed()-shooterAmpSpeed)<0.2)&&(Math.abs(shooter.getRSpeed()-shooterAmpSpeed)<0.3)),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
-        new WaitCommand(0.08),
         new InstantCommand(()->indexer.magicRPSSupplier(()->indexerAmpSpeed), indexer),
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))

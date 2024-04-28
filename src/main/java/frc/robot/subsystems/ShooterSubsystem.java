@@ -41,8 +41,8 @@ import java.util.function.DoubleSupplier;
 	 double m_DesiredShooterAngle;
    double targetVelocityL;
    double targetVelocityR;
-   boolean isRevingL;
-   boolean isRevingR;
+   int revStateL;
+   int revStateR;
  
   CurrentLimitsConfigs currentLimitConfigs;
    Slot0Configs PIDLeftconfigs; 
@@ -63,8 +63,8 @@ import java.util.function.DoubleSupplier;
   /** Creates a new Shooter. */
   public ShooterSubsystem(double runSpeed) {
     if(Preferences.getBoolean("CompBot", true)) {
-      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF).withKI(0);
-      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF).withKI(0);
+      PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.CompRightkP).withKV(ShooterConstants.CompRightkFF).withKI(0.004);
+      PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.CompLeftkP).withKV(ShooterConstants.CompLeftkFF).withKI(0.004);
   } else {
       PIDRightconfigs = new Slot0Configs().withKP(ShooterConstants.PracRightkP).withKV(ShooterConstants.PracRightkFF).withKI(0);
       PIDLeftconfigs = new Slot0Configs().withKP(ShooterConstants.PracLeftkP).withKV(ShooterConstants.PracLeftkFF).withKI(0);
@@ -197,25 +197,33 @@ import java.util.function.DoubleSupplier;
    * @param isReving Old isReving
    * @return Updated isReving
    */
-  private static boolean updateIsReving(boolean isReving, double targetSpeed, double speed){
-    double revUpEn =  -6;
+  private static int updateIsReving(int revState, double targetSpeed, double speed){
+    double revUpEn =  -10;
     double revUpDis = -2;
+    double revDownEn = 10;
+    double revDownDis = 2;
     targetSpeed = Math.abs(targetSpeed);
     speed = Math.abs(speed);
     if (speed < targetSpeed + revUpEn){
-      isReving = true;
-    } else if (speed > targetSpeed + revUpDis){
-      isReving = false;
-    }    
-    return isReving;
+      revState = 1;
+    } else if (speed > targetSpeed + revDownEn && targetSpeed<10){
+      revState = -1;
+    } else if((revState == 1 && speed > targetSpeed + revUpDis) || (revState == -1 && speed < targetSpeed + revDownDis)) {
+      revState = 0;
+    }
+    return revState;
   }
   /**
    * If the motor is Reving, set speed to full, if not Reving, use PID Mode
    */
-  private static void updateMotor(TalonFX shooterMotor, boolean revState, double targetSpeed){
+  private static void updateMotor(TalonFX shooterMotor, int revState, double targetSpeed, CurrentLimitsConfigs currentLimits){
+    currentLimits.StatorCurrentLimitEnable = revState != -1;
+    shooterMotor.getConfigurator().apply(currentLimits);
     if(targetSpeed == 0) {
       shooterMotor.set(0);
-    } else if (revState){
+    } else if (revState == -1) {
+      shooterMotor.set(-Math.signum(targetSpeed));
+    } else if(revState == 1) {
       shooterMotor.set(Math.signum(targetSpeed));
     } else {
       shooterMotor.setControl(new VelocityDutyCycle(targetSpeed).withSlot(0));
@@ -225,10 +233,10 @@ import java.util.function.DoubleSupplier;
    *  Revs left and right motors while below target velocity, if above target velocity, the motors are put to PID Mode
    */
   private void updateMotors(){
-    isRevingL = updateIsReving(isRevingL, targetVelocityL, shooterL.getVelocity().getValueAsDouble());
-    isRevingR = updateIsReving(isRevingR, targetVelocityR, shooterR.getVelocity().getValueAsDouble());
-    updateMotor(shooterL, isRevingL, targetVelocityL); 
-    updateMotor(shooterR, isRevingR, targetVelocityR); 
+    revStateL = updateIsReving(revStateL, targetVelocityL, shooterL.getVelocity().getValueAsDouble());
+    revStateR = updateIsReving(revStateR, targetVelocityR, shooterR.getVelocity().getValueAsDouble());
+    updateMotor(shooterL, revStateL, targetVelocityL, currentLimitConfigs); 
+    updateMotor(shooterR, revStateR, targetVelocityR, currentLimitConfigs); 
   }
   public double getRSpeed() {
     return shooterR.getVelocity().getValueAsDouble();
@@ -249,6 +257,8 @@ import java.util.function.DoubleSupplier;
     SmartDashboard.putNumber("shooter current left", shooterL.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Shooter/Right shooter speed", shooterR.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Shooter/Left shooter speed", shooterL.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter/Left shooter revState", revStateL);
+    SmartDashboard.putNumber("Shooter/right shooter revState", revStateR);
     SmartDashboard.putNumber("Shooter/right integral value", shooterR.getClosedLoopIntegratedOutput().getValueAsDouble());
     double error = getSignedError();
     RobotState.getInstance().ShooterError = error;
