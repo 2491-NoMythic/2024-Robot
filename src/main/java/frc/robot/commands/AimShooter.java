@@ -20,6 +20,7 @@ public class AimShooter extends Command {
 	BooleanSupplier farStageAngleSup;
 	BooleanSupplier OverStageAngleSup;
 	BooleanSupplier OppositeStageShotSup;
+	BooleanSupplier LowPassAngleSup;
 	/**
 	 * A Command that will control the angle of the shooter. If none of the supplied buttons are pressed, than it will automatically aim at the speaker
 	 * @param angleShooterSubsystem the subsytem to control the angle of the shooter
@@ -33,7 +34,7 @@ public class AimShooter extends Command {
    	 * @param OppositeStageShotSup button to press to aim at the speaker from the opposite side of the stage (from the speaker)
 	 */
 	public AimShooter(AngleShooterSubsystem angleShooterSubsystem, BooleanSupplier AmpSup, BooleanSupplier humanPlayerSupplier,
-					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier OverStageAngleSup, BooleanSupplier OppositeStageShotSup) {
+					  BooleanSupplier SubwooferSupplier1, BooleanSupplier StageAngleSupplier, BooleanSupplier groundIntakeSup, BooleanSupplier farStageAngleSup, BooleanSupplier OverStageAngleSup, BooleanSupplier OppositeStageShotSup, BooleanSupplier LowPassAngleSup) {
 		this.angleShooterSubsystem = angleShooterSubsystem;
 		this.AmpSup = AmpSup;
 		this.humanPlayerSupplier = humanPlayerSupplier;
@@ -43,6 +44,7 @@ public class AimShooter extends Command {
 		this.farStageAngleSup = farStageAngleSup;
 		this.OverStageAngleSup = OverStageAngleSup;
 		this.OppositeStageShotSup = OppositeStageShotSup;
+		this.LowPassAngleSup = LowPassAngleSup;
 		addRequirements(angleShooterSubsystem);
 	}
 
@@ -70,6 +72,8 @@ public class AimShooter extends Command {
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.OVER_STAGE_PASS_ANGLE);
 		} else if(OppositeStageShotSup.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.OPPOSITE_STAGE_SHOOTER_ANGLE);
+		} else if (LowPassAngleSup.getAsBoolean()) {
+			angleShooterSubsystem.setDesiredShooterAngle(12);
 		} else {
 			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 		}
