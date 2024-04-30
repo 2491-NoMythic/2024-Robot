@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7607347530216694,
-      "y": 4.480646518544946
+      "x": 0.7523718013035084,
+      "y": 4.450354048988052
     },
-    "rotation": 116.0
+    "rotation": 119.3
   },
   "command": {
     "type": "sequential",
@@ -24,9 +24,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Blue5AutoPickupFromStart"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Blue5AutoPickupFromStart"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              }
+            ]
           }
         },
         {
@@ -36,15 +49,34 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "BlueSourceShoot5"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BlueSourceShoot5"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "autoAimAtSpeaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "note isn't held"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "autoShootNote"
+            "name": "sourceSideLongShot"
           }
         },
         {
@@ -60,15 +92,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "BlueSourceShoot4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShootNote"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BlueSourceShoot4UnderStage"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "lowAmpSideShooterAngle"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "note isn't held"
+                }
+              }
+            ]
           }
         }
       ]

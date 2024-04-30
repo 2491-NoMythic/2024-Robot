@@ -50,7 +50,7 @@ public class CollectNote extends Command {
         0.6,//Vision.K_DETECTOR_TY_P,
         Vision.K_DETECTOR_TY_I,
         Vision.K_DETECTOR_TY_D);
-    tyLimiter = new SlewRateLimiter(2, -2, 0);
+    tyLimiter = new SlewRateLimiter(20, -20, 0);
     txController.setSetpoint(0);
     tyController.setSetpoint(0);
     txController.setTolerance(3.5, 0.25);
@@ -114,7 +114,7 @@ public class CollectNote extends Command {
     } 
     
     SmartDashboard.putNumber("CollectNote/calculated radians per second", txController.calculate(tx));
-    SmartDashboard.putNumber("CollectNote/calculated forward meters per second", tyController.calculate(ty));
+    SmartDashboard.putNumber("CollectNote/calculated forward meters per second", tyLimiter.calculate(-20/Math.abs(tx)));
     SmartDashboard.putBoolean("CollectNote/closeNote", closeNote);
     SmartDashboard.putNumber("CollectNote/runsInvalid", runsInvalid);
     // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0

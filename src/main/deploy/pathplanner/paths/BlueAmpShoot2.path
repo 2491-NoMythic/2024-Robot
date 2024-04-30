@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.3068121248935265,
-        "y": 6.027941261101977
+        "x": 4.73,
+        "y": 6.144799573110416
       },
       "prevControl": {
-        "x": 5.864922951672713,
-        "y": 7.167309803184257
+        "x": 4.369686871307314,
+        "y": 7.86845967523489
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SourceSideShoot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -36,7 +36,25 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "shootNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
@@ -50,6 +68,9 @@
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 173.91416260815873,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

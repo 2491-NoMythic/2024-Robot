@@ -65,7 +65,8 @@ public class GroundIntake extends Command {
     intake.intakeOff();
     // indexer.magicRPS(0);
     if(DriverStation.isAutonomous()) {
-      indexer.forwardInches(-1);
+      // indexer.forwardInches(-1);
+      indexer.off();
     } else {
       indexer.off();
     }

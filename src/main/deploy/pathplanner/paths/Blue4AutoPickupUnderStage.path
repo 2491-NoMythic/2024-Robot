@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.3068121248935265,
-        "y": 6.027941261101977
+        "x": 4.608696097581994,
+        "y": 6.144799573110416
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6446150235123724,
-        "y": 3.807633332941637
+        "x": 3.94649899620084,
+        "y": 3.924491644950076
       },
       "isLocked": false,
       "linkedName": "SourceSideShoot"
@@ -44,7 +44,7 @@
     "maxAngularAcceleration": 350.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 150.02,
     "rotateFast": false
   },

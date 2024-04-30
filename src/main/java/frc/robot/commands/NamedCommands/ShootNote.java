@@ -43,7 +43,7 @@ public class ShootNote extends Command {
   @Override
   public void execute() {
     if(timer.get()>revTime) {
-      indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
+      indexer.setVoltage(12);
     }
     SmartDashboard.putNumber("auto timer", timer.get());
   }

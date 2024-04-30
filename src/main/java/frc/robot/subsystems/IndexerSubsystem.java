@@ -13,6 +13,7 @@ import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -93,6 +94,9 @@ public class IndexerSubsystem extends SubsystemBase {
      */
     public void set(double speed) {
         m_IndexerMotor.set(speed);
+    }
+    public void setVoltage(double voltage) {
+        m_IndexerMotor.setControl(new VoltageOut(voltage));
     }
     /**
      * uses the indexer motor's onboard Motion Magic control to move the indexer forward. To move backwards, use negative inches.

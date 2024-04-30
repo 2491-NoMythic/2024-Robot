@@ -185,7 +185,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			getGyroscopeRotation(),
 			getModulePositions(),
 			DRIVE_ODOMETRY_ORIGIN);
-		odometer.setVisionMeasurementStdDevs(VecBuilder.fill(0.9, 0.9, 99999999));
+		odometer.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, 99999999));
 		}
 	/**
 	 * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the

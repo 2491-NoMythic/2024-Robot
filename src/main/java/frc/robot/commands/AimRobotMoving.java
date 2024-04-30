@@ -36,6 +36,7 @@ public class AimRobotMoving extends Command {
     BooleanSupplier SubwooferAngleSup;
     BooleanSupplier OverStagePassSup;
     BooleanSupplier OppositeStageShotSup;
+    BooleanSupplier AutonomousLongShotSup;
   /**
    * a command to automatically aim the robot at the speaker if odometry is correct. This command also controls aiming from setpoints incase the odometry isn't working.
    * @param drivetrain the swerve drive subsystem
@@ -49,7 +50,7 @@ public class AimRobotMoving extends Command {
    * @param OverStagePassSup button to press to aim at the speaker from the opposite side of the stage (from the speaker)
    * @param OppositeStageShotSup button to press to aim at the speaker from the opposite side of the stage (from the speaker)
    */
-  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup, BooleanSupplier OverStagePassSup, BooleanSupplier OppositeStageShotSup){
+  public AimRobotMoving(DrivetrainSubsystem drivetrain, DoubleSupplier rotationSupplier, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, BooleanSupplier run, BooleanSupplier PodiumAngleSup, BooleanSupplier FarStageAngleSup, BooleanSupplier SubwooferAngleSup, BooleanSupplier OverStagePassSup, BooleanSupplier OppositeStageShotSup, BooleanSupplier AutonomousLongShotSup){
         m_drivetrain = drivetrain;
         speedController = new PIDController(
           AUTO_AIM_ROBOT_kP, 
@@ -66,6 +67,7 @@ public class AimRobotMoving extends Command {
           this.OverStagePassSup = OverStagePassSup;
           this.OppositeStageShotSup = OppositeStageShotSup;
           this.run = run;
+          this.AutonomousLongShotSup = AutonomousLongShotSup;
           addRequirements(drivetrain);
         }
         
@@ -84,16 +86,19 @@ public class AimRobotMoving extends Command {
           double farStageRobotAngle;
           double OverStagePassAngle;
           double OppositeStageShotAngle;
+          double AutonomousLongShotAngle;
           if(DriverStation.getAlliance().get() == Alliance.Red) {
             podiumRobotAngle = Field.RED_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.RED_FAR_STAGE_ROBOT_ANGLE;
             OverStagePassAngle = Field.RED_OVER_STAGE_PASS_ANGLE;
             OppositeStageShotAngle = Field.RED_OPPOSITE_STAGE_ROBOT_ANGLE;
+            AutonomousLongShotAngle = 35;
           } else {
             podiumRobotAngle = Field.BLUE_PODIUM_ROBOT_ANGLE;
             farStageRobotAngle = Field.BLUE_FAR_STAGE_ROBOT_ANGLE;
             OverStagePassAngle = Field.BLUE_OVER_STAGE_PASS_ANGLE;
             OppositeStageShotAngle = Field.BLUE_OPPOSITE_STAGE_ROBOT_ANGLE;
+            AutonomousLongShotAngle = 146.3;
           }
           if(PodiumAngleSup.getAsBoolean()) {
             speedController.setSetpoint(podiumRobotAngle);
@@ -103,6 +108,8 @@ public class AimRobotMoving extends Command {
             speedController.setSetpoint(OverStagePassAngle);
           } else if(OppositeStageShotSup.getAsBoolean()) {
             speedController.setSetpoint(OppositeStageShotAngle);
+          }  else if (AutonomousLongShotSup.getAsBoolean()) {
+            speedController.setSetpoint(AutonomousLongShotAngle);
           } else {
             speedController.setSetpoint(desiredRobotAngle);
           }

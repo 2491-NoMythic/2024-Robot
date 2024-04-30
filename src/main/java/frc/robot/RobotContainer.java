@@ -312,8 +312,18 @@ public class RobotContainer {
       FarStageAngleSup,
       SubwooferAngleSup,
       OverStagePassSup,
-      OppositeStageShotSup
+      OppositeStageShotSup,
+      falseSup
       ));
+    // new Trigger(()->driverController.getL3Button()&&driverController.getR3Button()).onTrue(
+    //   new SequentialCommandGroup(
+    //     new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(22.5), angleShooterSubsystem),
+    //     new ParallelRaceGroup(
+    //       new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup, ()->true),
+    //       new ShootNote(indexer, 0.65, 0.4, intake)
+    //     )
+    //   )
+    // );
 
     if(Preferences.getBoolean("Detector Limelight", false)) {
       Command AutoGroundIntake = new SequentialCommandGroup(
@@ -391,10 +401,9 @@ public class RobotContainer {
         new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
         new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
         new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
-        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(15), angleShooterSubsystem),
-        new WaitUntil(()->(Math.abs(shooter.getLSpeed()-shooterAmpSpeed)<1)&&(Math.abs(shooter.getRSpeed()-shooterAmpSpeed)<1)),
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
+        new WaitUntil(()->(Math.abs(shooter.getLSpeed()-shooterAmpSpeed)<0.2)&&(Math.abs(shooter.getRSpeed()-shooterAmpSpeed)<0.3)),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
-        new WaitCommand(0.1),
         new InstantCommand(()->indexer.magicRPSSupplier(()->indexerAmpSpeed), indexer),
         new WaitCommand(0.5),
         new InstantCommand(()->intake.setNoteHeld(false))
@@ -487,6 +496,9 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
+  public void autonomousInit() {
+    SmartDashboard.putNumber("autos ran", SmartDashboard.getNumber("autos ran", 0)+1);
+  }
   private double modifyAxis(double value, double deadband) {
     // Deadband
     value = MathUtil.applyDeadband(value, deadband);
@@ -539,7 +551,7 @@ public class RobotContainer {
     }
     if(intakeExists&&!indexerExists&&!angleShooterExists) {
       NamedCommands.registerCommand("groundIntake", new InstantCommand(()->intake.intakeYes(IntakeConstants.INTAKE_SPEED, IntakeConstants.INTAKE_SIDE_SPEED)));
-      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
+      NamedCommands.registerCommand("autoShootNote", new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup, falseSup).withTimeout(1));
       NamedCommands.registerCommand("autoPickup", new SequentialCommandGroup(
         new CollectNote(driveTrain, limelight),
         new DriveTimeCommand(-1, 0, 0, 1, driveTrain)
@@ -550,7 +562,24 @@ public class RobotContainer {
       SmartDashboard.putData("shooterOn", new InstantCommand(()->shooter.shootRPS(LONG_SHOOTING_RPS), shooter));
     }
     if(intakeExists&&indexerExists&&angleShooterExists) {
-      NamedCommands.registerCommand("shootNote", new ShootNote(indexer, 0.25, 0, intake));
+      NamedCommands.registerCommand("shootNote", new ShootNote(indexer, 0.2, 0, intake));
+      NamedCommands.registerCommand("sourceSideLongShot", new SequentialCommandGroup(
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(22.5), angleShooterSubsystem),
+        new ParallelRaceGroup(
+          new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup, ()->true),
+          new ShootNote(indexer, 0.5, 0.4, intake)
+        )
+      ));
+      NamedCommands.registerCommand("midAmpSideShooterAngle", new OverrideCommand(angleShooterSubsystem) {
+        public void execute() {
+          angleShooterSubsystem.setDesiredShooterAngle(27);
+        };
+      });
+      NamedCommands.registerCommand("lowAmpSideShooterAngle", new OverrideCommand(angleShooterSubsystem) {
+        public void execute() {
+          angleShooterSubsystem.setDesiredShooterAngle(29.5);
+        };
+      });
     }
     if(indexerExists) {
       // NamedCommands.registerCommand("feedShooter", new InstantCommand(()->indexer.set(IndexerConstants.INDEXER_SHOOTING_SPEED), indexer));
@@ -561,14 +590,14 @@ public class RobotContainer {
       if(sideWheelsExists){
         NamedCommands.registerCommand("intakeSideWheels", new InstantCommand(()-> intake.intakeSideWheels(1)));
       }
-      NamedCommands.registerCommand("note isn't held", new WaitUntilCommand(()->!intake.isNoteSeen()));
+      NamedCommands.registerCommand("note isn't held", new WaitUntil(()->!intake.isNoteSeen()));
     }
     if(indexerExists&&shooterExists) {
-      NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 1.0, 1.25, angleShooterSubsystem));
+      NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 0.9, 0.1, angleShooterSubsystem));
       //the following command will both aim the robot at the speaker (with the AimRobotMoving), and shoot a note while aiming the shooter (with shootNote). As a race group, it ends
       //when either command finishes. the AimRobotMoving command will never finish, but the shootNote finishes when shootTime is reached.
       NamedCommands.registerCommand("autoShootNote", new ParallelRaceGroup(
-        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup),
+        new AimRobotMoving(driveTrain, zeroSup, zeroSup, zeroSup, ()->true, falseSup, falseSup, falseSup, falseSup, falseSup, falseSup),
         new SequentialCommandGroup(
           new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle()), angleShooterSubsystem),
           new ShootNote(indexer, 1.5, 0.5,intake)

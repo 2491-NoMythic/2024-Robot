@@ -5,12 +5,18 @@
       "x": 0.6842044526319189,
       "y": 6.690138362483131
     },
-    "rotation": -125.0
+    "rotation": -125.5
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "initialShot"
+          }
+        },
         {
           "type": "named",
           "data": {
@@ -55,7 +61,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "autoAimAtSpeaker"
+                  "name": "midAmpSideShooterAngle"
                 }
               },
               {
@@ -65,12 +71,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shootNote"
           }
         },
         {
@@ -98,7 +98,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "autoAimAtSpeaker"
+                  "name": "midAmpSideShooterAngle"
                 }
               },
               {
@@ -108,12 +108,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shootNote"
           }
         }
       ]

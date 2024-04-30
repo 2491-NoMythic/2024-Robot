@@ -4,11 +4,15 @@
 
 package frc.robot.subsystems;
 
+import javax.swing.text.Position;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -37,7 +41,7 @@ public class SwerveModule {
    */
   private double m_desiredDriveSpeed;
 
-  private VelocityDutyCycle m_driveControl = new VelocityDutyCycle(0);
+  private VelocityVoltage m_driveControl = new VelocityVoltage(0);
   private PositionDutyCycle m_steerControl = new PositionDutyCycle(0);
   private NeutralOut m_neutralControl = new NeutralOut();
     
@@ -167,7 +171,7 @@ public class SwerveModule {
       m_driveMotor.setControl(m_neutralControl);
       m_steerMotor.setControl(m_steerControl.withPosition(m_desiredSteerAngle));
     } else {
-      m_driveMotor.setControl(m_driveControl.withVelocity(m_desiredDriveSpeed).withFeedForward(m_desiredDriveSpeed/DriveConstants.MAX_VELOCITY_RPS_EMPIRICAL));//TODO verify that this feedforward is effective
+      m_driveMotor.setControl(m_driveControl.withVelocity(m_desiredDriveSpeed).withFeedForward((m_desiredDriveSpeed/DriveConstants.MAX_VELOCITY_RPS_EMPIRICAL)*12));//TODO verify that this feedforward is effective
       m_steerMotor.setControl(m_steerControl.withPosition(m_desiredSteerAngle));
     }
   }
