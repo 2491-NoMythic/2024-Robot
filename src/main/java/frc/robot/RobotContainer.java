@@ -398,7 +398,7 @@ public class RobotContainer {
         );
         SmartDashboard.putNumber("Indexer Amp Speed", indexerAmpSpeed);
       SequentialCommandGroup orbitAmpShot = new SequentialCommandGroup(
-        new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
+        new InstantCommand(()->shooter.setTargetVelocity(shooterAmpSpeed, shooterAmpSpeed, 50, 50), shooter),
         new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
         new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
