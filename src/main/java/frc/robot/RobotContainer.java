@@ -134,7 +134,7 @@ public class RobotContainer {
   BooleanSupplier ForceVisionSup;
   BooleanSupplier GroundIntakeSup;
   BooleanSupplier FarStageAngleSup;
-  BooleanSupplier OperatorRevForPass;
+  BooleanSupplier OperatorRevToZero;
   BooleanSupplier OverStagePassSup;
   BooleanSupplier OppositeStageShotSup;
   BooleanSupplier falseSup;
@@ -187,7 +187,7 @@ public class RobotContainer {
     ManualShootSup = driverController::getR2Button;
     ClimberDownSup = operatorController::getPSButton;
     GroundIntakeSup = driverController::getL1Button;
-    OperatorRevForPass = ()->operatorController.getPOV() != -1;
+    OperatorRevToZero = ()->operatorController.getPOV() != -1;
     SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
     StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
     FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
@@ -268,7 +268,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorRevForPass, intakeReverse, OverStagePassSup, OppositeStageShotSup);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorRevToZero, intakeReverse, OverStagePassSup, OppositeStageShotSup);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 

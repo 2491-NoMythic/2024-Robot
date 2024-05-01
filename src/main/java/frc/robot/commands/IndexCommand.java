@@ -46,7 +46,7 @@ public class IndexCommand extends Command {
   BooleanSupplier stageAngleSup;
   BooleanSupplier subwooferAngleSup;
   BooleanSupplier farStageAngleSup;
-  BooleanSupplier operatorOverStageRev;
+  BooleanSupplier revToZeroSup;
   BooleanSupplier intakeReverse; 
   BooleanSupplier OverStagePassSup; 
   BooleanSupplier OppositeStageShotSup; 
@@ -90,7 +90,7 @@ public class IndexCommand extends Command {
     this.stageAngleSup = stageAngleSup;
     this.farStageAngleSup = farStageAngleSup;
     this.groundIntakeSup = groundIntakeSup;
-    this.operatorOverStageRev = operatorRevSup;
+    this.revToZeroSup = operatorRevSup;
     this.intakeReverse = intakeReverse;
     this.OverStagePassSup = OverStagePassSup;
     this.OppositeStageShotSup = OppositeStageShotSup;
@@ -145,8 +145,8 @@ public class IndexCommand extends Command {
           idleReving = false;
         }
       } else {
-        if (operatorOverStageRev.getAsBoolean()){ 
-          shooter.shootRPSWithCurrent(PASS_RPS, 20, 30);
+        if (revToZeroSup.getAsBoolean()){ 
+          shooter.shootRPSWithCurrent(0, 20, 30);
           idleReving = false;
         } else {
           shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 20, 30);
