@@ -198,17 +198,16 @@ import java.util.function.DoubleSupplier;
    * @return Updated isReving
    */
   private static int updateIsReving(int revState, double targetSpeed, double speed){
-    double revUpEn =  -10;
-    double revUpDis = -2;
-    double revDownEn = 10;
+    double revUpEn =  10;
+    double revUpDis = 2;
+    double revDownEn = -10;
     double revDownDis = 2;
-    targetSpeed = Math.abs(targetSpeed);
-    speed = Math.abs(speed);
-    if (speed < targetSpeed + revUpEn){
+    double difference = targetSpeed - speed;
+    if (difference>revUpEn){
       revState = 1;
-    } else if (speed > targetSpeed + revDownEn && targetSpeed<10){
+    } else if (difference<revDownEn && targetSpeed<10){
       revState = -1;
-    } else if((revState == 1 && speed > targetSpeed + revUpDis) || (revState == -1 && speed < targetSpeed + revDownDis)) {
+    } else if(revState != 0 && Math.abs(difference)<revDownDis) {
       revState = 0;
     }
     return revState;
@@ -221,10 +220,8 @@ import java.util.function.DoubleSupplier;
     shooterMotor.getConfigurator().apply(currentLimits);
     if(targetSpeed == 0) {
       shooterMotor.set(0);
-    } else if (revState == -1) {
-      shooterMotor.set(-Math.signum(targetSpeed));
-    } else if(revState == 1) {
-      shooterMotor.set(Math.signum(targetSpeed));
+    } else if (revState != 0) {
+      shooterMotor.set(revState);
     } else {
       shooterMotor.setControl(new VelocityDutyCycle(targetSpeed).withSlot(0));
     }
