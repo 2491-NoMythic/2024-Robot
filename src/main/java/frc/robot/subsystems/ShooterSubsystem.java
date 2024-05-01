@@ -203,6 +203,7 @@ import java.util.function.DoubleSupplier;
     double revDownEn = -10;
     double revDownDis = 2;
     double difference = targetSpeed - speed;
+    SmartDashboard.putNumber("SHOOTER/desired speed difference", difference);
     if (difference>revUpEn){
       revState = 1;
     } else if (difference<revDownEn && targetSpeed<10){
@@ -220,6 +221,8 @@ import java.util.function.DoubleSupplier;
     shooterMotor.getConfigurator().apply(currentLimits);
     if(targetSpeed == 0) {
       shooterMotor.set(0);
+    } else if(targetSpeed<0) {
+      shooterMotor.setControl(new VelocityDutyCycle(targetSpeed).withSlot(0));
     } else if (revState != 0) {
       shooterMotor.set(revState);
     } else {
