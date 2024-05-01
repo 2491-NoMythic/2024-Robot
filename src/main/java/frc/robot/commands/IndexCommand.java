@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import static frc.robot.settings.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 import static frc.robot.settings.Constants.ShooterConstants.PRAC_AMP_RPS;
+import static frc.robot.settings.Constants.ShooterConstants.HUMAN_PLAYER_RPS;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 import static frc.robot.settings.Constants.ShooterConstants.PASS_RPS;
 
@@ -123,7 +124,7 @@ public class IndexCommand extends Command {
         intake.setNoteHeld(false);
         if(humanPlayerSupplier.getAsBoolean()) {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
-          shooter.shootSameRPS(ShooterConstants.HUMAN_PLAYER_RPS);
+          shooter.setTargetVelocity(HUMAN_PLAYER_RPS, HUMAN_PLAYER_RPS, 40, 40);
           intake.intakeOff();
         } else {
           if(!groundIntakeSup.getAsBoolean()) {
