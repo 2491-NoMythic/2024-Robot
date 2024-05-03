@@ -134,7 +134,7 @@ public class RobotContainer {
   BooleanSupplier ForceVisionSup;
   BooleanSupplier GroundIntakeSup;
   BooleanSupplier FarStageAngleSup;
-  BooleanSupplier OperatorRevForPass;
+  BooleanSupplier OperatorRevToZero;
   BooleanSupplier OverStagePassSup;
   BooleanSupplier OppositeStageShotSup;
   BooleanSupplier falseSup;
@@ -187,7 +187,7 @@ public class RobotContainer {
     ManualShootSup = driverController::getR2Button;
     ClimberDownSup = operatorController::getPSButton;
     GroundIntakeSup = driverController::getL1Button;
-    OperatorRevForPass = ()->operatorController.getPOV() != -1;
+    OperatorRevToZero = ()->operatorController.getPOV() != -1;
     SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
     StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
     FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
@@ -250,7 +250,7 @@ public class RobotContainer {
   }
   private void angleShooterInst(){
     angleShooterSubsystem = new AngleShooterSubsystem();
-    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, AmpAngleSup, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, OverStagePassSup, OppositeStageShotSup);
+    defaultShooterAngleCommand = new AimShooter(angleShooterSubsystem, AmpAngleSup, HumanPlaySup, SubwooferAngleSup, StageAngleSup, GroundIntakeSup, FarStageAngleSup, OverStagePassSup, OppositeStageShotSup, CenterAmpPassSup);
     angleShooterSubsystem.setDefaultCommand(defaultShooterAngleCommand);
   }
   private void intakeInst() {
@@ -268,7 +268,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
   }
   private void indexCommandInst() {
-    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorRevForPass, intakeReverse, OverStagePassSup, OppositeStageShotSup);
+    defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorRevToZero, intakeReverse, OverStagePassSup, OppositeStageShotSup);
     indexer.setDefaultCommand(defaulNoteHandlingCommand);
   }
 
@@ -398,7 +398,7 @@ public class RobotContainer {
         );
         SmartDashboard.putNumber("Indexer Amp Speed", indexerAmpSpeed);
       SequentialCommandGroup orbitAmpShot = new SequentialCommandGroup(
-        new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
+        new InstantCommand(()->shooter.setTargetVelocity(shooterAmpSpeed, shooterAmpSpeed, 50, 50), shooter),
         new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
         new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
@@ -607,8 +607,8 @@ public class RobotContainer {
     }
     if(angleShooterExists) {
       //the same command that we use during teleop, but all the buttons that would aim the shooter anywhere other than the speaker are set to false.
-      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
-      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
+      NamedCommands.registerCommand("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
+      SmartDashboard.putData("autoAimAtSpeaker", new AimShooter(angleShooterSubsystem, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false, ()->false));
     }
     if (indexerExists&&intakeExists) {
       NamedCommands.registerCommand("groundIntake", new AutoGroundIntake(indexer, intake, driveTrain));
