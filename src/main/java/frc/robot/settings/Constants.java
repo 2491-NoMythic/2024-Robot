@@ -472,8 +472,8 @@ public static final class CTREConfigs {
     
     public static final double CALCULATED_SHOOTER_BLUE_SPEAKER_X = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_X-3.213; //changed so that shots from the side wil aim to the opposite side, and bank in
     public static final double CALCULATED_BLUE_SPEAKER_Y = AMP_SIDE_OUTER_TAPE_CORNER_BLUE_Y+1.263;
-    public static final double BLUE_SPEAKER_Y = 5.348;//home field: HCPA: 5.348
-    public static final double SHOOTER_BLUE_SPEAKER_X = 0.13; //HCPA: 0.13
+    public static final double BLUE_SPEAKER_Y = 5.402;//home field: HCPA: 5.348
+    public static final double SHOOTER_BLUE_SPEAKER_X = -0.03; //HCPA: 0.13
     public static final double ROBOT_BLUE_SPEAKER_X = SHOOTER_BLUE_SPEAKER_X+0.2;
 
     public static final double SPEAKER_Z = 2.08;//1.5;//1.8;//2.08; //height of opening. Changed so that the smaller spekeaker_x shots will still go in
