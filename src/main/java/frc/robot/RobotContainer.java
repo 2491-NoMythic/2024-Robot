@@ -299,6 +299,12 @@ public class RobotContainer {
   private void configureBindings() {
     new Trigger(AmpAngleSup).onTrue(new InstantCommand(driveTrain::pointWheelsInward, driveTrain));
     SmartDashboard.putData("drivetrain", driveTrain);
+    Command setGyroTo180 = new InstantCommand(()->driveTrain.zeroGyroscope(180)) {
+      public boolean runsWhenDisabled() {
+              return true;
+      };
+    };
+    SmartDashboard.putData("set gyro 180", setGyroTo180);
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(ZeroGyroSup).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     // new Trigger(driverController::getCircleButton).whileTrue(new GoToAmp(driveTrain)); unused becuase we dont pickup from amp with a path anymore
