@@ -70,6 +70,7 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.math.MathUtil;
@@ -109,7 +110,7 @@ public class RobotContainer {
   private Drive defaultDriveCommand;
   private Climber climber;
   private Lights lights;
-  private PS4Controller driverController;
+  private XboxController driverController;
   private PS4Controller operatorController;
   //private PS4Controller operatorController;
   private Limelight limelight;
@@ -173,28 +174,28 @@ public class RobotContainer {
     // URCL.start();
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
     // SignalLogger.start();
-    driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
-    operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
+    driverController = new XboxController(DRIVE_CONTROLLER_ID);
+    //operatorController = new XboxController(OPERATOR_CONTROLLER_ID);
     //operatorController = new PS4Controller(OPERATOs_CONTROLLER_ID);
     PDP = new PowerDistribution(1, ModuleType.kRev);
 
-    ZeroGyroSup = driverController::getPSButton;
-    ForceVisionSup = driverController::getOptionsButton;
+    ZeroGyroSup = driverController::getLeftStickButton;
+    ForceVisionSup = driverController::getRightStickButton;
 
-    AimWhileMovingSup = driverController::getL2Button;
-    HumanPlaySup = driverController::getR1Button;
-    AmpAngleSup = ()->driverController.getPOV() == 90||driverController.getPOV() == 45||driverController.getPOV() == 135;;
-    ManualShootSup = driverController::getR2Button;
-    ClimberDownSup = operatorController::getPSButton;
-    GroundIntakeSup = driverController::getL1Button;
+    AimWhileMovingSup = ()-> driverController.getLeftTriggerAxis() >= 0.5;
+    HumanPlaySup = driverController::getLeftBumper;
+    AmpAngleSup = ()-> driverController.getPOV() == 90;
+    ManualShootSup = ()-> driverController.getRightTriggerAxis() >= 0.5;
+    ClimberDownSup = driverController::getStartButton;
+    GroundIntakeSup = driverController::getRightBumper;
     OperatorRevToZero = ()->operatorController.getPOV() != -1;
-    SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
-    StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
-    FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
-    OppositeStageShotSup = ()->operatorController.getCircleButton()||driverController.getCircleButton();
+    SubwooferAngleSup =()-> driverController.getAButton();
+    StageAngleSup = ()->driverController.getYButton();
+    FarStageAngleSup = ()->driverController.getXButton();
+    OppositeStageShotSup = ()->driverController.getBButton();
     OverStagePassSup = operatorController::getL1Button;
     CenterAmpPassSup = operatorController::getL2Button;
-    AutoPickupSup = ()->operatorController.getTouchpad()||driverController.getTouchpad();
+    AutoPickupSup = ()->driverController.getBackButton();
     zeroSup = ()->0;
     falseSup = ()->false;
     //discontinued buttons:
@@ -310,10 +311,10 @@ public class RobotContainer {
     // new Trigger(driverController::getCircleButton).whileTrue(new GoToAmp(driveTrain)); unused becuase we dont pickup from amp with a path anymore
     new Trigger(AimWhileMovingSup).whileTrue(new AimRobotMoving(
       driveTrain,
-      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      driverController::getL2Button,
+      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
+      ()->driverController.getLeftTriggerAxis() >= .5,
       StageAngleSup,
       FarStageAngleSup,
       SubwooferAngleSup,
