@@ -72,6 +72,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -284,7 +285,7 @@ public class RobotContainer {
   }
   private void lightsInst() {
     lights = new Lights();
-    lights.setDefaultCommand(new IndicatorLights(lights));
+    lights.setDefaultCommand(new IndicatorLights(lights, driverController));
   }
   
 

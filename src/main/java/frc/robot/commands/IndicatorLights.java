@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.RobotState;
@@ -15,6 +17,7 @@ import frc.robot.subsystems.RobotState;
 public class IndicatorLights extends Command {
  
   Lights lights;
+  XboxController rumble;
   Timer timer;
   boolean noteWasIn;
  /**
@@ -22,11 +25,14 @@ public class IndicatorLights extends Command {
  * Side Lights: If a note is held, they are red if the shooter isn't rev'ed up, and green if they are rev'ed up. If a note is not held, they are off unless a note is seen by the intake
  * limelight, in which case they are yellow
  */
-public IndicatorLights(Lights lights) {
+public IndicatorLights(Lights lights, XboxController rumble) {
     addRequirements(lights);
     this.lights = lights;
+    this.rumble = rumble;
+
     timer = new Timer();
     timer.start();
+    rumble = new XboxController(0);
   }
 
 
@@ -58,6 +64,7 @@ public IndicatorLights(Lights lights) {
       noteWasIn = false;
       if(noteSeenByLimelight) {
         lights.setSides(70, 35, 0);
+        rumble.setRumble(RumbleType.kBothRumble, 1);;
       } else {  
         lights.setSides(0, 0, 0);
       }
