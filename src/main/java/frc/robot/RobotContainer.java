@@ -178,20 +178,20 @@ public class RobotContainer {
     //operatorController = new PS4Controller(OPERATOs_CONTROLLER_ID);
     PDP = new PowerDistribution(1, ModuleType.kRev);
 
-    ZeroGyroSup = driverController::getPSButton;
-    ForceVisionSup = driverController::getOptionsButton;
+    ZeroGyroSup = ()-> false;//driverController::getPSButton;
+    ForceVisionSup = ()-> false;//driverController::getOptionsButton;
 
-    AimWhileMovingSup = driverController::getL2Button;
+    AimWhileMovingSup = ()-> false;//operatorController::getL2Button;
     HumanPlaySup = driverController::getR1Button;
-    AmpAngleSup = ()->driverController.getPOV() == 90||driverController.getPOV() == 45||driverController.getPOV() == 135;;
+    AmpAngleSup = ()-> false; //()->driverController.getPOV() == 90||driverController.getPOV() == 45||driverController.getPOV() == 135;;
     ManualShootSup = driverController::getR2Button;
     ClimberDownSup = operatorController::getPSButton;
-    GroundIntakeSup = driverController::getL1Button;
+    GroundIntakeSup = ()-> false;//driverController::getL1Button;
     OperatorRevToZero = ()->operatorController.getPOV() != -1;
-    SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
-    StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
-    FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
-    OppositeStageShotSup = ()->operatorController.getCircleButton()||driverController.getCircleButton();
+    SubwooferAngleSup =()-> false;//()-> driverController.getCrossButton()||operatorController.getCrossButton();
+    StageAngleSup = ()-> false;//()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
+    FarStageAngleSup = ()-> false;//()->operatorController.getSquareButton()||driverController.getSquareButton();
+    OppositeStageShotSup = ()-> false;//()->operatorController.getCircleButton()||driverController.getCircleButton();
     OverStagePassSup = operatorController::getL1Button;
     CenterAmpPassSup = operatorController::getL2Button;
     AutoPickupSup = ()->operatorController.getTouchpad()||driverController.getTouchpad();
@@ -240,9 +240,9 @@ public class RobotContainer {
     defaultDriveCommand = new Drive(
       driveTrain, 
       () -> false,
-      () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
+      () -> modifyAxis(0, DEADBAND_NORMAL),
+      () -> modifyAxis(0, DEADBAND_NORMAL),
+      () -> modifyAxis(0, DEADBAND_NORMAL));
       driveTrain.setDefaultCommand(defaultDriveCommand);
   }
   private void shooterInst() {
