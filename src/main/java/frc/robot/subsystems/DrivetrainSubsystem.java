@@ -581,4 +581,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			motorLoggers[i].log(modules[i].getDriveMotor());
 		}
 	}
+
+	/**
+	 * 
+	 * @return forward chasis speeds in meeters per second LOCALLY  
+	 */
+	public double getLocalForwardRobotVelocity()
+	{
+		ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(modules[0].getState(), modules[1].getState(), modules[2].getState(), modules[3].getState());
+		return chassisSpeeds.vxMetersPerSecond;
+	}
 }

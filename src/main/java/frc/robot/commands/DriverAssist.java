@@ -6,6 +6,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.settings.Constants.Vision;
+import frc.robot.settings.Constants;
 import frc.robot.settings.LimelightDetectorData;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Limelight;
@@ -52,6 +53,10 @@ public class DriverAssist extends Command {
   }
 
   public void execute(){
+
+    //set the speed to which it adjusts its horizontal speed proportional to the local forward velocity the robot is going
+    txController.setP(0.035 * drivetrain.getLocalForwardRobotVelocity()/1.2); //1.2 is an arbitrary number.
+
     detectorData = limelight.getNeuralDetectorValues();
     if (detectorData == null) {
       drivetrain.stop();
