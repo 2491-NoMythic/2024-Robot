@@ -158,4 +158,12 @@ public class Limelight {
         }
         return trusted;
     }
+    /**
+     * Returns the distance of a given note using tA, tX, and tY
+     */
+    public static double calculateDistance(Double tA){
+        Double distance;
+        distance = (44.9558 * Math.pow(0.941047, tA));
+        return(distance);
+    }
 }
