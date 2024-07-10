@@ -648,7 +648,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return distance;
 	}
 
-
+/**
+ * a horizontal movement to make the robot center on the note which it is closest to.
+ * This only happens if it is 5 ft away, the intake is active, and there isnt a note in the robot.
+ * @return horizontal adjustment in meeters (generally a number under 1)
+ */
 
 	 
 	public double AutoPickupTX()
@@ -656,12 +660,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		detectorData = limelight.getNeuralDetectorValues();
 
 
-		if(calculateAwayDistance(detectorData.ta) <= 60 || !intakeOn|| isNoteIn.getAsBoolean()) //if it is less than 10 ft away return, if intake isnt on return, if there is a note in, return
+		if(calculateAwayDistance(detectorData.ta) <= 60 || !intakeOn|| isNoteIn.getAsBoolean()) //if it is less than 5 ft away return, if intake isnt on return, if there is a note in, return
 		{
 			return 0;
 		}
 		
 
+
+		//max robot velocity is 5.378
 		txController.setP(0.035 );//* getLocalForwardRobotVelocity()/1.2); //1.2 is an arbitrary number.
 
 		
