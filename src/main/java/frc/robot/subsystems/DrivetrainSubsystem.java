@@ -29,7 +29,10 @@ import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT3_NAME;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import javax.print.attribute.standard.RequestingUserName;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -38,6 +41,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -65,6 +69,8 @@ import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.settings.Constants.Vision;
+import frc.robot.settings.LimelightDetectorData;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();
@@ -116,7 +122,27 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	MotorLogger[] motorLoggers;
 	PIDController speedController;
 
-	public DrivetrainSubsystem() {
+	//for driver assist
+	DrivetrainSubsystem drivetrain;
+  	LimelightDetectorData detectorData;
+
+  	PIDController txController;
+
+  	double tx;
+	public boolean intakeOn;
+
+	BooleanSupplier isNoteIn;
+
+
+
+
+
+
+
+	public DrivetrainSubsystem(BooleanSupplier isNoteIn) {
+
+		this.isNoteIn = isNoteIn;
+
 		SmartDashboard.putNumber("CALLIBRATION/redRobotX", Field.CALCULATED_SHOOTER_RED_SPEAKER_X);
 		SmartDashboard.putNumber("CALLIBRATION/blueRobotX", Field.CALCULATED_SHOOTER_BLUE_SPEAKER_X);
 		SmartDashboard.putNumber("CALLIBRATION/blueY", Field.CALCULATED_BLUE_SPEAKER_Y);
@@ -178,6 +204,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			new MotorLogger(log, "/drivetrain/motorFR"),
 			new MotorLogger(log, "/drivetrain/motorBL"),
 			new MotorLogger(log, "/drivetrain/motorBR"),
+
+
+			
+			
 		};
 		
 		odometer = new SwerveDrivePoseEstimator(
@@ -186,6 +216,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			getModulePositions(),
 			DRIVE_ODOMETRY_ORIGIN);
 		odometer.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, 99999999));
+
+
+		//for driver assist
+    	txController = new PIDController(
+        // Vision.K_DETECTOR_TX_P,
+        	0.035,//0.03,
+        	Vision.K_DETECTOR_TX_I,
+        	Vision.K_DETECTOR_TX_D);
+
+
+ 		txController.setSetpoint(0);
+ 		txController.setTolerance(3.5, 0.25);
+   	 	detectorData = limelight.getNeuralDetectorValues();
+    	SmartDashboard.putBoolean("note seen", detectorData.isResultValid);
 		}
 	/**
 	 * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
@@ -590,5 +634,48 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	{
 		ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(modules[0].getState(), modules[1].getState(), modules[2].getState(), modules[3].getState());
 		return chassisSpeeds.vxMetersPerSecond;
+	}
+
+	/**
+	 * 
+	 * @param tA the percentege of the screne that the note fills from the limelight
+	 * @return distnace in inches.
+	 */
+	public static double calculateAwayDistance(double tA)
+	{
+		double distance;
+		distance = (44.9558*Math.pow(0.941047, tA));
+		return distance;
+	}
+
+
+
+	 
+	public double AutoPickupTX()
+	{	
+		detectorData = limelight.getNeuralDetectorValues();
+
+
+		if(calculateAwayDistance(detectorData.ta) <= 60 || !intakeOn|| isNoteIn.getAsBoolean()) //if it is less than 10 ft away return, if intake isnt on return, if there is a note in, return
+		{
+			return 0;
+		}
+		
+
+		txController.setP(0.035 );//* getLocalForwardRobotVelocity()/1.2); //1.2 is an arbitrary number.
+
+		
+		if (detectorData == null) {
+		  System.err.println("nullDetectorData");
+		  return 0;
+		}
+
+		tx = detectorData.tx;
+
+		SmartDashboard.putNumber("CollectNote/calculated radians per second", txController.calculate(tx));
+		SmartDashboard.putNumber("CollectNote/added to motors",  txController.calculate(-tx));
+		
+		return ((txController.calculate(-tx)));
+	
 	}
 }

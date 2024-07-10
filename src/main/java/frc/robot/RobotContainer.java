@@ -236,7 +236,7 @@ public class RobotContainer {
     SmartDashboard.putData(climbSpotChooser);
   }
   private void driveTrainInst() {
-    driveTrain = new DrivetrainSubsystem();
+    driveTrain = new DrivetrainSubsystem(intake::isNoteSeen);
     defaultDriveCommand = new Drive(
       driveTrain, 
       () -> false,
@@ -378,6 +378,8 @@ public class RobotContainer {
     }
     if(intakeExists&&indexerExists) {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem));
+      
+      driveTrain.intakeOn = GroundIntakeSup.getAsBoolean();
     }
     if(intakeExists&&indexerExists) {
       new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(()->DriverStation.isTeleop()).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));

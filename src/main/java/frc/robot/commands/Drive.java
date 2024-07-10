@@ -47,19 +47,22 @@ public class Drive extends Command {
         }
         if (robotCentricMode.getAsBoolean()) {
             drivetrain.drive(new ChassisSpeeds(
-                translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
-                translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
+                (translationXSupplier.getAsDouble() )* DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
+                translationYSupplier.getAsDouble()* DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
                 rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
             ));
         } else {
-            drivetrain.drive(
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                    translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
+
+            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                    (translationXSupplier.getAsDouble()) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
                     translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
                     rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
                     drivetrain.getPose().getRotation()
-                )
-            );
+                );
+
+                speeds.vyMetersPerSecond += drivetrain.AutoPickupTX();
+
+            drivetrain.drive(speeds);
         }
     }
 
