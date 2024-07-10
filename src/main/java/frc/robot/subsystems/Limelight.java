@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.commands.Drive;
 import frc.robot.settings.LimelightDetectorData;
 
 import static frc.robot.settings.Constants.Vision.*;
@@ -16,6 +17,9 @@ public class Limelight {
 
     private static Field2d field1 = new Field2d();
     private static Field2d field2 = new Field2d();
+
+    private static DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+    private static Pose2d robotPose = new Pose2d();
 
     public static Boolean detectorEnabled = false;
 
@@ -161,9 +165,37 @@ public class Limelight {
     /**
      * Returns the distance of a given note using tA, tX, and tY
      */
-    public static double calculateDistance(Double tA){
-        Double distance;
+    public static double calculateAwayDistance(Double tA){
+        double distance;
         distance = (44.9558 * Math.pow(0.941047, tA));
         return(distance);
+    }
+
+    public double notePosition(Double tA, int num){
+        double[] notePosition = new double[0]; 
+        // double xOffset = (calculateAwayDistance(tA) * (Math.tan(tX)));
+        // double yOffset = (calculateAwayDistance(tA) * (Math.tan(tY)));
+        int angleThing = (int) (drivetrainSubsystem.getHeadingLooped() / 90); //I would have loved to have named this better but I genuinely could not think of a better name for this
+        double theta = (drivetrainSubsystem.getHeadingLooped() - (angleThing * 90));
+        double xPosOffset = (theta * Math.sin(calculateAwayDistance(tA)));
+        double yPosOffset = (Math.sqrt((xPosOffset*2)+(calculateAwayDistance(tA)*2))); //I am oh so sorry about all the parenthesis
+
+        double noteXPos;
+        double noteYPos = 0;
+        if(drivetrainSubsystem.getHeadingLooped() < 90 || drivetrainSubsystem.getHeadingLooped() > 270){
+            noteXPos = robotPose.getX() - xPosOffset;
+        }
+        else{
+            noteXPos = robotPose.getX() + xPosOffset;
+        }
+        if(drivetrainSubsystem.getHeadingLooped() < 180){
+            noteYPos = robotPose.getY() + yPosOffset;
+        }
+        else{
+            noteYPos = robotPose.getY() + yPosOffset;
+        }
+        notePosition[1] = noteXPos;
+        notePosition[2] = noteYPos;
+        return notePosition[num];
     }
 }

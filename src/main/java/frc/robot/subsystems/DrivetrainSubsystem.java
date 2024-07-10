@@ -206,6 +206,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		accumulativeLoops = (int) (getHeadingDegrees()/180); //finding the amount of times that 360 goes into the heading, as an int
 		return getHeadingDegrees()-180*(accumulativeLoops); 
 	}
+	public double getHeadingFlipped(){
+		//returns the heading of the back of the robot
+		double heading = getHeadingLooped() + 180;
+		if(heading>360){
+			heading = heading - 360;
+		}
+		return heading;
+	}
 	public Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
 	}

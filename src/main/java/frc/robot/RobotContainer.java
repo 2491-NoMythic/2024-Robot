@@ -101,6 +101,7 @@ public class RobotContainer {
   private final boolean sideWheelsExists = Preferences.getBoolean("IntakeSideWheels", true);
   //private final boolean autosExist = Preferences.getBoolean("Autos", true);
   private final boolean useDetectorLimelight = Preferences.getBoolean("Detector Limelight", true);
+  private final boolean useNoteTracking = Preferences.getBoolean("Note Tracking", true);
 
   private DrivetrainSubsystem driveTrain;
   private IntakeSubsystem intake;
@@ -644,6 +645,15 @@ public class RobotContainer {
       RobotState.getInstance().IsNoteSeen = limelight.getNeuralDetectorValues().isResultValid;
     } else {
       RobotState.getInstance().IsNoteSeen = false;
+    }
+    if(true){
+      SmartDashboard.putNumber("Distance away",0);
+      SmartDashboard.putNumber("Note PosX",0);
+      SmartDashboard.putNumber("Note PosY",0);
+
+      SmartDashboard.putNumber("Distance away",Limelight.calculateAwayDistance(limelight.getNeuralDetectorValues().ta));
+      SmartDashboard.putNumber("Note PosX", limelight.notePosition(limelight.getNeuralDetectorValues().ta, 1));
+      SmartDashboard.putNumber("Note PosY", limelight.notePosition(limelight.getNeuralDetectorValues().ta, 2));
     }
     SmartDashboard.putBoolean("is note seen", RobotState.getInstance().IsNoteSeen);
 		SmartDashboard.putBoolean("shooter in range", RobotState.getInstance().ShooterInRange);
