@@ -439,7 +439,7 @@ public static final class CTREConfigs {
     /**Left stick X-axis. <p> Forwards = -1 || Backwards = 1*/
     public static final int Y_AXIS = 1;
     /**Right stick Z-axis. <p> Left = -1 || Right = 1*/
-    public static final int Z_AXIS = 2;
+    public static final int Z_AXIS = 4;
     /**Right stick Z-rotate. <p> Forwards = -1 || Backwards = 1*/
     public static final int Z_ROTATE = 5;
     /**Value used to differentiate between angle 0 and rest position.*/

@@ -112,8 +112,7 @@ public class RobotContainer {
   private Climber climber;
   private Lights lights;
   private XboxController driverController;
-  private PS4Controller operatorController;
-  //private PS4Controller operatorController;
+  private XboxController operatorController;
   private Limelight limelight;
   private IndexCommand defaulNoteHandlingCommand;
   private IndexerSubsystem indexer;
@@ -176,26 +175,25 @@ public class RobotContainer {
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
     // SignalLogger.start();
     driverController = new XboxController(DRIVE_CONTROLLER_ID);
-    //operatorController = new XboxController(OPERATOR_CONTROLLER_ID);
+    operatorController = new XboxController(OPERATOR_CONTROLLER_ID);
     //operatorController = new PS4Controller(OPERATOs_CONTROLLER_ID);
     PDP = new PowerDistribution(1, ModuleType.kRev);
 
-    ZeroGyroSup = driverController::getLeftStickButton;
+    ZeroGyroSup = driverController::getStartButton;
     ForceVisionSup = driverController::getRightStickButton;
 
     AimWhileMovingSup = ()-> driverController.getLeftTriggerAxis() >= 0.5;
     HumanPlaySup = driverController::getLeftBumper;
     AmpAngleSup = ()-> driverController.getPOV() == 90;
     ManualShootSup = ()-> driverController.getRightTriggerAxis() >= 0.5;
-    ClimberDownSup = driverController::getStartButton;
+    ClimberDownSup = operatorController::getStartButton;
     GroundIntakeSup = driverController::getRightBumper;
-    OperatorRevToZero = ()->operatorController.getPOV() != -1;
+    OperatorRevToZero = ()->driverController.getRightStickButton();
     SubwooferAngleSup =()-> driverController.getAButton();
     StageAngleSup = ()->driverController.getYButton();
     FarStageAngleSup = ()->driverController.getXButton();
     OppositeStageShotSup = ()->driverController.getBButton();
-    OverStagePassSup = operatorController::getL1Button;
-    CenterAmpPassSup = operatorController::getL2Button;
+    OverStagePassSup = ()-> driverController.getLeftStickButton();
     AutoPickupSup = ()->driverController.getBackButton();
     zeroSup = ()->0;
     falseSup = ()->false;
@@ -372,7 +370,7 @@ public class RobotContainer {
       SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
     }
     if(indexerExists) {
-      new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV, intake));
+      new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV, intake, driverController));
     }
     if(climberExists) {
     }

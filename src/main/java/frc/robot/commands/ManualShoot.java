@@ -9,6 +9,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -19,16 +21,20 @@ public class ManualShoot extends Command {
   private IndexerSubsystem indexer;
   DoubleSupplier ampSupplier;
   IntakeSubsystem intake;
+  XboxController rumble;
   /** Creates a new ManualShoot. 
    * This command sets the indexer to one of two speeds, depending on the D-pad(90, 45 and 135 = INDEXER_AMP_SPEED), otherwise speed is equal
      to INDEXER_SHOOTING_SPEED. 
   */
-  public ManualShoot(IndexerSubsystem indexer, DoubleSupplier ampSupplier, IntakeSubsystem intake) {
+  public ManualShoot(IndexerSubsystem indexer, DoubleSupplier ampSupplier, IntakeSubsystem intake, XboxController rumble) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(indexer, intake);
     this.indexer = indexer;
     this.ampSupplier = ampSupplier;
     this.intake = intake;
+    this.rumble = rumble;
+
+    rumble = new XboxController(0);
   }
 
   // Called when the command is initially scheduled.
@@ -39,6 +45,7 @@ public class ManualShoot extends Command {
   @Override
   public void execute() {
     indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
+    rumble.setRumble(RumbleType.kBothRumble, 1);
   }
 
   // Called once the command ends or is interrupted.

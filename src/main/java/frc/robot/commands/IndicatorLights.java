@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.RobotState;
 
@@ -64,9 +65,10 @@ public IndicatorLights(Lights lights, XboxController rumble) {
       noteWasIn = false;
       if(noteSeenByLimelight) {
         lights.setSides(70, 35, 0);
-        rumble.setRumble(RumbleType.kBothRumble, 1);;
+        rumble.setRumble(RumbleType.kBothRumble, 0);
       } else {  
         lights.setSides(0, 0, 0);
+        rumble.setRumble(RumbleType.kBothRumble, 0);
       }
     }
     else{
@@ -75,10 +77,11 @@ public IndicatorLights(Lights lights, XboxController rumble) {
         timer.reset();
       }
       lights.setProgress((RobotState.getInstance().ShooterError / 50)-0.2, 50, 0, 0, 0, 50, 0);
+      rumble.setRumble(RumbleType.kBothRumble, .25);
     }
     if(noteInRobot&&timerReset) {
       if (time > 2){
-        timer.reset();
+        timer.reset(); 
       } 
       RobotState.getInstance().lightsReset = false;
     }
@@ -88,6 +91,7 @@ public IndicatorLights(Lights lights, XboxController rumble) {
 
   @Override
   public void end(boolean interrupted) {
+    rumble.setRumble(RumbleType.kBothRumble, 0);
     lights.lightsOut();
     lights.dataSetter();
   }

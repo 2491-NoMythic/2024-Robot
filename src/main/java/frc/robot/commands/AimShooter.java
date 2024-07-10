@@ -72,8 +72,8 @@ public class AimShooter extends Command {
 			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.OVER_STAGE_PASS_ANGLE);
 		} else if(OppositeStageShotSup.getAsBoolean()) {
 			angleShooterSubsystem.setDesiredShooterAngle(Field.OPPOSITE_STAGE_SHOOTER_ANGLE);
-		} else if (LowPassAngleSup.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(12);
+	//	} else if (LowPassAngleSup.getAsBoolean()) {
+	//		angleShooterSubsystem.setDesiredShooterAngle(12);
 		} else {
 			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
 		}
