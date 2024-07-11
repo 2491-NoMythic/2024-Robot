@@ -137,7 +137,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 
 
-
+	//note detection is for drive assist. 
 
 	public DrivetrainSubsystem(BooleanSupplier isNoteIn) {
 
@@ -633,6 +633,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public double getLocalForwardRobotVelocity()
 	{
 		ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(modules[0].getState(), modules[1].getState(), modules[2].getState(), modules[3].getState());
+		
+		SmartDashboard.putNumber("CollectNote/LocalForwardVelocity", chassisSpeeds.vxMetersPerSecond);
+		
 		return chassisSpeeds.vxMetersPerSecond;
 	}
 
@@ -664,11 +667,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		{
 			return 0;
 		}
-		
-
 
 		//max robot velocity is 5.378
-		txController.setP(0.035 );//* getLocalForwardRobotVelocity()/1.2); //1.2 is an arbitrary number.
+		txController.setP(0.035 );//* (getLocalForwardRobotVelocity()/2.2); //2.2 is an arbitrary number.
+		txController.setD(0.01);//* (getLocalForwardRobotVelocity()/2.2);
 
 		
 		if (detectorData == null) {
