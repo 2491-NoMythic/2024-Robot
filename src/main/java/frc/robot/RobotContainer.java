@@ -188,7 +188,7 @@ public class RobotContainer {
     ManualShootSup = ()-> driverController.getRightTriggerAxis() >= 0.5;
     ClimberDownSup = operatorController::getStartButton;
     GroundIntakeSup = driverController::getRightBumper;
-    OperatorRevToZero = ()->driverController.getRightStickButton();
+    OperatorRevToZero = ()->driverController.getRightStickButton() || operatorController.getYButton();
     SubwooferAngleSup =()-> driverController.getAButton();
     StageAngleSup = ()->driverController.getYButton();
     FarStageAngleSup = ()->driverController.getXButton();
