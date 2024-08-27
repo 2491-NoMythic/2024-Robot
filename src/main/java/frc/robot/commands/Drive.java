@@ -17,6 +17,8 @@ public class Drive extends Command {
     private final DoubleSupplier translationYSupplier;
     private final DoubleSupplier rotationSupplier;
     private int invert;
+    private final BooleanSupplier safeMode;
+    private double effectiveSpeed;
     /**
      * drives the robot at a specific forward velocity, sideways velocity, and rotational velocity.
      * @param drivetrainSubsystem Swerve drive subsytem
@@ -29,16 +31,23 @@ public class Drive extends Command {
     BooleanSupplier robotCentricMode,
     DoubleSupplier translationXSupplier,
     DoubleSupplier translationYSupplier,
-    DoubleSupplier rotationSupplier) {
+    DoubleSupplier rotationSupplier,
+    BooleanSupplier safeMode) {
         this.drivetrain = drivetrainSubsystem;
         this.robotCentricMode = robotCentricMode;
         this.translationXSupplier = translationXSupplier;
         this.translationYSupplier = translationYSupplier;
         this.rotationSupplier = rotationSupplier;
+        this.safeMode = safeMode;
         addRequirements(drivetrainSubsystem);
     }
     @Override
     public void execute() {
+    if (safeMode.getAsBoolean()) {
+        effectiveSpeed = DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * DriveConstants.SAFE_DRIVE_SPEED_MULTIPLIER;
+    } else {
+        effectiveSpeed = DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    }
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
         if(DriverStation.getAlliance().get() == Alliance.Red) {
             invert = -1;
@@ -47,15 +56,15 @@ public class Drive extends Command {
         }
         if (robotCentricMode.getAsBoolean()) {
             drivetrain.drive(new ChassisSpeeds(
-                translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
-                translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
+                translationXSupplier.getAsDouble() * effectiveSpeed * invert,
+                translationYSupplier.getAsDouble() * effectiveSpeed * invert,
                 rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
             ));
         } else {
             drivetrain.drive(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
-                    translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
-                    translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * invert,
+                    translationXSupplier.getAsDouble() * effectiveSpeed * invert,
+                    translationYSupplier.getAsDouble() * effectiveSpeed * invert,
                     rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
                     drivetrain.getPose().getRotation()
                 )

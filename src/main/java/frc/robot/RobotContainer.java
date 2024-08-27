@@ -141,6 +141,7 @@ public class RobotContainer {
   DoubleSupplier zeroSup;
   BooleanSupplier AutoPickupSup;
   BooleanSupplier CenterAmpPassSup;
+  BooleanSupplier SafeModeSup;
 
   BooleanSupplier intakeReverse;
   Command autoPickup;
@@ -202,7 +203,7 @@ public class RobotContainer {
     ShooterUpManualSup = ()->false;
     ForceVisionSup = ()->false;
     ShootIfReadySup = ()->false;
-    
+    SafeModeSup = ()->true;
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
     driveTrainInst();
@@ -242,7 +243,8 @@ public class RobotContainer {
       () -> false,
       () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
+      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
+      SafeModeSup);
       driveTrain.setDefaultCommand(defaultDriveCommand);
   }
   private void shooterInst() {

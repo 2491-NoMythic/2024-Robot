@@ -218,6 +218,8 @@ public final class Constants {
     public static final double k_PICKUP_NOTE_tx_P = 1;
     public static final double k_PICKUP_NOTE_tx_I = 0;
     public static final double k_PICKUP_NOTE_tx_D = 0;
+
+    public static final double SAFE_DRIVE_SPEED_MULTIPLIER = 0.2;
   }
 public static final class ShooterConstants{
   public static final int SHOOTER_R_MOTORID = 10;
