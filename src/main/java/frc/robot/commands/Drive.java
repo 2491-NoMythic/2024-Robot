@@ -19,6 +19,7 @@ public class Drive extends Command {
     private int invert;
     private final BooleanSupplier safeMode;
     private double effectiveSpeed;
+    private double effectiveAngle;
     /**
      * drives the robot at a specific forward velocity, sideways velocity, and rotational velocity.
      * @param drivetrainSubsystem Swerve drive subsytem
@@ -45,8 +46,10 @@ public class Drive extends Command {
     public void execute() {
     if (safeMode.getAsBoolean()) {
         effectiveSpeed = DriveConstants.MAX_VELOCITY_METERS_PER_SECOND * DriveConstants.SAFE_DRIVE_SPEED_MULTIPLIER;
+        effectiveAngle = DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * DriveConstants.SAFE_DRIVE_SPEED_MULTIPLIER;
     } else {
         effectiveSpeed = DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+        effectiveAngle = DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
     }
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
         if(DriverStation.getAlliance().get() == Alliance.Red) {
@@ -58,14 +61,14 @@ public class Drive extends Command {
             drivetrain.drive(new ChassisSpeeds(
                 translationXSupplier.getAsDouble() * effectiveSpeed * invert,
                 translationYSupplier.getAsDouble() * effectiveSpeed * invert,
-                rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                rotationSupplier.getAsDouble() * effectiveAngle
             ));
         } else {
             drivetrain.drive(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                     translationXSupplier.getAsDouble() * effectiveSpeed * invert,
                     translationYSupplier.getAsDouble() * effectiveSpeed * invert,
-                    rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+                    rotationSupplier.getAsDouble() * effectiveAngle,
                     drivetrain.getPose().getRotation()
                 )
             );

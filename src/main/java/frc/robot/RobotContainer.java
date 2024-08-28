@@ -182,20 +182,20 @@ public class RobotContainer {
     ZeroGyroSup = driverController::getPSButton;
     ForceVisionSup = driverController::getOptionsButton;
 
-    AimWhileMovingSup = driverController::getL2Button;
-    HumanPlaySup = driverController::getR1Button;
-    AmpAngleSup = ()->driverController.getPOV() == 90||driverController.getPOV() == 45||driverController.getPOV() == 135;;
-    ManualShootSup = driverController::getR2Button;
+    AimWhileMovingSup = ()->false; //driverController::getL2Button;
+    HumanPlaySup = operatorController::getTouchpad;//driverController::getR1Button;
+    AmpAngleSup = ()-> operatorController.getPOV() == 90||operatorController.getPOV() == 45||operatorController.getPOV() == 135;
+    ManualShootSup = operatorController::getR2Button;
     ClimberDownSup = operatorController::getPSButton;
-    GroundIntakeSup = driverController::getL1Button;
-    OperatorRevToZero = ()->operatorController.getPOV() != -1;
-    SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
-    StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
-    FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
-    OppositeStageShotSup = ()->operatorController.getCircleButton()||driverController.getCircleButton();
-    OverStagePassSup = operatorController::getL1Button;
-    CenterAmpPassSup = operatorController::getL2Button;
-    AutoPickupSup = ()->operatorController.getTouchpad()||driverController.getTouchpad();
+    GroundIntakeSup = operatorController::getL1Button;
+    OperatorRevToZero = operatorController::getR1Button;//.getPOV() != -1;
+    //SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
+    //StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();
+    //FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
+    //OppositeStageShotSup = ()->operatorController.getCircleButton()||driverController.getCircleButton();
+    //OverStagePassSup = operatorController::getL1Button;
+    //CenterAmpPassSup = operatorController::getL2Button;
+    AutoPickupSup = ()->false; //operatorController.getTouchpad()||driverController.getTouchpad();
     zeroSup = ()->0;
     falseSup = ()->false;
     //discontinued buttons:
