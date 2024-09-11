@@ -31,6 +31,8 @@ public class MoveMeters extends Command {
     m_drivetrain = drivetrain;
     m_meters = Math.abs(meters);
     m_forwardSpeed = forwardSpeed;
+    m_rightSpeed = rightSpeed;
+    m_angleSpeed = angleSpeed;
     addRequirements(drivetrain);
   }
 
