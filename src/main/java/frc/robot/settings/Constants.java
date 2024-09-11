@@ -233,7 +233,7 @@ public static final class ShooterConstants{
 
   public static final double CURRENT_LIMIT = 100; //amps the motor is limited to
 
-  public static final double AUTO_AIM_ROBOT_kP = 0.125;
+  public static final double AUTO_AIM_ROBOT_kP = 0.07;
   public static final double AUTO_AIM_ROBOT_kI = 0.00;
   public static final double AUTO_AIM_ROBOT_kD = 0.00;
   
@@ -245,15 +245,15 @@ public static final class ShooterConstants{
   public static final double PASS_RPS = 80;
 
   //the PID values used on the PID loop on the motor controller that control the position of the shooter angle
-  public static final double ANGLE_SHOOTER_POWER_KP = 0.026;
+  public static final double ANGLE_SHOOTER_POWER_KP = 0.07;
   public static final double ANGLE_SHOOTER_POWER_KI = 0;
-  public static final double ANGLE_SHOOTER_POWER_KD = 0.001;
+  public static final double ANGLE_SHOOTER_POWER_KD = 0.0;
   public static final double pitchFeedForward = 0.001;
   public static final double pitchMaxOutput = 1;
   public static final double pitchMinOutput = -1;
   
   public static final double AUTO_AIM_SHOOTER_kP = 0.003;
-  public static final double ROBOT_ANGLE_TOLERANCE = 0.5;
+  public static final double ROBOT_ANGLE_TOLERANCE = 1;
   public static final double SHOOTER_ANGLE_TOLERANCE = 0.5;
   public static final double SHOOTER_HEIGHT = 0.254;
   public static final double ANGLE_TICKS_PER_DEGREE = 2491;

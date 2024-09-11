@@ -45,7 +45,7 @@ import frc.robot.commands.MoveMeters;
 import frc.robot.commands.OverrideCommand;
 import frc.robot.commands.PodiumCollectNote;
 import frc.robot.commands.WaitUntil;
-
+import frc.robot.commands.ZacksCommand;
 import frc.robot.commands.NamedCommands.InitialShot;
 import frc.robot.commands.NamedCommands.ShootNote;
 import frc.robot.commands.NamedCommands.AutoGroundIntake;
@@ -499,7 +499,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    autoChooser.addOption("ZacksCommand", new ZacksCommand(driveTrain));
+    return new ZacksCommand(driveTrain);
+    //getSelected();
   }
 
   public void autonomousInit() {
