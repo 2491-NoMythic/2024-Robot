@@ -79,6 +79,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.commands.AngleShooter;
+import frc.robot.commands.ChallengeAuto;
 import frc.robot.commands.ClimberCommand;
 
 
@@ -503,6 +504,7 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
+    autoChooser.addOption("Challenge Auto", new ChallengeAuto(driveTrain));
     SmartDashboard.putNumber("autos ran", SmartDashboard.getNumber("autos ran", 0)+1);
   }
   private double modifyAxis(double value, double deadband) {
