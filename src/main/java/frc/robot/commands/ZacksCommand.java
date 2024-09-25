@@ -21,9 +21,15 @@ DrivetrainSubsystem drivetrain;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new MoveMeters(drivetrain, 1.5, 1, 0, 0),
-      new RotateRobot(drivetrain, ()->180),
-      new MoveMeters(drivetrain, 1.5, 1, 0, 0)
+      new MoveMeters(drivetrain, 2.8, 1, 0, 0),
+      new RotateRobot(drivetrain, ()->-90),
+      new MoveMeters(drivetrain, 1.2, 1, 0, 0),
+      new RotateRobot(drivetrain, ()->80),
+      new MoveMeters(drivetrain, 1.3, 1, 0, 0)
+      
+      
+      
+      
     );
   }
 }

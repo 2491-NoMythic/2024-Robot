@@ -18,6 +18,7 @@ public class RotateRobot extends Command {
     double currentHeading;
     double differenceAngle;
     double turningSpeed;
+  
     PIDController speedController;
     
   public RotateRobot(DrivetrainSubsystem drivetrain, DoubleSupplier desiredRobotAngle){
@@ -66,6 +67,6 @@ public class RotateRobot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(differenceAngle-360) < ShooterConstants.ROBOT_ANGLE_TOLERANCE;
+    return Math.abs(differenceAngle) < ShooterConstants.ROBOT_ANGLE_TOLERANCE;
   }
 }
