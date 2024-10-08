@@ -229,6 +229,7 @@ import java.util.function.DoubleSupplier;
       shooterMotor.setControl(new VelocityDutyCycle(targetSpeed).withSlot(0));
     }
   }
+  
   /**
    *  Revs left and right motors while below target velocity, if above target velocity, the motors are put to PID Mode
    */
