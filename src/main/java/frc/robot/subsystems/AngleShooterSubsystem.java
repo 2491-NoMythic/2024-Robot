@@ -42,7 +42,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	Field2d offsetSpeakerLocationPose = new Field2d();
 	
 	public AngleShooterSubsystem() {
-		SmartDashboard.putData(offsetSpeakerLocationPose);
+		SmartDashboard.putData("offsetSpeakerPose", offsetSpeakerLocationPose);
 		
 		SmartDashboard.putNumber("CALLIBRATION/redShooterX", Field.CALCULATED_SHOOTER_RED_SPEAKER_X);
 		SmartDashboard.putNumber("CALLIBRATION/blueShooterX", Field.CALCULATED_SHOOTER_BLUE_SPEAKER_X);
