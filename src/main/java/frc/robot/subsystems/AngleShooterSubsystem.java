@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.settings.Constants.ShooterConstants.*;
@@ -38,8 +39,10 @@ public class AngleShooterSubsystem extends SubsystemBase {
 	public double desiredZeroOffset;
 	int runsValid;
 	double speakerDistGlobal;
-
+	Field2d offsetSpeakerLocationPose = new Field2d();
+	
 	public AngleShooterSubsystem() {
+		SmartDashboard.putData(offsetSpeakerLocationPose);
 		
 		SmartDashboard.putNumber("CALLIBRATION/redShooterX", Field.CALCULATED_SHOOTER_RED_SPEAKER_X);
 		SmartDashboard.putNumber("CALLIBRATION/blueShooterX", Field.CALCULATED_SHOOTER_BLUE_SPEAKER_X);
@@ -177,8 +180,9 @@ public class AngleShooterSubsystem extends SubsystemBase {
 		double offsetSpeakerdist = Math.sqrt(Math.pow(offsetDeltaX, 2) + Math.pow(offsetDeltaY, 2));
 		offsetSpeakerdist = offsetSpeakerdist+0.127; //to compensate for the pivot point of the shooter bieng offset from the center of the robot
 		SmartDashboard.putString("offset amount", targetOffset.toString());
-		SmartDashboard.putString("offset speaker location",
-		new Translation2d(offsetSpeakerX, offsetSpeakerY).toString());
+		Translation2d offsetSpeakerLocation = new Translation2d(offsetSpeakerX, offsetSpeakerY);
+		SmartDashboard.putString("offset speaker location", offsetSpeakerLocation.toString());
+		offsetSpeakerLocationPose.setRobotPose(new Pose2d(offsetSpeakerLocation, new Rotation2d(0)));
 		// getting desired robot angle
 		double totalOffsetDistToSpeaker = Math
 				.sqrt(Math.pow(offsetSpeakerdist, 2) + Math.pow(Field.SPEAKER_Z - ShooterConstants.SHOOTER_HEIGHT, 2));
