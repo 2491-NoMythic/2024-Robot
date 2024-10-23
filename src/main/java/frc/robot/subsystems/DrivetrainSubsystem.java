@@ -318,6 +318,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		} else {
 			RobotState.getInstance().LimelightsUpdated = false;
 		}
+
+		limelight.updateLoggingWithPoses();
 	}
 	/**
 	 * Set the odometry using the current apriltag estimate, disregarding the pose trustworthyness.

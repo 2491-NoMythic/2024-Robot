@@ -72,6 +72,14 @@ public class Limelight {
             return null;
     }
 
+    public void updateLoggingWithPoses() {
+        Pose2d pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME).pose;
+        Pose2d pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT3_NAME).pose;
+
+        field1.setRobotPose(pose1);
+        field2.setRobotPose(pose2);
+    }
+
     /**
      * Gets the most recent limelight pose estimate, given that a valid estimate is
      * available.
@@ -138,7 +146,7 @@ public class Limelight {
      * @param limelightName the name of the requested limelight, as seen on NetworkTables
      * @param estimate the poseEstimate from that limelight
      * @param odometryPose the robot's pose from the DriveTrain, unused right now
-     * @return
+     * @return true if the pose is within the field bounds and the tag distance is less than 7
      */
     private boolean isTrustworthy(String limelightName, PoseEstimate estimate, Pose2d odometryPose) {
         Boolean trusted = (
