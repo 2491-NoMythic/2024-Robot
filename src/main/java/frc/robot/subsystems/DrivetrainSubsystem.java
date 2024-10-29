@@ -587,5 +587,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 
 		Logger.recordOutput("MyStates", getModuleStates());
+
+
+	//	double[][] aprilTagData = LimelightHelpers.getLatestResults("limelight").targetingResults;
+	//	double[][] aprilTagData = LimelightHelpers.getLatestResults("limelight").targetingResults.
+     /** 
+        for (int i = 0; i < aprilTagData.length; i++) {
+            double tagX = aprilTagData[i][0]; 
+            double tagY = aprilTagData[i][1]; 
+            double tagZ = aprilTagData[i][2];
+
+            double distanceX = tagX - odometer.getEstimatedPosition().getX(); 
+            double distanceY = tagY- odometer.getEstimatedPosition().getY(); 
+            double distanceZ = tagZ;
+
+			SmartDashboard.putNumber("Tag " + i + " X", distanceX); 
+			SmartDashboard.putNumber("Tag " + i + " Y", distanceY); 
+			SmartDashboard.putNumber("Tag " + i + " Z", distanceZ);
+        }
+		*/
 	}
 }

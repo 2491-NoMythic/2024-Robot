@@ -6,9 +6,22 @@ import frc.robot.settings.LimelightDetectorData;
 
 import static frc.robot.settings.Constants.Vision.*;
 
+import java.io.IOException;
+
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+
 
 public class Limelight {
 
@@ -19,6 +32,17 @@ public class Limelight {
 
     public static Boolean detectorEnabled = false;
 
+     public static final AprilTagFieldLayout FIELD_LAYOUT;
+
+      static {
+            try {
+                FIELD_LAYOUT = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+                FIELD_LAYOUT.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     private Limelight() {
         SmartDashboard.putBoolean("Vision/Left/valid", false);
         SmartDashboard.putBoolean("Vision/Left/trusted", false);
@@ -26,6 +50,18 @@ public class Limelight {
         SmartDashboard.putBoolean("Vision/Right/trusted", false);
         SmartDashboard.putData("Vision/Left/pose", field1);
         SmartDashboard.putData("Vision/Right/pose", field2);
+
+
+        //logs active selected path 
+        PathPlannerLogging.setLogActivePathCallback(
+            (activePath) -> {
+              Logger.recordOutput(
+                  "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+            });
+        PathPlannerLogging.setLogTargetPoseCallback(
+            (targetPose) -> {
+              Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+            });
     }
 
     public static Limelight getInstance() {
@@ -78,6 +114,26 @@ public class Limelight {
 
         field1.setRobotPose(pose1);
         field2.setRobotPose(pose2);
+
+        Logger.recordOutput("MyPose1", pose1);
+        Logger.recordOutput("MyPose2", pose2);
+
+         Pose3d[] AprilTagPoses;
+
+        for (int i = 0; i < 6; i++)
+        {
+            if(FIELD_LAYOUT.getTagPose(i) == null)
+            {
+                return;
+            }
+
+          //  AprilTagPoses[i] = FIELD_LAYOUT.getTagPose((int) LimelightHelpers.getLimelightNTTableEntry("botpose", APRILTAG_LIMELIGHT2_NAME).getInteger(i));
+        }
+
+      //  Logger.recordOutput("AprilTagVision", );
+        Logger.recordOutput("AprilTagVision", LimelightHelpers.getLimelightNTTableEntry("botpose", APRILTAG_LIMELIGHT2_NAME).getDoubleArray(new double[6]));
+
+
     }
 
     /**
