@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+//import java.util.logging.Logger;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -64,7 +65,9 @@ import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Field;
-import frc.robot.settings.Constants.ShooterConstants;
+import frc.robot.settings.Constants.ShooterConstants; 
+import org.littletonrobotics.junction.Logger;
+
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();
@@ -582,5 +585,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		for (int i = 0; i < 4; i++) {
 			motorLoggers[i].log(modules[i].getDriveMotor());
 		}
+
+		Logger.recordOutput("MyStates", getModuleStates());
 	}
 }
