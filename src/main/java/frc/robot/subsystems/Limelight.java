@@ -115,8 +115,8 @@ public class Limelight {
         field1.setRobotPose(pose1);
         field2.setRobotPose(pose2);
 
-        Logger.recordOutput("MyPose1", pose1);
-        Logger.recordOutput("MyPose2", pose2);
+        Logger.recordOutput("LeftPose", pose1);
+        Logger.recordOutput("RightPose", pose2);
 
          Pose3d[] AprilTagPoses;
 

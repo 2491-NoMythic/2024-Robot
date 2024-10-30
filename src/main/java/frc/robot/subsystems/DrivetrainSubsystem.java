@@ -587,6 +587,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 
 		Logger.recordOutput("MyStates", getModuleStates());
+		Logger.recordOutput("Position", odometer.getEstimatedPosition());
+		Logger.recordOutput("Gyro", getGyroscopeRotation());
 
 
 	//	double[][] aprilTagData = LimelightHelpers.getLatestResults("limelight").targetingResults;
