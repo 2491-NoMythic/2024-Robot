@@ -25,6 +25,7 @@ import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kP;
 import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT2_NAME;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT3_NAME;
+import static frc.robot.settings.Constants.Vision.OBJ_DETECTION_LIMELIGHT_NAME;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +41,9 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -591,8 +594,27 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Logger.recordOutput("MyStates", getModuleStates());
 		Logger.recordOutput("Position", odometer.getEstimatedPosition());
 		Logger.recordOutput("Gyro", getGyroscopeRotation());
+		
+		Logger.recordOutput("Vision/targetposes/NotePoses/FieldSpace", robotToFieldCoordinates(LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME)));
+	}
 
-	
+	/**
+	 * 
+	 * @param robotCoordinates - put in the coordinates that have an origin of the robot
+	 * @return
+	 */
+	private Pose3d robotToFieldCoordinates(Pose3d robotCoordinates)
+	{
+		double robotCoordinatesX = robotCoordinates.getX();
+		double robotCoordinatesY = robotCoordinates.getY();
+		double robotCoordinatesZ = robotCoordinates.getZ();
+		Rotation3d robotCoordinatesAngle = robotCoordinates.getRotation();
+
+		double odometrPoseX = odometer.getEstimatedPosition().getX();
+		double odometrPosey = odometer.getEstimatedPosition().getY();
+
+
+		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
 	}
 
 }

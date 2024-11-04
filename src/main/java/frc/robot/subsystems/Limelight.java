@@ -132,10 +132,15 @@ public class Limelight {
 
       //  Logger.recordOutput("AprilTagVision", );
         Logger.recordOutput("AprilTagVision", LimelightHelpers.getLimelightNTTableEntry("botpose", APRILTAG_LIMELIGHT2_NAME).getDoubleArray(new double[6]));
-        Logger.recordOutput("Vision/targetposes/LeftPose", LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME));
-        Logger.recordOutput("Vision/targetposes/RightPose", LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME));
-        Logger.recordOutput("Vision/targetposes/NotePoses", LimelightHelpers.getTargetPose3d_CameraSpace(OBJ_DETECTION_LIMELIGHT_NAME));
-    }
+        Logger.recordOutput("Vision/targetposes/LeftPose/CameraSpace", LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME));
+        Logger.recordOutput("Vision/targetposes/RightPose/CameraSpace", LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME));
+        Logger.recordOutput("Vision/targetposes/NotePoses/CameraSpace", LimelightHelpers.getTargetPose3d_CameraSpace(OBJ_DETECTION_LIMELIGHT_NAME));
+    
+        Logger.recordOutput("Vision/targetposes/LeftPose/RobotSpace", LimelightHelpers.getTargetPose3d_RobotSpace(APRILTAG_LIMELIGHT2_NAME));
+        Logger.recordOutput("Vision/targetposes/LeftPose/RobotSpace", LimelightHelpers.getTargetPose3d_RobotSpace(APRILTAG_LIMELIGHT3_NAME));
+        Logger.recordOutput("Vision/targetposes/NotePoses/RobotSpace", LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME));
+    
+    }   
 
     /**
      * Gets the most recent limelight pose estimate, given that a valid estimate is
