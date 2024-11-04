@@ -596,6 +596,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Logger.recordOutput("Gyro", getGyroscopeRotation());
 		
 		Logger.recordOutput("Vision/targetposes/NotePoses/FieldSpace", robotToFieldCoordinates(LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME)));
+		liamsEstimates();
+		
 	}
 
 	/**
@@ -617,4 +619,29 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
 	}
 
+	@AutoLogOutput
+	private Pose3d liamsEstimates()
+	{	double limelight1y = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getY();
+		double limelight1x = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getX();
+		double limelight1z = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getZ();
+		Pose3d targetPose1 = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME);
+		//int limelight1TagNumber = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME)
+
+		double limelight2y = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getY();
+		double limelight2x = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getX();
+		double limelight2z = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getZ();
+		Pose3d targetPose2 = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME);
+
+		double distance1 = Math.sqrt((limelight1z*limelight1z) +(Math.sqrt(limelight1x*limelight1x)+(limelight1y*limelight1y)*Math.sqrt(limelight1x*limelight1x)+(limelight1y*limelight1y)));
+		double confidenceSource1 = 1/distance1;
+
+		double distance2 = Math.sqrt((limelight2z*limelight2z) +(Math.sqrt(limelight2x*limelight2x)+(limelight2y*limelight2y)*Math.sqrt(limelight2x*limelight2x)+(limelight2y*limelight2y)));
+		double confidenceSource2 = 1/distance2;
+
+		double liamsEstimatesX = (confidenceSource1*limelight1x + confidenceSource2*limelight2x)/(confidenceSource1 + confidenceSource2);
+		double liamsEstimatesY = (confidenceSource1*limelight1y + confidenceSource2*limelight2y)/(confidenceSource1 + confidenceSource2);
+		double liamsEstimatesZ = (confidenceSource1*limelight1z + confidenceSource2*limelight2z)/(confidenceSource1 + confidenceSource2);
+		
+		return new Pose3d(liamsEstimatesX, liamsEstimatesY, liamsEstimatesZ , null);
+	}
 }
