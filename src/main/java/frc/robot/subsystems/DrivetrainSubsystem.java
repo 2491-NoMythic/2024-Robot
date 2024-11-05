@@ -595,8 +595,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Logger.recordOutput("Position", odometer.getEstimatedPosition());
 		Logger.recordOutput("Gyro", getGyroscopeRotation());
 		
-		Logger.recordOutput("Vision/targetposes/NotePoses/FieldSpace", robotToFieldCoordinates(LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME)));
-		liamsEstimates();
+		//Logger.recordOutput("Vision/targetposes/NotePoses/FieldSpace", robotToFieldCoordinates(LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME)));
+		//liamsEstimates();
 		
 	}
 
@@ -621,7 +621,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	@AutoLogOutput
 	private Pose3d liamsEstimates()
-	{	double limelight1y = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getY();
+	{	
+		
+		double limelight1y = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getY();
 		double limelight1x = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getX();
 		double limelight1z = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getZ();
 		Pose3d targetPose1 = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME);
@@ -632,10 +634,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		double limelight2z = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getZ();
 		Pose3d targetPose2 = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME);
 
-		double distance1 = Math.sqrt((limelight1z*limelight1z) +(Math.sqrt(limelight1x*limelight1x)+(limelight1y*limelight1y)*Math.sqrt(limelight1x*limelight1x)+(limelight1y*limelight1y)));
+		double distance1 = Math.sqrt((limelight1z*limelight1z) +(Math.sqrt((limelight1x*limelight1x)+(limelight1y*limelight1y))*Math.sqrt((limelight1x*limelight1x)+(limelight1y*limelight1y))));
 		double confidenceSource1 = 1/distance1;
 
-		double distance2 = Math.sqrt((limelight2z*limelight2z) +(Math.sqrt(limelight2x*limelight2x)+(limelight2y*limelight2y)*Math.sqrt(limelight2x*limelight2x)+(limelight2y*limelight2y)));
+		double distance2 = Math.sqrt((limelight2z*limelight2z) +(Math.sqrt((limelight2x*limelight2x)+(limelight2y*limelight2y))*Math.sqrt((limelight2x*limelight2x)+(limelight2y*limelight2y))));
 		double confidenceSource2 = 1/distance2;
 
 		double liamsEstimatesX = (confidenceSource1*limelight1x + confidenceSource2*limelight2x)/(confidenceSource1 + confidenceSource2);
