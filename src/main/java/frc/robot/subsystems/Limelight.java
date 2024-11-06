@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.helpers.MythicalMath;
 import frc.robot.settings.LimelightDetectorData;
 
 import static frc.robot.settings.Constants.Vision.*;
@@ -19,6 +20,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -97,15 +101,42 @@ public class Limelight {
 
         Boolean pose1Trust = isTrustworthy(APRILTAG_LIMELIGHT2_NAME, pose1, odometryPose);
         Boolean pose2Trust = isTrustworthy(APRILTAG_LIMELIGHT3_NAME, pose2, odometryPose);
+        //if the limelight positions will be merged, let SmartDashboard know!
+        boolean mergingPoses = false;
+        if(pose1Trust&&pose2Trust)  { mergingPoses = true;}
+        SmartDashboard.putBoolean("LL poses merged", mergingPoses);
 
         if (pose1Trust && pose2Trust) {
-            return ((pose1.avgTagDist < pose2.avgTagDist) ? pose1 : pose2); //select the limelight that has closer tags.
+            return (mergedPose(pose1, pose2)); //merge the two positions proportionally based on the closest tag distance
         } else if (pose1Trust) {
             return pose1;
         } else if (pose2Trust) {
             return pose2;
         } else
             return null;
+    }
+
+    public PoseEstimate mergedPose(PoseEstimate pose1, PoseEstimate pose2) {
+
+    // find the coordinates (relative to the robot) of the closest april tag to limelight 2, then limelight 3
+        double limelight1y = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getY();
+		double limelight1x = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getX();
+		double limelight1z = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getZ();
+
+		double limelight2y = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getY();
+		double limelight2x = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getX();
+		double limelight2z = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getZ();
+    // use those coordinates to find the distance to the closest apriltag for each limelight
+    double distance1 = MythicalMath.DistanceFromOrigin3d(limelight1y, limelight1x, limelight1z);
+    double distance2 = MythicalMath.DistanceFromOrigin3d(limelight2y, limelight2x, limelight2z);
+    //ccombines the two positions in an epic, proportional way
+    double confidenceSource1 = 1/distance1;
+    double confidenceSource2 = 1/distance2;
+    Pose2d scaledPose1 = pose1.pose.times(confidenceSource1);
+    Pose2d scaledPose2 = pose2.pose.times(confidenceSource2);
+    Pose2d newPose = scaledPose1.plus(new Transform2d(scaledPose2.getTranslation(), new Rotation2d())).div(confidenceSource1+confidenceSource2);
+    pose1.pose = newPose;
+    return pose1;
     }
 
     public void updateLoggingWithPoses() {
