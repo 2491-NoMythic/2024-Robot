@@ -44,6 +44,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -72,6 +73,8 @@ import frc.robot.settings.Constants.ShooterConstants;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedSystemStats;
+import org.opencv.core.Point;
 
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -597,7 +600,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		
 		//Logger.recordOutput("Vision/targetposes/NotePoses/FieldSpace", robotToFieldCoordinates(LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME)));
 		//liamsEstimates();
-		
+
+
+		Pose3d pose = reorientTofieldPose(LimelightHelpers.getTargetPose3d_RobotSpace(APRILTAG_LIMELIGHT2_NAME).toPose2d(),LimelightHelpers.getTargetPose3d_RobotSpace(APRILTAG_LIMELIGHT2_NAME).getZ());
+		pose.getRotation().getAngle();
+
+		Logger.recordOutput("testing123", pose);
 	}
 
 	/**
@@ -618,8 +626,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
 	}
-
-	@AutoLogOutput
+/** 
 	private Pose3d liamsEstimates()
 	{	
 		
@@ -645,5 +652,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		double liamsEstimatesZ = (confidenceSource1*limelight1z + confidenceSource2*limelight2z)/(confidenceSource1 + confidenceSource2);
 		
 		return new Pose3d(liamsEstimatesX, liamsEstimatesY, liamsEstimatesZ , null);
+	}
+*/
+	private Pose3d reorientTofieldPose(Pose2d poseToReorient, double z)
+	{
+		//Rotation2d.fromDegrees(12).div(OFFSET_MULTIPLIER)
+
+
+		Pose2d rotatedCooridnates = poseToReorient.rotateBy(getGyroscopeRotation());
+
+		 Rotation3d orientation = new Rotation3d(0,0,rotatedCooridnates.getRotation().getRadians());
+
+		 Pose3d newcoordinates =	new Pose3d(rotatedCooridnates.getX() + odometer.getEstimatedPosition().getX(),rotatedCooridnates.getY() + odometer.getEstimatedPosition().getY(), z , orientation);
+	
+		 return newcoordinates;
+	
 	}
 }
