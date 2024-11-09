@@ -126,15 +126,18 @@ public class Limelight {
 		double limelight2y = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getY();
 		double limelight2x = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getX();
 		double limelight2z = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getZ();
-    // use those coordinates to find the distance to the closest apriltag for each limelight
-    double distance1 = MythicalMath.DistanceFromOrigin3d(limelight1y, limelight1x, limelight1z);
-    double distance2 = MythicalMath.DistanceFromOrigin3d(limelight2y, limelight2x, limelight2z);
-    //ccombines the two positions in an epic, proportional way
-    double confidenceSource1 = 1/distance1;
-    double confidenceSource2 = 1/distance2;
-    Pose2d scaledPose1 = pose1.pose.times(confidenceSource1);
-    Pose2d scaledPose2 = pose2.pose.times(confidenceSource2);
-    Pose2d newPose = (scaledPose1.plus(new Transform2d(scaledPose2.getTranslation(), new Rotation2d()))).div(confidenceSource1+confidenceSource2);
+
+        // use those coordinates to find the distance to the closest apriltag for each limelight
+        double distance1 = MythicalMath.DistanceFromOrigin3d(limelight1x, limelight1y, limelight1z);
+        double distance2 = MythicalMath.DistanceFromOrigin3d(limelight2x, limelight2y, limelight2z);
+        //ccombines the two positions in an epic, proportional way
+        double confidenceSource1 = Math.pow(1/distance1,2);
+        double confidenceSource2 = Math.pow(1/distance2,2);
+        Pose2d scaledPose1 = MythicalMath.multiplyOnlyPos(pose1.pose, confidenceSource1);
+        Pose2d scaledPose2 = MythicalMath.multiplyOnlyPos(pose2.pose, confidenceSource2);
+    Pose2d newPose = MythicalMath.divideOnlyPos((MythicalMath.addOnlyPosTogether(scaledPose1, scaledPose2)), (confidenceSource1+confidenceSource2));
+    //Pose2d newPose = scaledPose1.plus(new Transform2d(scaledPose2.getTranslation(), new Rotation2d())).div(confidenceSource1+confidenceSource2);
+      
     pose1.pose = newPose;
     return pose1;
     }

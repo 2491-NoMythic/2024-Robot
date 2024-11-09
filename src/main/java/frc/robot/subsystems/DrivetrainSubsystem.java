@@ -323,6 +323,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				doRejectUpdate = true;
 			}
 			if(!doRejectUpdate) {
+				Logger.recordOutput("Vision/MergesPose", estimate.pose);
 				odometer.addVisionMeasurement(estimate.pose, estimate.timestampSeconds);
 			}
 			RobotState.getInstance().LimelightsUpdated = true;
