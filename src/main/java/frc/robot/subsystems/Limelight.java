@@ -134,7 +134,7 @@ public class Limelight {
     double confidenceSource2 = 1/distance2;
     Pose2d scaledPose1 = pose1.pose.times(confidenceSource1);
     Pose2d scaledPose2 = pose2.pose.times(confidenceSource2);
-    Pose2d newPose = scaledPose1.plus(new Transform2d(scaledPose2.getTranslation(), new Rotation2d())).div(confidenceSource1+confidenceSource2);
+    Pose2d newPose = (scaledPose1.plus(new Transform2d(scaledPose2.getTranslation(), new Rotation2d()))).div(confidenceSource1+confidenceSource2);
     pose1.pose = newPose;
     return pose1;
     }
@@ -208,6 +208,22 @@ public class Limelight {
                 LimelightHelpers.getNeuralClassID(OBJ_DETECTION_LIMELIGHT_NAME),
                 LimelightHelpers.getTV(OBJ_DETECTION_LIMELIGHT_NAME));
     }
+
+      public LimelightDetectorData getAprilValues(String cameraname) {
+        return new LimelightDetectorData(
+                LimelightHelpers.getTX(cameraname),
+                LimelightHelpers.getTY(cameraname),
+                LimelightHelpers.getTA(cameraname),
+                LimelightHelpers.getNeuralClassID(cameraname),
+                LimelightHelpers.getTV(cameraname));
+    }
+
+    public int getLLTagCount(String cameraname)
+    {
+        return LimelightHelpers.getLatestResults(cameraname).targetingResults.targets_Fiducials.length;
+    }
+
+
 
     private boolean isValid(String limelightName, PoseEstimate estimate) {
         Boolean valid = (

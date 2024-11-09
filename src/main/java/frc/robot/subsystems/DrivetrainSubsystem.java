@@ -19,6 +19,7 @@ import static frc.robot.settings.Constants.DriveConstants.FL_STEER_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_DRIVE_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kD;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kI;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kP;
@@ -34,6 +35,7 @@ import java.util.function.DoubleSupplier;
 //import java.util.logging.Logger;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.google.flatbuffers.DoubleVector;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
@@ -64,6 +66,7 @@ import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
 import frc.robot.helpers.MotorLogger;
+import frc.robot.helpers.MythicalMath;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
@@ -618,5 +621,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
 	}
+
+	public double getLL1FOM() //larger fom is BAD, and is less trustworthy. 
+    {
+		int maximumNumbOfTags = 2;
+		double maxTagDist = 10.0;
+
+		double VelocityContributer = (MythicalMath.DistanceFromOrigin3d(getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond,0.0)/MAX_VELOCITY_METERS_PER_SECOND);
+		double centeredContributer = (limelight.getAprilValues(APRILTAG_LIMELIGHT2_NAME).tx); //I think this only gets up to 1???
+		double numTagsContributer = maximumNumbOfTags/limelight.getLLTagCount(APRILTAG_LIMELIGHT2_NAME);
+		double distanceContributer = (LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME).avgTagDist/maxTagDist);
+		
+		return VelocityContributer*centeredContributer*numTagsContributer*distanceContributer;
+    }
 
 }
