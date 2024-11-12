@@ -8,6 +8,7 @@ import java.security.PublicKey;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 
 /** Add your docs here. */
@@ -18,12 +19,12 @@ public class MythicalMath {
  * @param YfromOrigin y-coordinate of point
  * @param ZfromOrigin z-coordinate of point
  * @return distance from origin of point
- *
  */
     public static double DistanceFromOrigin3d(double XfromOrigin, double YfromOrigin, double ZfromOrigin) {
         double Distance2d = Math.sqrt(Math.pow(YfromOrigin, 2)+Math.pow(XfromOrigin, 2));
         return Math.sqrt(Math.pow(Distance2d, 2)+Math.pow(ZfromOrigin, 2));
     }
+
 
     /**
      *  finds the absolute distance from the origin of any point on a 3d plane

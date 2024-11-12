@@ -19,19 +19,23 @@ import static frc.robot.settings.Constants.DriveConstants.FL_STEER_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_DRIVE_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kD;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kI;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kP;
 import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT2_NAME;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT3_NAME;
+import static frc.robot.settings.Constants.Vision.OBJ_DETECTION_LIMELIGHT_NAME;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+//import java.util.logging.Logger;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.google.flatbuffers.DoubleVector;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
@@ -39,7 +43,9 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -61,16 +67,17 @@ import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
 import frc.robot.helpers.MotorLogger;
-<<<<<<< Updated upstream
-=======
 import frc.robot.helpers.MythicalMath;
 import frc.robot.helpers.MythicalMath.mythicalVector3;
->>>>>>> Stashed changes
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();
@@ -334,12 +341,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				doRejectUpdate = true;
 			}
 			if(!doRejectUpdate) {
+				Logger.recordOutput("Vision/MergesPose", estimate.pose);
 				odometer.addVisionMeasurement(estimate.pose, estimate.timestampSeconds);
 			}
 			RobotState.getInstance().LimelightsUpdated = true;
 		} else {
 			RobotState.getInstance().LimelightsUpdated = false;
 		}
+
+		limelight.updateLoggingWithPoses();
 	}
 	/**
 	 * Set the odometry using the current apriltag estimate, disregarding the pose trustworthyness.
@@ -602,9 +612,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		for (int i = 0; i < 4; i++) {
 			motorLoggers[i].log(modules[i].getDriveMotor());
 		}
-<<<<<<< Updated upstream
+
 	}
-=======
 
 		Logger.recordOutput("MyStates", getModuleStates());
 		Logger.recordOutput("Position", odometer.getEstimatedPosition());
@@ -659,6 +668,35 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		return liamsEstimatedPose;
 
+	}
+
+	public double getLLFOM(String limelightName) //larger fom is BAD, and is less trustworthy. 
+		Logger.recordOutput("MyStates", getModuleStates());
+		Logger.recordOutput("Position", odometer.getEstimatedPosition());
+		Logger.recordOutput("Gyro", getGyroscopeRotation());
+		
+		//Logger.recordOutput("Vision/targetposes/NotePoses/FieldSpace", robotToFieldCoordinates(LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME)));
+		//liamsEstimates();
+		
+	}
+
+	/**
+	 * 
+	 * @param robotCoordinates - put in the coordinates that have an origin of the robot
+	 * @return
+	 */
+	private Pose3d robotToFieldCoordinates(Pose3d robotCoordinates)
+	{
+		double robotCoordinatesX = robotCoordinates.getX();
+		double robotCoordinatesY = robotCoordinates.getY();
+		double robotCoordinatesZ = robotCoordinates.getZ();
+		Rotation3d robotCoordinatesAngle = robotCoordinates.getRotation();
+
+		double odometrPoseX = odometer.getEstimatedPosition().getX();
+		double odometrPosey = odometer.getEstimatedPosition().getY();
+
+
+		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
 	}
 
 	public double getLLFOM(String limelightName) //larger fom is BAD, and is less trustworthy. 
@@ -743,5 +781,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	}
 
->>>>>>> Stashed changes
+		double VelocityContributer = (MythicalMath.DistanceFromOrigin3d(getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond,0.0)/MAX_VELOCITY_METERS_PER_SECOND);
+		double centeredContributer = (limelight.getAprilValues(APRILTAG_LIMELIGHT2_NAME).tx); //I think this only gets up to 1???
+		double numTagsContributer = maximumNumbOfTags/limelight.getLLTagCount(APRILTAG_LIMELIGHT2_NAME);
+		double distanceContributer = (LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME).avgTagDist/maxTagDist);
+		
+		return VelocityContributer*centeredContributer*numTagsContributer*distanceContributer;
+    }
+
 }
