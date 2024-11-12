@@ -56,10 +56,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
 import frc.robot.helpers.MotorLogger;
+<<<<<<< Updated upstream
+=======
+import frc.robot.helpers.MythicalMath;
+import frc.robot.helpers.MythicalMath.mythicalVector3;
+>>>>>>> Stashed changes
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
@@ -84,6 +90,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private int accumulativeLoops;
 
 	private final SwerveDrivePoseEstimator odometer;
+	private final SwerveDrivePoseEstimator rawOdometer;
 	private final Field2d m_field = new Field2d();
 
 	//speaker angle calculating variables:
@@ -115,12 +122,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	double MathRanNumber;
 	MotorLogger[] motorLoggers;
 	PIDController speedController;
+	public static Timer robotRunTimer = new Timer();
+
+	private static Timer skidTimer = new Timer();
+	private static double lastCallTime = 0;
+
+	mythicalVector3 lastAccel;
 
 	public DrivetrainSubsystem() {
 		SmartDashboard.putNumber("CALLIBRATION/redRobotX", Field.CALCULATED_SHOOTER_RED_SPEAKER_X);
 		SmartDashboard.putNumber("CALLIBRATION/blueRobotX", Field.CALCULATED_SHOOTER_BLUE_SPEAKER_X);
 		SmartDashboard.putNumber("CALLIBRATION/blueY", Field.CALCULATED_BLUE_SPEAKER_Y);
 		SmartDashboard.putNumber("CALLIBRATION/redY", Field.CALCULATED_RED_SPEAKER_Y);
+
+		robotRunTimer.start();
 
 		speedController = new PIDController(
 			AUTO_AIM_ROBOT_kP, 
@@ -186,6 +201,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			getModulePositions(),
 			DRIVE_ODOMETRY_ORIGIN);
 		odometer.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, 99999999));
+
+		rawOdometer = new SwerveDrivePoseEstimator(
+			kinematics, 
+			getGyroscopeRotation(),
+			getModulePositions(),
+			DRIVE_ODOMETRY_ORIGIN);
 		}
 	/**
 	 * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
@@ -294,6 +315,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	}
 	public void updateOdometry() {
 		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
+		rawOdometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
 	}
 	/**
 	 * Provide the odometry a vision pose estimate, only if there is a trustworthy pose available.
@@ -580,5 +602,146 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		for (int i = 0; i < 4; i++) {
 			motorLoggers[i].log(modules[i].getDriveMotor());
 		}
+<<<<<<< Updated upstream
 	}
+=======
+
+		Logger.recordOutput("MyStates", getModuleStates());
+		Logger.recordOutput("Position", odometer.getEstimatedPosition());
+		Logger.recordOutput("Gyro", getGyroscopeRotation());
+		
+		//Logger.recordOutput("Vision/targetposes/NotePoses/FieldSpace", robotToFieldCoordinates(LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME)));
+		liamsEstimatePose3d();
+		
+	}
+
+	/**
+	 * 
+	 * @param robotCoordinates - put in the coordinates that have an origin of the robot
+	 * @return
+	 */
+	private Pose3d robotToFieldCoordinates(Pose3d robotCoordinates)
+	{
+		double robotCoordinatesX = robotCoordinates.getX();
+		double robotCoordinatesY = robotCoordinates.getY();
+		double robotCoordinatesZ = robotCoordinates.getZ();
+		Rotation3d robotCoordinatesAngle = robotCoordinates.getRotation();
+
+		double odometrPoseX = odometer.getEstimatedPosition().getX();
+		double odometrPosey = odometer.getEstimatedPosition().getY();
+
+
+		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
+	}
+
+	public Pose3d liamsEstimatePose3d()
+	{
+		///Pose3d
+	//	return (+(1/Math.pow(getLLFOM(APRILTAG_LIMELIGHT2_NAME), 2))*limelight.getTrustedPose(APRILTAG_LIMELIGHT2_NAME)+(1/Math.pow(getLLFOM(APRILTAG_LIMELIGHT3_NAME), 2)))/
+		
+		mythicalVector3 LLRightVector = new mythicalVector3(limelight.getRawLLPose(APRILTAG_LIMELIGHT2_NAME));
+		mythicalVector3 LLLeftVector = new mythicalVector3(limelight.getRawLLPose(APRILTAG_LIMELIGHT3_NAME));
+		mythicalVector3 driveTrainVector = new mythicalVector3(rawOdometer.getEstimatedPosition());
+
+		double LLRightFOMConvert = 1/Math.pow(getLLFOM(APRILTAG_LIMELIGHT2_NAME), 2);
+		double LLLeftFOMConvert = 1/Math.pow(getLLFOM(APRILTAG_LIMELIGHT3_NAME), 2);
+		double DTFOMConver = 1/Math.pow(getDTFOM(), 2);
+
+		Pose3d liamsEstimatedPose =
+		LLRightVector.times(LLRightFOMConvert)
+		.plus( LLLeftVector.times(LLLeftFOMConvert))
+		.plus(driveTrainVector.times(DTFOMConver))
+		
+		.div(LLRightFOMConvert + LLLeftFOMConvert + DTFOMConver)
+		.toPose3d(pigeon.getRotation3d());
+
+		Logger.recordOutput("liamsEstimates", liamsEstimatedPose);
+
+		return liamsEstimatedPose;
+
+	}
+
+	public double getLLFOM(String limelightName) //larger fom is BAD, and is less trustworthy. 
+    {
+		int maximumNumbOfTags = 2;
+		double maxTagDist = 10.0;
+
+		double numTagsContributer;
+		if(limelight.getLLTagCount(limelightName) <= 0){
+			numTagsContributer = 0;
+		}else{
+			numTagsContributer = maximumNumbOfTags/limelight.getLLTagCount(limelightName);
+		}
+
+		double VelocityContributer = (MythicalMath.DistanceFromOrigin3d(getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond,0.0)/MAX_VELOCITY_METERS_PER_SECOND);
+		double centeredTxContributer = 29.8/(Math.abs((limelight.getAprilValues(limelightName).tx))); //tx gets up to 29.8, the closer to 0 tx is, the closer to the center it is.
+		double centeredTyContributer = 20.5/(Math.abs((limelight.getAprilValues(limelightName).ty))); //ty gets up to 20.5 for LL2's and down. LL3's go to 24.85. The closer to 0 ty is, the closer to the center it is.
+		
+		double distanceContributer = (LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName).avgTagDist/maxTagDist);
+		
+		double LLFOM = VelocityContributer*centeredTxContributer*numTagsContributer*distanceContributer*centeredTyContributer+1;
+		Logger.recordOutput("Vision/LLFOM" + limelightName, LLFOM);
+		return LLFOM;
+    }
+
+
+	public double getDTFOM()
+	{
+		double currentTime = skidTimer.get(); 
+		double timeSinceLastCall = currentTime - lastCallTime; 
+		lastCallTime = currentTime;
+		
+
+		double ratioMultiplyerForSpeed = 0.15 *MAX_VELOCITY_METERS_PER_SECOND; //TODO this value should be tuned! 
+		double maxRobotTime = 150; //matches run for 2:30 moswt years
+		double farthestDist = 18 - MythicalMath.DistanceFromOrigin3d(DRIVE_ODOMETRY_ORIGIN); // the cornner to corner length of a field is about 18m
+		double impactAccelorationThreshhold = 2.0; //this means it will only be counted as an impact if its 2 meeters difference.
+		double expectedImpactMeetersPerMatch = 12.0;
+
+		double timeContributer = robotRunTimer.get()/maxRobotTime;
+		double distFromOriginContributer = (MythicalMath.DistanceFromOrigin3d(rawOdometer.getEstimatedPosition())- MythicalMath.DistanceFromOrigin3d(DRIVE_ODOMETRY_ORIGIN))/farthestDist;
+		double impactContributer = 1;
+		double skidContributer = 1; 
+
+		
+		mythicalVector3 activeAcceloration = new mythicalVector3(pigeon.getAccelerationX().getValue(), pigeon.getAccelerationY().getValue(), pigeon.getAccelerationZ().getValue());
+		mythicalVector3 deltaAccel = (activeAcceloration.minus(activeAcceloration)).div(timeSinceLastCall);
+		lastAccel = activeAcceloration;
+
+		if(deltaAccel.abs().isLargerThan(impactAccelorationThreshhold))
+		{
+			impactContributer = (impactContributer + MythicalMath.DistanceFromOrigin3d(deltaAccel.abs()))/expectedImpactMeetersPerMatch;
+		}
+		
+
+		//SKID contributer code:
+		//find fastest module
+		SwerveModuleState maxVelocityModule =  getModuleStates()[0];
+		 for (SwerveModuleState state : getModuleStates()) { 
+			if (state.speedMetersPerSecond > maxVelocityModule.speedMetersPerSecond) { 
+				maxVelocityModule = state; 
+			}
+		}
+
+		//find slowest module
+		SwerveModuleState lowestVelocityModule =  getModuleStates()[0];
+		 for (SwerveModuleState state : getModuleStates()) { 
+			if (state.speedMetersPerSecond < lowestVelocityModule.speedMetersPerSecond) { 
+				lowestVelocityModule = state; 
+			}
+		}
+
+		if(maxVelocityModule.speedMetersPerSecond*ratioMultiplyerForSpeed > lowestVelocityModule.speedMetersPerSecond)
+		{
+			//ITS SKIDDING!!!
+			skidContributer = skidContributer +  (maxVelocityModule.speedMetersPerSecond/lowestVelocityModule.speedMetersPerSecond)*timeSinceLastCall;
+		}
+
+		double DTFOM = timeContributer*distFromOriginContributer*impactContributer*skidContributer +1;
+		Logger.recordOutput("DTFOM", DTFOM);
+		return DTFOM;
+
+	}
+
+>>>>>>> Stashed changes
 }

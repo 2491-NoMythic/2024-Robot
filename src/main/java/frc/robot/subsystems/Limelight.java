@@ -158,4 +158,9 @@ public class Limelight {
         }
         return trusted;
     }
+
+    public Pose2d getRawLLPose(String LLName)
+    {
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME).pose;
+    }
 }
