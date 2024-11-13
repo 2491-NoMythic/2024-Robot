@@ -625,17 +625,32 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	public double getLLFOM(String limelightName) //larger fom is BAD, and is less trustworthy. 
     {
-		int maximumNumbOfTags = 2;
-		double maxTagDist = 10.0;
+		//the value we place on each variable in the FOM. Higher value means it will get weighted more in the final FOM
+		/*These values should be tuned based on how heavily you want a contributer to be favored. Right now, we want the # of tags to be the most important 
+		 * with the distance from the tags also being immportant. and the tx and ty should only factor in a little bit, so they have the smallest number. Test this by making sure the two 
+		 * limelights give very different robot positions, and see where it decides to put the real robot pose.
+		*/
+		double distValue = 6;
+		double tagCountValue = 7;
+		double xyValue = 1;
 
+		//numTagsContributer is better when smaller, and is based off of how many april tags the Limelight identifies
 		double numTagsContributer;
 		if(limelight.getLLTagCount(limelightName) <= 0){
 			numTagsContributer = 0;
 		}else{
-			numTagsContributer = maximumNumbOfTags/limelight.getLLTagCount(limelightName);
+			numTagsContributer = 1/limelight.getLLTagCount(limelightName);
 		}
+		//tx and ty contributers are based off where on the limelights screen the april tag is. Closer to the center means the contributer will bea smaller number, which is better.
+		double centeredTxContributer = Math.abs((limelight.getAprilValues(limelightName).tx))/29.8; //tx gets up to 29.8, the closer to 0 tx is, the closer to the center it is.
+		double centeredTyContributer = Math.abs((limelight.getAprilValues(limelightName).ty))/20.5; //ty gets up to 20.5 for LL2's and down. LL3's go to 24.85. The closer to 0 ty is, the closer to the center it is.
+		//the distance contributer gets smaller when the distance is closer, and is based off of how far away the closest tag is
 		double distanceContributer = (limelight.getClosestTagDist(limelightName)/5);
-		double LLFOM = (10*distanceContributer*numTagsContributer)+1;
+		
+		// calculates the final FOM by taking the contributors and multiplying them by their values, adding them all together and then dividing by the sum of the values.
+		double LLFOM = (
+			(distValue*distanceContributer)+(tagCountValue*numTagsContributer)+(centeredTxContributer*xyValue)+(centeredTyContributer)
+			)/distValue+tagCountValue+xyValue+xyValue;
 		Logger.recordOutput("Vision/LLFOM" + limelightName, LLFOM);
 		return LLFOM;
     }
