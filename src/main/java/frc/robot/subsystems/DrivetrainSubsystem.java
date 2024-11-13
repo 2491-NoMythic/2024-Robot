@@ -313,7 +313,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * larger pose shifts will take multiple calls to complete.
 	 */
 	public void updateOdometryWithVision() {
-		PoseEstimate estimate = limelight.getTrustedPose(getPose());
+		PoseEstimate estimate = limelight.getTrustedPose(getPose(), getLLFOM(APRILTAG_LIMELIGHT2_NAME), getLLFOM(APRILTAG_LIMELIGHT3_NAME));
 		if (estimate != null) {
 			boolean doRejectUpdate = false;
 			if(Math.abs(pigeon.getRate()) > 720) {
@@ -623,17 +623,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
 	}
 
-	public double getLL1FOM() //larger fom is BAD, and is less trustworthy. 
+	public double getLLFOM(String limelightName) //larger fom is BAD, and is less trustworthy. 
     {
 		int maximumNumbOfTags = 2;
 		double maxTagDist = 10.0;
 
-		double VelocityContributer = (MythicalMath.DistanceFromOrigin3d(getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond,0.0)/MAX_VELOCITY_METERS_PER_SECOND);
-		double centeredContributer = (limelight.getAprilValues(APRILTAG_LIMELIGHT2_NAME).tx); //I think this only gets up to 1???
-		double numTagsContributer = maximumNumbOfTags/limelight.getLLTagCount(APRILTAG_LIMELIGHT2_NAME);
-		double distanceContributer = (LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME).avgTagDist/maxTagDist);
-		
-		return VelocityContributer*centeredContributer*numTagsContributer*distanceContributer;
+		double numTagsContributer;
+		if(limelight.getLLTagCount(limelightName) <= 0){
+			numTagsContributer = 0;
+		}else{
+			numTagsContributer = maximumNumbOfTags/limelight.getLLTagCount(limelightName);
+		}
+		double distanceContributer = (limelight.getClosestTagDist(limelightName)/5);
+		double LLFOM = (10*distanceContributer*numTagsContributer)+1;
+		Logger.recordOutput("Vision/LLFOM" + limelightName, LLFOM);
+		return LLFOM;
     }
 
 }
