@@ -324,7 +324,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			}
 			if(!doRejectUpdate) {
 				Logger.recordOutput("Vision/MergesPose", estimate.pose);
-				odometer.addVisionMeasurement(estimate.pose, estimate.timestampSeconds);
+				odometer.addVisionMeasurement(new Pose2d(estimate.pose.getX(), estimate.pose.getY(), getGyroscopeRotation()), estimate.timestampSeconds);
 			}
 			RobotState.getInstance().LimelightsUpdated = true;
 		} else {
