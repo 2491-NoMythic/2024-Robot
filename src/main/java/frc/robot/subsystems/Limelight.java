@@ -2,13 +2,30 @@ package frc.robot.subsystems;
 
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.helpers.MythicalMath;
 import frc.robot.settings.LimelightDetectorData;
 
+import static frc.robot.settings.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 import static frc.robot.settings.Constants.Vision.*;
 
+import java.io.IOException;
+
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 
 public class Limelight {
 
@@ -19,6 +36,17 @@ public class Limelight {
 
     public static Boolean detectorEnabled = false;
 
+     public static final AprilTagFieldLayout FIELD_LAYOUT;
+
+      static {
+            try {
+                FIELD_LAYOUT = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+                FIELD_LAYOUT.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     private Limelight() {
         SmartDashboard.putBoolean("Vision/Left/valid", false);
         SmartDashboard.putBoolean("Vision/Left/trusted", false);
@@ -26,6 +54,18 @@ public class Limelight {
         SmartDashboard.putBoolean("Vision/Right/trusted", false);
         SmartDashboard.putData("Vision/Left/pose", field1);
         SmartDashboard.putData("Vision/Right/pose", field2);
+
+
+        //logs active selected path 
+        PathPlannerLogging.setLogActivePathCallback(
+            (activePath) -> {
+              Logger.recordOutput(
+                  "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+            });
+        PathPlannerLogging.setLogTargetPoseCallback(
+            (targetPose) -> {
+              Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+            });
     }
 
     public static Limelight getInstance() {
@@ -55,15 +95,19 @@ public class Limelight {
      * @return A valid and trustworthy pose. Null if no valid pose. Poses are
      *         prioritized by lowest tagDistance.
      */
-    public PoseEstimate getTrustedPose(Pose2d odometryPose) {
+    public PoseEstimate getTrustedPose(Pose2d odometryPose, double LL1FOM, double LL2FOM) {
         PoseEstimate pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME);
         PoseEstimate pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT3_NAME);
 
         Boolean pose1Trust = isTrustworthy(APRILTAG_LIMELIGHT2_NAME, pose1, odometryPose);
         Boolean pose2Trust = isTrustworthy(APRILTAG_LIMELIGHT3_NAME, pose2, odometryPose);
+        //if the limelight positions will be merged, let SmartDashboard know!
+        boolean mergingPoses = false;
+        if(pose1Trust&&pose2Trust)  { mergingPoses = true;}
+        SmartDashboard.putBoolean("LL poses merged", mergingPoses);
 
         if (pose1Trust && pose2Trust) {
-            return ((pose1.avgTagDist < pose2.avgTagDist) ? pose1 : pose2); //select the limelight that has closer tags.
+            return (mergedPose(pose1, pose2, LL1FOM, LL2FOM)); //merge the two positions proportionally based on the closest tag distance
         } else if (pose1Trust) {
             return pose1;
         } else if (pose2Trust) {
@@ -71,6 +115,71 @@ public class Limelight {
         } else
             return null;
     }
+/**
+ * returns a new limelight pose that has the gyroscope rotation of pose1, with the FOMs used to calculate a new pose that proportionally averages the two given positions
+ * @param pose1
+ * @param pose2
+ * @param LL1FOM
+ * @param LL2FOM
+ * @return
+ */ 
+    public PoseEstimate mergedPose(PoseEstimate pose1, PoseEstimate pose2, double LL1FOM, double LL2FOM) {
+        double confidenceSource1 = 1/Math.pow(LL1FOM,2);
+        double confidenceSource2 = 1/Math.pow(LL2FOM,2);
+        Pose2d scaledPose1 = MythicalMath.multiplyOnlyPos(pose1.pose, confidenceSource1);
+        Pose2d scaledPose2 = MythicalMath.multiplyOnlyPos(pose2.pose, confidenceSource2);
+    Pose2d newPose = MythicalMath.divideOnlyPos((MythicalMath.addOnlyPosTogether(scaledPose1, scaledPose2)), (confidenceSource1+confidenceSource2));
+    pose1.pose = newPose;
+    return pose1;
+    }
+/**
+ * calculates the distance to the closest tag that is seen by the limelight
+ * @param limelightName
+ * @return
+ */
+    public double getClosestTagDist(String limelightName) {
+        double limelight1y = LimelightHelpers.getTargetPose3d_CameraSpace(limelightName).getY();
+		double limelight1x = LimelightHelpers.getTargetPose3d_CameraSpace(limelightName).getX();
+		double limelight1z = LimelightHelpers.getTargetPose3d_CameraSpace(limelightName).getZ();
+        // use those coordinates to find the distance to the closest apriltag for each limelight
+        double distance1 = MythicalMath.DistanceFromOrigin3d(limelight1x, limelight1y, limelight1z);
+        return distance1;
+    }
+
+
+    public void updateLoggingWithPoses() {
+        Pose2d pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME).pose;
+        Pose2d pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT3_NAME).pose;
+
+        field1.setRobotPose(pose1);
+        field2.setRobotPose(pose2);
+
+        Logger.recordOutput("LeftPose", pose1);
+        Logger.recordOutput("RightPose", pose2);
+
+         Pose3d[] AprilTagPoses;
+
+        for (int i = 0; i < 6; i++)
+        {
+            if(FIELD_LAYOUT.getTagPose(i) == null)
+            {
+                return;
+            }
+
+          //  AprilTagPoses[i] = FIELD_LAYOUT.getTagPose((int) LimelightHelpers.getLimelightNTTableEntry("botpose", APRILTAG_LIMELIGHT2_NAME).getInteger(i));
+        }
+
+      //  Logger.recordOutput("AprilTagVision", );
+        Logger.recordOutput("AprilTagVision", LimelightHelpers.getLimelightNTTableEntry("botpose", APRILTAG_LIMELIGHT2_NAME).getDoubleArray(new double[6]));
+        Logger.recordOutput("Vision/targetposes/LeftPose/CameraSpace", LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME));
+        Logger.recordOutput("Vision/targetposes/RightPose/CameraSpace", LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME));
+        Logger.recordOutput("Vision/targetposes/NotePoses/CameraSpace", LimelightHelpers.getTargetPose3d_CameraSpace(OBJ_DETECTION_LIMELIGHT_NAME));
+    
+        Logger.recordOutput("Vision/targetposes/LeftPose/RobotSpace", LimelightHelpers.getTargetPose3d_RobotSpace(APRILTAG_LIMELIGHT2_NAME));
+        Logger.recordOutput("Vision/targetposes/LeftPose/RobotSpace", LimelightHelpers.getTargetPose3d_RobotSpace(APRILTAG_LIMELIGHT3_NAME));
+        Logger.recordOutput("Vision/targetposes/NotePoses/RobotSpace", LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME));
+    
+    }   
 
     /**
      * Gets the most recent limelight pose estimate, given that a valid estimate is
@@ -108,6 +217,22 @@ public class Limelight {
                 LimelightHelpers.getTV(OBJ_DETECTION_LIMELIGHT_NAME));
     }
 
+      public LimelightDetectorData getAprilValues(String cameraname) {
+        return new LimelightDetectorData(
+                LimelightHelpers.getTX(cameraname),
+                LimelightHelpers.getTY(cameraname),
+                LimelightHelpers.getTA(cameraname),
+                LimelightHelpers.getNeuralClassID(cameraname),
+                LimelightHelpers.getTV(cameraname));
+    }
+
+    public int getLLTagCount(String cameraname)
+    {
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraname).tagCount;
+    }
+
+
+
     private boolean isValid(String limelightName, PoseEstimate estimate) {
         Boolean valid = (
                 estimate.pose.getX() < FIELD_CORNER.getX() &&
@@ -138,7 +263,7 @@ public class Limelight {
      * @param limelightName the name of the requested limelight, as seen on NetworkTables
      * @param estimate the poseEstimate from that limelight
      * @param odometryPose the robot's pose from the DriveTrain, unused right now
-     * @return
+     * @return true if the pose is within the field bounds and the tag distance is less than 7
      */
     private boolean isTrustworthy(String limelightName, PoseEstimate estimate, Pose2d odometryPose) {
         Boolean trusted = (

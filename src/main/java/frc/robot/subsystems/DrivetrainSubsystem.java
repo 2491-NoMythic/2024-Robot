@@ -19,19 +19,23 @@ import static frc.robot.settings.Constants.DriveConstants.FL_STEER_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_DRIVE_MOTOR_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_ENCODER_ID;
 import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kD;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kI;
 import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kP;
 import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT2_NAME;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT3_NAME;
+import static frc.robot.settings.Constants.Vision.OBJ_DETECTION_LIMELIGHT_NAME;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+//import java.util.logging.Logger;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.google.flatbuffers.DoubleVector;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
@@ -39,7 +43,9 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -60,11 +66,16 @@ import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.AngleShooter;
 import frc.robot.commands.RotateRobot;
 import frc.robot.helpers.MotorLogger;
+import frc.robot.helpers.MythicalMath;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Field;
 import frc.robot.settings.Constants.ShooterConstants;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();
@@ -302,7 +313,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * larger pose shifts will take multiple calls to complete.
 	 */
 	public void updateOdometryWithVision() {
-		PoseEstimate estimate = limelight.getTrustedPose(getPose());
+		PoseEstimate estimate = limelight.getTrustedPose(getPose(), getLLFOM(APRILTAG_LIMELIGHT2_NAME), getLLFOM(APRILTAG_LIMELIGHT3_NAME));
 		if (estimate != null) {
 			boolean doRejectUpdate = false;
 			if(Math.abs(pigeon.getRate()) > 720) {
@@ -312,12 +323,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				doRejectUpdate = true;
 			}
 			if(!doRejectUpdate) {
-				odometer.addVisionMeasurement(estimate.pose, estimate.timestampSeconds);
+				Logger.recordOutput("Vision/MergesPose", estimate.pose);
+				odometer.addVisionMeasurement(new Pose2d(estimate.pose.getX(), estimate.pose.getY(), getGyroscopeRotation()), estimate.timestampSeconds);
 			}
 			RobotState.getInstance().LimelightsUpdated = true;
 		} else {
 			RobotState.getInstance().LimelightsUpdated = false;
 		}
+
+		limelight.updateLoggingWithPoses();
 	}
 	/**
 	 * Set the odometry using the current apriltag estimate, disregarding the pose trustworthyness.
@@ -580,5 +594,65 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		for (int i = 0; i < 4; i++) {
 			motorLoggers[i].log(modules[i].getDriveMotor());
 		}
+
+		Logger.recordOutput("MyStates", getModuleStates());
+		Logger.recordOutput("Position", odometer.getEstimatedPosition());
+		Logger.recordOutput("Gyro", getGyroscopeRotation());
+		
+		//Logger.recordOutput("Vision/targetposes/NotePoses/FieldSpace", robotToFieldCoordinates(LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME)));
+		//liamsEstimates();
+		
 	}
+
+	/**
+	 * 
+	 * @param robotCoordinates - put in the coordinates that have an origin of the robot
+	 * @return
+	 */
+	private Pose3d robotToFieldCoordinates(Pose3d robotCoordinates)
+	{
+		double robotCoordinatesX = robotCoordinates.getX();
+		double robotCoordinatesY = robotCoordinates.getY();
+		double robotCoordinatesZ = robotCoordinates.getZ();
+		Rotation3d robotCoordinatesAngle = robotCoordinates.getRotation();
+
+		double odometrPoseX = odometer.getEstimatedPosition().getX();
+		double odometrPosey = odometer.getEstimatedPosition().getY();
+
+
+		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
+	}
+
+	public double getLLFOM(String limelightName) //larger fom is BAD, and is less trustworthy. 
+    {
+		//the value we place on each variable in the FOM. Higher value means it will get weighted more in the final FOM
+		/*These values should be tuned based on how heavily you want a contributer to be favored. Right now, we want the # of tags to be the most important 
+		 * with the distance from the tags also being immportant. and the tx and ty should only factor in a little bit, so they have the smallest number. Test this by making sure the two 
+		 * limelights give very different robot positions, and see where it decides to put the real robot pose.
+		*/
+		double distValue = 6;
+		double tagCountValue = 7;
+		double xyValue = 1;
+
+		//numTagsContributer is better when smaller, and is based off of how many april tags the Limelight identifies
+		double numTagsContributer;
+		if(limelight.getLLTagCount(limelightName) <= 0){
+			numTagsContributer = 0;
+		}else{
+			numTagsContributer = 1/limelight.getLLTagCount(limelightName);
+		}
+		//tx and ty contributers are based off where on the limelights screen the april tag is. Closer to the center means the contributer will bea smaller number, which is better.
+		double centeredTxContributer = Math.abs((limelight.getAprilValues(limelightName).tx))/29.8; //tx gets up to 29.8, the closer to 0 tx is, the closer to the center it is.
+		double centeredTyContributer = Math.abs((limelight.getAprilValues(limelightName).ty))/20.5; //ty gets up to 20.5 for LL2's and down. LL3's go to 24.85. The closer to 0 ty is, the closer to the center it is.
+		//the distance contributer gets smaller when the distance is closer, and is based off of how far away the closest tag is
+		double distanceContributer = (limelight.getClosestTagDist(limelightName)/5);
+		
+		// calculates the final FOM by taking the contributors and multiplying them by their values, adding them all together and then dividing by the sum of the values.
+		double LLFOM = (
+			(distValue*distanceContributer)+(tagCountValue*numTagsContributer)+(centeredTxContributer*xyValue)+(centeredTyContributer)
+			)/distValue+tagCountValue+xyValue+xyValue;
+		Logger.recordOutput("Vision/LLFOM" + limelightName, LLFOM);
+		return LLFOM;
+    }
+
 }
