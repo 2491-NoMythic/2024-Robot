@@ -73,6 +73,8 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -120,6 +122,7 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
   private PowerDistribution PDP;
 
+  Alliance currentAlliance;
   BooleanSupplier ZeroGyroSup;
   BooleanSupplier AimWhileMovingSup;
   BooleanSupplier ShootIfReadySup;
@@ -403,8 +406,14 @@ public class RobotContainer {
         new InstantCommand(()->intake.setNoteHeld(false))
         );
         SmartDashboard.putNumber("Indexer Amp Speed", indexerAmpSpeed);
+        /**
+         * the following code producs a command that will first pathfind to a pose right in front of the amplifier, then drive backwards into the amp, then run our shooters amp shot 
+         * sequence as it was at the 2024 State competition.
+         */
       SequentialCommandGroup orbitAmpShot = new SequentialCommandGroup(
         new InstantCommand(()->shooter.setTargetVelocity(shooterAmpSpeed, shooterAmpSpeed, 50, 50), shooter),
+        new AutoBuilder().pathfindToPose(getAmpShotPose(), DEFAUL_PATH_CONSTRAINTS),
+        new MoveMeters(driveTrain, 2, -2, 0, 0),
         new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
         new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
@@ -539,6 +548,13 @@ public class RobotContainer {
     );
   }
 
+  private Pose2d getAmpShotPose() {
+    if(currentAlliance == Alliance.Blue) {
+      return new Pose2d(1.83, 6.88, new Rotation2d(Math.toRadians(-90)));
+    } else {
+      return new Pose2d(14.75, 6.88, new Rotation2d(Math.toRadians(-90)));
+    }
+  } 
   private void registerNamedCommands() {
     NamedCommands.registerCommand("awayFromPodium", new MoveMeters(driveTrain, 0.2, 1, 0, 0));
     NamedCommands.registerCommand("stopDrivetrain", new InstantCommand(driveTrain::stop, driveTrain));
@@ -638,6 +654,7 @@ public class RobotContainer {
   }
   public void teleopPeriodic() {
     SmartDashboard.putData(driveTrain.getCurrentCommand());
+    currentAlliance = DriverStation.getAlliance().get();
     driveTrain.calculateSpeakerAngle();
     if(useDetectorLimelight) {
       SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
