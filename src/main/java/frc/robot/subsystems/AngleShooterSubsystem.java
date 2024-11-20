@@ -172,7 +172,7 @@ public class AngleShooterSubsystem extends SubsystemBase {
 			offsetSpeakerX = Field.SHOOTER_RED_SPEAKER_X - targetOffset.getX();
 			offsetSpeakerY = Field.RED_SPEAKER_Y - targetOffset.getY();
 		} else {
-			offsetSpeakerX = Field.SHOOTER_BLUE_SPEAKER_X - targetOffset.getX();
+			offsetSpeakerX = Field.SHOOTER_BLUE_SPEAKER_X + targetOffset.getX();
 			offsetSpeakerY = Field.BLUE_SPEAKER_Y - targetOffset.getY();
 		}
 		double offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
