@@ -435,7 +435,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			correctionDirection = -1;
 			speakerX = Field.ROBOT_RED_SPEAKER_X;
 		}
-		offsetSpeakerX = speakerX-(targetOffset.getX()*correctionDirection);
+		offsetSpeakerX = speakerX+(targetOffset.getX()*correctionDirection);
 		offsetSpeakerY = speakerY+(targetOffset.getY()*correctionDirection);
 		offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
