@@ -219,6 +219,7 @@ public class RobotContainer {
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists && angleShooterExists) {indexCommandInst();}
     Limelight.useDetectorLimelight(useDetectorLimelight);
+    configureDriveTrain();
     configureBindings();
     autoInit();
     // Configure the trigger bindings
@@ -276,7 +277,6 @@ public class RobotContainer {
   }
 
   private void autoInit() {
-    configureDriveTrain();
     registerNamedCommands();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -549,10 +549,13 @@ public class RobotContainer {
   }
 
   private Pose2d getAmpShotPose() {
-    if(currentAlliance == Alliance.Blue) {
-      return new Pose2d(1.83, 6.88, new Rotation2d(Math.toRadians(-90)));
-    } else {
-      return new Pose2d(14.75, 6.88, new Rotation2d(Math.toRadians(-90)));
+    if(currentAlliance == null) { return new Pose2d(5,5, new Rotation2d(Math.toRadians(-90)));}
+    else {
+      if(currentAlliance == Alliance.Blue) {
+        return new Pose2d(1.83, 6.88, new Rotation2d(Math.toRadians(-90)));
+      } else {
+        return new Pose2d(14.75, 6.88, new Rotation2d(Math.toRadians(-90)));
+      }
     }
   } 
   private void registerNamedCommands() {
@@ -654,7 +657,6 @@ public class RobotContainer {
   }
   public void teleopPeriodic() {
     SmartDashboard.putData(driveTrain.getCurrentCommand());
-    currentAlliance = DriverStation.getAlliance().get();
     driveTrain.calculateSpeakerAngle();
     if(useDetectorLimelight) {
       SmartDashboard.putNumber("Is Note Seen?", limelight.getNeuralDetectorValues().ta);
@@ -672,6 +674,8 @@ public class RobotContainer {
     }
   }
   public void robotPeriodic() {
+      currentAlliance = DriverStation.getAlliance().get();
+
     // logPower();
   }
   public void disabledPeriodic() {
