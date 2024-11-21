@@ -324,7 +324,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			}
 			if(!doRejectUpdate) {
 				Logger.recordOutput("Vision/MergesPose", estimate.pose);
-				odometer.addVisionMeasurement(new Pose2d(estimate.pose.getX(), estimate.pose.getY(), getGyroscopeRotation()), estimate.timestampSeconds);
+				odometer.addVisionMeasurement(estimate.pose, estimate.timestampSeconds);
 			}
 			RobotState.getInstance().LimelightsUpdated = true;
 		} else {
@@ -435,7 +435,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			correctionDirection = -1;
 			speakerX = Field.ROBOT_RED_SPEAKER_X;
 		}
-		offsetSpeakerX = speakerX+(targetOffset.getX()*correctionDirection);
+		offsetSpeakerX = speakerX-(targetOffset.getX()*correctionDirection);
 		offsetSpeakerY = speakerY+(targetOffset.getY()*correctionDirection);
 		offsetDeltaX = Math.abs(dtvalues.getX() - offsetSpeakerX);
 		offsetDeltaY = Math.abs(dtvalues.getY() - offsetSpeakerY);
