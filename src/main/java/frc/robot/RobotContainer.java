@@ -17,6 +17,7 @@ import static frc.robot.settings.Constants.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -412,8 +413,8 @@ public class RobotContainer {
          */
       SequentialCommandGroup orbitAmpShot = new SequentialCommandGroup(
         new InstantCommand(()->shooter.setTargetVelocity(shooterAmpSpeed, shooterAmpSpeed, 50, 50), shooter),
-        new AutoBuilder().pathfindToPose(getAmpShotPose(), DEFAUL_PATH_CONSTRAINTS),
-        new MoveMeters(driveTrain, 2, -2, 0, 0),
+        new AutoBuilder().pathfindThenFollowPath(PathPlannerPath.fromPathFile("AmpShotSetup"), DEFAUL_PATH_CONSTRAINTS),
+        new MoveMeters(driveTrain, 2, -0.5, 0, 0),
         new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
         new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
