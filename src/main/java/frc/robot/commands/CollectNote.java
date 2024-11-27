@@ -52,7 +52,7 @@ public class CollectNote extends Command {
         Vision.K_DETECTOR_TY_D);
     tyLimiter = new SlewRateLimiter(20, -20, 0);
     txController.setSetpoint(0);
-    tyController.setSetpoint(0);
+    tyController.setSetpoint(2.5);
     txController.setTolerance(3.5, 0.25);
     tyController.setTolerance(1, 0.25);
     detectorData = limelight.getNeuralDetectorValues();
@@ -64,44 +64,34 @@ public class CollectNote extends Command {
   public void execute() {
     detectorData = limelight.getNeuralDetectorValues();
 
-    if (detectorData == null) {
-      drivetrain.stop();
-      System.err.println("nullDetectorData");
-      return;
-    }
-    if (!detectorData.isResultValid) {
-      if (runsInvalid <= 10) { // don't stop imediately, in case only a couple frames were missed
-        drivetrain.drive(new ChassisSpeeds(tyLimiter.calculate(0), 0, 0));
-      } else {
-        drivetrain.stop();
-      }
-      System.err.println("invalidDetectorData");
-      runsInvalid++;
-      return;
-    } else {
-      runsInvalid = 0;
-    }
+    // if (!detectorData.isResultValid) {
+    //   if (runsInvalid <= 10) { // don't stop imediately, in case only a couple frames were missed
+    //     drivetrain.drive(new ChassisSpeeds(tyLimiter.calculate(0), 0, 0));
+    //   } else {
+    //     drivetrain.stop();
+    //   }
+    //   System.err.println("invalidDetectorData");
+    //   runsInvalid++;
+    //   return;
+    // } else {
+    //   runsInvalid = 0;
+    // }
     
     ty = detectorData.ty;
-    if(!closeNote) {
-      tx = detectorData.tx;
-      double forwardSpeed = tyLimiter.calculate(-20/Math.abs(tx));
-      SmartDashboard.putNumber("CollectNote/forward speed limited", forwardSpeed);
-      if(Math.abs(forwardSpeed)>1) {forwardSpeed = -1;}
-      drivetrain.drive(new ChassisSpeeds(
-        forwardSpeed,
-        txController.calculate(-tx),
-        0));
-      } else if(detectorData.ty<=5.5){
-        tx = detectorData.tx;
+    if(detectorData.isResultValid){
+        tx = -detectorData.tx;
         double forwardSpeed = tyLimiter.calculate(-20/Math.abs(tx));
         if(Math.abs(forwardSpeed)>1) {forwardSpeed = -1;}
+        double sidewaysSpeed = txController.calculate(-tx);
+        if(sidewaysSpeed>1){sidewaysSpeed = 1;}
+        if(sidewaysSpeed<-1){sidewaysSpeed = -1;}
         drivetrain.drive(new ChassisSpeeds(
           forwardSpeed,
-          txController.calculate(-tx),
+          sidewaysSpeed,
           0));
         SmartDashboard.putNumber("CollectNote/forward speed limited", forwardSpeed);
-    } else {
+    } 
+    else {
       drivetrain.drive(new ChassisSpeeds(
         -1, 0, 0));
         runsInvalid++;
@@ -116,6 +106,7 @@ public class CollectNote extends Command {
     SmartDashboard.putNumber("CollectNote/calculated radians per second", txController.calculate(tx));
     SmartDashboard.putNumber("CollectNote/calculated forward meters per second", tyLimiter.calculate(-20/Math.abs(tx)));
     SmartDashboard.putBoolean("CollectNote/closeNote", closeNote);
+    SmartDashboard.putBoolean("CollectNote/isNoteSeen", detectorData.isResultValid);
     SmartDashboard.putNumber("CollectNote/runsInvalid", runsInvalid);
     // drives the robot forward faster if the object is higher up on the screen, and turns it more based on how far away the object is from x=0
   }
@@ -133,6 +124,6 @@ public class CollectNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null || runsInvalid>5); 
+    return ((tyController.atSetpoint() && txController.atSetpoint()) || detectorData == null ||runsInvalid>5); 
   }
 }
