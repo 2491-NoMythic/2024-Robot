@@ -223,6 +223,7 @@ public class RobotContainer {
     configureDriveTrain();
     configureBindings();
     autoInit();
+    ampShotInit();
     // Configure the trigger bindings
   }
   private void climbSpotChooserInit() {
@@ -386,47 +387,7 @@ public class RobotContainer {
     if(intakeExists&&indexerExists) {
       new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(()->DriverStation.isTeleop()).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
     }
-    if(indexerExists&&shooterExists&&angleShooterExists) {
-      double indexerAmpSpeed;
-      double shooterAmpSpeed;
-      if(Preferences.getBoolean("CompBot", true)) {
-        shooterAmpSpeed = ShooterConstants.COMP_AMP_RPS;
-        indexerAmpSpeed = IndexerConstants.COMP_INDEXER_AMP_SPEED;
-      } else {
-        shooterAmpSpeed = ShooterConstants.PRAC_AMP_RPS;
-        indexerAmpSpeed = IndexerConstants.PRAC_INDEXER_AMP_SPEED;
-      }
-      SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
-        // new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
-        new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
-        new MoveMeters(driveTrain, 0.06, 0.3, 0, 0),
-        // new WaitCommand(2),
-        new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
-        new InstantCommand(()->indexer.magicRPS(indexerAmpSpeed), indexer),//45 worked but a bit too high
-        new WaitCommand(0.5),
-        new InstantCommand(()->intake.setNoteHeld(false))
-        );
-        SmartDashboard.putNumber("Indexer Amp Speed", indexerAmpSpeed);
-        /**
-         * the following code producs a command that will first pathfind to a pose right in front of the amplifier, then drive backwards into the amp, then run our shooters amp shot 
-         * sequence as it was at the 2024 State competition.
-         */
-      SequentialCommandGroup orbitAmpShot = new SequentialCommandGroup(
-        new InstantCommand(()->shooter.setTargetVelocity(shooterAmpSpeed, shooterAmpSpeed, 50, 50), shooter),
-        new AutoBuilder().pathfindThenFollowPath(PathPlannerPath.fromPathFile("AmpShotSetup"), DEFAUL_PATH_CONSTRAINTS),
-        new MoveMeters(driveTrain, 2, -0.5, 0, 0),
-        new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
-        new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
-        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
-        new WaitUntil(()->(Math.abs(shooter.getLSpeed()-shooterAmpSpeed)<0.2)&&(Math.abs(shooter.getRSpeed()-shooterAmpSpeed)<0.3)),
-        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
-        new InstantCommand(()->indexer.magicRPSSupplier(()->indexerAmpSpeed), indexer),
-        new WaitCommand(0.5),
-        new InstantCommand(()->intake.setNoteHeld(false))
-      );
-        new Trigger(AmpAngleSup).whileTrue(orbitAmpShot);
-        SmartDashboard.putData("amp shot", scoreAmp);
-    }
+    
     SmartDashboard.putData("move 1 meter", new MoveMeters(driveTrain, 1, 0.2, 0.2, 0.2));
     InstantCommand setOffsets = new InstantCommand(driveTrain::setEncoderOffsets) {
       public boolean runsWhenDisabled() {
@@ -528,7 +489,7 @@ public class RobotContainer {
                 driveTrain::getPose, // Pose2d supplier
                 driveTrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
                 driveTrain::getChassisSpeeds,
-                driveTrain::driveWhileAimed,
+                driveTrain::drive,
                 new HolonomicPathFollowerConfig(
                     new PIDConstants(
                         k_XY_P,
@@ -641,6 +602,50 @@ public class RobotContainer {
       SmartDashboard.putData("groundIntake", new AutoGroundIntake(indexer, intake, driveTrain));
     }
     NamedCommands.registerCommand("wait x seconds", new WaitCommand(Preferences.getDouble("wait # of seconds", 0)));
+  }
+  public void ampShotInit() {
+    if(indexerExists&&shooterExists&&angleShooterExists) {
+      double indexerAmpSpeed;
+      double shooterAmpSpeed;
+      if(Preferences.getBoolean("CompBot", true)) {
+        shooterAmpSpeed = ShooterConstants.COMP_AMP_RPS;
+        indexerAmpSpeed = IndexerConstants.COMP_INDEXER_AMP_SPEED;
+      } else {
+        shooterAmpSpeed = ShooterConstants.PRAC_AMP_RPS;
+        indexerAmpSpeed = IndexerConstants.PRAC_INDEXER_AMP_SPEED;
+      }
+      SequentialCommandGroup scoreAmp = new SequentialCommandGroup(
+        // new InstantCommand(()->shooter.shootSameRPS(ShooterConstants.AMP_RPS), shooter),
+        new InstantCommand(()->shooter.shootWithSupplier(()->shooterAmpSpeed, true), shooter),
+        new MoveMeters(driveTrain, 0.06, 0.3, 0, 0),
+        // new WaitCommand(2),
+        new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
+        new InstantCommand(()->indexer.magicRPS(indexerAmpSpeed), indexer),//45 worked but a bit too high
+        new WaitCommand(0.5),
+        new InstantCommand(()->intake.setNoteHeld(false))
+        );
+        SmartDashboard.putNumber("Indexer Amp Speed", indexerAmpSpeed);
+        /**
+         * the following code producs a command that will first pathfind to a pose right in front of the amplifier, then drive backwards into the amp, then run our shooters amp shot 
+         * sequence as it was at the 2024 State competition.
+         */
+      SequentialCommandGroup orbitAmpShot = new SequentialCommandGroup(
+        new InstantCommand(()->shooter.setTargetVelocity(shooterAmpSpeed, shooterAmpSpeed, 50, 50), shooter),
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
+        // new AutoBuilder().pathfindThenFollowPath(PathPlannerPath.fromPathFile("AmpShotSetup"), DEFAUL_PATH_CONSTRAINTS),
+        new AutoBuilder().pathfindToPose(getAmpShotPose(), DEFAUL_PATH_CONSTRAINTS),
+        new MoveMeters(driveTrain, 0.9, -0.5, 0, 0),
+        new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
+        new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
+        new WaitUntil(()->(Math.abs(shooter.getLSpeed()-shooterAmpSpeed)<0.2)&&(Math.abs(shooter.getRSpeed()-shooterAmpSpeed)<0.3)),
+        new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
+        new InstantCommand(()->indexer.magicRPSSupplier(()->indexerAmpSpeed), indexer),
+        new WaitCommand(0.5),
+        new InstantCommand(()->intake.setNoteHeld(false))
+      );
+        new Trigger(AmpAngleSup).whileTrue(orbitAmpShot);
+        SmartDashboard.putData("amp shot", scoreAmp);
+    }
   }
   public void teleopInit() {
     if(climberExists) {
