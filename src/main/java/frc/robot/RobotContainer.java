@@ -8,6 +8,7 @@ import static frc.robot.settings.Constants.PS4Driver.*;
 import static frc.robot.settings.Constants.ShooterConstants.PRAC_AMP_RPS;
 import static frc.robot.settings.Constants.ShooterConstants.LONG_SHOOTING_RPS;
 
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -61,6 +62,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -510,7 +512,7 @@ public class RobotContainer {
     );
   }
 
-  private Pose2d getAmpShotPose() {
+  private Pose2d getAmpShotPose(Alliance currentAlliance) {
     if(currentAlliance == null) { return new Pose2d(5,5, new Rotation2d(Math.toRadians(-90)));}
     else {
       if(currentAlliance == Alliance.Blue) {
@@ -633,7 +635,10 @@ public class RobotContainer {
         new InstantCommand(()->shooter.setTargetVelocity(shooterAmpSpeed, shooterAmpSpeed, 50, 50), shooter),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
         // new AutoBuilder().pathfindThenFollowPath(PathPlannerPath.fromPathFile("AmpShotSetup"), DEFAUL_PATH_CONSTRAINTS),
-        new AutoBuilder().pathfindToPose(getAmpShotPose(), DEFAUL_PATH_CONSTRAINTS),
+        Commands.select(Map.of(
+          Alliance.Red, AutoBuilder.pathfindToPose(getAmpShotPose(Alliance.Red), DEFAULT_PATH_CONSTRAINTS),
+          Alliance.Blue, AutoBuilder.pathfindToPose(getAmpShotPose(Alliance.Blue), DEFAULT_PATH_CONSTRAINTS)
+        ), ()->currentAlliance==null ? Alliance.Red : currentAlliance),
         new MoveMeters(driveTrain, 0.9, -0.5, 0, 0),
         new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
         new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
@@ -681,7 +686,8 @@ public class RobotContainer {
   }
   public void robotPeriodic() {
       currentAlliance = DriverStation.getAlliance().get();
-
+      SmartDashboard.putBoolean("RobotPeriodicRan", true);
+      SmartDashboard.putString("AlliancePeriodic", currentAlliance == null? "null" : currentAlliance == Alliance.Red? "Red": "Blue" );
     // logPower();
   }
   public void disabledPeriodic() {

@@ -4,7 +4,7 @@
 
 package frc.robot.commands.goToPose;
 
-import static frc.robot.settings.Constants.DriveConstants.DEFAUL_PATH_CONSTRAINTS;
+import static frc.robot.settings.Constants.DriveConstants.DEFAULT_PATH_CONSTRAINTS;
 
 import java.util.function.BooleanSupplier;
 
@@ -30,7 +30,7 @@ public class GoToAmp extends Command {
   public void initialize() {
     // PathPlannerPath ampPath = PathPlannerPath.fromPathFile("goToAmp");
     PathPlannerPath ampPath = PathPlannerPath.fromPathFile("ScoreAmp");
-    actualCommand = AutoBuilder.pathfindThenFollowPath(ampPath, DEFAUL_PATH_CONSTRAINTS);
+    actualCommand = AutoBuilder.pathfindThenFollowPath(ampPath, DEFAULT_PATH_CONSTRAINTS);
     actualCommand.initialize();
   }
 
