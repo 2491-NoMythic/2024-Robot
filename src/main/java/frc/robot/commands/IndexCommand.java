@@ -116,12 +116,12 @@ public class IndexCommand extends Command {
     } else {
       auto = false;
     }
-    if (!intake.isNoteSeen()) {
+    if (!RobotState.getInstance().isNoteSeen()) {
       // intake.intakeYes(IntakeConstants.INTAKE_SPEED); // only code that runs the intake
       if(runsEmpty<21) {runsEmpty++;}
       if(runsEmpty>=20) {
         idleReving = false;
-        intake.setNoteHeld(false);
+        RobotState.getInstance().IsNoteHeld = false;
         if(humanPlayerSupplier.getAsBoolean()) {
           m_Indexer.set(IndexerConstants.HUMAN_PLAYER_INDEXER_SPEED);
           shooter.setTargetVelocity(HUMAN_PLAYER_RPS, HUMAN_PLAYER_RPS, 40, 40);
@@ -168,8 +168,8 @@ public class IndexCommand extends Command {
       }
       if (indexer) {
           m_Indexer.set(IndexerConstants.INDEXER_SHOOTING_POWER);
-          if(!intake.isNoteSeen()) {
-            intake.setNoteHeld(false);
+          if(!RobotState.getInstance().isNoteSeen()) {
+            RobotState.getInstance().IsNoteHeld = false;
           }
        } else {
           m_Indexer.off();

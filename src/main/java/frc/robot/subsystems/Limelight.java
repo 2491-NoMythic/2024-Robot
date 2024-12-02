@@ -34,8 +34,6 @@ public class Limelight {
     private static Field2d field1 = new Field2d();
     private static Field2d field2 = new Field2d();
 
-    public static Boolean detectorEnabled = false;
-
      public static final AprilTagFieldLayout FIELD_LAYOUT;
 
       static {
@@ -75,10 +73,6 @@ public class Limelight {
         return limelight;
     }
 
-    public static void useDetectorLimelight(boolean enabled) {
-        detectorEnabled = enabled;
-    }
-
     /**
      * Gets the most recent limelight pose estimate, given that a trustworthy
      * estimate is
@@ -95,19 +89,19 @@ public class Limelight {
      * @return A valid and trustworthy pose. Null if no valid pose. Poses are
      *         prioritized by lowest tagDistance.
      */
-    public PoseEstimate getTrustedPose(Pose2d odometryPose, double LL1FOM, double LL2FOM) {
+    public PoseEstimate getTrustedPose() {
         PoseEstimate pose1 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT2_NAME);
         PoseEstimate pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(APRILTAG_LIMELIGHT3_NAME);
-
-        Boolean pose1Trust = isTrustworthy(APRILTAG_LIMELIGHT2_NAME, pose1, odometryPose);
-        Boolean pose2Trust = isTrustworthy(APRILTAG_LIMELIGHT3_NAME, pose2, odometryPose);
+        //we aren't using isTrustworthy here becuase as LL readings have gotten more reliable, we care less about tag distance
+        Boolean pose1Trust = isValid(APRILTAG_LIMELIGHT2_NAME, pose1);
+        Boolean pose2Trust = isValid(APRILTAG_LIMELIGHT3_NAME, pose2);
         //if the limelight positions will be merged, let SmartDashboard know!
         boolean mergingPoses = false;
         if(pose1Trust&&pose2Trust)  { mergingPoses = true;}
         SmartDashboard.putBoolean("LL poses merged", mergingPoses);
 
         if (pose1Trust && pose2Trust) {
-            return (mergedPose(pose1, pose2, LL1FOM, LL2FOM)); //merge the two positions proportionally based on the closest tag distance
+            return (mergedPose(pose1, pose2, getLLFOM(APRILTAG_LIMELIGHT2_NAME), getLLFOM(APRILTAG_LIMELIGHT3_NAME))); //merge the two positions proportionally based on the closest tag distance
         } else if (pose1Trust) {
             return pose1;
         } else if (pose2Trust) {
@@ -207,6 +201,42 @@ public class Limelight {
         } else
             return null;
     }
+/**
+ * larger FOM is bad, and should be used to indicate that this limelight is less trestworthy
+ * @param limelightName
+ * @return
+ */
+    public double getLLFOM(String limelightName) //larger fom is BAD, and is less trustworthy. 
+    {
+		//the value we place on each variable in the FOM. Higher value means it will get weighted more in the final FOM
+		/*These values should be tuned based on how heavily you want a contributer to be favored. Right now, we want the # of tags to be the most important 
+		 * with the distance from the tags also being immportant. and the tx and ty should only factor in a little bit, so they have the smallest number. Test this by making sure the two 
+		 * limelights give very different robot positions, and see where it decides to put the real robot pose.
+		*/
+		double distValue = 6;
+		double tagCountValue = 7;
+		double xyValue = 1;
+
+		//numTagsContributer is better when smaller, and is based off of how many april tags the Limelight identifies
+		double numTagsContributer;
+		if(limelight.getLLTagCount(limelightName) <= 0){
+			numTagsContributer = 0;
+		}else{
+			numTagsContributer = 1/limelight.getLLTagCount(limelightName);
+		}
+		//tx and ty contributers are based off where on the limelights screen the april tag is. Closer to the center means the contributer will bea smaller number, which is better.
+		double centeredTxContributer = Math.abs((limelight.getAprilValues(limelightName).tx))/29.8; //tx gets up to 29.8, the closer to 0 tx is, the closer to the center it is.
+		double centeredTyContributer = Math.abs((limelight.getAprilValues(limelightName).ty))/20.5; //ty gets up to 20.5 for LL2's and down. LL3's go to 24.85. The closer to 0 ty is, the closer to the center it is.
+		//the distance contributer gets smaller when the distance is closer, and is based off of how far away the closest tag is
+		double distanceContributer = (limelight.getClosestTagDist(limelightName)/5);
+		
+		// calculates the final FOM by taking the contributors and multiplying them by their values, adding them all together and then dividing by the sum of the values.
+		double LLFOM = (
+			(distValue*distanceContributer)+(tagCountValue*numTagsContributer)+(centeredTxContributer*xyValue)+(centeredTyContributer)
+			)/distValue+tagCountValue+xyValue+xyValue;
+		Logger.recordOutput("Vision/LLFOM" + limelightName, LLFOM);
+		return LLFOM;
+    }
 
     public LimelightDetectorData getNeuralDetectorValues() {
         return new LimelightDetectorData(
@@ -268,8 +298,6 @@ public class Limelight {
     private boolean isTrustworthy(String limelightName, PoseEstimate estimate, Pose2d odometryPose) {
         Boolean trusted = (
                 isValid(limelightName, estimate) &&
-                // estimate.pose.getTranslation().getDistance(odometryPose.getTranslation()) < ALLOWABLE_POSE_DIFFERENCE && // Unused
-                // ((estimate.avgTagDist < MAX_TAG_DISTANCE) || (estimate.tagCount >= 2 && estimate.avgTagDist<6))); // Trust poses when there are two tags, or when the tags are close to the camera.
                 estimate.avgTagDist<7);
 
         if (limelightName.equalsIgnoreCase(APRILTAG_LIMELIGHT2_NAME)) {

@@ -83,12 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
       intakeSideRight.burnFlash();
       //intakeSideRight.getPIDController().setReference(intakeRunSpeed, CANSparkMax.ControlType.kVelocity)
     }
-
-    if (Preferences.getBoolean("CompBot", true)) {
-      m_DistanceSensor = intakeSideLeft.getAnalog(Mode.kAbsolute);
-    } else {
-      m_DistanceSensor = intakeSideLeft.getAnalog(Mode.kAbsolute);
-    }
+    m_DistanceSensor = intakeSideLeft.getAnalog(Mode.kAbsolute);
 
     DataLog log = DataLogManager.getLog();
     motorLogger1 = new MotorLogger(log, "/intake/motor1");
@@ -152,24 +147,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-  /**
-   * uses the distance sensor inside the indexer to tell if there is a note fully
-   * inside the indexer
-   * 
-   * @return if the sensor sees something within it's range in front of it
-   */
-  public boolean isNoteSeen() {
-    return m_DistanceSensor.getVoltage() < 2;
-  }
-
-  public boolean isNoteHeld() {
-    return isNoteHeld;
-  }
-
-  public void setNoteHeld(boolean held) {
-    isNoteHeld = held;
-  }
-
   @Override
   public void periodic() {
     SmartDashboard.putNumber("voltage sensor output", m_DistanceSensor.getVoltage());
@@ -178,9 +155,7 @@ public class IntakeSubsystem extends SubsystemBase {
     motorLogger1.log(intake1);
     motorLogger2.log(intake2);
     logDistance.append(m_DistanceSensor.getVoltage());
-    logNoteIn.append(isNoteSeen());
-    SmartDashboard.putBoolean("is note in", isNoteSeen());
-    SmartDashboard.putBoolean("is note held", isNoteHeld());
-    RobotState.getInstance().IsNoteHeld = isNoteSeen();
+    logNoteIn.append(RobotState.getInstance().isNoteSeen());
+    RobotState.getInstance().intakeSensorVoltage = m_DistanceSensor.getVoltage();
   }
 }
