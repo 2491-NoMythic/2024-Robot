@@ -3,9 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.settings.Constants.IndexerConstants;
-import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 
 import java.util.function.DoubleSupplier;
 
