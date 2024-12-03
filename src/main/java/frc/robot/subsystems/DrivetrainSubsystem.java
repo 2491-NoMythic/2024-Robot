@@ -220,6 +220,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
 	}
+	/**
+	 * 
+	 * @return a rotation2D of the angle according to the odometer
+	 */
 	public Rotation2d getOdometryRotation() {
 		return odometer.getEstimatedPosition().getRotation();
 	}
@@ -572,6 +576,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	
 		m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getOdometryRotation().getDegrees());
+		RobotState.getInstance().odometerOrientation = getOdometryRotation().getDegrees();
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngleMoving());
 		SmartDashboard.putNumber("TESTING robot angle difference", getSpeakerAngleDifference());

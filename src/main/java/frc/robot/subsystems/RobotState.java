@@ -9,6 +9,7 @@ public class RobotState {
 	public boolean LimelightsUpdated;
 	public boolean lightsReset;
 	public double intakeSensorVoltage;
+	public double odometerOrientation;
 
 	private RobotState() {
 
