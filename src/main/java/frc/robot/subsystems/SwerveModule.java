@@ -64,7 +64,7 @@ public class SwerveModule {
     m_driveMotor = new TalonFX(driveMotorChannel, canivoreName);
     m_steerMotor = new TalonFX(steerMotorChannel, canivoreName);
     m_steerEncoder = new CANcoder(steerEncoderChannel, canivoreName);
-    m_steerEncoderOffset = steerEncoderOffset;
+    m_steerEncoderOffset = steerEncoderOffset;  
    
     CANcoderConfiguration steerEncoderConfig = DrivetrainSubsystem.ctreConfig.steerEncoderConfig;
     TalonFXConfiguration steerMotorConfig = DrivetrainSubsystem.ctreConfig.steerMotorConfig;

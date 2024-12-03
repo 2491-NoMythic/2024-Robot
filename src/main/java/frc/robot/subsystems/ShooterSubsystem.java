@@ -167,7 +167,7 @@ import java.util.function.DoubleSupplier;
 
     private double getSignedError(){
       return shooterR.getVelocity().getValueAsDouble()-targetVelocityR;
-    }
+    }   
     /**
      * checks if the right shooter motor is attempting to rev up
     * <p> We use the right shooter motor becuase it's geared, so it takes longer to rev up or down.

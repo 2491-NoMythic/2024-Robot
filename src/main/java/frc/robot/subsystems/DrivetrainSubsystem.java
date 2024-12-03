@@ -564,6 +564,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 	
 		m_field.setRobotPose(odometer.getEstimatedPosition());
+		Logger.recordOutput("robot position", odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getOdometryRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngleMoving());
@@ -587,6 +588,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 
 		Logger.recordOutput("MyStates", getModuleStates());
+		Logger.recordOutput("Gyro",getGyroscopeRotation() );
+		Logger.recordOutput("LimelightTest", lielig);
+
 
 
 	//	double[][] aprilTagData = LimelightHelpers.getLatestResults("limelight").targetingResults;

@@ -97,7 +97,8 @@ public class Limelight {
 
         Boolean pose1Trust = isTrustworthy(APRILTAG_LIMELIGHT2_NAME, pose1, odometryPose);
         Boolean pose2Trust = isTrustworthy(APRILTAG_LIMELIGHT3_NAME, pose2, odometryPose);
-
+        SmartDashboard.putBoolean("TESTING/leftlimelighttrust", pose1Trust);
+        SmartDashboard.putBoolean("TESTING/rightlimelighttrust", pose2Trust);
         if (pose1Trust && pose2Trust) {
             return ((pose1.avgTagDist < pose2.avgTagDist) ? pose1 : pose2); //select the limelight that has closer tags.
         } else if (pose1Trust) {
