@@ -25,6 +25,7 @@ import static frc.robot.settings.Constants.ShooterConstants.AUTO_AIM_ROBOT_kP;
 import static frc.robot.settings.Constants.ShooterConstants.OFFSET_MULTIPLIER;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT2_NAME;
 import static frc.robot.settings.Constants.Vision.APRILTAG_LIMELIGHT3_NAME;
+import static frc.robot.settings.Constants.Vision.OBJ_DETECTION_LIMELIGHT_NAME;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +41,9 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -65,7 +68,9 @@ import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.CTREConfigs;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Field;
-import frc.robot.settings.Constants.ShooterConstants; 
+import frc.robot.settings.Constants.ShooterConstants;
+
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 
@@ -588,27 +593,58 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 
 		Logger.recordOutput("MyStates", getModuleStates());
-		Logger.recordOutput("Gyro",getGyroscopeRotation() );
-		Logger.recordOutput("LimelightTest", lielig);
+		Logger.recordOutput("Position", odometer.getEstimatedPosition());
+		Logger.recordOutput("Gyro", getGyroscopeRotation());
+		
+		//Logger.recordOutput("Vision/targetposes/NotePoses/FieldSpace", robotToFieldCoordinates(LimelightHelpers.getTargetPose3d_RobotSpace(OBJ_DETECTION_LIMELIGHT_NAME)));
+		//liamsEstimates();
+		
+	}
+
+	/**
+	 * 
+	 * @param robotCoordinates - put in the coordinates that have an origin of the robot
+	 * @return
+	 */
+	private Pose3d robotToFieldCoordinates(Pose3d robotCoordinates)
+	{
+		double robotCoordinatesX = robotCoordinates.getX();
+		double robotCoordinatesY = robotCoordinates.getY();
+		double robotCoordinatesZ = robotCoordinates.getZ();
+		Rotation3d robotCoordinatesAngle = robotCoordinates.getRotation();
+
+		double odometrPoseX = odometer.getEstimatedPosition().getX();
+		double odometrPosey = odometer.getEstimatedPosition().getY();
 
 
+		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
+	}
 
-	//	double[][] aprilTagData = LimelightHelpers.getLatestResults("limelight").targetingResults;
-	//	double[][] aprilTagData = LimelightHelpers.getLatestResults("limelight").targetingResults.
-     /** 
-        for (int i = 0; i < aprilTagData.length; i++) {
-            double tagX = aprilTagData[i][0]; 
-            double tagY = aprilTagData[i][1]; 
-            double tagZ = aprilTagData[i][2];
+	@AutoLogOutput
+	private Pose3d liamsEstimates()
+	{	
+		
+		double limelight1y = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getY();
+		double limelight1x = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getX();
+		double limelight1z = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME).getZ();
+		Pose3d targetPose1 = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME);
+		//int limelight1TagNumber = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT2_NAME)
 
-            double distanceX = tagX - odometer.getEstimatedPosition().getX(); 
-            double distanceY = tagY- odometer.getEstimatedPosition().getY(); 
-            double distanceZ = tagZ;
+		double limelight2y = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getY();
+		double limelight2x = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getX();
+		double limelight2z = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME).getZ();
+		Pose3d targetPose2 = LimelightHelpers.getTargetPose3d_CameraSpace(APRILTAG_LIMELIGHT3_NAME);
 
-			SmartDashboard.putNumber("Tag " + i + " X", distanceX); 
-			SmartDashboard.putNumber("Tag " + i + " Y", distanceY); 
-			SmartDashboard.putNumber("Tag " + i + " Z", distanceZ);
-        }
-		*/
+		double distance1 = Math.sqrt((limelight1z*limelight1z) +(Math.sqrt((limelight1x*limelight1x)+(limelight1y*limelight1y))*Math.sqrt((limelight1x*limelight1x)+(limelight1y*limelight1y))));
+		double confidenceSource1 = 1/distance1;
+
+		double distance2 = Math.sqrt((limelight2z*limelight2z) +(Math.sqrt((limelight2x*limelight2x)+(limelight2y*limelight2y))*Math.sqrt((limelight2x*limelight2x)+(limelight2y*limelight2y))));
+		double confidenceSource2 = 1/distance2;
+
+		double liamsEstimatesX = (confidenceSource1*limelight1x + confidenceSource2*limelight2x)/(confidenceSource1 + confidenceSource2);
+		double liamsEstimatesY = (confidenceSource1*limelight1y + confidenceSource2*limelight2y)/(confidenceSource1 + confidenceSource2);
+		double liamsEstimatesZ = (confidenceSource1*limelight1z + confidenceSource2*limelight2z)/(confidenceSource1 + confidenceSource2);
+		
+		return new Pose3d(liamsEstimatesX, liamsEstimatesY, liamsEstimatesZ , null);
 	}
 }
