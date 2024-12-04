@@ -138,10 +138,10 @@ public class IndexCommand extends Command {
       intake.intakeOff();
       if(revUpSupplier.getAsBoolean()||stageAngleSup.getAsBoolean()||subwooferAngleSup.getAsBoolean()||OverStagePassSup.getAsBoolean()) {
         if(OverStagePassSup.getAsBoolean()) {
-          shooter.shootRPS(ShooterConstants.PASS_RPS);
+          shooter.shootRPS(35);
           idleReving = false;
         } else {
-          shooter.shootRPS(ShooterConstants.LONG_SHOOTING_RPS);
+          shooter.shootRPS(35);
           idleReving = false;
         }
       } else {
@@ -149,7 +149,7 @@ public class IndexCommand extends Command {
           shooter.shootRPSWithCurrent(0, 20, 30);
           idleReving = false;
         } else {
-          shooter.shootRPSWithCurrent(LONG_SHOOTING_RPS, 20, 30);
+          shooter.shootRPSWithCurrent(35, 20, 30);
           idleReving = true;
         }
       }

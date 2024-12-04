@@ -55,28 +55,7 @@ public class AimShooter extends Command {
 
 	@Override
 	public void execute() {
-		if(SubwooferSupplier1.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(Field.SUBWOOFER_ANGLE);
-		} else if (StageAngleSupplier.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(Field.PODIUM_SHOOTER_ANGLE);
-		}  else if (farStageAngleSup.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(Field.FAR_STAGE_SHOOTER_ANGLE);
-		} else if (AmpSup.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE);
-		} else if(humanPlayerSupplier.getAsBoolean()) {
-			frc.robot.subsystems.RobotState.getInstance().lightsReset = true;
-			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.HUMAN_PLAYER_ANGLE);
-		} else if (groundIntakeSup.getAsBoolean()){
-			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.GROUND_INTAKE_SHOOTER_ANGLE);
-		} else  if(OverStageAngleSup.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(ShooterConstants.OVER_STAGE_PASS_ANGLE);
-		} else if(OppositeStageShotSup.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(Field.OPPOSITE_STAGE_SHOOTER_ANGLE);
-		} else if (LowPassAngleSup.getAsBoolean()) {
-			angleShooterSubsystem.setDesiredShooterAngle(12);
-		} else {
-			angleShooterSubsystem.setDesiredShooterAngle(angleShooterSubsystem.calculateSpeakerAngle());
-		}
+		angleShooterSubsystem.setDesiredShooterAngle(45);
 	}
 
 	@Override
