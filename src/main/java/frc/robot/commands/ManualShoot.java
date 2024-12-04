@@ -45,7 +45,7 @@ public class ManualShoot extends Command {
   @Override
   public void end(boolean interrupted) {
     indexer.off();
-    intake.setNoteHeld(false);
+    RobotState.getInstance().IsNoteHeld = false;
   }
 
   // Returns true when the command should end.
