@@ -54,7 +54,7 @@ public class ShootNote extends Command {
     timer.stop();
     indexer.off();
     timer.reset();
-    intake.setNoteHeld(false);
+    RobotState.getInstance().IsNoteHeld = false;
   }
 
   // Returns true when the command should end.
