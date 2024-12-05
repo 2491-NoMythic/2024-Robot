@@ -4,6 +4,7 @@
 
 package frc.robot.commands.NamedCommands;
 
+import frc.robot.subsystems.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,7 +55,7 @@ public class ShootNote extends Command {
     timer.stop();
     indexer.off();
     timer.reset();
-    intake.setNoteHeld(false);
+    RobotState.getInstance().IsNoteHeld = false;
   }
 
   // Returns true when the command should end.

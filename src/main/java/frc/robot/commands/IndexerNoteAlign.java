@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.ShooterSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -35,9 +36,9 @@ public class IndexerNoteAlign extends SequentialCommandGroup {
       new WaitCommand(()->0.6),
       new InstantCommand(()->indexer.magicRPS(10), indexer),
       new WaitCommand(()->0.3),
-      new WaitUntil(()->intake.isNoteSeen()),
+      new WaitUntil(()->RobotState.getInstance().isNoteSeen()),
       new WaitCommand(()->0.1),
-      new InstantCommand(()->intake.setNoteHeld(true))
+      new InstantCommand(()->RobotState.getInstance().IsNoteHeld = true)
     );
   }
 }

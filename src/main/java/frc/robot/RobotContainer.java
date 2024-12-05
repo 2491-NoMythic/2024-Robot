@@ -221,7 +221,6 @@ public class RobotContainer {
     if(lightsExist) {lightsInst();}
     if(indexerExists) {indexInit();}
     if(intakeExists && shooterExists && indexerExists && angleShooterExists) {indexCommandInst();}
-    Limelight.useDetectorLimelight(useDetectorLimelight);
     configureDriveTrain();
     configureBindings();
     autoInit();
@@ -273,7 +272,7 @@ public class RobotContainer {
       ClimberDownSup));
   }
   private void indexInit() {
-    indexer = new IndexerSubsystem(intakeExists ? intake::isNoteSeen : () -> false);
+    indexer = new IndexerSubsystem(intakeExists ? RobotState.getInstance()::isNoteSeen : () -> false);
   }
   private void indexCommandInst() {
     defaulNoteHandlingCommand = new IndexCommand(indexer, ShootIfReadySup, AimWhileMovingSup, shooter, intake, driveTrain, angleShooterSubsystem, HumanPlaySup, StageAngleSup, SubwooferAngleSup, GroundIntakeSup, FarStageAngleSup, OperatorRevToZero, intakeReverse, OverStagePassSup, OppositeStageShotSup);
@@ -341,13 +340,13 @@ public class RobotContainer {
     if(Preferences.getBoolean("Detector Limelight", false)) {
       Command AutoGroundIntake = new SequentialCommandGroup(
         new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem),
-        new InstantCommand(()->intake.setNoteHeld(true))
+        new InstantCommand(()->RobotState.getInstance().IsNoteHeld = true)
       );
       autoPickup = new ParallelRaceGroup(
         new SequentialCommandGroup(
           new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(30), angleShooterSubsystem),
           new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem),
-          new InstantCommand(()->intake.setNoteHeld(true))),
+          new InstantCommand(()->RobotState.getInstance().setNoteHeld(true))),
         new SequentialCommandGroup(
           new CollectNote(driveTrain, limelight),
           new DriveTimeCommand(-1, 0, 0, 1.5, driveTrain),
@@ -358,7 +357,7 @@ public class RobotContainer {
       podiumAutoPickup = new ParallelRaceGroup(
           new SequentialCommandGroup(
             new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem),
-            new InstantCommand(()->intake.setNoteHeld(true))),
+            new InstantCommand(()->RobotState.getInstance().setNoteHeld(true))),
           new SequentialCommandGroup(
             new PodiumCollectNote(driveTrain, limelight),
             new DriveTimeCommand(-1, 0, 0, 0.5, driveTrain),
@@ -387,7 +386,7 @@ public class RobotContainer {
       new Trigger(GroundIntakeSup).whileTrue(new GroundIntake(intake, indexer, driveTrain, angleShooterSubsystem));
     }
     if(intakeExists&&indexerExists) {
-      new Trigger(intake::isNoteSeen).and(()->!intake.isNoteHeld()).and(()->DriverStation.isTeleop()).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
+      new Trigger(()->RobotState.getInstance().isNoteSeen()).and(()->!RobotState.getInstance().IsNoteHeld).and(()->DriverStation.isTeleop()).and(()->!AimWhileMovingSup.getAsBoolean()).onTrue(new IndexerNoteAlign(indexer, intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(5));
     }
     
     SmartDashboard.putData("move 1 meter", new MoveMeters(driveTrain, 1, 0.2, 0.2, 0.2));
@@ -579,7 +578,7 @@ public class RobotContainer {
       if(sideWheelsExists){
         NamedCommands.registerCommand("intakeSideWheels", new InstantCommand(()-> intake.intakeSideWheels(1)));
       }
-      NamedCommands.registerCommand("note isn't held", new WaitUntil(()->!intake.isNoteSeen()));
+      NamedCommands.registerCommand("note isn't held", new WaitUntil(()->!RobotState.getInstance().isNoteSeen()));
     }
     if(indexerExists&&shooterExists) {
       NamedCommands.registerCommand("initialShot", new InitialShot(shooter, indexer, 0.9, 0.1, angleShooterSubsystem));
@@ -624,7 +623,7 @@ public class RobotContainer {
         new WaitUntil(()->(shooter.validShot() && driveTrain.getChassisSpeeds().vxMetersPerSecond == 0)),
         new InstantCommand(()->indexer.magicRPS(indexerAmpSpeed), indexer),//45 worked but a bit too high
         new WaitCommand(0.5),
-        new InstantCommand(()->intake.setNoteHeld(false))
+        new InstantCommand(()->RobotState.getInstance().setNoteHeld(false))
         );
         SmartDashboard.putNumber("Indexer Amp Speed", indexerAmpSpeed);
         /**
@@ -646,7 +645,7 @@ public class RobotContainer {
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(Field.AMPLIFIER_SHOOTER_ANGLE)),
         new InstantCommand(()->indexer.magicRPSSupplier(()->indexerAmpSpeed), indexer),
         new WaitCommand(0.5),
-        new InstantCommand(()->intake.setNoteHeld(false))
+        new InstantCommand(()->RobotState.getInstance().setNoteHeld(false))
       );
         new Trigger(AmpAngleSup).whileTrue(orbitAmpShot);
         SmartDashboard.putData("amp shot", scoreAmp);
@@ -688,6 +687,13 @@ public class RobotContainer {
       currentAlliance = DriverStation.getAlliance().get();
       SmartDashboard.putBoolean("RobotPeriodicRan", true);
       SmartDashboard.putString("AlliancePeriodic", currentAlliance == null? "null" : currentAlliance == Alliance.Red? "Red": "Blue" );
+
+      if(Preferences.getBoolean("Use Limelight", false)) {
+        limelight.updateLoggingWithPoses();
+      }
+
+      SmartDashboard.putBoolean("is note in", RobotState.getInstance().isNoteSeen());
+      SmartDashboard.putBoolean("is note held", RobotState.getInstance().IsNoteHeld);
     // logPower();
   }
   public void disabledPeriodic() {

@@ -220,6 +220,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
 	}
+	/**
+	 * 
+	 * @return a rotation2D of the angle according to the odometer
+	 */
 	public Rotation2d getOdometryRotation() {
 		return odometer.getEstimatedPosition().getRotation();
 	}
@@ -313,7 +317,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * larger pose shifts will take multiple calls to complete.
 	 */
 	public void updateOdometryWithVision() {
-		PoseEstimate estimate = limelight.getTrustedPose(getPose(), getLLFOM(APRILTAG_LIMELIGHT2_NAME), getLLFOM(APRILTAG_LIMELIGHT3_NAME));
+		PoseEstimate estimate = limelight.getTrustedPose();
 		if (estimate != null) {
 			boolean doRejectUpdate = false;
 			if(Math.abs(pigeon.getRate()) > 720) {
@@ -330,8 +334,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		} else {
 			RobotState.getInstance().LimelightsUpdated = false;
 		}
-
-		limelight.updateLoggingWithPoses();
 	}
 	/**
 	 * Set the odometry using the current apriltag estimate, disregarding the pose trustworthyness.
@@ -339,7 +341,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * You only need to run this once for it to take effect.
 	 */
 	public void forceUpdateOdometryWithVision() {
-		PoseEstimate estimate = limelight.getValidPose();
+		PoseEstimate estimate = limelight.getTrustedPose();
 		if (estimate != null) {
 			resetOdometry(estimate.pose);
 		} else {
@@ -574,6 +576,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	
 		m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getOdometryRotation().getDegrees());
+		RobotState.getInstance().odometerOrientation = getOdometryRotation().getDegrees();
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 		SmartDashboard.putNumber("calculated speaker angle", calculateSpeakerAngleMoving());
 		SmartDashboard.putNumber("TESTING robot angle difference", getSpeakerAngleDifference());
@@ -622,37 +625,4 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		return new Pose3d(robotCoordinatesX+odometrPoseX,robotCoordinatesY+odometrPosey,robotCoordinatesZ, robotCoordinatesAngle);
 	}
-
-	public double getLLFOM(String limelightName) //larger fom is BAD, and is less trustworthy. 
-    {
-		//the value we place on each variable in the FOM. Higher value means it will get weighted more in the final FOM
-		/*These values should be tuned based on how heavily you want a contributer to be favored. Right now, we want the # of tags to be the most important 
-		 * with the distance from the tags also being immportant. and the tx and ty should only factor in a little bit, so they have the smallest number. Test this by making sure the two 
-		 * limelights give very different robot positions, and see where it decides to put the real robot pose.
-		*/
-		double distValue = 6;
-		double tagCountValue = 7;
-		double xyValue = 1;
-
-		//numTagsContributer is better when smaller, and is based off of how many april tags the Limelight identifies
-		double numTagsContributer;
-		if(limelight.getLLTagCount(limelightName) <= 0){
-			numTagsContributer = 0;
-		}else{
-			numTagsContributer = 1/limelight.getLLTagCount(limelightName);
-		}
-		//tx and ty contributers are based off where on the limelights screen the april tag is. Closer to the center means the contributer will bea smaller number, which is better.
-		double centeredTxContributer = Math.abs((limelight.getAprilValues(limelightName).tx))/29.8; //tx gets up to 29.8, the closer to 0 tx is, the closer to the center it is.
-		double centeredTyContributer = Math.abs((limelight.getAprilValues(limelightName).ty))/20.5; //ty gets up to 20.5 for LL2's and down. LL3's go to 24.85. The closer to 0 ty is, the closer to the center it is.
-		//the distance contributer gets smaller when the distance is closer, and is based off of how far away the closest tag is
-		double distanceContributer = (limelight.getClosestTagDist(limelightName)/5);
-		
-		// calculates the final FOM by taking the contributors and multiplying them by their values, adding them all together and then dividing by the sum of the values.
-		double LLFOM = (
-			(distValue*distanceContributer)+(tagCountValue*numTagsContributer)+(centeredTxContributer*xyValue)+(centeredTyContributer)
-			)/distValue+tagCountValue+xyValue+xyValue;
-		Logger.recordOutput("Vision/LLFOM" + limelightName, LLFOM);
-		return LLFOM;
-    }
-
 }

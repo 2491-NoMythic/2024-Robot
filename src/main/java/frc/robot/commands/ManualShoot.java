@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
+import frc.robot.subsystems.RobotState;
 import frc.robot.settings.Constants.IndexerConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -45,7 +46,7 @@ public class ManualShoot extends Command {
   @Override
   public void end(boolean interrupted) {
     indexer.off();
-    intake.setNoteHeld(false);
+    RobotState.getInstance().IsNoteHeld = false;
   }
 
   // Returns true when the command should end.

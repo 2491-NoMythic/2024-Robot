@@ -14,6 +14,7 @@ import frc.robot.subsystems.AngleShooterSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RobotState;
 public class AutoGroundIntake extends Command {
   /** Creates a new ConditionalIndexer. */
   IndexerSubsystem indexer;
@@ -55,12 +56,12 @@ public class AutoGroundIntake extends Command {
   public void end(boolean interrupted) {
     intake.intakeOff();
     indexer.off();
-    intake.setNoteHeld(true);
+    RobotState.getInstance().IsNoteHeld = true;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.isNoteSeen();
+    return RobotState.getInstance().isNoteSeen();
   }
 }
