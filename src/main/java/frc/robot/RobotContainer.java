@@ -18,6 +18,7 @@ import static frc.robot.settings.Constants.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -634,11 +635,8 @@ public class RobotContainer {
         new InstantCommand(()->shooter.setTargetVelocity(shooterAmpSpeed, shooterAmpSpeed, 50, 50), shooter),
         new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(50), angleShooterSubsystem),
         // new AutoBuilder().pathfindThenFollowPath(PathPlannerPath.fromPathFile("AmpShotSetup"), DEFAUL_PATH_CONSTRAINTS),
-        Commands.select(Map.of(
-          Alliance.Red, AutoBuilder.pathfindToPose(getAmpShotPose(Alliance.Red), DEFAULT_PATH_CONSTRAINTS),
-          Alliance.Blue, AutoBuilder.pathfindToPose(getAmpShotPose(Alliance.Blue), DEFAULT_PATH_CONSTRAINTS)
-        ), ()->currentAlliance==null ? Alliance.Red : currentAlliance),
-        new MoveMeters(driveTrain, 0.9, -0.5, 0, 0),
+        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("AmpShotSetup"), DEFAULT_PATH_CONSTRAINTS),
+        new MoveMeters(driveTrain, 0.34, -0.5, 0, 0),
         new MoveMeters(driveTrain, 0.015, 0.5, 0, 0),
         new InstantCommand(driveTrain::pointWheelsInward, driveTrain),
         new WaitUntil(()->(Math.abs(shooter.getLSpeed()-shooterAmpSpeed)<0.2)&&(Math.abs(shooter.getRSpeed()-shooterAmpSpeed)<0.3)),
