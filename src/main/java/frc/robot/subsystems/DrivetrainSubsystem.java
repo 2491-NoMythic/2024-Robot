@@ -505,7 +505,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		int correctionDirection;
 		double speakerX;
 		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-			correctionDirection = 1;
+			correctionDirection = -1;
 			speakerX = blueRobotX;
 		} else {
 			correctionDirection = -1;
