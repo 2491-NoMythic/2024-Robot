@@ -452,10 +452,6 @@ public static final class CTREConfigs {
 
   }
 
-  public final class Controllers{
-    public static final boolean CONTROLLER_IS_XBOX = false;
-  }
-
   public final class Field{
     
     public static final double ROBOT_CENTER_TO_BUMBER = 0.419;
