@@ -73,6 +73,7 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.math.MathUtil;
@@ -95,8 +96,7 @@ import frc.robot.commands.ClimberCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-
-// preferences are information saved on the Rio. They are initialized once, then gotten every time we run the code.
+  // preferences are information saved on the Rio. They are initialized once, then gotten every time we run the code.
   private final boolean intakeExists = Preferences.getBoolean("Intake", true);
   private final boolean shooterExists = Preferences.getBoolean("Shooter", true);
   private final boolean angleShooterExists = Preferences.getBoolean("AngleShooter", true);
@@ -106,6 +106,7 @@ public class RobotContainer {
   private final boolean sideWheelsExists = Preferences.getBoolean("IntakeSideWheels", true);
   //private final boolean autosExist = Preferences.getBoolean("Autos", true);
   private final boolean useDetectorLimelight = Preferences.getBoolean("Detector Limelight", true);
+  private final boolean useXboxController = Preferences.getBoolean("Xbox Controller", true);
 
   private DrivetrainSubsystem driveTrain;
   private IntakeSubsystem intake;
@@ -114,8 +115,10 @@ public class RobotContainer {
   private Drive defaultDriveCommand;
   private Climber climber;
   private Lights lights;
-  private PS4Controller driverController;
-  private PS4Controller operatorController;
+  private XboxController driverControllerXbox;
+  private XboxController operatorControllerXbox;
+  private PS4Controller driverControllerPS4;
+  private PS4Controller operatorControllerPS4;
   //private PS4Controller operatorController;
   private Limelight limelight;
   private IndexCommand defaulNoteHandlingCommand;
@@ -170,6 +173,7 @@ public class RobotContainer {
     Preferences.initBoolean("Detector Limelight", false);
     Preferences.initBoolean("Use Limelight", true);
     Preferences.initBoolean("Use 2 Limelights", true);
+    Preferences.initBoolean("Xbox Controller", true);
     Preferences.initDouble("wait # of seconds", 0);
 
     DataLogManager.start(); //Start logging
@@ -179,35 +183,68 @@ public class RobotContainer {
     // URCL.start();
     // SignalLogger.setPath("/media/sda1/ctre-logs/");
     // SignalLogger.start();
-    driverController = new PS4Controller(DRIVE_CONTROLLER_ID);
-    operatorController = new PS4Controller(OPERATOR_CONTROLLER_ID);
-    //operatorController = new PS4Controller(OPERATOs_CONTROLLER_ID);
-    PDP = new PowerDistribution(1, ModuleType.kRev);
 
-    ZeroGyroSup = driverController::getPSButton;
-    ForceVisionSup = driverController::getOptionsButton;
+    if(useXboxController){
+      driverControllerXbox = new XboxController(DRIVE_CONTROLLER_ID);
+      operatorControllerXbox = new XboxController(OPERATOR_CONTROLLER_ID);
+      //operatorController = new PS4Controller(OPERATOs_CONTROLLER_ID);
+      PDP = new PowerDistribution(1, ModuleType.kRev);
 
-    AimWhileMovingSup = driverController::getL2Button;
-    HumanPlaySup = driverController::getR1Button;
-    AmpAngleSup = ()->driverController.getPOV() == 90||driverController.getPOV() == 45||driverController.getPOV() == 135;;
-    ManualShootSup = driverController::getR2Button;
-    ClimberDownSup = operatorController::getPSButton;
-    GroundIntakeSup = driverController::getL1Button;
-    OperatorRevToZero = ()->operatorController.getPOV() != -1;
-    SubwooferAngleSup =()-> driverController.getCrossButton()||operatorController.getCrossButton();
-    StageAngleSup = ()->operatorController.getTriangleButton()||driverController.getTriangleButton();;
-    FarStageAngleSup = ()->operatorController.getSquareButton()||driverController.getSquareButton();
-    OppositeStageShotSup = ()->operatorController.getCircleButton()||driverController.getCircleButton();
-    OverStagePassSup = operatorController::getL1Button;
-    CenterAmpPassSup = operatorController::getL2Button;
-    AutoPickupSup = ()->operatorController.getTouchpad()||driverController.getTouchpad();
-    zeroSup = ()->0;
-    falseSup = ()->false;
-    //discontinued buttons:
-    intakeReverse = ()->false;
-    ShooterUpManualSup = ()->false;
-    ForceVisionSup = ()->false;
-    ShootIfReadySup = ()->false;
+      ZeroGyroSup = driverControllerXbox::getStartButton;
+      ForceVisionSup = driverControllerXbox::getRightStickButton;
+
+      AimWhileMovingSup = ()-> driverControllerXbox.getLeftTriggerAxis() >= 0.5;
+      HumanPlaySup = driverControllerXbox::getRightBumper;
+      AmpAngleSup = ()-> driverControllerXbox.getPOV() == 90 || driverControllerXbox.getPOV() ==45 || driverControllerXbox.getPOV() == 135 ;
+      ManualShootSup = ()-> driverControllerXbox.getRightTriggerAxis() >= 0.5;
+      ClimberDownSup = operatorControllerXbox::getStartButton;
+      GroundIntakeSup = driverControllerXbox::getLeftBumper;
+      OperatorRevToZero = ()->operatorControllerXbox.getPOV() != -1;
+      SubwooferAngleSup =()-> driverControllerXbox.getAButton()||operatorControllerXbox.getAButton();
+      StageAngleSup = ()->driverControllerXbox.getYButton()||operatorControllerXbox.getYButton();
+      FarStageAngleSup = ()->driverControllerXbox.getXButton()||operatorControllerXbox.getXButton();
+      OppositeStageShotSup = ()->driverControllerXbox.getBButton()||operatorControllerXbox.getBButton();
+      OverStagePassSup = ()-> operatorControllerXbox.getLeftBumper();
+      CenterAmpPassSup =()-> operatorControllerXbox.getLeftTriggerAxis() >= 0.5;
+      AutoPickupSup = ()->driverControllerXbox.getLeftStickButton()||operatorControllerXbox.getLeftStickButton();
+      zeroSup = ()->0;
+      falseSup = ()->false;
+      //discontinued buttons:
+      intakeReverse = ()->false;
+      ShooterUpManualSup = ()->false;
+      ForceVisionSup = ()->false;
+      ShootIfReadySup = ()->false;
+    } else{
+      driverControllerPS4 = new PS4Controller(DRIVE_CONTROLLER_ID);
+      operatorControllerPS4 = new PS4Controller(OPERATOR_CONTROLLER_ID);
+      //operatorController = new PS4Controller(OPERATOs_CONTROLLER_ID);
+      PDP = new PowerDistribution(1, ModuleType.kRev);
+
+      ZeroGyroSup = driverControllerPS4::getPSButton;
+      ForceVisionSup = driverControllerPS4::getOptionsButton;
+
+      AimWhileMovingSup = driverControllerPS4::getL2Button;
+      HumanPlaySup = driverControllerPS4::getR1Button;
+      AmpAngleSup = ()->driverControllerPS4.getPOV() == 90||driverControllerPS4.getPOV() == 45||driverControllerPS4.getPOV() == 135;;
+      ManualShootSup = driverControllerPS4::getR2Button;
+      ClimberDownSup = operatorControllerPS4::getPSButton;
+      GroundIntakeSup = driverControllerPS4::getL1Button;
+      OperatorRevToZero = ()->operatorControllerPS4.getPOV() != -1;
+      SubwooferAngleSup =()-> driverControllerPS4.getCrossButton()||operatorControllerPS4.getCrossButton();
+      StageAngleSup = ()->operatorControllerPS4.getTriangleButton()||driverControllerPS4.getTriangleButton();;
+      FarStageAngleSup = ()->operatorControllerPS4.getSquareButton()||driverControllerPS4.getSquareButton();
+      OppositeStageShotSup = ()->operatorControllerPS4.getCircleButton()||driverControllerPS4.getCircleButton();
+      OverStagePassSup = operatorControllerPS4::getL1Button;
+      CenterAmpPassSup = operatorControllerPS4::getL2Button;
+      AutoPickupSup = ()->operatorControllerPS4.getTouchpad()||driverControllerPS4.getTouchpad();
+      zeroSup = ()->0;
+      falseSup = ()->false;
+      //discontinued buttons:
+      intakeReverse = ()->false;
+      ShooterUpManualSup = ()->false;
+      ForceVisionSup = ()->false;
+      ShootIfReadySup = ()->false;
+    }
     
     // = new PathPlannerPath(null, DEFAUL_PATH_CONSTRAINTS, null, climberExists);
     limelightInit();
@@ -244,13 +281,24 @@ public class RobotContainer {
   }
   private void driveTrainInst() {
     driveTrain = new DrivetrainSubsystem();
+    if(useXboxController){
+      defaultDriveCommand = new Drive(
+      driveTrain, 
+      () -> false,
+      () -> modifyAxis(-driverControllerXbox.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverControllerXbox.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverControllerXbox.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
+      driveTrain.setDefaultCommand(defaultDriveCommand);
+    }
+    else{
     defaultDriveCommand = new Drive(
       driveTrain, 
       () -> false,
-      () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
+      () -> modifyAxis(-driverControllerPS4.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverControllerPS4.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverControllerPS4.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
       driveTrain.setDefaultCommand(defaultDriveCommand);
+    }
   }
   private void shooterInst() {
     shooter = new ShooterSubsystem(ShooterConstants.SHOOTER_MOTOR_POWER);
@@ -265,11 +313,20 @@ public class RobotContainer {
   }
   private void climberInst() {
     climber = new Climber();
+    if(useXboxController){
+      climber.setDefaultCommand(new ClimberCommand(
+      climber,
+      ()-> modifyAxis(operatorControllerXbox.getLeftY(), DEADBAND_NORMAL),
+      ()-> modifyAxis(operatorControllerXbox.getRightY(), DEADBAND_NORMAL),
+      ClimberDownSup));
+    }
+    else{
     climber.setDefaultCommand(new ClimberCommand(
       climber,
-      ()-> modifyAxis(operatorController.getLeftY(), DEADBAND_NORMAL),
-      ()-> modifyAxis(operatorController.getRightY(), DEADBAND_NORMAL),
+      ()-> modifyAxis(operatorControllerPS4.getLeftY(), DEADBAND_NORMAL),
+      ()-> modifyAxis(operatorControllerPS4.getRightY(), DEADBAND_NORMAL),
       ClimberDownSup));
+  }
   }
   private void indexInit() {
     indexer = new IndexerSubsystem(intakeExists ? RobotState.getInstance()::isNoteSeen : () -> false);
@@ -314,12 +371,13 @@ public class RobotContainer {
     // new Trigger(driverController::getCrossButton).onTrue(new autoAimParallel(driveTrain/*, shooter*/));
     new Trigger(ZeroGyroSup).onTrue(new InstantCommand(driveTrain::zeroGyroscope));
     // new Trigger(driverController::getCircleButton).whileTrue(new GoToAmp(driveTrain)); unused becuase we dont pickup from amp with a path anymore
-    new Trigger(AimWhileMovingSup).whileTrue(new AimRobotMoving(
+    if(useXboxController){
+          new Trigger(AimWhileMovingSup).whileTrue(new AimRobotMoving(
       driveTrain,
-      () -> modifyAxis(-driverController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driverController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      driverController::getL2Button,
+      () -> modifyAxis(-driverControllerXbox.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverControllerXbox.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverControllerXbox.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      ()->driverControllerXbox.getLeftTriggerAxis() >= 0.5,
       StageAngleSup,
       FarStageAngleSup,
       SubwooferAngleSup,
@@ -327,6 +385,22 @@ public class RobotContainer {
       OppositeStageShotSup,
       falseSup
       ));
+    }
+    else{
+    new Trigger(AimWhileMovingSup).whileTrue(new AimRobotMoving(
+      driveTrain,
+      () -> modifyAxis(-driverControllerPS4.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverControllerPS4.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driverControllerPS4.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      driverControllerPS4::getL2Button,
+      StageAngleSup,
+      FarStageAngleSup,
+      SubwooferAngleSup,
+      OverStagePassSup,
+      OppositeStageShotSup,
+      falseSup
+      ));
+    }
     // new Trigger(()->driverController.getL3Button()&&driverController.getR3Button()).onTrue(
     //   new SequentialCommandGroup(
     //     new InstantCommand(()->angleShooterSubsystem.setDesiredShooterAngle(22.5), angleShooterSubsystem),
@@ -376,7 +450,12 @@ public class RobotContainer {
       SmartDashboard.putData("Manual Angle Shooter Up", new AngleShooter(angleShooterSubsystem, ()->ShooterConstants.PRAC_MAXIMUM_SHOOTER_ANGLE));
     }
     if(indexerExists) {
-      new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverController::getPOV, intake));
+      if(useXboxController){
+        new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverControllerXbox::getPOV, intake));
+      }
+      else{
+      new Trigger(ManualShootSup).whileTrue(new ManualShoot(indexer, driverControllerPS4::getPOV, intake));
+    }
     }
     if(climberExists) {
     }
